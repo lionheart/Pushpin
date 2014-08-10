@@ -162,6 +162,7 @@
 		378482D7186CB9ED00DF7A74 /* single-person.png in Resources */ = {isa = PBXBuildFile; fileRef = 378482D5186CB9ED00DF7A74 /* single-person.png */; };
 		378482D8186CB9ED00DF7A74 /* single-person@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 378482D6186CB9ED00DF7A74 /* single-person@2x.png */; };
 		37887D6A18C51F7D00A20B76 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37887D6918C51F7D00A20B76 /* Crashlytics.framework */; };
+		37889D4419981212002E245A /* PPSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 37889D4319981212002E245A /* PPSettings.m */; };
 		378A24F5167D28AA00FB07EF /* ASStyleSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 378A24F4167D28AA00FB07EF /* ASStyleSheet.m */; };
 		378DA45F1633B4B800831134 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 378DA45E1633B4B700831134 /* MessageUI.framework */; };
 		37919F1E16091DF5007708EF /* PPLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37919F1D16091DF5007708EF /* PPLoginViewController.m */; };
@@ -556,7 +557,7 @@
 		3714DB7317556FC500B23F4F /* PPPinboardNotesDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPPinboardNotesDataSource.h; sourceTree = "<group>"; };
 		3714DB7417556FC600B23F4F /* PPPinboardNotesDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPPinboardNotesDataSource.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3714DB7617558A2000B23F4F /* PPSavedFeedsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSavedFeedsViewController.h; sourceTree = "<group>"; };
-		3714DB7717558A2000B23F4F /* PPSavedFeedsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPSavedFeedsViewController.m; sourceTree = "<group>"; };
+		3714DB7717558A2000B23F4F /* PPSavedFeedsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPSavedFeedsViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3714DB7E175673E200B23F4F /* safari-instructions.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "safari-instructions.html"; path = "Assets/safari-instructions.html"; sourceTree = "<group>"; };
 		3714DB8D1757D81D00B23F4F /* PPAddSavedFeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPAddSavedFeedViewController.h; sourceTree = "<group>"; };
 		3714DB8E1757D81E00B23F4F /* PPAddSavedFeedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPAddSavedFeedViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -564,7 +565,7 @@
 		3714DB911757DFFD00B23F4F /* user@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "user@2x.png"; path = "Assets/user@2x.png"; sourceTree = "<group>"; };
 		3715EEC615787CAA00FD21EE /* main.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = main.css; path = Assets/HTML/main.css; sourceTree = "<group>"; };
 		37171A2A18B16C77007FF164 /* PPSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSearchViewController.h; sourceTree = "<group>"; };
-		37171A2B18B16C77007FF164 /* PPSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPSearchViewController.m; sourceTree = "<group>"; };
+		37171A2B18B16C77007FF164 /* PPSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPSearchViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37171A2D18B1714E007FF164 /* LHSBooleanTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LHSBooleanTableViewCell.h; sourceTree = "<group>"; };
 		37171A2E18B1714E007FF164 /* LHSBooleanTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LHSBooleanTableViewCell.m; sourceTree = "<group>"; };
 		3717966618A8857F004B2D08 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -586,7 +587,7 @@
 		3728CF3B18726EC900155791 /* PPTagEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTagEditViewController.h; sourceTree = "<group>"; };
 		3728CF3C18726EC900155791 /* PPTagEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPTagEditViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3728CF3E1872880A00155791 /* PPEditDescriptionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPEditDescriptionViewController.h; sourceTree = "<group>"; };
-		3728CF3F1872880A00155791 /* PPEditDescriptionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPEditDescriptionViewController.m; sourceTree = "<group>"; };
+		3728CF3F1872880A00155791 /* PPEditDescriptionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPEditDescriptionViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		372AEEF6186B804F00F131A9 /* ScreenshotViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScreenshotViewController.h; sourceTree = "<group>"; };
 		372AEEF7186B804F00F131A9 /* ScreenshotViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScreenshotViewController.m; sourceTree = "<group>"; };
 		372C84071870E3B300BF520D /* Delete-Button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Delete-Button.png"; path = "Assets/Delete-Button.png"; sourceTree = "<group>"; };
@@ -673,7 +674,7 @@
 		373D6F551965E85A006833D2 /* PPShortcutEnabledDescriptionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPShortcutEnabledDescriptionViewController.h; sourceTree = "<group>"; };
 		373D6F561965E85A006833D2 /* PPShortcutEnabledDescriptionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPShortcutEnabledDescriptionViewController.m; sourceTree = "<group>"; };
 		37405C6518620BCB0052213A /* PostMetadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostMetadata.h; sourceTree = "<group>"; };
-		37405C6618620BCB0052213A /* PostMetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostMetadata.m; sourceTree = "<group>"; };
+		37405C6618620BCB0052213A /* PostMetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PostMetadata.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3740A23816863CF000F95D82 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		3740A23A16863CF000F95D82 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; lineEnding = 0; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.simpleColoring; };
 		3740A23B16863CF000F95D82 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -704,7 +705,7 @@
 		375A638816C0CB0800665CA1 /* PPFeedListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPFeedListViewController.h; sourceTree = "<group>"; };
 		375A638916C0CB0800665CA1 /* PPFeedListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPFeedListViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3769A5741879BCAF00AC8C44 /* PPMobilizerUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPMobilizerUtility.h; sourceTree = "<group>"; };
-		3769A5751879BCAF00AC8C44 /* PPMobilizerUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPMobilizerUtility.m; sourceTree = "<group>"; };
+		3769A5751879BCAF00AC8C44 /* PPMobilizerUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPMobilizerUtility.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3769A5771879C50D00AC8C44 /* PPConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPConstants.h; sourceTree = "<group>"; };
 		3769A5781879C50D00AC8C44 /* PPConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPConstants.m; sourceTree = "<group>"; };
 		376C9E7C1746FB4300A62CB5 /* PPLoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPLoadingView.h; sourceTree = "<group>"; };
@@ -750,6 +751,8 @@
 		378482D5186CB9ED00DF7A74 /* single-person.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "single-person.png"; path = "Assets/single-person.png"; sourceTree = "<group>"; };
 		378482D6186CB9ED00DF7A74 /* single-person@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "single-person@2x.png"; path = "Assets/single-person@2x.png"; sourceTree = "<group>"; };
 		37887D6918C51F7D00A20B76 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		37889D4219981212002E245A /* PPSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSettings.h; sourceTree = "<group>"; };
+		37889D4319981212002E245A /* PPSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPSettings.m; sourceTree = "<group>"; };
 		378A24F3167D28AA00FB07EF /* ASStyleSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASStyleSheet.h; sourceTree = "<group>"; };
 		378A24F4167D28AA00FB07EF /* ASStyleSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASStyleSheet.m; sourceTree = "<group>"; };
 		378DA45E1633B4B700831134 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
@@ -784,7 +787,7 @@
 		37AD159618A1352B005813CC /* Changelog-Delicious.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Changelog-Delicious.plist"; path = "Assets/Changelog-Delicious.plist"; sourceTree = SOURCE_ROOT; };
 		37ADE0FA18CBE011008F80BC /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; lineEnding = 0; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.simpleColoring; };
 		37B348C7175EFAFA00929E2E /* PPDisplaySettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPDisplaySettingsViewController.h; sourceTree = "<group>"; };
-		37B348C8175EFAFA00929E2E /* PPDisplaySettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPDisplaySettingsViewController.m; sourceTree = "<group>"; };
+		37B348C8175EFAFA00929E2E /* PPDisplaySettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPDisplaySettingsViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37B348CA175FF9D400929E2E /* PPChangelogViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPChangelogViewController.h; sourceTree = "<group>"; };
 		37B348CB175FF9D500929E2E /* PPChangelogViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPChangelogViewController.m; sourceTree = "<group>"; };
 		37B348CD175FFDCD00929E2E /* Changelog.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Changelog.plist; path = Assets/Changelog.plist; sourceTree = SOURCE_ROOT; };
@@ -826,7 +829,7 @@
 		37D2351C16B8DDD0007541DC /* NSString+URLEncoding2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+URLEncoding2.h"; path = "Vendor/NSString+URLEncoding2.h"; sourceTree = "<group>"; };
 		37D2351D16B8DDD0007541DC /* NSString+URLEncoding2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+URLEncoding2.m"; path = "Vendor/NSString+URLEncoding2.m"; sourceTree = "<group>"; };
 		37D4B000188325B000E07EB3 /* PPStatusBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPStatusBar.h; sourceTree = "<group>"; };
-		37D4B001188325B000E07EB3 /* PPStatusBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPStatusBar.m; sourceTree = "<group>"; };
+		37D4B001188325B000E07EB3 /* PPStatusBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPStatusBar.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37D4B00318833BC800E07EB3 /* readability.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = readability.css; sourceTree = "<group>"; };
 		37DB838287BA4DD2A778795D /* libPods-DebugPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DebugPods.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		37DE5AA0174EF8AE0073A2F4 /* back_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = back_icon.png; path = Assets/back_icon.png; sourceTree = "<group>"; };
@@ -1018,12 +1021,12 @@
 		37FEEB9415745488003F2B77 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		37FEEB9615745488003F2B77 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		37FEEB9A15745488003F2B77 /* PinboardAppStore.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PinboardAppStore.plist; sourceTree = "<group>"; };
-		37FEEB9E15745488003F2B77 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		37FEEB9E15745488003F2B77 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = main.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37FEEBA015745488003F2B77 /* Pushpin for Pinboard-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = "Pushpin for Pinboard-Prefix.pch"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37FEEBA115745488003F2B77 /* PPAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PPAppDelegate.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		37FEEBA215745488003F2B77 /* PPAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPAppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37FF412F187D95CF00F2D481 /* PPSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSplitViewController.h; sourceTree = "<group>"; };
-		37FF4130187D95CF00F2D481 /* PPSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPSplitViewController.m; sourceTree = "<group>"; };
+		37FF4130187D95CF00F2D481 /* PPSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPSplitViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		54B0022F87374C449F105BA0 /* Pods-DebugPods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DebugPods.xcconfig"; path = "Pods/Pods-DebugPods.xcconfig"; sourceTree = "<group>"; };
 		5D046C0A53164C1681C534DD /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		6D023C52193E8D280070C013 /* capture.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = capture.js; sourceTree = SOURCE_ROOT; };
@@ -1799,6 +1802,8 @@
 				3743B7371875DAA800B97E6D /* PPPinboardMetadataCache.m */,
 				3798AD7C18767718002D684B /* PPScrollView.h */,
 				3798AD7D18767718002D684B /* PPScrollView.m */,
+				37889D4219981212002E245A /* PPSettings.h */,
+				37889D4319981212002E245A /* PPSettings.m */,
 				37FF412F187D95CF00F2D481 /* PPSplitViewController.h */,
 				37FF4130187D95CF00F2D481 /* PPSplitViewController.m */,
 				37D4B000188325B000E07EB3 /* PPStatusBar.h */,
@@ -2745,6 +2750,7 @@
 				3798AD7E18767718002D684B /* PPScrollView.m in Sources */,
 				3778CE5318B1C97D004113DC /* PPSearchExamplesViewController.m in Sources */,
 				37171A2C18B16C77007FF164 /* PPSearchViewController.m in Sources */,
+				37889D4419981212002E245A /* PPSettings.m in Sources */,
 				37800E41162B2EDA009FCB17 /* PPSettingsViewController.m in Sources */,
 				373D6F571965E85A006833D2 /* PPShortcutEnabledDescriptionViewController.m in Sources */,
 				37F7825E198C354D00C99139 /* PPShrinkBackAnimator.m in Sources */,

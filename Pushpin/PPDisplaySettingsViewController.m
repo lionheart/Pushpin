@@ -13,6 +13,7 @@
 #import "PPDefaultFeedViewController.h"
 #import "PPTheme.h"
 #import "PPTitleButton.h"
+#import "PPSettings.h"
 
 #import "UITableViewCellValue1.h"
 #import "UITableViewCellSubtitle.h"
@@ -72,44 +73,46 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     [titleView setTitle:NSLocalizedString(@"Advanced Settings", nil) imageName:nil];
     self.navigationItem.titleView = titleView;
     
+    PPSettings *settings = [PPSettings sharedSettings];
+    
     self.privateByDefaultSwitch = [[UISwitch alloc] init];
-    self.privateByDefaultSwitch.on = [PPAppDelegate sharedDelegate].privateByDefault;
+    self.privateByDefaultSwitch.on = settings.privateByDefault;
     [self.privateByDefaultSwitch addTarget:self action:@selector(privateByDefaultSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
 
     self.readByDefaultSwitch = [[UISwitch alloc] init];
-    self.readByDefaultSwitch.on = [PPAppDelegate sharedDelegate].readByDefault;
+    self.readByDefaultSwitch.on = settings.readByDefault;
     [self.readByDefaultSwitch addTarget:self action:@selector(readByDefaultSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
 
     self.autoCapitalizationSwitch = [[UISwitch alloc] init];
-    self.autoCapitalizationSwitch.on = [PPAppDelegate sharedDelegate].enableAutoCapitalize;
+    self.autoCapitalizationSwitch.on = settings.enableAutoCapitalize;
     [self.autoCapitalizationSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
 
     self.compressPostsSwitch = [[UISwitch alloc] init];
-    self.compressPostsSwitch.on = [PPAppDelegate sharedDelegate].compressPosts;
+    self.compressPostsSwitch.on = settings.compressPosts;
     [self.compressPostsSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
 
     self.markReadSwitch = [[UISwitch alloc] init];
-    self.markReadSwitch.on = [PPAppDelegate sharedDelegate].markReadPosts;
+    self.markReadSwitch.on = settings.markReadPosts;
     [self.markReadSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
 
     self.doubleTapToEditSwitch = [[UISwitch alloc] init];
-    self.doubleTapToEditSwitch.on = [PPAppDelegate sharedDelegate].doubleTapToEdit;
+    self.doubleTapToEditSwitch.on = settings.doubleTapToEdit;
     [self.doubleTapToEditSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
     
     self.autoCorrectionSwitch = [[UISwitch alloc] init];
-    self.autoCorrectionSwitch.on = [PPAppDelegate sharedDelegate].enableAutoCorrect;
+    self.autoCorrectionSwitch.on = settings.enableAutoCorrect;
     [self.autoCorrectionSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
     
     self.onlyPromptToAddOnceSwitch = [[UISwitch alloc] init];
-    self.onlyPromptToAddOnceSwitch.on = ![PPAppDelegate sharedDelegate].onlyPromptToAddOnce;
+    self.onlyPromptToAddOnceSwitch.on = !settings.onlyPromptToAddOnce;
     [self.onlyPromptToAddOnceSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
 
     self.dimReadPostsSwitch = [[UISwitch alloc] init];
-    self.dimReadPostsSwitch.on = [PPAppDelegate sharedDelegate].dimReadPosts;
+    self.dimReadPostsSwitch.on = settings.dimReadPosts;
     [self.dimReadPostsSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
 
     self.alwaysShowAlertSwitch = [[UISwitch alloc] init];
-    self.alwaysShowAlertSwitch.on = [PPAppDelegate sharedDelegate].alwaysShowClipboardNotification;
+    self.alwaysShowAlertSwitch.on = settings.alwaysShowClipboardNotification;
     [self.alwaysShowAlertSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
     
     self.textExpanderSwitch = [[UISwitch alloc] init];
@@ -339,7 +342,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.accessoryView = nil;
 
                     cell.textLabel.text = NSLocalizedString(@"Default feed", nil);
-                    cell.detailTextLabel.text = [PPAppDelegate sharedDelegate].defaultFeedDescription;
+                    cell.detailTextLabel.text = [PPSettings sharedSettings].defaultFeedDescription;
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
             }
@@ -547,30 +550,30 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 }
 
 - (void)switchChangedValue:(id)sender {
-    PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
+    PPSettings *settings = [PPSettings sharedSettings];
     if (sender == self.compressPostsSwitch) {
-        [delegate setCompressPosts:self.compressPostsSwitch.on];
+        [settings setCompressPosts:self.compressPostsSwitch.on];
     }
     else if (sender == self.doubleTapToEditSwitch) {
-        [delegate setDoubleTapToEdit:self.doubleTapToEditSwitch.on];
+        [settings setDoubleTapToEdit:self.doubleTapToEditSwitch.on];
     }
     else if (sender == self.dimReadPostsSwitch) {
-        [delegate setDimReadPosts:self.dimReadPostsSwitch.on];
+        [settings setDimReadPosts:self.dimReadPostsSwitch.on];
     }
     else if (sender == self.markReadSwitch) {
-        [delegate setMarkReadPosts:self.markReadSwitch.on];
+        [settings setMarkReadPosts:self.markReadSwitch.on];
     }
     else if (sender == self.autoCorrectionSwitch) {
-        [delegate setEnableAutoCorrect:self.autoCorrectionSwitch.on];
+        [settings setEnableAutoCorrect:self.autoCorrectionSwitch.on];
     }
     else if (sender == self.autoCapitalizationSwitch) {
-        [delegate setEnableAutoCapitalize:self.autoCapitalizationSwitch.on];
+        [settings setEnableAutoCapitalize:self.autoCapitalizationSwitch.on];
     }
     else if (sender == self.alwaysShowAlertSwitch) {
-        [delegate setAlwaysShowClipboardNotification:self.alwaysShowAlertSwitch.on];
+        [settings setAlwaysShowClipboardNotification:self.alwaysShowAlertSwitch.on];
     }
     else if (sender == self.onlyPromptToAddOnceSwitch) {
-        [delegate setOnlyPromptToAddOnce:!self.onlyPromptToAddOnceSwitch.on];
+        [settings setOnlyPromptToAddOnce:!self.onlyPromptToAddOnceSwitch.on];
 
         [self.tableView beginUpdates];
         
@@ -622,11 +625,11 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 }
 
 - (void)privateByDefaultSwitchChangedValue:(id)sender {
-    [[PPAppDelegate sharedDelegate] setPrivateByDefault:self.privateByDefaultSwitch.on];
+    [[PPSettings sharedSettings] setPrivateByDefault:self.privateByDefaultSwitch.on];
 }
 
 - (void)readByDefaultSwitchChangedValue:(id)sender {
-    [[PPAppDelegate sharedDelegate] setReadByDefault:self.readByDefaultSwitch.on];
+    [[PPSettings sharedSettings] setReadByDefault:self.readByDefaultSwitch.on];
 }
 
 - (BOOL)textExpanderEnabled {

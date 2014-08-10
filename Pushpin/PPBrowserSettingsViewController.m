@@ -16,6 +16,7 @@
 #import "UITableViewCellValue1.h"
 #import "PPTableViewTitleView.h"
 #import "PPConstants.h"
+#import "PPSettings.h"
 
 #import <OpenInChrome/OpenInChromeController.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -111,7 +112,7 @@ static NSString *CellIdentifier = @"Cell";
                     cell.textLabel.text = NSLocalizedString(@"Default Browser", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
                     
-                    PPBrowserType browser = [PPAppDelegate sharedDelegate].browser;
+                    PPBrowserType browser = [PPSettings sharedSettings].browser;
 
                     switch (browser) {
                         case PPBrowserWebview:
@@ -153,7 +154,7 @@ static NSString *CellIdentifier = @"Cell";
                     self.openLinksInAppSwitch = [[UISwitch alloc] init];
                     CGSize switchSize = self.openLinksInAppSwitch.frame.size;
                     self.openLinksInAppSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-                    self.openLinksInAppSwitch.on = [PPAppDelegate sharedDelegate].openLinksInApp;
+                    self.openLinksInAppSwitch.on = [PPSettings sharedSettings].openLinksInApp;
                     [self.openLinksInAppSwitch addTarget:self action:@selector(readByDefaultSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
                     cell.accessoryView = self.openLinksInAppSwitch;
                     break;
@@ -209,34 +210,34 @@ static NSString *CellIdentifier = @"Cell";
     if (buttonIndex >= 0) {
         if (actionSheet == (UIActionSheet *)self.browserActionSheet) {
             NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
-            PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
+            PPSettings *settings = [PPSettings sharedSettings];
             if ([title isEqualToString:@"Webview"]) {
                 [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Webview"];
-                delegate.browser = PPBrowserWebview;
+                settings.browser = PPBrowserWebview;
             }
             else if ([title isEqualToString:@"Safari"]) {
                 [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Safari"];
-                delegate.browser = PPBrowserSafari;
+                settings.browser = PPBrowserSafari;
             }
             else if ([title isEqualToString:@"Chrome"]) {
                 [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Chrome"];
-                delegate.browser = PPBrowserChrome;
+                settings.browser = PPBrowserChrome;
             }
             else if ([title isEqualToString:@"iCab Mobile"]) {
                 [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"iCab Mobile"];
-                delegate.browser = PPBrowseriCabMobile;
+                settings.browser = PPBrowseriCabMobile;
             }
             else if ([title isEqualToString:@"Dolphin"]) {
                 [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Dolphin"];
-                delegate.browser = PPBrowserDolphin;
+                settings.browser = PPBrowserDolphin;
             }
             else if ([title isEqualToString:@"Cyberspace"]) {
                 [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Cyberpsace"];
-                delegate.browser = PPBrowserCyberspace;
+                settings.browser = PPBrowserCyberspace;
             }
             else if ([title isEqualToString:@"Opera"]) {
                 [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Opera"];
-                delegate.browser = PPBrowserOpera;
+                settings.browser = PPBrowserOpera;
             }
             
             [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -248,7 +249,7 @@ static NSString *CellIdentifier = @"Cell";
 }
 
 - (void)readByDefaultSwitchChangedValue:(id)sender {
-    [[PPAppDelegate sharedDelegate] setOpenLinksInApp:self.openLinksInAppSwitch.on];
+    [[PPSettings sharedSettings] setOpenLinksInApp:self.openLinksInAppSwitch.on];
 }
 
 @end

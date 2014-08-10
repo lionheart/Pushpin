@@ -12,6 +12,7 @@
 #import "PostMetadata.h"
 #import "PPPlainTextViewController.h"
 #import "PPNoteViewController.h"
+#import "PPSettings.h"
 
 #import "NSAttributedString+Attributes.h"
 
@@ -68,8 +69,8 @@
 }
 
 - (NSString *)urlForPostAtIndex:(NSInteger)index {
-    PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
-    return [NSString stringWithFormat:@"https://notes.pinboard.in/u:%@/%@", delegate.username, self.posts[index][@"id"]];
+    PPSettings *settings = [PPSettings sharedSettings];
+    return [NSString stringWithFormat:@"https://notes.pinboard.in/u:%@/%@", settings.username, self.posts[index][@"id"]];
 }
 
 - (NSDictionary *)postAtIndex:(NSInteger)index {

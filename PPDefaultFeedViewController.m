@@ -12,6 +12,7 @@
 #import "PPTheme.h"
 #import "PPTableViewTitleView.h"
 #import "PPConstants.h"
+#import "PPSettings.h"
 
 #import <FMDB/FMDatabase.h>
 
@@ -45,13 +46,13 @@ static NSString *CellIdentifier = @"Cell";
     NSString *feedDetails;
     NSInteger row = 0;
     NSInteger section = 0;
-    if ([[PPAppDelegate sharedDelegate].defaultFeed hasPrefix:@"personal"]) {
-        feedDetails = [[PPAppDelegate sharedDelegate].defaultFeed substringFromIndex:9];
+    if ([[PPSettings sharedSettings].defaultFeed hasPrefix:@"personal"]) {
+        feedDetails = [[PPSettings sharedSettings].defaultFeed substringFromIndex:9];
         row = [PPPersonalFeeds() indexOfObject:feedDetails];
         section = 0;
     }
-    else if ([[PPAppDelegate sharedDelegate].defaultFeed hasPrefix:@"community"]) {
-        feedDetails = [[PPAppDelegate sharedDelegate].defaultFeed substringFromIndex:10];
+    else if ([[PPSettings sharedSettings].defaultFeed hasPrefix:@"community"]) {
+        feedDetails = [[PPSettings sharedSettings].defaultFeed substringFromIndex:10];
         row = [PPCommunityFeeds() indexOfObject:feedDetails];
         section = 1;
     }
@@ -72,8 +73,8 @@ static NSString *CellIdentifier = @"Cell";
             // See if we need to update our selected index path
             BOOL updateDefaultIndex = NO;
             NSString *feedDetails;
-            if ([[[PPAppDelegate sharedDelegate].defaultFeed substringToIndex:5] isEqualToString:@"saved"]) {
-                feedDetails = [[PPAppDelegate sharedDelegate].defaultFeed substringFromIndex:6];
+            if ([[[PPSettings sharedSettings].defaultFeed substringToIndex:5] isEqualToString:@"saved"]) {
+                feedDetails = [[PPSettings sharedSettings].defaultFeed substringFromIndex:6];
                 updateDefaultIndex = YES;
             }
             
@@ -413,7 +414,7 @@ static NSString *CellIdentifier = @"Cell";
 #endif
         
         // Update the default feed and pop the view
-        [[PPAppDelegate sharedDelegate] setDefaultFeed:defaultFeed];
+        [[PPSettings sharedSettings] setDefaultFeed:defaultFeed];
     }
     else {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];

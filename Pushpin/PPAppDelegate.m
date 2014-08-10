@@ -29,6 +29,7 @@
 #import "PPSplitViewController.h"
 #import "PPStatusBar.h"
 #import "PPDeliciousDataSource.h"
+#import "PPSettings.h"
 
 #import <LHSDelicious/LHSDelicious.h>
 #import <ASPinboard/ASPinboard.h>
@@ -38,12 +39,12 @@
 #import <PocketAPI/PocketAPI.h>
 #import <TestFlightSDK/TestFlight.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-#import <KeychainItemWrapper/KeychainItemWrapper.h>
 #import <OpenInChrome/OpenInChromeController.h>
 #import <LHSCategoryCollection/UIViewController+LHSAdditions.h>
 #import <Crashlytics/Crashlytics.h>
 #import "MFMailComposeViewController+Theme.h"
 #import <LHSDiigo/LHSDiigoClient.h>
+#import <KeychainItemWrapper/KeychainItemWrapper.h>
 
 @interface PPAppDelegate ()
 
@@ -58,32 +59,6 @@
 @implementation PPAppDelegate
 
 @synthesize splitViewController = _splitViewController;
-@synthesize readLater = _readLater;
-@synthesize token = _token;
-@synthesize browser = _browser;
-@synthesize mobilizer = _mobilizer;
-@synthesize onlyPromptToAddOnce = _onlyPromptToAddOnce;
-@synthesize lastUpdated = _lastUpdated;
-@synthesize privateByDefault = _privateByDefault;
-@synthesize dimReadPosts = _dimReadPosts;
-@synthesize markReadPosts = _markReadPosts;
-@synthesize enableAutoCorrect = _enableAutoCorrect;
-@synthesize enableAutoCapitalize = _enableAutoCapitalize;
-@synthesize feedToken = _feedToken;
-@synthesize readByDefault = _readByDefault;
-@synthesize defaultFeed = _defaultFeed;
-@synthesize openLinksInApp = _openLinksInApp;
-@synthesize compressPosts = _compressPosts;
-@synthesize openLinksWithMobilizer = _openLinksWithMobilizer;
-@synthesize doubleTapToEdit = _doubleTapToEdit;
-@synthesize alwaysShowClipboardNotification = _alwaysShowClipboardNotification;
-@synthesize username = _username;
-@synthesize hiddenFeedNames = _hiddenFeedNames;
-@synthesize personalFeedOrder = _personalFeedOrder;
-
-#ifdef PINBOARD
-@synthesize communityFeedOrder = _communityFeedOrder;
-#endif
 
 + (NSString *)databasePath {
 #ifdef DELICIOUS
@@ -301,7 +276,7 @@
         NSRange range = [url.absoluteString rangeOfString:@"pushpin"];
         NSString *urlString = [url.absoluteString stringByReplacingCharactersInRange:range withString:@"http"];
         PPWebViewController *webViewController = [PPWebViewController webViewControllerWithURL:urlString];
-        webViewController.shouldMobilize = self.openLinksWithMobilizer;
+        webViewController.shouldMobilize = [PPSettings sharedSettings].openLinksWithMobilizer;
         webViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStyleDone target:self action:@selector(closeModal:)];
         PPNavigationController *navController = [[PPNavigationController alloc] initWithRootViewController:webViewController];
         
@@ -318,12 +293,13 @@
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
+    PPSettings *settings = [PPSettings sharedSettings];
 #ifdef DELICIOUS
-    BOOL isAuthenticated = self.username != nil && self.password != nil;
+    BOOL isAuthenticated = settings.username != nil && settings.password != nil;
 #endif
     
 #ifdef PINBOARD
-    BOOL isAuthenticated = self.token != nil;
+    BOOL isAuthenticated = settings.token != nil;
 #endif
 
     if (!didLaunchWithURL && isAuthenticated) {
@@ -358,8 +334,8 @@
                 [results close];
             }];
 
-            if (alreadyRejected && self.onlyPromptToAddOnce) {
-                if (self.alwaysShowClipboardNotification) {
+            if (alreadyRejected && [PPSettings sharedSettings].onlyPromptToAddOnce) {
+                if ([PPSettings sharedSettings].alwaysShowClipboardNotification) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         UILocalNotification *notification = [[UILocalNotification alloc] init];
                         notification.alertBody = @"Reset the list of stored URLs in advanced settings to add or edit this bookmark.";
@@ -408,12 +384,13 @@
 - (NSMutableDictionary *)parseQueryParameters:(NSString *)query {
     // Parse the individual parameters
     // parameters = @"hello=world&foo=bar";
+    PPSettings *settings = [PPSettings sharedSettings];
     NSMutableDictionary *params = [@{@"url": @"",
                                      @"title": @"",
                                      @"description": @"",
                                      @"tags": @"",
-                                     @"private": @(self.privateByDefault),
-                                     @"unread": @(!self.readByDefault) } mutableCopy];
+                                     @"private": @(settings.privateByDefault),
+                                     @"unread": @(!settings.readByDefault) } mutableCopy];
 
     NSArray *arrParameters = [query componentsSeparatedByString:@"&"];
     for (NSInteger i=0; i<[arrParameters count]; i++) {
@@ -481,6 +458,8 @@
 }
 
 - (PPNavigationController *)navigationController {
+    PPSettings *settings = [PPSettings sharedSettings];
+
     if (!_navigationController) {
 #ifdef DELICIOUS
         PPDeliciousDataSource *deliciousDataSource = [[PPDeliciousDataSource alloc] init];
@@ -513,8 +492,8 @@
         
         // Determine our default feed
         NSString *feedDetails;
-        if ([[self.defaultFeed substringToIndex:8] isEqualToString:@"personal"]) {
-            feedDetails = [self.defaultFeed substringFromIndex:9];
+        if ([[settings.defaultFeed substringToIndex:8] isEqualToString:@"personal"]) {
+            feedDetails = [settings.defaultFeed substringFromIndex:9];
             
             PPPinboardPersonalFeedType feedType = [PPPersonalFeeds() indexOfObject:feedDetails];
             
@@ -545,8 +524,8 @@
 
             pinboardViewController.postDataSource = pinboardDataSource;
         }
-        else if ([[self.defaultFeed substringToIndex:9] isEqualToString:@"community"]) {
-            feedDetails = [self.defaultFeed substringFromIndex:10];
+        else if ([[[PPSettings sharedSettings].defaultFeed substringToIndex:9] isEqualToString:@"community"]) {
+            feedDetails = [settings.defaultFeed substringFromIndex:10];
             PPPinboardFeedDataSource *feedDataSource = [[PPPinboardFeedDataSource alloc] init];
             pinboardViewController.postDataSource = feedDataSource;
             
@@ -554,9 +533,7 @@
             
             switch (feedType) {
                 case PPPinboardCommunityFeedNetwork: {
-                    NSString *username = [[[[PPAppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
-                    NSString *feedToken = [[PPAppDelegate sharedDelegate] feedToken];
-                    feedDataSource.components = @[[NSString stringWithFormat:@"secret:%@", feedToken], [NSString stringWithFormat:@"u:%@", username], @"network"];
+                    feedDataSource.components = @[[NSString stringWithFormat:@"secret:%@", settings.feedToken], [NSString stringWithFormat:@"u:%@", settings.username], @"network"];
                     break;
                 }
                     
@@ -584,8 +561,8 @@
                     break;
             }
         }
-        else if ([[self.defaultFeed substringToIndex:5] isEqualToString:@"saved"]) {
-            feedDetails = [self.defaultFeed substringFromIndex:6];
+        else if ([[settings.defaultFeed substringToIndex:5] isEqualToString:@"saved"]) {
+            feedDetails = [settings.defaultFeed substringFromIndex:6];
             NSArray *components = [feedDetails componentsSeparatedByString:@"+"];
             PPPinboardFeedDataSource *feedDataSource = [[PPPinboardFeedDataSource alloc] initWithComponents:components];
             pinboardViewController.postDataSource = feedDataSource;
@@ -736,28 +713,19 @@
 #endif
 
     [application setStatusBarStyle:UIStatusBarStyleLightContent];
-    
-    BOOL isAuthenticated;
-    
-#ifdef DELICIOUS
-    isAuthenticated = self.username != nil;
-#endif
-    
-#ifdef PINBOARD
-    isAuthenticated = self.token != nil;
-#endif
 
-    if (isAuthenticated) {
+    PPSettings *settings = [PPSettings sharedSettings];
+    if (settings.isAuthenticated) {
 #ifdef PINBOARD
-        pinboard.token = self.token;
+        pinboard.token = settings.token;
 #endif
         
 #ifdef DELICIOUS
-        delicious.username = self.username;
-        delicious.password = self.password;
+        delicious.username = settings.username;
+        delicious.password = settings.password;
 #endif
-        [mixpanel identify:self.username];
-        [mixpanel.people set:@"$username" to:self.username];
+        [mixpanel identify:settings.username];
+        [mixpanel.people set:@"$username" to:settings.username];
         
         if ([UIApplication isIPad]) {
             [self.window setRootViewController:self.splitViewController];
@@ -946,7 +914,7 @@
                         [db executeUpdate:@"PRAGMA user_version=2;"];
                         
                     case 2:
-                        self.readLater = PPReadLaterNone;
+                        [[PPSettings sharedSettings] setReadLater:PPReadLaterNone];
                         [db executeUpdate:@"CREATE TABLE rejected_bookmark(url TEXT UNIQUE CHECK(length(url) < 2000));"];
                         [db executeUpdate:@"CREATE INDEX rejected_bookmark_url_idx ON rejected_bookmark (url);"];
                         [db executeUpdate:@"CREATE INDEX tag_name_idx ON tag (name);"];
@@ -1079,9 +1047,11 @@
                         [db executeUpdate:@"DELETE FROM tagging WHERE tag_name='';"];
                         [db executeUpdate:@"PRAGMA user_version=9;"];
                         
-                    case 9:
-                        self.communityFeedOrder = [self.communityFeedOrder arrayByAddingObject:@(PPPinboardCommunityFeedRecent)];
+                    case 9: {
+                        NSArray *communityFeedOrder = [PPSettings sharedSettings].communityFeedOrder;
+                        [[PPSettings sharedSettings] setCommunityFeedOrder:[communityFeedOrder arrayByAddingObject:@(PPPinboardCommunityFeedRecent)]];
                         [db executeUpdate:@"PRAGMA user_version=10;"];
+                    }
                         
                     default:
                         break;
@@ -1102,27 +1072,6 @@
 }
 
 #pragma mark - Helpers
-
-- (NSString *)defaultFeedDescription {
-    // Build a descriptive string for the default feed
-    NSString *feedDescription = [NSString stringWithFormat:@"%@ - %@", NSLocalizedString(@"Personal", nil), @"All"];
-    if (self.defaultFeed) {
-        if ([[self.defaultFeed substringToIndex:8] isEqualToString:@"personal"]) {
-            feedDescription = [NSString stringWithFormat:@"%@ - %@", NSLocalizedString(@"Personal", nil), [[self.defaultFeed substringFromIndex:9] capitalizedString]];
-        }
-        else if ([[self.defaultFeed substringToIndex:9] isEqualToString:@"community"]) {
-            NSString *communityDescription = [self.defaultFeed substringFromIndex:10];
-            if ([communityDescription isEqualToString:@"japanese"]) {
-                communityDescription = @"日本語";
-            }
-            feedDescription = [NSString stringWithFormat:@"%@ - %@", NSLocalizedString(@"Community", nil), [communityDescription capitalizedString]];
-        }
-        else if ([[self.defaultFeed substringToIndex:5] isEqualToString:@"saved"]) {
-            feedDescription = [NSString stringWithFormat:@"%@ - %@", NSLocalizedString(@"Saved Feed", nil), [self.defaultFeed substringFromIndex:6]];
-        }
-    }
-    return feedDescription;
-}
 
 - (void)retrievePageTitle:(NSURL *)url callback:(void (^)(NSString *title, NSString *description))callback {
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:5];
@@ -1213,63 +1162,6 @@
     }
 }
 
-- (NSString *)username {
-#ifdef DELICIOUS
-    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"DeliciousCredentials" accessGroup:nil];
-    NSString *key = [keychain objectForKey:(__bridge id)kSecAttrAccount];
-    if ([key isEqualToString:@""]) {
-        return nil;
-    }
-    return key;
-#endif
-    
-#ifdef PINBOARD
-    return [self.token componentsSeparatedByString:@":"][0];
-#endif
-}
-
-- (void)setUsername:(NSString *)username {
-    [self setUsername:username password:nil];
-}
-
-- (NSString *)password {
-#ifdef DELICIOUS
-    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"DeliciousCredentials" accessGroup:nil];
-#endif
-
-#ifdef PINBOARD
-    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"PinboardCredentials" accessGroup:nil];
-#endif
-
-    NSString *key = [keychain objectForKey:(__bridge id)kSecValueData];
-    if ([key isEqualToString:@""]) {
-        return nil;
-    }
-    return key;
-}
-
-- (void)setPassword:(NSString *)password {
-    [self setUsername:nil password:password];
-}
-
-- (void)setUsername:(NSString *)username password:(NSString *)password {
-#ifdef DELICIOUS
-    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"DeliciousCredentials" accessGroup:nil];
-#endif
-    
-#ifdef PINBOARD
-    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"PinboardCredentials" accessGroup:nil];
-#endif
-    
-    if (username) {
-        [keychain setObject:username forKey:(__bridge id)kSecAttrAccount];
-    }
-    
-    if (password) {
-        [keychain setObject:password forKey:(__bridge id)kSecValueData];
-    }
-}
-
 - (void)logout {
 #ifdef DELICIOUS
     KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"DeliciousCredentials" accessGroup:nil];
@@ -1284,10 +1176,11 @@
     // Reset all values in settings
 #warning Need to decide which settings are reset and which ones aren't.
 
-    self.hiddenFeedNames = @[];
+    PPSettings *settings = [PPSettings sharedSettings];
+    settings.hiddenFeedNames = @[];
 
 #ifdef DELICIOUS
-    self.personalFeedOrder = @[
+    settings.personalFeedOrder = @[
                                @(PPDeliciousPersonalFeedAll),
                                @(PPDeliciousPersonalFeedPrivate),
                                @(PPDeliciousPersonalFeedPublic),
@@ -1297,7 +1190,7 @@
 #endif
 
 #ifdef PINBOARD
-    self.personalFeedOrder = @[
+    settings.personalFeedOrder = @[
                                @(PPPinboardPersonalFeedAll),
                                @(PPPinboardPersonalFeedPrivate),
                                @(PPPinboardPersonalFeedPublic),
@@ -1306,7 +1199,7 @@
                                @(PPPinboardPersonalFeedStarred),
                            ];
 
-    self.communityFeedOrder = @[
+    settings.communityFeedOrder = @[
                                 @(PPPinboardCommunityFeedNetwork),
                                 @(PPPinboardCommunityFeedPopular),
                                 @(PPPinboardCommunityFeedWikipedia),
@@ -1315,11 +1208,11 @@
                                 @(PPPinboardCommunityFeedRecent),
                             ];
     
-    self.hiddenFeedNames = @[];
+    settings.hiddenFeedNames = @[];
 #endif
     
     [keychain resetKeychainItem];
-    self.token = nil;
+    settings.token = nil;
 }
 
 #pragma mark - UISplitViewControllerDelegate
@@ -1357,37 +1250,6 @@
 }
 #endif
 
-- (UITextAutocapitalizationType)autoCapitalizationType {
-    return [PPAppDelegate sharedDelegate].enableAutoCapitalize ? UITextAutocapitalizationTypeSentences : UITextAutocapitalizationTypeNone;
-}
-
-- (UITextAutocorrectionType)autoCorrectionType {
-    return [PPAppDelegate sharedDelegate].enableAutoCorrect ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo;
-}
-
-- (void)setInstapaperToken:(OAToken *)instapaperToken {
-    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
-    if (instapaperToken) {
-        [keychain setObject:instapaperToken.key forKey:(__bridge id)kSecAttrAccount];
-        [keychain setObject:instapaperToken.secret forKey:(__bridge id)kSecValueData];
-    }
-    else {
-        [keychain resetKeychainItem];
-    }
-}
-
-- (OAToken *)instapaperToken {
-    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
-    NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
-    NSString *resourceSecret = [keychain objectForKey:(__bridge id)kSecValueData];
-    if (resourceKey && resourceSecret) {
-        return [[OAToken alloc] initWithKey:resourceKey secret:resourceSecret];
-    }
-    else {
-        return nil;
-    }
-}
-
 - (void)deleteDatabaseFile {
     NSError *error;
 
@@ -1417,375 +1279,6 @@
 
         [db executeUpdate:@"PRAGMA user_version=0;"];
     }];
-}
-
-#pragma mark - Properties
-
-- (BOOL)compressPosts {
-    if (!_compressPosts) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _compressPosts = [[defaults objectForKey:@"io.aurora.pinboard.CompressPosts"] boolValue];
-    }
-    return _compressPosts;
-}
-
-- (void)setCompressPosts:(BOOL)compressPosts {
-    _compressPosts = compressPosts;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(compressPosts) forKey:@"io.aurora.pinboard.CompressPosts"];
-    [defaults synchronize];
-}
-
-- (BOOL)openLinksWithMobilizer {
-    if (!_openLinksWithMobilizer) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _openLinksWithMobilizer = [[defaults objectForKey:@"io.aurora.pinboard.OpenLinksWithMobilizer"] boolValue];
-    }
-    return _openLinksWithMobilizer;
-}
-
-- (void)setOpenLinksWithMobilizer:(BOOL)openLinksWithMobilizer {
-    _openLinksWithMobilizer = openLinksWithMobilizer;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(openLinksWithMobilizer) forKey:@"io.aurora.pinboard.OpenLinksWithMobilizer"];
-    [defaults synchronize];
-}
-
-- (BOOL)dimReadPosts {
-    if (!_dimReadPosts) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _dimReadPosts = [[defaults objectForKey:@"io.aurora.pinboard.DimReadPosts"] boolValue];
-    }
-    return _dimReadPosts;
-}
-
-- (void)setDimReadPosts:(BOOL)dimReadPosts {
-    _dimReadPosts = dimReadPosts;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(dimReadPosts) forKey:@"io.aurora.pinboard.DimReadPosts"];
-    [defaults synchronize];
-}
-
-- (BOOL)markReadPosts {
-    if (!_markReadPosts) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _markReadPosts = [[defaults objectForKey:@"io.aurora.pinboard.MarkReadPosts"] boolValue];
-    }
-    return _markReadPosts;
-}
-
-- (void)setMarkReadPosts:(BOOL)markReadPosts {
-    _markReadPosts = markReadPosts;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(markReadPosts) forKey:@"io.aurora.pinboard.MarkReadPosts"];
-    [defaults synchronize];
-}
-
-- (BOOL)onlyPromptToAddOnce {
-    if (!_onlyPromptToAddOnce) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _onlyPromptToAddOnce = [[defaults objectForKey:@"io.aurora.pinboard.OnlyPromptToAddOnce"] boolValue];
-    }
-    return _onlyPromptToAddOnce;
-}
-
-- (void)setOnlyPromptToAddOnce:(BOOL)onlyPromptToAddOnce {
-    _onlyPromptToAddOnce = onlyPromptToAddOnce;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(onlyPromptToAddOnce) forKey:@"io.aurora.pinboard.OnlyPromptToAddOnce"];
-    [defaults synchronize];
-}
-
-- (BOOL)alwaysShowClipboardNotification {
-    if (!_alwaysShowClipboardNotification) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _alwaysShowClipboardNotification = [[defaults objectForKey:@"io.aurora.pinboard.AlwaysShowClipboardNotification"] boolValue];
-    }
-    return _alwaysShowClipboardNotification;
-}
-
-- (void)setAlwaysShowClipboardNotification:(BOOL)alwaysShowClipboardNotification {
-    _alwaysShowClipboardNotification = alwaysShowClipboardNotification;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(alwaysShowClipboardNotification) forKey:@"io.aurora.pinboard.AlwaysShowClipboardNotification"];
-    [defaults synchronize];
-}
-
-- (BOOL)enableAutoCorrect {
-    if (!_enableAutoCorrect) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _enableAutoCorrect = [[defaults objectForKey:@"io.aurora.pinboard.EnableAutoCorrect"] boolValue];
-    }
-    return _enableAutoCorrect;
-}
-
-- (void)setEnableAutoCorrect:(BOOL)enableAutoCorrect {
-    _enableAutoCorrect = enableAutoCorrect;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(enableAutoCorrect) forKey:@"io.aurora.pinboard.EnableAutoCorrect"];
-    [defaults synchronize];
-}
-
-- (BOOL)enableAutoCapitalize {
-    if (!_enableAutoCapitalize) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _enableAutoCapitalize = [[defaults objectForKey:@"io.aurora.pinboard.EnableAutoCapitalize"] boolValue];
-    }
-    return _enableAutoCapitalize;
-}
-
-- (void)setEnableAutoCapitalize:(BOOL)enableAutoCapitalize {
-    _enableAutoCapitalize = enableAutoCapitalize;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(enableAutoCapitalize) forKey:@"io.aurora.pinboard.EnableAutoCapitalize"];
-    [defaults synchronize];
-}
-
-- (void)setBrowser:(PPBrowserType)browser {
-    _browser = browser;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(browser) forKey:@"io.aurora.pinboard.Browser"];
-    [defaults synchronize];
-}
-
-- (PPBrowserType)browser {
-    if (!_browser) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSNumber *result = [defaults objectForKey:@"io.aurora.pinboard.Browser"];
-        
-        if (result) {
-            _browser = [result integerValue];
-            
-            if (_browser == PPBrowserWebview) {
-                _browser = PPBrowserSafari;
-            }
-        }
-        else {
-            _browser = PPBrowserSafari;
-        }
-    }
-    return _browser;
-}
-
-- (void)setFeedToken:(NSString *)feedToken {
-    _feedToken = feedToken;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:feedToken forKey:@"io.aurora.pinboard.FeedToken"];
-    [defaults synchronize];
-}
-
-- (NSString *)feedToken {
-    if (!_feedToken) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _feedToken = [defaults objectForKey:@"io.aurora.pinboard.FeedToken"];
-    }
-    return _feedToken;
-}
-
-- (void)setReadLater:(PPReadLaterType)readLater{
-    _readLater = readLater;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(readLater) forKey:@"io.aurora.pinboard.ReadLater"];
-    [defaults synchronize];
-}
-
-- (PPReadLaterType)readLater {
-    if (!_readLater) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSNumber *result = [defaults objectForKey:@"io.aurora.pinboard.ReadLater"];
-        
-        if (result) {
-            _readLater = [result integerValue];
-        }
-        else {
-            _readLater = PPReadLaterNone;
-        }
-    }
-    return _readLater;
-}
-
-- (void)setMobilizer:(PPMobilizerType)mobilizer {
-    _mobilizer = mobilizer;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(mobilizer) forKey:@"io.aurora.pinboard.Mobilizer"];
-    [defaults synchronize];
-}
-
-- (PPMobilizerType)mobilizer {
-    if (!_mobilizer) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSNumber *result = [defaults objectForKey:@"io.aurora.pinboard.Mobilizer"];
-        
-        if (result) {
-            _mobilizer = [result integerValue];
-        }
-        else {
-            _mobilizer = PPMobilizerInstapaper;
-        }
-    }
-    return _mobilizer;
-}
-
-- (NSArray *)hiddenFeedNames {
-    if (!_hiddenFeedNames) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _hiddenFeedNames = [defaults objectForKey:@"io.aurora.pinboard.HiddenFeedNames"];
-    }
-    return _hiddenFeedNames;
-}
-
-- (void)setHiddenFeedNames:(NSArray *)hiddenFeedNames {
-    _hiddenFeedNames = hiddenFeedNames;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:hiddenFeedNames forKey:@"io.aurora.pinboard.HiddenFeedNames"];
-    [defaults synchronize];
-}
-
-- (NSArray *)personalFeedOrder {
-    if (!_personalFeedOrder) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _personalFeedOrder = [defaults objectForKey:@"io.aurora.pinboard.PersonalFeedOrder"];
-    }
-    return _personalFeedOrder;
-}
-
-- (void)setPersonalFeedOrder:(NSArray *)personalFeedOrder {
-    _personalFeedOrder = personalFeedOrder;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:personalFeedOrder forKey:@"io.aurora.pinboard.PersonalFeedOrder"];
-    [defaults synchronize];
-}
-
-#ifdef PINBOARD
-
-- (NSArray *)communityFeedOrder {
-    if (!_communityFeedOrder) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _communityFeedOrder = [defaults objectForKey:@"io.aurora.pinboard.CommunityFeedOrder"];
-    }
-    return _communityFeedOrder;
-}
-
-- (void)setCommunityFeedOrder:(NSArray *)communityFeedOrder {
-    _communityFeedOrder = communityFeedOrder;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:communityFeedOrder forKey:@"io.aurora.pinboard.CommunityFeedOrder"];
-    [defaults synchronize];
-}
-
-#endif
-
-- (void)setToken:(NSString *)token {
-    _token = token;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:token forKey:@"io.aurora.pinboard.Token"];
-    [defaults synchronize];
-}
-
-- (NSString *)token {
-#ifdef TOKEN
-    return TOKEN;
-#else
-    if (!_token) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _token = [defaults objectForKey:@"io.aurora.pinboard.Token"];
-    }
-    return _token;
-#endif
-}
-
-
-- (void)setLastUpdated:(NSDate *)lastUpdated {
-    _lastUpdated = lastUpdated;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:lastUpdated forKey:@"io.aurora.pinboard.LastUpdated"];
-    [defaults synchronize];
-}
-
-- (NSDate *)lastUpdated {
-    if (!_lastUpdated) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _lastUpdated = [defaults objectForKey:@"io.aurora.pinboard.LastUpdated"];
-    }
-    return _lastUpdated;
-}
-
-- (void)setPrivateByDefault:(BOOL)privateByDefault {
-    _privateByDefault = privateByDefault;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(privateByDefault) forKey:@"io.aurora.pinboard.PrivateByDefault"];
-    [defaults synchronize];
-}
-
-- (BOOL)privateByDefault {
-    if (!_privateByDefault) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _privateByDefault = [[defaults objectForKey:@"io.aurora.pinboard.PrivateByDefault"] boolValue];
-    }
-    return _privateByDefault;
-}
-
-- (BOOL)openLinksInApp {
-    if (!_openLinksInApp) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _openLinksInApp = [[defaults objectForKey:@"io.aurora.pinboard.OpenLinksInApp"] boolValue];
-    }
-    return _openLinksInApp;
-}
-
-- (void)setOpenLinksInApp:(BOOL)openLinksInApp {
-    _openLinksInApp = openLinksInApp;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(openLinksInApp) forKey:@"io.aurora.pinboard.OpenLinksInApp"];
-    [defaults synchronize];
-}
-
-- (void)setDoubleTapToEdit:(BOOL)doubleTapToEdit {
-    _doubleTapToEdit = doubleTapToEdit;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(doubleTapToEdit) forKey:@"io.aurora.pinboard.DoubleTapToEdit"];
-    [defaults synchronize];
-}
-
-- (BOOL)doubleTapToEdit {
-    if (!_doubleTapToEdit) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _doubleTapToEdit = [[defaults objectForKey:@"io.aurora.pinboard.DoubleTapToEdit"] boolValue];
-    }
-    return _doubleTapToEdit;
-}
-
-- (void)setReadByDefault:(BOOL)readByDefault {
-    _readByDefault = readByDefault;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@(readByDefault) forKey:@"io.aurora.pinboard.ReadByDefault"];
-    [defaults synchronize];
-}
-
-- (BOOL)readByDefault {
-    if (!_readByDefault) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _readByDefault = [[defaults objectForKey:@"io.aurora.pinboard.ReadByDefault"] boolValue];
-    }
-    return _readByDefault;
-}
-
-- (void)setDefaultFeed:(NSString *)defaultFeed {
-    _defaultFeed = defaultFeed;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:_defaultFeed forKey:@"io.aurora.pinboard.DefaultFeed"];
-}
-
-- (NSString *)defaultFeed {
-    if (!_defaultFeed) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _defaultFeed = [defaults objectForKey:@"io.aurora.pinboard.DefaultFeed"];
-        if (!_defaultFeed) {
-            _defaultFeed = @"personal:all";
-        }
-    }
-    
-    return _defaultFeed;
 }
 
 @end

@@ -14,6 +14,7 @@
 #import "PPTitleButton.h"
 #import "PostMetadata.h"
 #import "PPDefaultFeedViewController.h"
+#import "PPSettings.h"
 
 #import "NSAttributedString+Attributes.h"
 #import "NSString+LHSAdditions.h"
@@ -286,10 +287,8 @@ static BOOL kPinboardSyncInProgress = NO;
     };
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
-        NSString *username = [[[delegate token] componentsSeparatedByString:@":"] objectAtIndex:0];
-        NSString *feedToken = [delegate feedToken];
-        NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/starred/?count=400", feedToken, username]];
+        PPSettings *settings = [PPSettings sharedSettings];
+        NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/starred/?count=400", settings.feedToken, settings.username]];
         NSURLRequest *request = [NSURLRequest requestWithURL:endpoint];
         [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
         
@@ -469,7 +468,7 @@ static BOOL kPinboardSyncInProgress = NO;
     }
 
     BOOL shareToReadLater = NO;
-    if (shareToReadLater && [PPAppDelegate sharedDelegate].readLater != PPReadLaterNone) {
+    if (shareToReadLater && [PPSettings sharedSettings].readLater != PPReadLaterNone) {
         actions |= PPPostActionReadLater;
     }
 
@@ -981,6 +980,8 @@ static BOOL kPinboardSyncInProgress = NO;
     if (!progress) {
         progress = ^(NSInteger current, NSInteger total) {};
     }
+    
+    PPSettings *settings = [PPSettings sharedSettings];
 
     // Dispatch serially to ensure that no two syncs happen simultaneously.
     dispatch_async(PPBookmarkUpdateQueue(), ^{
@@ -1171,7 +1172,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                           
                                           self.totalNumberOfPosts = index;
                                           
-                                          [[PPAppDelegate sharedDelegate] setLastUpdated:[NSDate date]];
+                                          [settings setLastUpdated:[NSDate date]];
                                           kPinboardSyncInProgress = NO;
 
                                           progress(total, total);
@@ -1195,7 +1196,7 @@ static BOOL kPinboardSyncInProgress = NO;
 
         void (^BookmarksUpdatedTimeSuccessBlock)(NSDate *) = ^(NSDate *updateTime) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                NSDate *lastLocalUpdate = [[PPAppDelegate sharedDelegate] lastUpdated];
+                NSDate *lastLocalUpdate = [settings lastUpdated];
                 BOOL neverUpdated = lastLocalUpdate == nil;
                 BOOL outOfSyncWithAPI = [lastLocalUpdate compare:updateTime] == NSOrderedAscending;
                 BOOL lastUpdatedMoreThanFiveMinutesAgo = abs([lastLocalUpdate timeIntervalSinceNow]) >= 300;
@@ -1421,10 +1422,10 @@ static BOOL kPinboardSyncInProgress = NO;
         
         if (self.searchScope != ASPinboardSearchScopeNone) {
             ASPinboard *pinboard = [ASPinboard sharedInstance];
-            PPAppDelegate *sharedDelegate = [PPAppDelegate sharedDelegate];
-            if ([sharedDelegate.password length] > 0) {
-                [pinboard searchBookmarksWithUsername:sharedDelegate.username
-                                             password:sharedDelegate.password
+            PPSettings *settings = [PPSettings sharedSettings];
+            if (settings.password.length > 0) {
+                [pinboard searchBookmarksWithUsername:settings.username
+                                             password:settings.password
                                                 query:self.searchQuery
                                                 scope:self.searchScope
                                            completion:^(NSArray *urls, NSError *error) {

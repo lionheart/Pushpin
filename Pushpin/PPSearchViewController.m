@@ -17,6 +17,7 @@
 #import "PPAppDelegate.h"
 #import "PPFeedListViewController.h"
 #import "PPDeliciousDataSource.h"
+#import "PPSettings.h"
 
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -487,8 +488,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                     switch (self.pinboardSearchScope) {
                         case ASPinboardSearchScopeFullText: {
                             // Check if the user has no username or password set.
-                            PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
-                            if ([delegate.username length] == 0 || [delegate.password length] == 0) {
+                            PPSettings *settings = [PPSettings sharedSettings];
+                            if ([settings.username length] == 0 || [settings.password length] == 0) {
                                 [[[UIAlertView alloc] initWithTitle:nil
                                                             message:NSLocalizedString(@"To enable Pinboard full-text search, please log out and then log back in.", nil)
                                                            delegate:nil
@@ -734,8 +735,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
         
         if (self.searchScope == PPSearchScopePinboard) {
             // Check if the user has no username or password set.
-            PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
-            if ([delegate.username length] == 0 || [delegate.password length] == 0) {
+            PPSettings *settings = [PPSettings sharedSettings];
+            if ([settings.username length] == 0 || [settings.password length] == 0) {
                 self.searchScope = PPSearchScopeMine;
 
                 [[[UIAlertView alloc] initWithTitle:nil

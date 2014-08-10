@@ -9,6 +9,7 @@
 #import "PPEditDescriptionViewController.h"
 #import "PPAppDelegate.h"
 #import "PPTheme.h"
+#import "PPSettings.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
@@ -36,11 +37,13 @@
         self.title = NSLocalizedString(@"Description", nil);
         
         UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:16];
+        
+        PPSettings *settings = [PPSettings sharedSettings];
 
         self.textView = [[UITextView alloc] initWithFrame:CGRectZero];
         self.textView.translatesAutoresizingMaskIntoConstraints = NO;
-        self.textView.autocorrectionType = [[PPAppDelegate sharedDelegate] autoCorrectionType];
-        self.textView.autocapitalizationType =  [[PPAppDelegate sharedDelegate] autoCapitalizationType];
+        self.textView.autocorrectionType = [settings autoCorrectionType];
+        self.textView.autocapitalizationType =  [settings autoCapitalizationType];
         self.textView.spellCheckingType = UITextSpellCheckingTypeDefault;
         self.textView.font = font;
         self.textView.text = description;

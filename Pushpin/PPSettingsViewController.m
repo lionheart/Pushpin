@@ -23,6 +23,7 @@
 #import "PPMobilizerUtility.h"
 #import "PPConstants.h"
 #import "PPTwitter.h"
+#import "PPSettings.h"
 
 #import <ASPinboard/ASPinboard.h>
 #import <uservoice-iphone-sdk/UserVoice.h>
@@ -193,6 +194,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     cell.textLabel.text = nil;
     cell.accessoryView = nil;
 
+    PPSettings *settings = [PPSettings sharedSettings];
     switch ((PPSectionType)indexPath.section) {
         case PPSectionMainSettings: {
             switch ((PPMainSettingsRowType)indexPath.row) {
@@ -200,7 +202,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     cell.textLabel.text = NSLocalizedString(@"Read Later", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
 
-                    PPReadLaterType readLater = [PPAppDelegate sharedDelegate].readLater;
+                    PPReadLaterType readLater = settings.readLater;
                     switch (readLater) {
                         case PPReadLaterNone:
                             cell.detailTextLabel.text = NSLocalizedString(@"None", nil);
@@ -302,8 +304,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (alertView == self.logOutAlertView) {
         if (buttonIndex == 1) {
+            PPSettings *settings = [PPSettings sharedSettings];
             PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
-            delegate.lastUpdated = nil;
+            settings.lastUpdated = nil;
             [delegate logout];
 
 #ifdef DELICIOUS
@@ -358,7 +361,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
              [OARequestParameter requestParameter:@"x_auth_username" value:username],
              [OARequestParameter requestParameter:@"x_auth_password" value:password]]];
         [request prepare];
-        PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
 
         [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
         [NSURLConnection sendAsynchronousRequest:request
@@ -375,9 +377,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                                          otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
                                    }
                                    else {
+                                       PPSettings *settings = [PPSettings sharedSettings];
                                        OAToken *token = [[OAToken alloc] initWithHTTPResponseBody:[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
-                                       delegate.instapaperToken = token;
-                                       delegate.readLater = PPReadLaterInstapaper;
+                                       settings.instapaperToken = token;
+                                       settings.readLater = PPReadLaterInstapaper;
 
                                        [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Instapaper"];
 
@@ -436,8 +439,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                        KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"ReadabilityOAuth" accessGroup:nil];
                                        [keychain setObject:token.key forKey:(__bridge id)kSecAttrAccount];
                                        [keychain setObject:token.secret forKey:(__bridge id)kSecValueData];
-                                       
-                                       [PPAppDelegate sharedDelegate].readLater = PPReadLaterReadability;
+
+                                       PPSettings *settings = [PPSettings sharedSettings];
+                                       settings.readLater = PPReadLaterReadability;
                                        [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Readability"];
                                        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainReadLater inSection:PPSectionMainSettings]]
                                                              withRowAnimation:UITableViewRowAnimationFade];
@@ -466,6 +470,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
+    PPSettings *settings = [PPSettings sharedSettings];
+
     if (buttonIndex >= 0) {
         if (actionSheet == self.supportActionSheet) {
             if (buttonIndex == 3) {
@@ -487,16 +493,15 @@ static NSString *CellIdentifier = @"CellIdentifier";
         }
         else if (actionSheet == self.mobilizerActionSheet) {
             NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
-            PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
 
             if ([buttonTitle isEqualToString:@"Google"]) {
-                delegate.mobilizer = PPMobilizerGoogle;
+                settings.mobilizer = PPMobilizerGoogle;
             }
             else if ([buttonTitle isEqualToString:@"Instapaper"]) {
-                delegate.mobilizer = PPMobilizerInstapaper;
+                settings.mobilizer = PPMobilizerInstapaper;
             }
             else if ([buttonTitle isEqualToString:@"Readability"]) {
-                delegate.mobilizer = PPMobilizerReadability;
+                settings.mobilizer = PPMobilizerReadability;
             }
 
             [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainMobilizer inSection:PPSectionMainSettings]]
@@ -515,7 +520,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 [[PocketAPI sharedAPI] loginWithDelegate:nil];;
             }
             else if ([buttonTitle isEqualToString:NSLocalizedString(@"Remove", nil)]) {
-                [PPAppDelegate sharedDelegate].readLater = PPReadLaterNone;
+                settings.readLater = PPReadLaterNone;
                 [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"None"];
                 [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainReadLater inSection:PPSectionMainSettings]]
                                       withRowAnimation:UITableViewRowAnimationFade];
@@ -543,7 +548,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)pocketFinishedLogin {
     [self.pocketVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
-    [PPAppDelegate sharedDelegate].readLater = PPReadLaterPocket;
+    PPSettings *settings = [PPSettings sharedSettings];
+    settings.readLater = PPReadLaterPocket;
     [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Pocket"];
     [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainReadLater inSection:PPSectionMainSettings]]
                           withRowAnimation:UITableViewRowAnimationFade];
@@ -696,8 +702,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [_readLaterActionSheet addButtonWithTitle:@"Pocket"];
         
         // Only show the "Remove" option if the user already has a read later service chosen.
-        PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
-        BOOL readLaterServiceChosen = delegate.readLater != PPReadLaterNone;
+        PPSettings *settings = [PPSettings sharedSettings];
+        BOOL readLaterServiceChosen = settings.readLater != PPReadLaterNone;
         if (readLaterServiceChosen) {
             [_readLaterActionSheet addButtonWithTitle:NSLocalizedString(@"Remove", nil)];
         }

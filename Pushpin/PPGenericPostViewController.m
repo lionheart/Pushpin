@@ -13,6 +13,7 @@
 #import "NSString+URLEncoding2.h"
 #import "PPStatusBarNotification.h"
 #import "PPConstants.h"
+#import "PPSettings.h"
 
 #import "PPPinboardDataSource.h"
 #import "PPBadgeWrapperView.h"
@@ -365,7 +366,8 @@ static NSInteger kToolbarHeight = 44;
         self.navigationItem.rightBarButtonItem = self.editButton;
     }
     
-    self.compressPosts = [PPAppDelegate sharedDelegate].compressPosts;
+    PPSettings *settings = [PPSettings sharedSettings];
+    self.compressPosts = settings.compressPosts;
     PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
     
     if (self.postDataSource.posts.count == 0) {
@@ -420,7 +422,9 @@ static NSInteger kToolbarHeight = 44;
     [super viewWillDisappear:animated];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [[PPAppDelegate sharedDelegate] setCompressPosts:self.compressPosts];
+    
+    PPSettings *settings = [PPSettings sharedSettings];
+    [settings setCompressPosts:self.compressPosts];
 }
 
 - (void)popViewController {
@@ -475,6 +479,7 @@ static NSInteger kToolbarHeight = 44;
 - (void)handleCellTap {
     if (self.numberOfTapsSinceTapReset > 0) {
         id <PPDataSource> dataSource = [self dataSourceForTableView:self.selectedTableView];
+        PPSettings *settings = [PPSettings sharedSettings];
         
         if (self.selectedTableView.editing) {
             NSUInteger selectedRowCount = [self.selectedTableView.indexPathsForSelectedRows count];
@@ -483,7 +488,7 @@ static NSInteger kToolbarHeight = 44;
         }
         else {
             // If configured, always mark the post as read
-            if ([PPAppDelegate sharedDelegate].markReadPosts) {
+            if (settings.markReadPosts) {
                 self.selectedPost = [self.postDataSource postAtIndex:self.selectedIndexPath.row];
                 [self markPostsAsRead:@[self.selectedPost] notify:NO];
             }
@@ -501,11 +506,11 @@ static NSInteger kToolbarHeight = 44;
                         }
                         
 #warning TODO Check outside links
-                        if ([PPAppDelegate sharedDelegate].openLinksInApp) {
+                        if (settings.openLinksInApp) {
                             [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
 
                             self.webViewController = [PPWebViewController webViewControllerWithURL:urlString];
-                            self.webViewController.shouldMobilize = [PPAppDelegate sharedDelegate].openLinksWithMobilizer;
+                            self.webViewController.shouldMobilize = settings.openLinksWithMobilizer;
                             self.webViewController.transitioningDelegate = self.shrinkBackTransition;
 
                             if ([self.navigationController topViewController] == self) {
@@ -513,7 +518,7 @@ static NSInteger kToolbarHeight = 44;
                             }
                         }
                         else {
-                            PPBrowserType browser = [PPAppDelegate sharedDelegate].browser;
+                            PPBrowserType browser = settings.browser;
                             switch (browser) {
                                 case PPBrowserSafari: {
                                     [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Safari"}];
@@ -1070,7 +1075,8 @@ static NSInteger kToolbarHeight = 44;
         }
         
         if (actions & PPPostActionReadLater) {
-            PPReadLaterType readLater = [PPAppDelegate sharedDelegate].readLater;
+            PPSettings *settings = [PPSettings sharedSettings];
+            PPReadLaterType readLater = settings.readLater;
             
             switch (readLater) {
                 case PPReadLaterInstapaper:
@@ -1327,7 +1333,8 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)sendToReadLater {
-    PPReadLaterType readLater = [PPAppDelegate sharedDelegate].readLater;
+    PPSettings *settings = [PPSettings sharedSettings];
+    PPReadLaterType readLater = settings.readLater;
     NSString *urlString = self.selectedPost[@"url"];
     
     switch (readLater) {
@@ -1335,7 +1342,7 @@ static NSInteger kToolbarHeight = 44;
             PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
             NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/1.1/bookmarks/add"]];
             OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kInstapaperKey secret:kInstapaperSecret];
-            OAToken *token = delegate.instapaperToken;
+            OAToken *token = settings.instapaperToken;
             OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:token realm:nil signatureProvider:nil];
             [request setHTTPMethod:@"POST"];
             NSMutableArray *parameters = [[NSMutableArray alloc] init];

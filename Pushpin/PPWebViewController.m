@@ -22,6 +22,7 @@
 #import "PPUtilities.h"
 #import "NSData+AES256.h"
 #import "PPMobilizerUtility.h"
+#import "PPSettings.h"
 
 #import <JavaScriptCore/JavaScriptCore.h>
 #import <LHSCategoryCollection/NSData+Base64.h>
@@ -581,7 +582,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
 - (void)sendToReadLater {
     // Send to the default read later service
-    [self sendToReadLater:[PPAppDelegate sharedDelegate].readLater];
+    [self sendToReadLater:[PPSettings sharedSettings].readLater];
 }
 
 - (void)sendToReadLater:(PPReadLaterType)service {
@@ -591,10 +592,10 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
     switch (service) {
         case PPReadLaterInstapaper: {
-            PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
+            PPSettings *settings = [PPSettings sharedSettings];
             NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/1.1/bookmarks/add"]];
             OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kInstapaperKey secret:kInstapaperSecret];
-            OAToken *token = delegate.instapaperToken;
+            OAToken *token = settings.instapaperToken;
             OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:token realm:nil signatureProvider:nil];
             [request setHTTPMethod:@"POST"];
             NSMutableArray *parameters = [[NSMutableArray alloc] init];
@@ -716,7 +717,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 }
 
 - (void)toggleMobilizerAnimated:(BOOL)animated {
-    [PPAppDelegate sharedDelegate].openLinksWithMobilizer = !self.mobilized;
+    [PPSettings sharedSettings].openLinksWithMobilizer = !self.mobilized;
 
     self.mobilizeButton.selected = !self.mobilized;
     self.mobilized = !self.mobilized;
