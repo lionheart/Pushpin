@@ -16,6 +16,7 @@
 #import "ASStyleSheet.h"
 #import "PPTableViewTitleView.h"
 #import "PPDeliciousDataSource.h"
+#import "PPSettings.h"
 
 #import <uservoice-iphone-sdk/UserVoice.h>
 #import <RPSTPasswordManagementAppService/RPSTPasswordManagementAppService.h>
@@ -383,11 +384,12 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                          completion:nil];
                     }
                 });
-
+                
+                PPSettings *settings = [PPSettings sharedSettings];
                 Mixpanel *mixpanel = [Mixpanel sharedInstance];
-                [mixpanel identify:[delegate username]];
+                [mixpanel identify:settings.username];
                 [mixpanel.people set:@"$created" to:[NSDate date]];
-                [mixpanel.people set:@"$username" to:[delegate username]];
+                [mixpanel.people set:@"$username" to:settings.username];
                 [mixpanel.people set:@"Browser" to:@"Webview"];
             };
 
@@ -403,8 +405,8 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                              LoginFailureBlock(error);
                                          }
                                          else {
-                                             delegate.username = self.usernameTextField.text;
-                                             delegate.password = self.passwordTextField.text;
+                                             settings.username = self.usernameTextField.text;
+                                             settings.password = self.passwordTextField.text;
                                              
                                              dispatch_async(dispatch_get_main_queue(), ^{
                                                  LoginSuccessBlock();
@@ -419,7 +421,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                      } progress:UpdateProgressBlock];
                                                      
                                                      Mixpanel *mixpanel = [Mixpanel sharedInstance];
-                                                     [mixpanel identify:delegate.username];
+                                                     [mixpanel identify:settings.username];
                                                      [mixpanel.people set:@"$created" to:[NSDate date]];
                                                      [mixpanel.people set:@"$username" to:[delegate username]];
                                                      [mixpanel.people set:@"Browser" to:@"Webview"];
@@ -447,12 +449,13 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                 });
             };
             
+            PPSettings *settings = [PPSettings sharedSettings];
             if (authTokenProvided) {
                 // Check if the auth token passes.
                 pinboard.token = self.authTokenTextField.text;
                 [pinboard rssKeyWithSuccess:^(NSString *feedToken) {
-                    delegate.feedToken = feedToken;
-                    delegate.token = self.authTokenTextField.text;
+                    settings.feedToken = feedToken;
+                    settings.token = self.authTokenTextField.text;
 
                     LoginSuccessBlock();
                     PinboardAuthenticationSuccessBlock();
@@ -462,15 +465,15 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                 [pinboard authenticateWithUsername:self.usernameTextField.text
                                           password:self.passwordTextField.text
                                            success:^(NSString *token) {
-                                               delegate.password = self.passwordTextField.text;
-                                               delegate.token = token;
+                                               settings.password = self.passwordTextField.text;
+                                               settings.token = token;
                                                
                                                dispatch_async(dispatch_get_main_queue(), ^{
                                                    LoginSuccessBlock();
                                                    PinboardAuthenticationSuccessBlock();
                                                    
                                                    [pinboard rssKeyWithSuccess:^(NSString *feedToken) {
-                                                       delegate.feedToken = feedToken;
+                                                       settings.feedToken = feedToken;
                                                    } failure:nil];
                                                });
                                            }

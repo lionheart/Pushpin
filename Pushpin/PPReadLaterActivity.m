@@ -11,6 +11,7 @@
 #import "PPAppDelegate.h"
 #import "PPReadLaterActivity.h"
 #import "PPWebViewController.h"
+#import "PPSettings.h"
 
 #import <PocketAPI/PocketAPI.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
@@ -117,12 +118,12 @@
 
     switch (self.service) {
         case PPReadLaterInstapaper: {
-            PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
+            PPSettings *settings = [PPSettings sharedSettings];
 
             NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/1.1/bookmarks/add"]];
             OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kInstapaperKey secret:kInstapaperSecret];
-            OAToken *token = delegate.instapaperToken;
-            
+            OAToken *token = settings.instapaperToken;
+
             if (token) {
                 OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:token realm:nil signatureProvider:nil];
                 [request setHTTPMethod:@"POST"];

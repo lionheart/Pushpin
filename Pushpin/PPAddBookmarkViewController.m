@@ -24,6 +24,7 @@
 #import "PPShortcutEnabledDescriptionViewController.h"
 #import "PPPinboardDataSource.h"
 #import "PPConstants.h"
+#import "PPSettings.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
@@ -117,7 +118,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
         self.markAsRead = NO;
         self.loadingTitle = NO;
-        self.setAsPrivate = [PPAppDelegate sharedDelegate].privateByDefault;
+        self.setAsPrivate = [PPSettings sharedSettings].privateByDefault;
         self.existingTags = [NSMutableArray array];
         
         self.callback = ^(NSDictionary *bookmark) {};
@@ -251,7 +252,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         addBookmarkViewController.setAsPrivate = [bookmark[@"private"] boolValue];
     }
     else {
-        addBookmarkViewController.setAsPrivate = [PPAppDelegate sharedDelegate].privateByDefault;
+        addBookmarkViewController.setAsPrivate = [PPSettings sharedSettings].privateByDefault;
     }
     
     if (bookmark[@"unread"]) {
@@ -259,7 +260,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         addBookmarkViewController.markAsRead = isRead;
     }
     else {
-        addBookmarkViewController.markAsRead = [PPAppDelegate sharedDelegate].readByDefault;
+        addBookmarkViewController.markAsRead = [PPSettings sharedSettings].readByDefault;
     }
     
     addBookmarkViewController.privateButton.selected = addBookmarkViewController.setAsPrivate;

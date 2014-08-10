@@ -13,6 +13,7 @@
 #import "PPPinboardMetadataCache.h"
 #import "PPBadgeWrapperView.h"
 #import "PPBookmarkCell.h"
+#import "PPSettings.h"
 
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -59,7 +60,7 @@
         read = NO;
     }
 
-    BOOL dimmed = [PPAppDelegate sharedDelegate].dimReadPosts && read;
+    BOOL dimmed = [PPSettings sharedSettings].dimReadPosts && read;
 
     if (cache) {
         PostMetadata *result = [[PPPinboardMetadataCache sharedCache] cachedMetadataForPost:post

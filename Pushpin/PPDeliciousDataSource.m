@@ -11,6 +11,7 @@
 #import "PPPinboardMetadataCache.h"
 #import "PPAddBookmarkViewController.h"
 #import "PPUtilities.h"
+#import "PPSettings.h"
 
 #import <FMDB/FMDatabase.h>
 #import <LHSDelicious/LHSDelicious.h>
@@ -401,7 +402,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                           
                                           self.totalNumberOfPosts = index;
                                           
-                                          [[PPAppDelegate sharedDelegate] setLastUpdated:[NSDate date]];
+                                          [[PPSettings sharedSettings] setLastUpdated:[NSDate date]];
                                           kPinboardSyncInProgress = NO;
                                           
                                           progress(total, total);
@@ -425,7 +426,7 @@ static BOOL kPinboardSyncInProgress = NO;
 
         void (^BookmarksUpdatedTimeSuccessBlock)(NSDate *) = ^(NSDate *updateTime) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                NSDate *lastLocalUpdate = [[PPAppDelegate sharedDelegate] lastUpdated];
+                NSDate *lastLocalUpdate = [[PPSettings sharedSettings] lastUpdated];
                 BOOL neverUpdated = lastLocalUpdate == nil;
                 BOOL outOfSyncWithAPI = [lastLocalUpdate compare:updateTime] == NSOrderedAscending;
                 BOOL lastUpdatedMoreThanFiveMinutesAgo = abs([lastLocalUpdate timeIntervalSinceNow]) >= 300;
@@ -803,10 +804,10 @@ static BOOL kPinboardSyncInProgress = NO;
     }
     
     BOOL shareToReadLater = NO;
-    if (shareToReadLater && [PPAppDelegate sharedDelegate].readLater != PPReadLaterNone) {
+    if (shareToReadLater && [PPSettings sharedSettings].readLater != PPReadLaterNone) {
         actions |= PPPostActionReadLater;
     }
-    
+
     return actions;
 }
 

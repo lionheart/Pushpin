@@ -15,6 +15,7 @@
 #import "PPTitleButton.h"
 #import "PPPinboardMetadataCache.h"
 #import "PPConstants.h"
+#import "PPSettings.h"
 
 #import "NSAttributedString+Attributes.h"
 #import "NSString+URLEncoding2.h"
@@ -80,9 +81,9 @@
 
 - (PPPostActionType)actionsForPost:(NSDictionary *)post {
     NSInteger actions = PPPostActionCopyToMine | PPPostActionCopyURL | PPPostActionShare;
-    
+
     BOOL shareToReadLater = NO;
-    if (shareToReadLater && [PPAppDelegate sharedDelegate].readLater != PPReadLaterNone) {
+    if (shareToReadLater && [PPSettings sharedSettings].readLater != PPReadLaterNone) {
         actions |= PPPostActionReadLater;
     }
 
@@ -284,11 +285,11 @@
     
     NSString *urlString;
     
+    PPSettings *settings = [PPSettings sharedSettings];
+
     // If it's our username, we need to use the feed token to get any private tags
-    NSString *username = [[[[PPAppDelegate sharedDelegate] token] componentsSeparatedByString:@":"] objectAtIndex:0];
-    NSString *feedToken = [[PPAppDelegate sharedDelegate] feedToken];
-    if ([escapedComponents[0] isEqualToString:[NSString stringWithFormat:@"u:%@", username]]) {
-        urlString = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/%@?count=%ld", feedToken, [escapedComponents componentsJoinedByString:@"/"], (long)self.count];
+    if ([escapedComponents[0] isEqualToString:[NSString stringWithFormat:@"u:%@", settings.username]]) {
+        urlString = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/%@?count=%ld", settings.feedToken, [escapedComponents componentsJoinedByString:@"/"], (long)self.count];
     }
     else {
         urlString = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/%@?count=%ld", [escapedComponents componentsJoinedByString:@"/"], (long)self.count];

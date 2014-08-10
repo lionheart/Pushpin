@@ -12,6 +12,7 @@
 #import "PPTheme.h"
 #import "PPScrollView.h"
 #import "PPConstants.h"
+#import "PPSettings.h"
 
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -145,7 +146,7 @@ static NSInteger kEditButtonOuterMargin = 20;
         read = NO;
     }
 
-    BOOL dimmed = [PPAppDelegate sharedDelegate].dimReadPosts && read;
+    BOOL dimmed = [PPSettings sharedSettings].dimReadPosts && read;
 
     self.contentView.backgroundColor = HEX(0xEEEEEEFF);
 
