@@ -658,10 +658,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     dispatch_async(dispatch_get_main_queue(), ^{
         if (![[PPAppDelegate sharedDelegate] connectionAvailable]) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                UILocalNotification *notification = [[UILocalNotification alloc] init];
-                notification.alertBody = NSLocalizedString(@"Unable to add bookmark; no connection available.", nil);
-                notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
-                [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                [PPNotification notifyWithMessage:NSLocalizedString(@"Unable to add bookmark; no connection available.", nil)];
                 [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
             });
         }
@@ -684,10 +681,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         NSString *url = self.urlTextField.text;
         if (!url) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                UILocalNotification *notification = [[UILocalNotification alloc] init];
-                notification.alertBody = NSLocalizedString(@"Unable to add bookmark without a URL.", nil);
-                notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
-                [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+                [PPNotification notifyWithMessage:NSLocalizedString(@"Unable to add bookmark without a URL.", nil)];
                 [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
             });
             return;
@@ -819,17 +813,16 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     }
                     else {
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            UILocalNotification *notification = [[UILocalNotification alloc] init];
+                            NSString *message;
                             if (bookmarkAdded) {
-                                notification.alertBody = NSLocalizedString(@"Your bookmark was added.", nil);
+                                message = NSLocalizedString(@"Your bookmark was added.", nil);
                             }
                             else {
-                                notification.alertBody = NSLocalizedString(@"Your bookmark was updated.", nil);
+                                message = NSLocalizedString(@"Your bookmark was updated.", nil);
                             }
+                            
+                            [PPNotification notifyWithMessage:message success:YES updated:YES];
 
-                            notification.alertAction = @"Open Pushpin";
-                            notification.userInfo = @{@"success": @(YES), @"updated": @(YES)};
-                            [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
                             [self.parentViewController dismissViewControllerAnimated:YES completion:^{
                                 [[NSNotificationCenter defaultCenter] postNotificationName:PPBookmarkEventNotificationName
                                                                                     object:nil

@@ -25,12 +25,12 @@
 #import "PPAddBookmarkViewController.h"
 #import "PPNavigationController.h"
 #import "PPShrinkBackTransition.h"
+#import "PPNotification.h"
 
 #import <FMDB/FMDatabase.h>
 #import <oauthconsumer/OAuthConsumer.h>
 #import <ASPinboard/ASPinboard.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
-#import <PocketAPI/PocketAPI.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import <LHSCategoryCollection/UIImage+LHSAdditions.h>
 #import <LHSCategoryCollection/UIScreen+LHSAdditions.h>
@@ -1264,10 +1264,7 @@ static NSInteger kToolbarHeight = 44;
 - (void)markPostsAsRead:(NSArray *)posts notify:(BOOL)notify {
     PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
     if (!delegate.connectionAvailable) {
-        UILocalNotification *notification = [[UILocalNotification alloc] init];
-        notification.alertBody = @"Connection unavailable.";
-        notification.userInfo = @{@"success": @(NO), @"updated": @(YES)};
-        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+        [PPNotification notifyWithMessage:@"Connection unavailable"];
     }
     else {
         id <PPDataSource> dataSource = [self currentDataSource];
@@ -1277,15 +1274,16 @@ static NSInteger kToolbarHeight = 44;
             
             dispatch_group_t group = dispatch_group_create();
             dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-            
-            UILocalNotification *notification = [[UILocalNotification alloc] init];
+
+            NSString *message;
+            __block BOOL success = NO;
+            __block BOOL updated = NO;
             
             // Enumerate all posts
             for (NSDictionary *post in posts) {
                 dispatch_group_enter(group);
                 [dataSource markPostAsRead:post[@"url"] callback:^(NSError *error) {
                     if (error) {
-                        notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
                         hasError = YES;
                     }
                     dispatch_group_leave(group);
@@ -1294,26 +1292,24 @@ static NSInteger kToolbarHeight = 44;
             
             // If we have any errors, update the local notification
             if (hasError) {
-                notification.alertBody = NSLocalizedString(@"There was an error marking your bookmarks as read.", nil);
-                notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
+                message = NSLocalizedString(@"There was an error marking your bookmarks as read.", nil);
             }
             else {
-                notification.userInfo = @{@"success": @(YES), @"updated": @(YES)};
+                success = YES;
+                updated = YES;
                 
                 if (posts.count == 1) {
-                    notification.alertBody = @"Bookmark marked as read.";
+                    message = @"Bookmark marked as read.";
                 }
                 else {
-                    notification.alertBody = [NSString stringWithFormat:@"%lu bookmarks marked as read.", (unsigned long)posts.count];
+                    message = [NSString stringWithFormat:@"%lu bookmarks marked as read.", (unsigned long)posts.count];
                 }
             }
             
             // Once all async tasks are done, present the notification and update the local database
             dispatch_group_notify(group, queue, ^{
                 if (notify) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                    });
+                    [PPNotification notifyWithMessage:message success:success updated:updated];
                 }
                 
                 [self updateFromLocalDatabase];
@@ -1324,115 +1320,18 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)copyURL {
-    UILocalNotification *notification = [[UILocalNotification alloc] init];
-    notification.alertBody = NSLocalizedString(@"URL copied to clipboard.", nil);
-    notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
-    [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+    [PPNotification notifyWithMessage:NSLocalizedString(@"URL copied to clipboard.", nil)
+                              success:YES
+                              updated:NO];
+
     [[UIPasteboard generalPasteboard] setString:[self.currentDataSource urlForPostAtIndex:self.selectedIndexPath.row]];
     [[Mixpanel sharedInstance] track:@"Copied URL"];
 }
 
 - (void)sendToReadLater {
-    PPSettings *settings = [PPSettings sharedSettings];
-    PPReadLaterType readLater = settings.readLater;
     NSString *urlString = self.selectedPost[@"url"];
-    
-    switch (readLater) {
-        case PPReadLaterInstapaper: {
-            PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
-            NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/1.1/bookmarks/add"]];
-            OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kInstapaperKey secret:kInstapaperSecret];
-            OAToken *token = settings.instapaperToken;
-            OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:token realm:nil signatureProvider:nil];
-            [request setHTTPMethod:@"POST"];
-            NSMutableArray *parameters = [[NSMutableArray alloc] init];
-            [parameters addObject:[OARequestParameter requestParameter:@"url" value:urlString]];
-            [request setParameters:parameters];
-            [request prepare];
-            
-            [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
-            [NSURLConnection sendAsynchronousRequest:request
-                                               queue:[NSOperationQueue mainQueue]
-                                   completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                       [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
-                                       NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-                                       
-                                       UILocalNotification *notification = [[UILocalNotification alloc] init];
-                                       notification.alertAction = NSLocalizedString(@"Open Pushpin", nil);
-                                       if (httpResponse.statusCode == 200) {
-                                           notification.alertBody = NSLocalizedString(@"Sent to Instapaper.", nil);
-                                           notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
-                                           [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Instapaper"}];
-                                       }
-                                       else if (httpResponse.statusCode == 1221) {
-                                           notification.alertBody = NSLocalizedString(@"Publisher opted out of Instapaper compatibility.", nil);
-                                           notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
-                                       }
-                                       else {
-                                           notification.alertBody = NSLocalizedString(@"Error sending to Instapaper.", nil);
-                                           notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
-                                       }
-                                       [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                                   }];
-            break;
-        }
-            
-        case PPReadLaterReadability: {
-            KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"ReadabilityOAuth" accessGroup:nil];
-            NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
-            NSString *resourceSecret = [keychain objectForKey:(__bridge id)kSecValueData];
-            NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.readability.com/api/rest/v1/bookmarks"]];
-            OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kReadabilityKey secret:kReadabilitySecret];
-            OAToken *token = [[OAToken alloc] initWithKey:resourceKey secret:resourceSecret];
-            OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:token realm:nil signatureProvider:nil];
-            [request setHTTPMethod:@"POST"];
-            [request setParameters:@[[OARequestParameter requestParameter:@"url" value:urlString]]];
-            [request prepare];
-            
-            [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
-            [NSURLConnection sendAsynchronousRequest:request
-                                               queue:[NSOperationQueue mainQueue]
-                                   completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                       [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
-                                       UILocalNotification *notification = [[UILocalNotification alloc] init];
-                                       notification.alertAction = NSLocalizedString(@"Open Pushpin", nil);
-                                       
-                                       NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-                                       if (httpResponse.statusCode == 202) {
-                                           notification.alertBody = NSLocalizedString(@"Sent to Readability.", nil);
-                                           notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
-                                           [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Readability"}];
-                                       }
-                                       else if (httpResponse.statusCode == 409) {
-                                           notification.alertBody = NSLocalizedString(@"Link already sent to Readability.", nil);
-                                           notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
-                                       }
-                                       else {
-                                           notification.alertBody = NSLocalizedString(@"Error sending to Readability.", nil);
-                                           notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
-                                       }
-                                       [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                                   }];
-            break;
-        }
-            
-        case PPReadLaterPocket:
-            [[PocketAPI sharedAPI] saveURL:[NSURL URLWithString:urlString]
-                                 withTitle:self.selectedPost[@"title"]
-                                   handler:^(PocketAPI *api, NSURL *url, NSError *error) {
-                                       if (!error) {
-                                           UILocalNotification *notification = [[UILocalNotification alloc] init];
-                                           notification.alertBody = NSLocalizedString(@"Sent to Pocket.", nil);
-                                           notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
-                                           [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                                           
-                                           [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Pocket"}];
-                                       }
-                                   }];
-            
-        default:
-            break;
-    }
+    NSString *title = self.selectedPost[@"title"];
+    [PPUtilities shareToReadLaterWithURL:urlString title:title];
 }
 
 - (void)showConfirmDeletionAlert {
@@ -1575,10 +1474,9 @@ static NSInteger kToolbarHeight = 44;
     __weak PPGenericPostViewController *weakself = self;
     [self.postDataSource removeDataSource:^{
         dispatch_async(dispatch_get_main_queue(), ^{
-            UILocalNotification *notification = [[UILocalNotification alloc] init];
-            notification.alertBody = NSLocalizedString(@"Removed from saved feeds.", nil);
-            notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
-            [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+            [PPNotification notifyWithMessage:NSLocalizedString(@"Removed from saved feeds.", nil)
+                                      success:YES
+                                      updated:NO];
             
             weakself.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Save", nil) style:UIBarButtonItemStylePlain target:weakself action:@selector(addBarButtonTouchUpside:)];
         });
@@ -1589,10 +1487,9 @@ static NSInteger kToolbarHeight = 44;
     __weak PPGenericPostViewController *weakself = self;
     [self.postDataSource addDataSource:^{
         dispatch_async(dispatch_get_main_queue(), ^{
-            UILocalNotification *notification = [[UILocalNotification alloc] init];
-            notification.alertBody = NSLocalizedString(@"Added to saved feeds.", nil);
-            notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
-            [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+            [PPNotification notifyWithMessage:NSLocalizedString(@"Added to saved feeds.", nil)
+                                      success:YES
+                                      updated:NO];
             
             weakself.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Remove", nil) style:UIBarButtonItemStylePlain target:weakself action:@selector(removeBarButtonTouchUpside:)];
         });

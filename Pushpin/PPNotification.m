@@ -18,6 +18,36 @@ static PPNotification *shared;
 
 @implementation PPNotification
 
++ (void)notifyWithMessage:(NSString *)message {
+    [self notifyWithMessage:message userInfo:nil];
+}
+
++ (void)notifyWithMessage:(NSString *)message success:(BOOL)success updated:(BOOL)updated {
+    [self notifyWithMessage:message userInfo:@{@"success": @(success), @"updated": @(updated)}];
+}
+
++ (void)notifyWithMessage:(NSString *)message success:(BOOL)success updated:(BOOL)updated delay:(CGFloat)seconds {
+    [self notifyWithMessage:message userInfo:@{@"success": @(success), @"updated": @(updated)} delay:seconds];
+}
+
++ (void)notifyWithMessage:(NSString *)message userInfo:(id)userInfo {
+    [self notifyWithMessage:message userInfo:userInfo delay:0];
+}
+
++ (void)notifyWithMessage:(NSString *)message userInfo:(id)userInfo delay:(CGFloat)seconds {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(seconds * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        UILocalNotification *notification = [[UILocalNotification alloc] init];
+        notification.alertBody = message;
+        notification.alertAction = NSLocalizedString(@"Open Pushpin", nil);
+        
+        if (!userInfo) {
+            notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
+        }
+        
+        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+    });
+}
+
 - (id)init {
     self = [super init];
     if (self) {

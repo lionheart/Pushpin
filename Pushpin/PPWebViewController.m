@@ -589,127 +589,12 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     if (self.activityView) {
         [self.activityView dismissViewControllerAnimated:YES completion:nil];
     }
-
-    switch (service) {
-        case PPReadLaterInstapaper: {
-            PPSettings *settings = [PPSettings sharedSettings];
-            NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/1.1/bookmarks/add"]];
-            OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kInstapaperKey secret:kInstapaperSecret];
-            OAToken *token = settings.instapaperToken;
-            OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:token realm:nil signatureProvider:nil];
-            [request setHTTPMethod:@"POST"];
-            NSMutableArray *parameters = [[NSMutableArray alloc] init];
-            [parameters addObject:[OARequestParameter requestParameter:@"url" value:self.url.absoluteString]];
-            [request setParameters:parameters];
-            [request prepare];
-            
-            [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
-            [NSURLConnection sendAsynchronousRequest:request
-                                               queue:[NSOperationQueue mainQueue]
-                                   completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                       [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
-                                       NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-                                       
-                                       UILocalNotification *notification = [[UILocalNotification alloc] init];
-                                       notification.alertAction = @"Open Pushpin";
-                                       if (httpResponse.statusCode == 200) {
-                                           notification.alertBody = NSLocalizedString(@"Sent to Instapaper.", nil);
-                                           notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
-                                           [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Instapaper"}];
-                                       }
-                                       else if (httpResponse.statusCode == 1221) {
-                                           notification.alertBody = NSLocalizedString(@"Publisher opted out of Instapaper compatibility.", nil);
-                                           notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
-                                       }
-                                       else {
-                                           notification.alertBody = NSLocalizedString(@"Error sending to Instapaper.", nil);
-                                           notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
-                                       }
-                                       [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                                   }];
-            break;
-        }
-            
-        case PPReadLaterReadability: {
-            KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"ReadabilityOAuth" accessGroup:nil];
-            NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
-            NSString *resourceSecret = [keychain objectForKey:(__bridge id)kSecValueData];
-            NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.readability.com/api/rest/v1/bookmarks"]];
-            OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kReadabilityKey secret:kReadabilitySecret];
-            OAToken *token = [[OAToken alloc] initWithKey:resourceKey secret:resourceSecret];
-            OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:token realm:nil signatureProvider:nil];
-            [request setHTTPMethod:@"POST"];
-            [request setParameters:@[[OARequestParameter requestParameter:@"url" value:self.url.absoluteString]]];
-            [request prepare];
-            
-            [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
-            [NSURLConnection sendAsynchronousRequest:request
-                                               queue:[NSOperationQueue mainQueue]
-                                   completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                       [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
-                                       UILocalNotification *notification = [[UILocalNotification alloc] init];
-                                       notification.alertAction = @"Open Pushpin";
-                                       
-                                       NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-                                       if (httpResponse.statusCode == 202) {
-                                           notification.alertBody = @"Sent to Readability.";
-                                           notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
-                                           [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Readability"}];
-                                       }
-                                       else if (httpResponse.statusCode == 409) {
-                                           notification.alertBody = @"Link already sent to Readability.";
-                                           notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
-                                       }
-                                       else {
-                                           notification.alertBody = @"Error sending to Readability.";
-                                           notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
-                                       }
-                                       [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                                   }];
-            break;
-        }
-            
-        case PPReadLaterPocket:
-            [[PocketAPI sharedAPI] saveURL:self.url
-                                 withTitle:self.title
-                                   handler:^(PocketAPI *api, NSURL *url, NSError *error) {
-                                       if (!error) {
-                                           UILocalNotification *notification = [[UILocalNotification alloc] init];
-                                           notification.alertBody = @"Sent to Pocket.";
-                                           notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
-                                           [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-                                           
-                                           [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Pocket"}];
-                                       }
-                                   }];
-            break;
-            
-        case PPReadLaterNative: {
-            UILocalNotification *notification = [[UILocalNotification alloc] init];
-            
-            // Add to the native Reading List
-            NSError *error;
-            [[SSReadingList defaultReadingList] addReadingListItemWithURL:self.url
-                                                                    title:self.title
-                                                              previewText:nil
-                                                                    error:&error];
-            if (error) {
-                notification.alertBody = @"Error adding to Reading List";
-                notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
-            }
-            else {
-                notification.alertBody = @"Added to Reading List";
-                notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
-            }
-            [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
-            [[Mixpanel sharedInstance] track:@"Added to read later" properties:@{@"Service": @"Native Reading List"}];
-            break;
-        }
-            
-        case PPReadLaterNone:
-            break;
-    }
     
+    [PPUtilities shareToReadLater:service
+                              URL:self.url.absoluteString
+                            title:self.title
+                            delay:0
+                       completion:nil];
 }
 
 - (void)toggleMobilizer {
@@ -744,10 +629,9 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 }
 
 - (void)copyURL:(NSURL *)url {
-    UILocalNotification *notification = [[UILocalNotification alloc] init];
-    notification.alertBody = NSLocalizedString(@"URL copied to clipboard.", nil);
-    notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
-    [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+    [PPNotification notifyWithMessage:NSLocalizedString(@"URL copied to clipboard.", nil)
+                              success:YES
+                              updated:NO];
     
     [[UIPasteboard generalPasteboard] setString:self.url.absoluteString];
     [[Mixpanel sharedInstance] track:@"Copied URL"];
