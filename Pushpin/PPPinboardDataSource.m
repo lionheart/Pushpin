@@ -478,14 +478,9 @@ static BOOL kPinboardSyncInProgress = NO;
 
 - (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index callback:(void (^)())callback {
     return [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:self.posts[index] update:@(YES) callback:^(NSDictionary *post) {
-#warning should really add a success parameter to this block;
-        if ([post count] > 0) {
-            PostMetadata *metadata = [PostMetadata metadataForPost:post compressed:NO width:self.mostRecentWidth tagsWithFrequency:self.tagsWithFrequency];
-            PostMetadata *compressedMetadata = [PostMetadata metadataForPost:post compressed:YES width:self.mostRecentWidth tagsWithFrequency:self.tagsWithFrequency];
-            
-            self.metadata[index] = metadata;
-            self.compressedMetadata[index] = compressedMetadata;
-        }
+        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+            [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, meta=:meta WHERE hash=:hash" withParameterDictionary:post];
+        }];
 
         callback();
     }];
