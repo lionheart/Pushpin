@@ -36,7 +36,6 @@
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <Crashlytics/Crashlytics.h>
 
-static BOOL kGenericPostViewControllerPerformAtomicUpdates = NO;
 static NSString *BookmarkCellIdentifier = @"BookmarkCellIdentifier";
 static NSInteger kToolbarHeight = 44;
 
