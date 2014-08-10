@@ -74,6 +74,7 @@
 - (void)showAddViewController;
 - (void)showAddViewController:(NSDictionary *)data;
 - (void)toggleMobilizer;
+- (void)toggleMobilizerAnimated:(BOOL)animated;
 - (void)enableOrDisableButtons;
 - (void)sendToReadLater;
 - (void)sendToReadLater:(PPReadLaterType)service;
