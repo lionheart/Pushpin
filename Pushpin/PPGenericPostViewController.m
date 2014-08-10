@@ -224,6 +224,8 @@ static NSInteger kToolbarHeight = 44;
         
         self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, [self currentWidth], 44)];
         self.searchBar.delegate = self;
+        self.searchBar.keyboardType = UIKeyboardTypeASCIICapable;
+        self.searchBar.searchBarStyle = UISearchBarStyleProminent;
         self.searchBar.isAccessibilityElement = YES;
         self.searchBar.accessibilityLabel = @"Search Bar";
 #ifdef DELICIOUS
