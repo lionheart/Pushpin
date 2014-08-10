@@ -179,6 +179,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     [self.editButton setImage:editButtonImage forState:UIControlStateNormal];
     [self.editButton addTarget:self action:@selector(showEditViewController) forControlEvents:UIControlEventTouchUpInside];
     self.editButton.translatesAutoresizingMaskIntoConstraints = NO;
+    self.editButton.enabled = NO;
     [self.toolbar addSubview:self.editButton];
     
     UIImage *addButtonImage = [[UIImage imageNamed:@"add"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
@@ -187,6 +188,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     [self.addButton addTarget:self action:@selector(showAddViewController) forControlEvents:UIControlEventTouchUpInside];
     self.addButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.addButton.hidden = YES;
+    self.addButton.enabled = NO;
     [self.toolbar addSubview:self.addButton];
     
     UIView *toolbarBorderView = [[UIView alloc] init];
@@ -301,16 +303,9 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                                                          multiplier:1
                                                            constant:0]];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.showToolbarAndTitleBarHiddenView
-                                                          attribute:NSLayoutAttributeBottom
-                                                          relatedBy:NSLayoutRelationEqual
-                                                             toItem:self.bottomLayoutGuide
-                                                          attribute:NSLayoutAttributeBottom
-                                                         multiplier:1
-                                                           constant:0]];
-    [self.view lhs_addConstraints:@"V:[show(20)]" views:views];
-    
     NSDictionary *metrics = @{@"height": @(kToolbarHeight)};
+
+    [self.view lhs_addConstraints:@"V:[show(height)][bottom]" metrics:metrics views:views];
     [self.view lhs_addConstraints:@"V:|[background][webview][bottom]" metrics:metrics views:views];
     [self.view lhs_addConstraints:@"V:[toolbar(>=height)]" metrics:metrics views:views];
     
@@ -418,13 +413,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     
     // Determine if we should mobilize or not
     if (self.shouldMobilize && [PPMobilizerUtility canMobilizeURL:self.url]) {
-        self.mobilizeButton.selected = YES;
-        self.mobilized = YES;
-
-        [self setReaderViewVisible:YES animated:NO completion:nil];
-        [self.webViewTimeoutTimer invalidate];
-        [self.webView stopLoading];
-        [self.readerWebView loadHTMLString:@"<html><head><script type='text/javascript'>var isLoaded=false;</script></head></html>" baseURL:self.url];
+        [self toggleMobilizerAnimated:NO];
     }
 }
 
@@ -462,7 +451,6 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
 - (void)enableOrDisableButtons {
     if (self.numberOfRequestsInProgress <= 0) {
-        self.alreadyLoaded = YES;
         self.markAsReadButton.hidden = NO;
         [self.indicator stopAnimating];
         
@@ -488,11 +476,13 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
                 if (bookmarkExists) {
                     self.editButton.hidden = NO;
+                    self.editButton.enabled = YES;
                     self.addButton.hidden = YES;
                 }
                 else {
                     self.editButton.hidden = YES;
                     self.addButton.hidden = NO;
+                    self.addButton.enabled = YES;
                 }
 
                 self.markAsReadButton.enabled = !isRead;
@@ -512,7 +502,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     else {
         if (!self.mobilized) {
             // Hide the reader web view.
-            self.readerWebView.hidden = YES;
+            [self setReaderViewVisible:NO animated:NO completion:nil];
         }
 
         [UIView animateWithDuration:0.3
@@ -722,6 +712,10 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 }
 
 - (void)toggleMobilizer {
+    [self toggleMobilizerAnimated:YES];
+}
+
+- (void)toggleMobilizerAnimated:(BOOL)animated {
     [PPAppDelegate sharedDelegate].openLinksWithMobilizer = !self.mobilized;
 
     self.mobilizeButton.selected = !self.mobilized;
@@ -732,7 +726,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         
         [self.webViewTimeoutTimer invalidate];
         [self.webView stopLoading];
-        [self.readerWebView loadHTMLString:@"<html></html>" baseURL:self.url];
+        [self.readerWebView loadHTMLString:@"<html><head><script type='text/javascript'>var isLoaded=false;</script></head></html>" baseURL:self.url];
     }
     else {
         [self.readerWebView stopLoading];
@@ -740,9 +734,9 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         self.readerWebView.scrollView.scrollsToTop = NO;
         
         __weak id weakself = self;
-        [self setReaderViewVisible:NO animated:YES completion:^(BOOL finished) {
+        [self setReaderViewVisible:NO animated:animated completion:^(BOOL finished) {
             if (![weakself alreadyLoaded]) {
-                [weakself loadURL];
+                [self loadURL];
             }
         }];
     }
@@ -963,9 +957,10 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
     if (webView == self.webView) {
         self.numberOfRequestsCompleted++;
-        [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
-        [self enableOrDisableButtons];
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
     }
+
+    [self enableOrDisableButtons];
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
@@ -978,6 +973,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         // Only run the following when this is an actual web URL.
         if (![self.url.scheme isEqualToString:@"file"]) {
             self.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+
             if ([[self.title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@""]) {
                 self.titleLabel.text = self.url.host;
             }
@@ -1032,6 +1028,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
             [self.indicator stopAnimating];
 
             [self setReaderViewVisible:YES animated:YES completion:nil];
+            [self enableOrDisableButtons];
         }
         else {
             [PPWebViewController mobilizedPageForURL:self.url withCompletion:^(NSDictionary *article, NSError *error) {
@@ -1253,10 +1250,13 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     NSURLRequest *request = [NSURLRequest requestWithURL:mobilizedURL
                                              cachePolicy:NSURLRequestReturnCacheDataElseLoad
                                          timeoutInterval:10];
-
+    
+    [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];
 #warning Sometimes getting a 401 here. Not sure why.
     NSURLSessionDataTask *task = [session dataTaskWithRequest:request
                                             completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                                                [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
+
                                                 if ([[(NSHTTPURLResponse *)response MIMEType] isEqualToString:@"text/plain"]) {
                                                     NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                                                     NSData *encodedData = [NSData dataWithBase64EncodedString:string];
@@ -1301,7 +1301,13 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                               delay:0
                             options:UIViewAnimationOptionCurveLinear | UIViewAnimationOptionBeginFromCurrentState
                          animations:animations
-                         completion:completion];
+                         completion:^(BOOL finished) {
+                             self.readerWebView.hidden = !visible;
+                             
+                             if (completion) {
+                                 completion(finished);
+                             }
+                         }];
     }
     else {
         animations();
