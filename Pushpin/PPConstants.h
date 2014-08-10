@@ -8,6 +8,8 @@
 
 @import Foundation;
 
+@class OAConsumer;
+
 typedef void (^PPErrorBlock)(NSError *error);
 
 typedef enum : NSInteger {
@@ -198,5 +200,8 @@ static NSArray *PPCommunityFeeds() {
 #endif
 
 @interface PPConstants : NSObject
+
++ (OAConsumer *)instapaperConsumer;
++ (OAConsumer *)readabilityConsumer;
 
 @end

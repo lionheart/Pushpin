@@ -13,6 +13,7 @@
 #import "PPTheme.h"
 #import "PPTitleButton.h"
 #import "PPTableViewTitleView.h"
+#import "PPNotification.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
@@ -83,11 +84,9 @@ static NSString *CellIdentifier = @"Cell";
     if (indexPath.section == 0) {
         [[UIPasteboard generalPasteboard] setString:@"javascript:window.location='pushpin://x-callback-url/add?url='+encodeURIComponent(location.href)+'&title='+encodeURIComponent(document.title)"];
 
-        UILocalNotification *notification = [[UILocalNotification alloc] init];
-        notification.alertBody = NSLocalizedString(@"Bookmarklet copied to clipboard.", nil);
-        notification.alertAction = NSLocalizedString(@"Open Pushpin", nil);
-        notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
-        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+        [PPNotification notifyWithMessage:NSLocalizedString(@"Bookmarklet copied to clipboard.", nil)
+                                  success:YES
+                                  updated:NO];
     }
     else {
         if (indexPath.row == 0) {

@@ -15,6 +15,11 @@
 @property (nonatomic, strong) UIView *notificationView;
 
 + (PPNotification *)sharedInstance;
++ (void)notifyWithMessage:(NSString *)message;
++ (void)notifyWithMessage:(NSString *)message success:(BOOL)success updated:(BOOL)updated;
++ (void)notifyWithMessage:(NSString *)message success:(BOOL)success updated:(BOOL)updated delay:(CGFloat)seconds;
++ (void)notifyWithMessage:(NSString *)message userInfo:(id)userInfo;
++ (void)notifyWithMessage:(NSString *)message userInfo:(id)userInfo delay:(CGFloat)seconds;
 
 - (void)showInView:(UIView *)view withMessage:(NSString *)message;
 - (UIView *)notificationViewWithMessage:(NSString *)message;

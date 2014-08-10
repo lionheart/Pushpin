@@ -783,16 +783,15 @@ static BOOL kPinboardSyncInProgress = NO;
     }
 
     dispatch_group_notify(group, queue, ^{
-        UILocalNotification *notification = [[UILocalNotification alloc] init];
-        notification.userInfo = @{@"success": @(YES), @"updated": @(NO)};
+        NSString *message;
         if ([posts count] == 1) {
-            notification.alertBody = NSLocalizedString(@"Your bookmark was deleted.", nil);
+            message = NSLocalizedString(@"Your bookmark was deleted.", nil);
         }
         else {
-            notification.alertBody = [NSString stringWithFormat:@"%lu bookmarks were deleted.", (unsigned long)[posts count]];
+            message = [NSString stringWithFormat:@"%lu bookmarks were deleted.", (unsigned long)[posts count]];
         }
 
-        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+        [PPNotification notifyWithMessage:message success:YES updated:NO];
     });
 }
 

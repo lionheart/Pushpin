@@ -8,7 +8,8 @@
 
 #import "AppSettings.h"
 #import "PPConstants.h"
-#import <oauthconsumer/OAuthConsumer.h>
+
+@class OAToken;
 
 @interface PPSettings : NSObject
 
@@ -38,6 +39,7 @@
 @property (nonatomic, strong) NSString *username;
 @property (nonatomic, strong) NSString *password;
 @property (nonatomic, strong) OAToken *instapaperToken;
+@property (nonatomic, strong) OAToken *readabilityToken;
 
 #ifdef PINBOARD
 @property (nonatomic, strong) NSArray *communityFeedOrder;

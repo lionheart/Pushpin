@@ -109,10 +109,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     if (indexPath.section > 0) {
         [[UIPasteboard generalPasteboard] setString:self.examples[indexPath.section - 1][@"example"]];
         
-        UILocalNotification *notification = [[UILocalNotification alloc] init];
-        notification.alertBody = NSLocalizedString(@"Copied search to clipboard.", nil);
-        notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
-        [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+        [PPNotification notifyWithMessage:NSLocalizedString(@"Copied search to clipboard.", nil)];
     }
 }
 
