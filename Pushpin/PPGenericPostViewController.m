@@ -754,7 +754,7 @@ static NSInteger kToolbarHeight = 44;
                             // attempt to delete row 99 from section 0 which only contains 0 rows before the update
                             DLog(@"B: %@", date);
                             
-                            CLS_LOG(@"Table View Reload 1");
+                            CLS_LOG(@"Table View Reload 2");
                             // attempt to delete row 99 from section 0 which only contains 2 rows before the update
                             [self.tableView beginUpdates];
                             [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
