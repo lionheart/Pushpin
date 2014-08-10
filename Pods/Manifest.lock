@@ -19,6 +19,7 @@ PODS:
   - AFNetworking/UIKit (2.2.4):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
+  - AppSettings (1.0.0)
   - ASPinboard (0.0.3):
     - hpple (~> 0.2.0)
   - BugshotKit (0.1.0)
@@ -63,6 +64,7 @@ PODS:
 DEPENDENCIES:
   - ADNActivityCollection (from `Specs/ADNActivityCollection.podspec`)
   - AFNetworking (= 2.2.0)
+  - AppSettings (= 1.0.0)
   - ASPinboard (from `Vendor/ASPinboard`)
   - BugshotKit (= 0.1.0)
   - CrashlyticsFramework (= 2.2.1)
@@ -108,6 +110,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   ADNActivityCollection: f370af826e439b5f661bb5619e27d6d16fe94bd5
   AFNetworking: ab63e259fe91eef4519b371ef0a4955af0e73e64
+  AppSettings: 68cbf0e06dec7d62a96b1a3038945d5fc01af6e0
   ASPinboard: 5e25e15c0984073d997301696865779a2b4d7953
   BugshotKit: 1c8bc57927dacc56e53c9ef628a4dc2df300887a
   CrashlyticsFramework: a9d172599c3a34e68067e16446a764041b980162

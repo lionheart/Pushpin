@@ -60,6 +60,12 @@
 #define COCOAPODS_VERSION_MINOR_ASPinboard 0
 #define COCOAPODS_VERSION_PATCH_ASPinboard 3
 
+// AppSettings
+#define COCOAPODS_POD_AVAILABLE_AppSettings
+#define COCOAPODS_VERSION_MAJOR_AppSettings 1
+#define COCOAPODS_VERSION_MINOR_AppSettings 0
+#define COCOAPODS_VERSION_PATCH_AppSettings 0
+
 // CrashlyticsFramework
 #define COCOAPODS_POD_AVAILABLE_CrashlyticsFramework
 #define COCOAPODS_VERSION_MAJOR_CrashlyticsFramework 2
