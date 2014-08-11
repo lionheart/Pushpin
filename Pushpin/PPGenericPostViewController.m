@@ -469,172 +469,141 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    self.numberOfTapsSinceTapReset++;
     self.selectedTableView = tableView;
     self.selectedIndexPath = indexPath;
-    
-    [self handleCellTap];
-}
 
-- (void)handleCellTap {
-    if (self.numberOfTapsSinceTapReset > 0) {
-        id <PPDataSource> dataSource = [self dataSourceForTableView:self.selectedTableView];
-        PPSettings *settings = [PPSettings sharedSettings];
-        
-        if (self.selectedTableView.editing) {
-            NSUInteger selectedRowCount = [self.selectedTableView.indexPathsForSelectedRows count];
-            [self setMultipleEditButtonsEnabled:(selectedRowCount > 0)];
-            [self updateTitleViewText];
+    id <PPDataSource> dataSource = [self dataSourceForTableView:self.selectedTableView];
+    PPSettings *settings = [PPSettings sharedSettings];
+    
+    if (self.selectedTableView.editing) {
+        NSUInteger selectedRowCount = [self.selectedTableView.indexPathsForSelectedRows count];
+        [self setMultipleEditButtonsEnabled:(selectedRowCount > 0)];
+        [self updateTitleViewText];
+    }
+    else {
+        // If configured, always mark the post as read
+        if (settings.markReadPosts) {
+            self.selectedPost = [self.postDataSource postAtIndex:self.selectedIndexPath.row];
+            [self markPostsAsRead:@[self.selectedPost] notify:NO];
         }
-        else {
-            // If configured, always mark the post as read
-            if (settings.markReadPosts) {
-                self.selectedPost = [self.postDataSource postAtIndex:self.selectedIndexPath.row];
-                [self markPostsAsRead:@[self.selectedPost] notify:NO];
+        
+        [self.selectedTableView deselectRowAtIndexPath:self.selectedIndexPath animated:NO];
+        Mixpanel *mixpanel = [Mixpanel sharedInstance];
+        
+        if (![dataSource respondsToSelector:@selector(viewControllerForPostAtIndex:)]) {
+            NSString *urlString = [dataSource urlForPostAtIndex:self.selectedIndexPath.row];
+            NSRange httpRange = NSMakeRange(NSNotFound, 0);
+            if ([urlString hasPrefix:@"http"]) {
+                httpRange = [urlString rangeOfString:@"http"];
             }
             
-            [self.selectedTableView deselectRowAtIndexPath:self.selectedIndexPath animated:NO];
-            Mixpanel *mixpanel = [Mixpanel sharedInstance];
-            
-            switch (self.numberOfTapsSinceTapReset) {
-                case 1:
-                    if (![dataSource respondsToSelector:@selector(viewControllerForPostAtIndex:)]) {
-                        NSString *urlString = [dataSource urlForPostAtIndex:self.selectedIndexPath.row];
-                        NSRange httpRange = NSMakeRange(NSNotFound, 0);
-                        if ([urlString hasPrefix:@"http"]) {
-                            httpRange = [urlString rangeOfString:@"http"];
-                        }
-                        
 #warning TODO Check outside links
-                        if (settings.openLinksInApp) {
-                            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
-
-                            self.webViewController = [PPWebViewController webViewControllerWithURL:urlString];
-                            self.webViewController.shouldMobilize = settings.openLinksWithMobilizer;
-                            self.webViewController.transitioningDelegate = self.shrinkBackTransition;
-
-                            if ([self.navigationController topViewController] == self) {
-                                [self presentViewController:self.webViewController animated:YES completion:nil];
+            if (settings.openLinksInApp) {
+                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
+                
+                self.webViewController = [PPWebViewController webViewControllerWithURL:urlString];
+                self.webViewController.shouldMobilize = settings.openLinksWithMobilizer;
+                self.webViewController.transitioningDelegate = self.shrinkBackTransition;
+                
+                if ([self.navigationController topViewController] == self) {
+                    [self presentViewController:self.webViewController animated:YES completion:nil];
+                }
+            }
+            else {
+                PPBrowserType browser = settings.browser;
+                switch (browser) {
+                    case PPBrowserSafari: {
+                        [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Safari"}];
+                        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
+                        break;
+                    }
+                        
+                    case PPBrowserChrome:
+                        if (httpRange.location != NSNotFound) {
+                            if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome-x-callback://"]]) {
+                                NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"googlechrome-x-callback://x-callback-url/open/?url=%@&x-success=pushpin%%3A%%2F%%2F&&x-source=Pushpin", [urlString urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
+                                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
+                                [[UIApplication sharedApplication] openURL:url];
+                            }
+                            else {
+                                NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"googlechrome"]];
+                                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
+                                [[UIApplication sharedApplication] openURL:url];
                             }
                         }
                         else {
-                            PPBrowserType browser = settings.browser;
-                            switch (browser) {
-                                case PPBrowserSafari: {
-                                    [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Safari"}];
-                                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
-                                    break;
-                                }
-                                    
-                                case PPBrowserChrome:
-                                    if (httpRange.location != NSNotFound) {
-                                        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome-x-callback://"]]) {
-                                            NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"googlechrome-x-callback://x-callback-url/open/?url=%@&x-success=pushpin%%3A%%2F%%2F&&x-source=Pushpin", [urlString urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
-                                            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
-                                            [[UIApplication sharedApplication] openURL:url];
-                                        }
-                                        else {
-                                            NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"googlechrome"]];
-                                            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
-                                            [[UIApplication sharedApplication] openURL:url];
-                                        }
-                                    }
-                                    else {
-                                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"Google Chrome failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                                        [alert show];
-                                    }
-                                    
-                                    break;
-                                    
-                                case PPBrowseriCabMobile:
-                                    if (httpRange.location != NSNotFound) {
-                                        NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"icabmobile"]];
-                                        [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"iCab Mobile"}];
-                                        [[UIApplication sharedApplication] openURL:url];
-                                    }
-                                    else {
-                                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                                        [alert show];
-                                    }
-                                    
-                                    break;
-                                    
-                                case PPBrowserOpera:
-                                    if (httpRange.location != NSNotFound) {
-                                        NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"ohttp"]];
-                                        [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Opera"}];
-                                        [[UIApplication sharedApplication] openURL:url];
-                                    }
-                                    else {
-                                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"Opera failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                                        [alert show];
-                                    }
-                                    
-                                    break;
-                                    
-                                case PPBrowserDolphin:
-                                    if (httpRange.location != NSNotFound) {
-                                        NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"dolphin"]];
-                                        [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"dolphin"}];
-                                        [[UIApplication sharedApplication] openURL:url];
-                                    }
-                                    else {
-                                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                                        [alert show];
-                                    }
-                                    
-                                    break;
-                                    
-                                case PPBrowserCyberspace:
-                                    if (httpRange.location != NSNotFound) {
-                                        NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"cyber"]];
-                                        [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Cyberspace Browser"}];
-                                        [[UIApplication sharedApplication] openURL:url];
-                                    }
-                                    else {
-                                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"Cyberspace failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                                        [alert show];
-                                    }
-                                    
-                                    break;
-                                    
-                                default:
-                                    break;
-                            }
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"Google Chrome failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                            [alert show];
                         }
-                    }
-                    else {
-                        // The post data source will provide a view controller to push.
-                        UIViewController *controller = [dataSource viewControllerForPostAtIndex:self.selectedIndexPath.row];
                         
-                        if ([self.navigationController topViewController] == self) {
-                            [self.navigationController pushViewController:controller animated:YES];
+                        break;
+                        
+                    case PPBrowseriCabMobile:
+                        if (httpRange.location != NSNotFound) {
+                            NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"icabmobile"]];
+                            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"iCab Mobile"}];
+                            [[UIApplication sharedApplication] openURL:url];
                         }
-                    }
-                    break;
-                    
-                case 2: {
-                    UIViewController *vc;
-                    if ([dataSource respondsToSelector:@selector(addViewControllerForPostAtIndex:delegate:)]) {
-                        vc = (UIViewController *)[dataSource addViewControllerForPostAtIndex:self.selectedIndexPath.row];
-                    }
-                    else if ([dataSource respondsToSelector:@selector(editViewControllerForPostAtIndex:withDelegate:)]) {
-                        vc = [self editViewControllerForPostAtIndex:self.selectedIndexPath.row dataSource:dataSource];
-                    }
-
-                    [self presentViewControllerInFormSheetIfApplicable:vc];
-                    break;
+                        else {
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                            [alert show];
+                        }
+                        
+                        break;
+                        
+                    case PPBrowserOpera:
+                        if (httpRange.location != NSNotFound) {
+                            NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"ohttp"]];
+                            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Opera"}];
+                            [[UIApplication sharedApplication] openURL:url];
+                        }
+                        else {
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"Opera failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                            [alert show];
+                        }
+                        
+                        break;
+                        
+                    case PPBrowserDolphin:
+                        if (httpRange.location != NSNotFound) {
+                            NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"dolphin"]];
+                            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"dolphin"}];
+                            [[UIApplication sharedApplication] openURL:url];
+                        }
+                        else {
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                            [alert show];
+                        }
+                        
+                        break;
+                        
+                    case PPBrowserCyberspace:
+                        if (httpRange.location != NSNotFound) {
+                            NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"cyber"]];
+                            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Cyberspace Browser"}];
+                            [[UIApplication sharedApplication] openURL:url];
+                        }
+                        else {
+                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"Cyberspace failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
+                            [alert show];
+                        }
+                        
+                        break;
+                        
+                    default:
+                        break;
                 }
-                    
-                default:
-                    break;
+            }
+        }
+        else {
+            // The post data source will provide a view controller to push.
+            UIViewController *controller = [dataSource viewControllerForPostAtIndex:self.selectedIndexPath.row];
+            
+            if ([self.navigationController topViewController] == self) {
+                [self.navigationController pushViewController:controller animated:YES];
             }
         }
     }
-    
-    self.singleTapTimer = nil;
-    self.doubleTapTimer = nil;
-    self.numberOfTapsSinceTapReset = 0;
 }
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer {
@@ -1478,7 +1447,10 @@ static NSInteger kToolbarHeight = 44;
                                       success:YES
                                       updated:NO];
             
-            weakself.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Save", nil) style:UIBarButtonItemStylePlain target:weakself action:@selector(addBarButtonTouchUpside:)];
+            weakself.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Save", nil)
+                                                                                          style:UIBarButtonItemStylePlain
+                                                                                         target:weakself
+                                                                                         action:@selector(addBarButtonTouchUpside:)];
         });
     }];
 }
@@ -1491,7 +1463,10 @@ static NSInteger kToolbarHeight = 44;
                                       success:YES
                                       updated:NO];
             
-            weakself.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Remove", nil) style:UIBarButtonItemStylePlain target:weakself action:@selector(removeBarButtonTouchUpside:)];
+            weakself.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Remove", nil)
+                                                                                          style:UIBarButtonItemStylePlain
+                                                                                         target:weakself
+                                                                                         action:@selector(removeBarButtonTouchUpside:)];
         });
     }];
 }
@@ -1797,7 +1772,6 @@ static NSInteger kToolbarHeight = 44;
         }
     }
     else if (keyCommand == self.openKeyCommand) {
-        self.numberOfTapsSinceTapReset = 1;
         self.selectedTableView = self.tableView;
         [self handleCellTap];
     }
