@@ -670,37 +670,35 @@ static NSInteger kToolbarHeight = 44;
         DLog(@"A: %@", date);
 
         if (self.searchDisplayController.isActive) {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [self.searchPostDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        UITableView *tableView = self.searchDisplayController.searchResultsTableView;
-                        
-                        DLog(@"B: %@", date);
-                        
-                        CLS_LOG(@"Table View Reload 1");
-                        
-                        // attempt to delete row 99 from section 0 which only contains 2 rows before the update
-                        
-                        [tableView beginUpdates];
-                        [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                        [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                        [tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                        [tableView endUpdates];
-                        
-                        if (callback) {
-                            callback();
-                        }
-                    });
-                } cancel:^BOOL{
-                    BOOL isHidden = !self.isViewLoaded || self.view.window == nil;
-                    if (isHidden) {
-                        return YES;
+            [self.searchPostDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    UITableView *tableView = self.searchDisplayController.searchResultsTableView;
+                    
+                    DLog(@"B: %@", date);
+                    
+                    CLS_LOG(@"Table View Reload 1");
+                    
+                    // attempt to delete row 99 from section 0 which only contains 2 rows before the update
+                    
+                    [tableView beginUpdates];
+                    [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                    [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                    [tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                    [tableView endUpdates];
+                    
+                    if (callback) {
+                        callback();
                     }
-                    else {
-                        return [time compare:self.latestSearchTime] == NSOrderedDescending;
-                    }
-                } width:self.currentWidth];
-            });
+                });
+            } cancel:^BOOL{
+                BOOL isHidden = !self.isViewLoaded || self.view.window == nil;
+                if (isHidden) {
+                    return YES;
+                }
+                else {
+                    return [time compare:self.latestSearchTime] == NSOrderedDescending;
+                }
+            } width:self.currentWidth];
         }
         else {
             BOOL firstLoad = [self.postDataSource numberOfPosts] == 0;
@@ -716,48 +714,46 @@ static NSInteger kToolbarHeight = 44;
                 [self.view lhs_centerVerticallyForView:activityIndicator];
             }
             
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [self.postDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        if (firstLoad) {
-                            [activityIndicator removeFromSuperview];
-                            [self.tableView reloadData];
-                        }
-                        else {
-#warning XXX - Crash: http://crashes.to/s/d4cb56826ff
-                            // attempt to delete row 99 from section 0 which only contains 2 rows before the update
-                            // attempt to delete row 99 from section 0 which only contains 0 rows before the update
-                            DLog(@"B: %@", date);
-                            
-                            CLS_LOG(@"Table View Reload 2");
-                            // attempt to delete row 99 from section 0 which only contains 2 rows before the update
-                            [self.tableView beginUpdates];
-                            [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                            [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                            [self.tableView endUpdates];
-                        }
-                        
-                        if ([self.postDataSource searchSupported] && [self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
-                            self.searchPostDataSource = [self.postDataSource searchDataSource];
-                        }
-                        
-                        if (callback) {
-                            callback();
-                        }
-                        
-                        self.isProcessingPosts = NO;
-                    });
-                } cancel:^BOOL{
-                    BOOL isHidden = !self.isViewLoaded || self.view.window == nil;
-                    if (isHidden) {
-                        return YES;
+            [self.postDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (firstLoad) {
+                        [activityIndicator removeFromSuperview];
+                        [self.tableView reloadData];
                     }
                     else {
-                        return [time compare:self.latestSearchTime] != NSOrderedSame;
+#warning XXX - Crash: http://crashes.to/s/d4cb56826ff
+                        // attempt to delete row 99 from section 0 which only contains 2 rows before the update
+                        // attempt to delete row 99 from section 0 which only contains 0 rows before the update
+                        DLog(@"B: %@", date);
+                        
+                        CLS_LOG(@"Table View Reload 2");
+                        // attempt to delete row 99 from section 0 which only contains 2 rows before the update
+                        [self.tableView beginUpdates];
+                        [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                        [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                        [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                        [self.tableView endUpdates];
                     }
-                } width:self.currentWidth];
-            });
+                    
+                    if ([self.postDataSource searchSupported] && [self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
+                        self.searchPostDataSource = [self.postDataSource searchDataSource];
+                    }
+                    
+                    if (callback) {
+                        callback();
+                    }
+                    
+                    self.isProcessingPosts = NO;
+                });
+            } cancel:^BOOL{
+                BOOL isHidden = !self.isViewLoaded || self.view.window == nil;
+                if (isHidden) {
+                    return YES;
+                }
+                else {
+                    return [time compare:self.latestSearchTime] != NSOrderedSame;
+                }
+            } width:self.currentWidth];
         }
     });
 }
@@ -1781,12 +1777,13 @@ static NSInteger kToolbarHeight = 44;
     }
 }
 
-- (NSArray *)searchPosts {
-    return [self.searchPostDataSource posts];
-}
-
 - (NSArray *)posts {
-    return [self.postDataSource posts];
+    if (self.searchDisplayController.isActive) {
+        return [self.searchPostDataSource posts];
+    }
+    else {
+        return [self.postDataSource posts];
+    }
 }
 
 - (void)refreshControlValueChanged:(id)sender {
