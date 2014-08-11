@@ -178,6 +178,7 @@
     if (!completion) {
         completion = ^{};
     }
+
     PPSettings *settings = [PPSettings sharedSettings];
     switch (readLater) {
         case PPReadLaterInstapaper: {
@@ -194,7 +195,7 @@
                 [request setParameters:parameters];
                 [request prepare];
                 
-                [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
+                [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];
                 [NSURLConnection sendAsynchronousRequest:request
                                                    queue:[NSOperationQueue mainQueue]
                                        completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
@@ -216,6 +217,7 @@
                                                message = NSLocalizedString(@"Error sending to Instapaper.", nil);
                                            }
                                            
+                                           completion();
                                            [PPNotification notifyWithMessage:message success:success updated:updated delay:seconds];
                                        }];
             }
@@ -239,11 +241,11 @@
             [request setParameters:@[[OARequestParameter requestParameter:@"url" value:url]]];
             [request prepare];
             
-            [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
+            [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];
             [NSURLConnection sendAsynchronousRequest:request
                                                queue:[NSOperationQueue mainQueue]
                                    completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                       [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
+                                       [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
                                        
                                        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                                        BOOL success = NO;
@@ -261,15 +263,18 @@
                                            message = NSLocalizedString(@"Error sending to Readability.", nil);
                                        }
                                        
+                                       completion();
                                        [PPNotification notifyWithMessage:message success:success updated:updated delay:seconds];
                                    }];
             break;
         }
             
         case PPReadLaterPocket: {
+            [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];
             [[PocketAPI sharedAPI] saveURL:[NSURL URLWithString:url]
                                  withTitle:title
                                    handler:^(PocketAPI *api, NSURL *url, NSError *error) {
+                                       [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
                                        completion();
 
                                        if (!error) {
