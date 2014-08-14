@@ -101,7 +101,6 @@ static NSInteger kToolbarHeight = 44;
 - (void)refreshControlValueChanged:(id)sender;
 - (void)synchronizeAddedBookmark;
 
-- (NSArray *)searchPosts;
 - (NSArray *)posts;
 
 - (void)responseFailureHandler:(NSError *)error;
@@ -659,11 +658,10 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)updateFromLocalDatabaseWithCallback:(void (^)())callback time:(NSDate *)time {
-    self.latestSearchTime = [NSDate date];
-
     if (!time) {
-        time = self.latestSearchTime;
+        time = [NSDate date];
     }
+    self.latestSearchTime = time;
 
     dispatch_async(dispatch_get_main_queue(), ^{
         NSDate *date = [NSDate date];
@@ -672,22 +670,24 @@ static NSInteger kToolbarHeight = 44;
         if (self.searchDisplayController.isActive) {
             [self.searchPostDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    UITableView *tableView = self.searchDisplayController.searchResultsTableView;
-                    
-                    DLog(@"B: %@", date);
-                    
-                    CLS_LOG(@"Table View Reload 1");
-                    
-                    // attempt to delete row 99 from section 0 which only contains 2 rows before the update
-                    
-                    [tableView beginUpdates];
-                    [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                    [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                    [tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                    [tableView endUpdates];
-                    
-                    if (callback) {
-                        callback();
+                    if (!error) {
+                        UITableView *tableView = self.searchDisplayController.searchResultsTableView;
+
+                        DLog(@"B: %@", date);
+
+                        CLS_LOG(@"Table View Reload 1");
+
+                        // attempt to delete row 99 from section 0 which only contains 2 rows before the update
+
+                        [tableView beginUpdates];
+                        [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                        [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                        [tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                        [tableView endUpdates];
+
+                        if (callback) {
+                            callback();
+                        }
                     }
                 });
             } cancel:^BOOL{
@@ -696,7 +696,7 @@ static NSInteger kToolbarHeight = 44;
                     return YES;
                 }
                 else {
-                    return [time compare:self.latestSearchTime] == NSOrderedDescending;
+                    return [self.latestSearchTime compare:time] != NSOrderedSame;
                 }
             } width:self.currentWidth];
         }
@@ -968,15 +968,11 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (tableView == self.tableView) {
-        return [self.postDataSource numberOfPosts];
-    }
-    else {
-        return [self.searchPostDataSource numberOfPosts];
-    }
+    NSInteger num = [[self dataSourceForTableView:tableView] numberOfPosts];
+    return num;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (self.compressPosts && [self.currentDataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)]) {
         return [self.currentDataSource compressedHeightForPostAtIndex:indexPath.row];
     }

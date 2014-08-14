@@ -32,6 +32,7 @@ static BOOL kPinboardSyncInProgress = NO;
 @property (nonatomic, strong) PPPinboardMetadataCache *cache;
 @property (nonatomic) CGFloat mostRecentWidth;
 @property (nonatomic, strong) UIAlertView *fullTextSearchAlertView;
+@property (nonatomic, strong) NSDate *latestReloadTime;
 
 - (NSDictionary *)paramsForPost:(NSDictionary *)post dateError:(BOOL)dateError;
 - (void)generateQueryAndParameters:(void (^)(NSString *, NSArray *))callback;
@@ -1272,6 +1273,8 @@ static BOOL kPinboardSyncInProgress = NO;
 - (void)reloadBookmarksWithCompletion:(void (^)(NSArray *, NSArray *, NSArray *, NSError *))completion
                                cancel:(BOOL (^)())cancel
                                 width:(CGFloat)width {
+    NSDate *timeWhenReloadBegan = [NSDate date];
+    self.latestReloadTime = timeWhenReloadBegan;
     dispatch_async(PPBookmarkReloadQueue(), ^{
         self.mostRecentWidth = width;
 
@@ -1407,7 +1410,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                           }
 
                                           // We run this block to make sure that these results should be the latest on file
-                                          if (cancel && cancel()) {
+                                          if (cancel && cancel() && self.latestReloadTime != timeWhenReloadBegan) {
                                               DLog(@"Cancelling search for query (%@)", self.searchQuery);
                                               completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                                           }
