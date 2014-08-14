@@ -16,6 +16,8 @@
 
 @protocol PPBookmarkCellDelegate <NSObject>
 
+- (CGFloat)bookmarkCellMaxHorizontalOffset;
+- (void)bookmarkCellDidScroll:(CGPoint)offset;
 - (void)bookmarkCellDidActivateDeleteButton:(PPBookmarkCell *)cell
                                     forPost:(NSDictionary *)post;
 - (void)bookmarkCellDidActivateEditButton:(PPBookmarkCell *)cell

@@ -672,9 +672,9 @@ static NSInteger kToolbarHeight = 44;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (!error) {
                         UITableView *tableView = self.searchDisplayController.searchResultsTableView;
-
+                        
                         DLog(@"B: %@", date);
-
+                        
                         CLS_LOG(@"Table View Reload 1");
 
                         // attempt to delete row 99 from section 0 which only contains 2 rows before the update
@@ -684,7 +684,7 @@ static NSInteger kToolbarHeight = 44;
                         [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
                         [tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
                         [tableView endUpdates];
-
+                        
                         if (callback) {
                             callback();
                         }
