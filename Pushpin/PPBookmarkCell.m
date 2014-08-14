@@ -265,8 +265,17 @@ static NSInteger kEditButtonOuterMargin = 20;
             
             self.deleteButton.enabled = offset.x <= -(23 + kEditButtonOuterMargin + kEditButtonInnerMargin);
             self.editButton.enabled = offset.x >= (20 + kEditButtonOuterMargin + kEditButtonInnerMargin);
-            
+
+            CGFloat maxOffset = CGFLOAT_MAX;
+            if ([self.delegate respondsToSelector:@selector(bookmarkCellMaxHorizontalOffset)]) {
+                maxOffset = [self.delegate bookmarkCellMaxHorizontalOffset];
+            }
+
             self.leftPositionConstraint.constant = offset.x;
+
+            if ([self.delegate respondsToSelector:@selector(bookmarkCellDidScroll:)]) {
+                [self.delegate bookmarkCellDidScroll:offset];
+            }
 
             [self.contentView layoutIfNeeded];
         }
