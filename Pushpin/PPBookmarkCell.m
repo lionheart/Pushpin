@@ -271,7 +271,7 @@ static NSInteger kEditButtonOuterMargin = 20;
                 maxOffset = [self.delegate bookmarkCellMaxHorizontalOffset];
             }
 
-            self.leftPositionConstraint.constant = offset.x;
+            self.leftPositionConstraint.constant = (offset.x > 0 ? 1 : -1) * MIN(maxOffset, ABS(offset.x));;
 
             if ([self.delegate respondsToSelector:@selector(bookmarkCellDidScroll:)]) {
                 [self.delegate bookmarkCellDidScroll:offset];

@@ -48,6 +48,7 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic, strong) UIActionSheet *confirmDeletionActionSheet;
 @property (nonatomic, strong) UIActionSheet *confirmMultipleDeletionActionSheet;
 @property (nonatomic, strong) NSLayoutConstraint *multipleEditToolbarBottomConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *tableViewLeftConstraint;
 @property (nonatomic, retain) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *searchDisplayLongPressGestureRecognizer;
 @property (nonatomic, strong) NSArray *indexPathsToDelete;
@@ -114,6 +115,8 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)deletePosts:(NSArray *)posts dataSource:(id<PPDataSource>)dataSource;
 - (void)deletePosts:(NSArray *)posts;
+
+- (UITableView *)currentTableView;
 
 @end
 
@@ -311,7 +314,15 @@ static NSInteger kToolbarHeight = 44;
                             @"top": self.topLayoutGuide,
                             @"bottom": self.bottomLayoutGuide };
 
-    [self.tableView lhs_fillWidthOfSuperview];
+    self.tableViewLeftConstraint = [NSLayoutConstraint constraintWithItem:self.tableView
+                                                                attribute:NSLayoutAttributeLeft
+                                                                relatedBy:NSLayoutRelationEqual
+                                                                   toItem:self.view
+                                                                attribute:NSLayoutAttributeLeft
+                                                               multiplier:1
+                                                                 constant:0];
+    [self.view addConstraint:self.tableViewLeftConstraint];
+    [self.view lhs_addConstraints:@"H:[table]|" views:views];
     [self.tableView lhs_fillHeightOfSuperview];
     [self.multiToolbarView lhs_fillWidthOfSuperview];
     [self.view lhs_addConstraints:@"V:[toolbarView(height)]" metrics:@{ @"height": @(kToolbarHeight) } views:views];
@@ -1632,6 +1643,7 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)bookmarkCellDidActivateDeleteButton:(PPBookmarkCell *)cell
                                     forPost:(NSDictionary *)post {
+    [self.currentTableView setContentOffset:CGPointMake(0, self.currentTableView.contentOffset.y) animated:YES];
     self.selectedPost = post;
     NSInteger index = [self.currentDataSource indexForPost:post];
     self.selectedIndexPath = [NSIndexPath indexPathForRow:index inSection:0];
@@ -1640,6 +1652,7 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)bookmarkCellDidActivateEditButton:(PPBookmarkCell *)cell
                                   forPost:(NSDictionary *)post {
+    [self.currentTableView setContentOffset:CGPointMake(0, self.currentTableView.contentOffset.y) animated:YES];
     NSInteger index = [self.currentDataSource indexForPost:post];
     self.selectedIndexPath = [NSIndexPath indexPathForRow:index inSection:0];
     
@@ -1857,6 +1870,36 @@ static NSInteger kToolbarHeight = 44;
     
     if ([self.navigationController topViewController] == self) {
         [self.navigationController presentViewController:vc animated:YES completion:nil];
+    }
+}
+
+- (void)bookmarkCellDidScroll:(CGPoint)offset {
+    CGFloat distanceFromMaxOffset = ABS(offset.x) - [self bookmarkCellMaxHorizontalOffset];
+    if (distanceFromMaxOffset > 0) {
+        if (offset.x > 0) {
+            self.currentTableView.contentOffset = CGPointMake(-MIN(distanceFromMaxOffset, pow(distanceFromMaxOffset, 0.75)), self.currentTableView.contentOffset.y);
+        }
+        else {
+            self.currentTableView.contentOffset = CGPointMake(MIN(distanceFromMaxOffset, pow(distanceFromMaxOffset, 0.75)), self.currentTableView.contentOffset.y);
+        }
+    }
+    else {
+        if (self.currentTableView.contentOffset.x != 0) {
+            self.currentTableView.contentOffset = CGPointMake(0, self.currentTableView.contentOffset.y);
+        }
+    }
+}
+
+- (CGFloat)bookmarkCellMaxHorizontalOffset {
+    return 60;
+}
+
+- (UITableView *)currentTableView {
+    if (self.currentDataSource == self.postDataSource) {
+        return self.tableView;
+    }
+    else {
+        return self.searchDisplayController.searchResultsTableView;
     }
 }
 
