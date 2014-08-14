@@ -1429,11 +1429,13 @@ static BOOL kPinboardSyncInProgress = NO;
             ASPinboard *pinboard = [ASPinboard sharedInstance];
             PPSettings *settings = [PPSettings sharedSettings];
             if (settings.password.length > 0) {
+                [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];
                 [pinboard searchBookmarksWithUsername:settings.username
                                              password:settings.password
                                                 query:self.searchQuery
                                                 scope:self.searchScope
                                            completion:^(NSArray *urls, NSError *error) {
+                                               [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
                                                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                                    if (!error) {
                                                        NSMutableArray *components = [NSMutableArray array];
