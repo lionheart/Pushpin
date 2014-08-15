@@ -126,11 +126,23 @@
 #define COCOAPODS_VERSION_MINOR_LHSFMDatabaseAdditions 0
 #define COCOAPODS_VERSION_PATCH_LHSFMDatabaseAdditions 1
 
+// LHSFontSelectionViewController
+#define COCOAPODS_POD_AVAILABLE_LHSFontSelectionViewController
+#define COCOAPODS_VERSION_MAJOR_LHSFontSelectionViewController 0
+#define COCOAPODS_VERSION_MINOR_LHSFontSelectionViewController 0
+#define COCOAPODS_VERSION_PATCH_LHSFontSelectionViewController 3
+
 // LHSKeyboardAdjusting
 #define COCOAPODS_POD_AVAILABLE_LHSKeyboardAdjusting
 #define COCOAPODS_VERSION_MAJOR_LHSKeyboardAdjusting 0
 #define COCOAPODS_VERSION_MINOR_LHSKeyboardAdjusting 0
 #define COCOAPODS_VERSION_PATCH_LHSKeyboardAdjusting 1
+
+// LHSTableViewCells
+#define COCOAPODS_POD_AVAILABLE_LHSTableViewCells
+#define COCOAPODS_VERSION_MAJOR_LHSTableViewCells 0
+#define COCOAPODS_VERSION_MINOR_LHSTableViewCells 0
+#define COCOAPODS_VERSION_PATCH_LHSTableViewCells 1
 
 // MWFeedParser
 #define COCOAPODS_POD_AVAILABLE_MWFeedParser
