@@ -16,6 +16,7 @@
 @property (nonatomic) PPBrowserType browser;
 @property (nonatomic) PPMobilizerType mobilizer;
 @property (nonatomic) PPReadLaterType readLater;
+@property (nonatomic) PPFontAdjustmentType fontAdjustment;
 
 @property (nonatomic, strong) NSArray *hiddenFeedNames;
 @property (nonatomic) BOOL bookmarksNeedUpdate;

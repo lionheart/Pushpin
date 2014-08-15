@@ -650,6 +650,7 @@
         @"io.aurora.pinboard.OnlyPromptToAddOnce": @(YES),
         @"io.aurora.pinboard.AlwaysShowClipboardNotification": @(YES),
         @"io.aurora.pinboard.HiddenFeedNames": @[],
+        @"io.aurora.pinboard.FontAdjustment": @(PPFontAdjustmentMedium),
 #ifdef PINBOARD
         @"io.aurora.pinboard.PersonalFeedOrder": @[
                 @(PPPinboardPersonalFeedAll),
@@ -715,6 +716,7 @@
     [application setStatusBarStyle:UIStatusBarStyleLightContent];
 
     PPSettings *settings = [PPSettings sharedSettings];
+    settings.fontAdjustment = PPFontAdjustmentMedium;
     if (settings.isAuthenticated) {
 #ifdef PINBOARD
         pinboard.token = settings.token;

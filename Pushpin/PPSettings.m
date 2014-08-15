@@ -40,6 +40,7 @@
 @synthesize username = _username;
 @synthesize readabilityToken = _readabilityToken;
 @synthesize instapaperToken = _instapaperToken;
+@synthesize fontAdjustment = _fontAdjustment;
 
 #ifdef PINBOARD
 @synthesize communityFeedOrder = _communityFeedOrder;
@@ -52,6 +53,21 @@
         settings = [[PPSettings alloc] init];
     });
     return settings;
+}
+
+- (PPFontAdjustmentType)fontAdjustment {
+    if (!_fontAdjustment) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _fontAdjustment = [[defaults objectForKey:@"io.aurora.pinboard.FontAdjustment"] integerValue];
+    }
+    return _fontAdjustment;
+}
+
+- (void)setFontAdjustment:(PPFontAdjustmentType)fontAdjustment {
+    _fontAdjustment = fontAdjustment;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(fontAdjustment) forKey:@"io.aurora.pinboard.FontAdjustment"];
+    [defaults synchronize];
 }
 
 - (BOOL)compressPosts {

@@ -7,6 +7,7 @@
 //
 
 #import "PPTheme.h"
+#import "PPSettings.h"
 
 @implementation PPTheme
 
@@ -56,7 +57,24 @@
 }
 
 + (CGFloat)fontSize {
-    return [UIFont preferredFontForTextStyle:UIFontTextStyleBody].pointSize;
+    PPSettings *settings = [PPSettings sharedSettings];
+    CGFloat fontSize = [UIFont preferredFontForTextStyle:UIFontTextStyleBody].pointSize;
+    switch (settings.fontAdjustment) {
+        case PPFontAdjustmentSmallest:
+            return fontSize - 3;
+            
+        case PPFontAdjustmentSmall:
+            return fontSize - 1;
+            
+        case PPFontAdjustmentMedium:
+            return fontSize;
+            
+        case PPFontAdjustmentBig:
+            return fontSize + 1;
+            
+        case PPFontAdjustmentBiggest:
+            return fontSize + 3;
+    }
 }
 
 + (CGFloat)badgeFontSize {
