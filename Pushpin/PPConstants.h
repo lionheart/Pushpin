@@ -119,6 +119,14 @@ typedef enum : NSInteger {
 } PPReadLaterType;
 
 typedef enum : NSInteger {
+    PPFontAdjustmentSmallest,
+    PPFontAdjustmentSmall,
+    PPFontAdjustmentMedium,
+    PPFontAdjustmentBig,
+    PPFontAdjustmentBiggest
+} PPFontAdjustmentType;
+
+typedef enum : NSInteger {
     PPBookmarkEventAdd,
     PPBookmarkEventUpdate,
     PPBookmarkEventDelete
@@ -153,6 +161,10 @@ static NSString *PPNoActivity = @"PPNoActivity";
 
 // Notification Names
 static NSString *const PPBookmarkEventNotificationName = @"PPBookmarkUpdateNotificationName";
+
+static NSArray *PPFontAdjustmentTypes() {
+    return @[@"Smallest", @"Small", @"Medium", @"Big", @"Biggest"];
+}
 
 #ifdef DELICIOUS
 static NSString *PPTestFlightToken = @"da69c1e2-d02e-4e26-9e8b-189503ae410b";

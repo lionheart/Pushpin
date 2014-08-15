@@ -48,7 +48,6 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic, strong) UIActionSheet *confirmDeletionActionSheet;
 @property (nonatomic, strong) UIActionSheet *confirmMultipleDeletionActionSheet;
 @property (nonatomic, strong) NSLayoutConstraint *multipleEditToolbarBottomConstraint;
-@property (nonatomic, strong) NSLayoutConstraint *tableViewLeftConstraint;
 @property (nonatomic, retain) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *searchDisplayLongPressGestureRecognizer;
 @property (nonatomic, strong) NSArray *indexPathsToDelete;
@@ -314,16 +313,8 @@ static NSInteger kToolbarHeight = 44;
                             @"top": self.topLayoutGuide,
                             @"bottom": self.bottomLayoutGuide };
 
-    self.tableViewLeftConstraint = [NSLayoutConstraint constraintWithItem:self.tableView
-                                                                attribute:NSLayoutAttributeLeft
-                                                                relatedBy:NSLayoutRelationEqual
-                                                                   toItem:self.view
-                                                                attribute:NSLayoutAttributeLeft
-                                                               multiplier:1
-                                                                 constant:0];
-    [self.view addConstraint:self.tableViewLeftConstraint];
-    [self.view lhs_addConstraints:@"H:[table]|" views:views];
     [self.tableView lhs_fillHeightOfSuperview];
+    [self.tableView lhs_fillWidthOfSuperview];
     [self.multiToolbarView lhs_fillWidthOfSuperview];
     [self.view lhs_addConstraints:@"V:[toolbarView(height)]" metrics:@{ @"height": @(kToolbarHeight) } views:views];
     

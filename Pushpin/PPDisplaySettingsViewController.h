@@ -31,6 +31,7 @@ typedef enum : NSInteger {
 typedef enum : NSInteger {
     PPBrowseCompressRow,
     PPBrowseDimReadRow,
+    PPBrowseFontSizeRow,
     PPBrowseDefaultFeedRow,
 } PPBrowseSettingsRowType;
 
@@ -51,6 +52,6 @@ enum : NSInteger {
     PPRowCountOtherSettings = PPOtherDisplayClearCache + 1
 };
 
-@interface PPDisplaySettingsViewController : PPTableViewController <UIAlertViewDelegate>
+@interface PPDisplaySettingsViewController : PPTableViewController <UIAlertViewDelegate, UIActionSheetDelegate>
 
 @end
