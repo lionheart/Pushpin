@@ -716,7 +716,6 @@
     [application setStatusBarStyle:UIStatusBarStyleLightContent];
 
     PPSettings *settings = [PPSettings sharedSettings];
-    settings.fontAdjustment = PPFontAdjustmentMedium;
     if (settings.isAuthenticated) {
 #ifdef PINBOARD
         pinboard.token = settings.token;

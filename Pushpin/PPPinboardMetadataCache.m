@@ -36,6 +36,10 @@
     return cache;
 }
 
+- (void)reset {
+    [self.cache removeAllObjects];
+}
+
 - (PostMetadata *)cachedMetadataForPost:(NSDictionary *)post compressed:(BOOL)compressed dimmed:(BOOL)dimmed width:(CGFloat)width {
     return self.cache[[self cacheKeyForPost:post compressed:compressed dimmed:dimmed width:width]];
 }

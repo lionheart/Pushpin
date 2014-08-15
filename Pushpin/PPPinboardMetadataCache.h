@@ -13,6 +13,7 @@
 @interface PPPinboardMetadataCache : NSObject
 
 + (instancetype)sharedCache;
+- (void)reset;
 
 - (PostMetadata *)cachedMetadataForPost:(NSDictionary *)post compressed:(BOOL)compressed dimmed:(BOOL)dimmed width:(CGFloat)width;
 - (void)cacheMetadata:(PostMetadata *)metadata forPost:(NSDictionary *)post compressed:(BOOL)compressed dimmed:(BOOL)dimmed width:(CGFloat)width;
