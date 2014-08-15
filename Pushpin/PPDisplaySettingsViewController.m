@@ -344,8 +344,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.detailTextLabel.font = [PPTheme titleFont];
                     cell.detailTextLabel.textColor = [UIColor grayColor];
                     cell.accessoryView = nil;
-                    
-                    cell.textLabel.text = NSLocalizedString(@"Font size", nil);
+
+                    cell.textLabel.text = NSLocalizedString(@"Font adjustment", nil);
                     cell.detailTextLabel.text = PPFontAdjustmentTypes()[[[PPSettings sharedSettings] fontAdjustment]];
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;

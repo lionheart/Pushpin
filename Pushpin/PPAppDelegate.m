@@ -532,11 +532,10 @@
             PPPinboardCommunityFeedType feedType = [PPCommunityFeeds() indexOfObject:feedDetails];
             
             switch (feedType) {
-                case PPPinboardCommunityFeedNetwork: {
+                case PPPinboardCommunityFeedNetwork:
                     feedDataSource.components = @[[NSString stringWithFormat:@"secret:%@", settings.feedToken], [NSString stringWithFormat:@"u:%@", settings.username], @"network"];
                     break;
-                }
-                    
+
                 case PPPinboardCommunityFeedPopular:
                     feedDataSource.components = @[@"popular?count=100"];
                     break;
