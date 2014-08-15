@@ -14,6 +14,7 @@
 #import "PPTheme.h"
 #import "PPTitleButton.h"
 #import "PPSettings.h"
+#import "PPPinboardMetadataCache.h"
 
 #import "UITableViewCellValue1.h"
 #import "UITableViewCellSubtitle.h"
@@ -720,14 +721,20 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 
 - (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
     if (actionSheet == self.fontSizeAdjustmentActionSheet) {
-        PPFontAdjustmentType fontAdjustment = (PPFontAdjustmentType)buttonIndex;
-        PPSettings *settings = [PPSettings sharedSettings];
-        settings.fontAdjustment = fontAdjustment;
+        if (buttonIndex < [PPFontAdjustmentTypes() count]) {
+            PPFontAdjustmentType fontAdjustment = (PPFontAdjustmentType)buttonIndex;
+            PPSettings *settings = [PPSettings sharedSettings];
+            settings.fontAdjustment = fontAdjustment;
 
-        [self.tableView beginUpdates];
-        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPBrowseFontSizeRow inSection:PPSectionBrowseSettings]]
-                              withRowAnimation:UITableViewRowAnimationAutomatic];
-        [self.tableView endUpdates];
+            [self.tableView beginUpdates];
+            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPBrowseFontSizeRow inSection:PPSectionBrowseSettings]]
+                                  withRowAnimation:UITableViewRowAnimationAutomatic];
+            [self.tableView endUpdates];
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                [[PPPinboardMetadataCache sharedCache] reset];
+            });
+        }
     }
 }
 
