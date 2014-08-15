@@ -50,6 +50,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 @property (nonatomic, strong) UIKeyCommand *goBackKeyCommand;
 @property (nonatomic, strong) UIWebView *readerWebView;
 @property (nonatomic) BOOL mobilized;
+@property (nonatomic, strong) NSMutableSet *loadedURLs;
 
 - (void)updateInterfaceWithComputedWebPageBackgroundColor;
 - (void)updateInterfaceWithComputedWebPageBackgroundColorTimedOut:(BOOL)timedOut;
@@ -77,6 +78,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     self.numberOfRequestsInProgress = 0;
     self.alreadyLoaded = NO;
     self.history = [NSMutableArray array];
+    self.loadedURLs = [NSMutableSet set];
 
     self.goBackKeyCommand = [UIKeyCommand keyCommandWithInput:UIKeyInputEscape
                                                 modifierFlags:0
@@ -421,19 +423,14 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
-    self.readerWebView.hidden = NO;
-
-    if (!self.alreadyLoaded) {
+    if (![self.loadedURLs containsObject:self.url]) {
         [self loadURL];
     }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-
-    [self.webViewTimeoutTimer invalidate];
-    [self.webView stopLoading];
-    [self.readerWebView stopLoading];
+    [self stopLoading];
 }
 
 - (void)stopLoading {
@@ -618,11 +615,11 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         [self.readerWebView stopLoading];
         self.webView.scrollView.scrollsToTop = YES;
         self.readerWebView.scrollView.scrollsToTop = NO;
-        
-        __weak id weakself = self;
+
+        __weak PPWebViewController *weakself = self;
         [self setReaderViewVisible:NO animated:animated completion:^(BOOL finished) {
-            if (![weakself alreadyLoaded]) {
-                [self loadURL];
+            if (![weakself.loadedURLs containsObject:weakself.url]) {
+                [weakself loadURL];
             }
         }];
     }
@@ -721,10 +718,13 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
     if (![UIApplication isIPad]) {
-        BOOL hideToolbar = self.toolbarConstraint.constant < kToolbarHeight;
+        BOOL hideToolbar = self.toolbarConstraint.constant < (kToolbarHeight / 2);
+        self.yOffsetToStartShowingToolbar = scrollView.contentOffset.y;
         if (hideToolbar) {
-            self.yOffsetToStartShowingToolbar = scrollView.contentOffset.y;
             [self setToolbarVisible:NO animated:YES];
+        }
+        else {
+            [self setToolbarVisible:YES animated:YES];
         }
     }
 }
@@ -892,6 +892,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
             
             if (self.numberOfRequestsInProgress == 0) {
                 [self updateInterfaceWithComputedWebPageBackgroundColor];
+                [self.loadedURLs addObject:self.url];
             }
             
             if ([self.webView canGoBack]) {
@@ -1171,6 +1172,8 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     void (^animations)();
 
     if (visible) {
+        self.readerWebView.hidden = NO;
+
         animations = ^{
             self.readerWebView.alpha = 1;
         };
@@ -1187,7 +1190,9 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                             options:UIViewAnimationOptionCurveLinear | UIViewAnimationOptionBeginFromCurrentState
                          animations:animations
                          completion:^(BOOL finished) {
-                             self.readerWebView.hidden = !visible;
+                             if (!visible) {
+                                 self.readerWebView.hidden = YES;
+                             }
                              
                              if (completion) {
                                  completion(finished);
