@@ -234,28 +234,28 @@ static NSString *CellIdentifier = @"Cell";
 #ifdef PINBOARD
     switch ((PPPinboardSectionType)indexPath.section) {
         case PPPinboardSectionPersonal: {
-            switch (indexPath.row) {
-                case 0:
+            switch ((PPPinboardPersonalFeedType)indexPath.row) {
+                case PPPinboardPersonalFeedAll:
                     cell.textLabel.text = NSLocalizedString(@"All", nil);
                     break;
 
-                case 1:
+                case PPPinboardPersonalFeedPrivate:
                     cell.textLabel.text = NSLocalizedString(@"Private Bookmarks", nil);
                     break;
 
-                case 2:
+                case PPPinboardPersonalFeedPublic:
                     cell.textLabel.text = NSLocalizedString(@"Public", nil);
                     break;
 
-                case 3:
+                case PPPinboardPersonalFeedUnread:
                     cell.textLabel.text = NSLocalizedString(@"Unread", nil);
                     break;
 
-                case 4:
+                case PPPinboardPersonalFeedUntagged:
                     cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
                     break;
 
-                case 5:
+                case PPPinboardPersonalFeedStarred:
                     cell.textLabel.text = NSLocalizedString(@"Starred", nil);
                     break;
             }
@@ -264,21 +264,29 @@ static NSString *CellIdentifier = @"Cell";
         }
 
         case PPPinboardSectionCommunity: {
-            switch (indexPath.row) {
-                case 0:
+            switch ((PPPinboardCommunityFeedType)indexPath.row) {
+                case PPPinboardCommunityFeedNetwork:
                     cell.textLabel.text = NSLocalizedString(@"Network", nil);
                     break;
-                case 1:
+
+                case PPPinboardCommunityFeedPopular:
                     cell.textLabel.text = NSLocalizedString(@"Popular", nil);
                     break;
-                case 2:
+
+                case PPPinboardCommunityFeedWikipedia:
                     cell.textLabel.text = @"Wikipedia";
                     break;
-                case 3:
+
+                case PPPinboardCommunityFeedFandom:
                     cell.textLabel.text = NSLocalizedString(@"Fandom", nil);
                     break;
-                case 4:
+
+                case PPPinboardCommunityFeedJapan:
                     cell.textLabel.text = @"日本語";
+                    break;
+                    
+                case PPPinboardCommunityFeedRecent:
+                    cell.textLabel.text = NSLocalizedString(@"Recent", nil);
                     break;
             }
             
@@ -401,6 +409,10 @@ static NSString *CellIdentifier = @"Cell";
 
                     case PPPinboardCommunityFeedJapan:
                         defaultFeed = @"community-japanese";
+                        break;
+                        
+                    case PPPinboardCommunityFeedRecent:
+                        defaultFeed = @"community-recent";
                         break;
                 }
                 

@@ -205,7 +205,7 @@ static NSArray *PPCommunityFeeds() {
     static dispatch_once_t onceToken;
     static NSArray *feeds;
     dispatch_once(&onceToken, ^{
-        feeds = @[@"network", @"popular", @"wikipedia", @"fandom", @"japan", @"recent"];
+        feeds = @[@"network", @"popular", @"wikipedia", @"fandom", @"japanese", @"recent"];
     });
     return feeds;
 }

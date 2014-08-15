@@ -397,7 +397,7 @@
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         _defaultFeed = [defaults objectForKey:@"io.aurora.pinboard.DefaultFeed"];
         if (!_defaultFeed) {
-            _defaultFeed = @"personal:all";
+            _defaultFeed = @"personal-all";
         }
     }
     
@@ -507,20 +507,20 @@
 
 - (NSString *)defaultFeedDescription {
     // Build a descriptive string for the default feed
-    NSString *feedDescription = [NSString stringWithFormat:@"%@ - %@", NSLocalizedString(@"Personal", nil), @"All"];
+    NSString *feedDescription = [NSString stringWithFormat:@"%@ : %@", NSLocalizedString(@"Personal", nil), @"All"];
     if (self.defaultFeed) {
         if ([[self.defaultFeed substringToIndex:8] isEqualToString:@"personal"]) {
-            feedDescription = [NSString stringWithFormat:@"%@ - %@", NSLocalizedString(@"Personal", nil), [[self.defaultFeed substringFromIndex:9] capitalizedString]];
+            feedDescription = [NSString stringWithFormat:@"%@ : %@", NSLocalizedString(@"Personal", nil), [[self.defaultFeed substringFromIndex:9] capitalizedString]];
         }
         else if ([[self.defaultFeed substringToIndex:9] isEqualToString:@"community"]) {
             NSString *communityDescription = [self.defaultFeed substringFromIndex:10];
             if ([communityDescription isEqualToString:@"japanese"]) {
                 communityDescription = @"日本語";
             }
-            feedDescription = [NSString stringWithFormat:@"%@ - %@", NSLocalizedString(@"Community", nil), [communityDescription capitalizedString]];
+            feedDescription = [NSString stringWithFormat:@"%@ : %@", NSLocalizedString(@"Community", nil), [communityDescription capitalizedString]];
         }
         else if ([[self.defaultFeed substringToIndex:5] isEqualToString:@"saved"]) {
-            feedDescription = [NSString stringWithFormat:@"%@ - %@", NSLocalizedString(@"Saved Feed", nil), [self.defaultFeed substringFromIndex:6]];
+            feedDescription = [NSString stringWithFormat:@"%@ : %@", NSLocalizedString(@"Saved Feed", nil), [self.defaultFeed substringFromIndex:6]];
         }
     }
     return feedDescription;

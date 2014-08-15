@@ -286,7 +286,6 @@
     NSString *urlString;
     
     PPSettings *settings = [PPSettings sharedSettings];
-
     // If it's our username, we need to use the feed token to get any private tags
     if ([escapedComponents[0] isEqualToString:[NSString stringWithFormat:@"u:%@", settings.username]]) {
         urlString = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/%@?count=%ld", settings.feedToken, [escapedComponents componentsJoinedByString:@"/"], (long)self.count];
