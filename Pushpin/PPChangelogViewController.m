@@ -11,8 +11,8 @@
 #import "PPAppDelegate.h"
 #import "PPChangelogViewController.h"
 #import "PPTheme.h"
-#import "UITableViewCellSubtitle.h"
 
+#import <LHSTableViewCells/LHSTableViewCellSubtitle.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import "UITableView+Additions.h"
 
@@ -69,7 +69,7 @@ static NSString *CellIdentifier = @"Cell";
         [self calculateHeightsForWidth:CGRectGetWidth(self.view.frame) - 30];
     }
 
-    [self.tableView registerClass:[UITableViewCellSubtitle class] forCellReuseIdentifier:CellIdentifier];
+    [self.tableView registerClass:[LHSTableViewCellSubtitle class] forCellReuseIdentifier:CellIdentifier];
 }
 
 - (void)calculateHeightsForWidth:(CGFloat)w {

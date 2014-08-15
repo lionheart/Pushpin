@@ -13,13 +13,13 @@
 #import "PPAppDelegate.h"
 #import "PPTheme.h"
 #import "PPTitleButton.h"
-#import "UITableViewCellValue1.h"
 #import "PPTableViewTitleView.h"
 #import "PPConstants.h"
 #import "PPSettings.h"
 
 #import <OpenInChrome/OpenInChromeController.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
+#import <LHSTableViewCells/LHSTableViewCellValue1.h>
 
 static NSString *CellIdentifier = @"Cell";
 
@@ -79,7 +79,7 @@ static NSString *CellIdentifier = @"Cell";
     self.installChromeAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Install Chrome?", nil) message:NSLocalizedString(@"In order to open links with Google Chrome, you first have to install it.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Install", nil), nil];
     self.installiCabMobileAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Install iCab Mobile?", nil) message:NSLocalizedString(@"In order to open links with iCab Mobile, you first have to install it.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Install", nil), nil];
     
-    [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
+    [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {

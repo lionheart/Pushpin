@@ -738,6 +738,16 @@
         [self.window setRootViewController:self.loginViewController];
     }
 
+    /*
+    NSArray *fontFamilies = [UIFont familyNames];
+    for (int i = 0; i < [fontFamilies count]; i++)
+    {
+        NSString *fontFamily = [fontFamilies objectAtIndex:i];
+        NSArray *fontNames = [UIFont fontNamesForFamilyName:[fontFamilies objectAtIndex:i]];
+        NSLog (@"%@: %@", fontFamily, fontNames);
+    }
+     */
+
     [self.window makeKeyAndVisible];
     
     self.dateFormatter = [[NSDateFormatter alloc] init];

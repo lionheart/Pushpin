@@ -118,7 +118,6 @@
 		3743B7381875DAA800B97E6D /* PPPinboardMetadataCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 3743B7371875DAA800B97E6D /* PPPinboardMetadataCache.m */; };
 		3743B73B18763D1D00B97E6D /* PPTableViewTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3743B73A18763D1D00B97E6D /* PPTableViewTitleView.m */; };
 		374698C0174B33CF00407345 /* PPNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 374698BF174B33CF00407345 /* PPNotification.m */; };
-		374BB3271867CE8B004F8413 /* UITableViewCellValue1.m in Sources */ = {isa = PBXBuildFile; fileRef = 374BB3261867CE8B004F8413 /* UITableViewCellValue1.m */; };
 		37516A06186C8AF700AEF7A6 /* PPBookmarkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 37516A05186C8AF700AEF7A6 /* PPBookmarkCell.m */; };
 		3751D18218346C0200E0A42A /* mobilize.png in Resources */ = {isa = PBXBuildFile; fileRef = 3751D17E18346C0200E0A42A /* mobilize.png */; };
 		3751D18318346C0200E0A42A /* mobilize@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3751D17F18346C0200E0A42A /* mobilize@2x.png */; };
@@ -154,7 +153,6 @@
 		3780219B198EB1B900CE269A /* reader.js in Resources */ = {isa = PBXBuildFile; fileRef = 37802199198EADE000CE269A /* reader.js */; };
 		3780219E199130E100CE269A /* PPFadeAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 3780219D199130E000CE269A /* PPFadeAnimator.m */; };
 		378021A1199130EC00CE269A /* PPFadeTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 378021A0199130EC00CE269A /* PPFadeTransition.m */; };
-		378482CC186C92F500DF7A74 /* UITableViewCellSubtitle.m in Sources */ = {isa = PBXBuildFile; fileRef = 378482CB186C92F500DF7A74 /* UITableViewCellSubtitle.m */; };
 		378482CE186C973000DF7A74 /* PPBrowserActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 37018CE4180E3C0B00226408 /* PPBrowserActivity.m */; };
 		378482CF186C973000DF7A74 /* PPReadLaterActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 37018CE6180E3C0B00226408 /* PPReadLaterActivity.m */; };
 		378482D3186CB92D00DF7A74 /* single-tag.png in Resources */ = {isa = PBXBuildFile; fileRef = 378482D1186CB92C00DF7A74 /* single-tag.png */; };
@@ -175,6 +173,9 @@
 		3798B08F18767DAB002D684B /* navigation-edit-darker.png in Resources */ = {isa = PBXBuildFile; fileRef = 3798B08B18767DAB002D684B /* navigation-edit-darker.png */; };
 		3798B09018767DAB002D684B /* navigation-edit-darker@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3798B08C18767DAB002D684B /* navigation-edit-darker@2x.png */; };
 		3798B09118767DAB002D684B /* navigation-edit-blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3798B08D18767DAB002D684B /* navigation-edit-blue@2x.png */; };
+		37A2B4A2199E6D8D005B7671 /* PPReaderSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A2B4A1199E6D8D005B7671 /* PPReaderSettingsViewController.m */; };
+		37A2B4A4199E8943005B7671 /* Whitney-Book.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 37A2B4A3199E8943005B7671 /* Whitney-Book.ttf */; };
+		37A2B4AA199EA8CA005B7671 /* PPReaderSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A2B4A9199EA8CA005B7671 /* PPReaderSettings.m */; };
 		37A7B5C718345DAE0038677E /* stop@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A7B5C118345DAE0038677E /* stop@2x.png */; };
 		37A7B5C818345DAE0038677E /* stop.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A7B5C218345DAE0038677E /* stop.png */; };
 		37A7B5C918345DAE0038677E /* mark-as-read.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A7B5C318345DAE0038677E /* mark-as-read.png */; };
@@ -688,8 +689,6 @@
 		3743B73A18763D1D00B97E6D /* PPTableViewTitleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTableViewTitleView.m; sourceTree = "<group>"; };
 		374698BE174B33CE00407345 /* PPNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPNotification.h; sourceTree = "<group>"; };
 		374698BF174B33CF00407345 /* PPNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPNotification.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		374BB3251867CE8B004F8413 /* UITableViewCellValue1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITableViewCellValue1.h; sourceTree = "<group>"; };
-		374BB3261867CE8B004F8413 /* UITableViewCellValue1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITableViewCellValue1.m; sourceTree = "<group>"; };
 		374E59FE197DADEF00B6EDF1 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		37516A04186C8AF700AEF7A6 /* PPBookmarkCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBookmarkCell.h; sourceTree = "<group>"; };
 		37516A05186C8AF700AEF7A6 /* PPBookmarkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPBookmarkCell.m; sourceTree = "<group>"; };
@@ -744,8 +743,6 @@
 		3780219D199130E000CE269A /* PPFadeAnimator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPFadeAnimator.m; sourceTree = "<group>"; };
 		3780219F199130EC00CE269A /* PPFadeTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPFadeTransition.h; sourceTree = "<group>"; };
 		378021A0199130EC00CE269A /* PPFadeTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPFadeTransition.m; sourceTree = "<group>"; };
-		378482CA186C92F500DF7A74 /* UITableViewCellSubtitle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UITableViewCellSubtitle.h; sourceTree = "<group>"; };
-		378482CB186C92F500DF7A74 /* UITableViewCellSubtitle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITableViewCellSubtitle.m; sourceTree = "<group>"; };
 		378482D1186CB92C00DF7A74 /* single-tag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "single-tag.png"; path = "Assets/single-tag.png"; sourceTree = "<group>"; };
 		378482D2186CB92C00DF7A74 /* single-tag@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "single-tag@2x.png"; path = "Assets/single-tag@2x.png"; sourceTree = "<group>"; };
 		378482D5186CB9ED00DF7A74 /* single-person.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "single-person.png"; path = "Assets/single-person.png"; sourceTree = "<group>"; };
@@ -769,6 +766,11 @@
 		3798B08C18767DAB002D684B /* navigation-edit-darker@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-edit-darker@2x.png"; path = "Assets/navigation-edit-darker@2x.png"; sourceTree = "<group>"; };
 		3798B08D18767DAB002D684B /* navigation-edit-blue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-edit-blue@2x.png"; path = "Assets/navigation-edit-blue@2x.png"; sourceTree = "<group>"; };
 		379C3C1F1894BD4C003A02FF /* DeliciousAppStore.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DeliciousAppStore.plist; sourceTree = "<group>"; };
+		37A2B4A0199E6D8D005B7671 /* PPReaderSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPReaderSettingsViewController.h; sourceTree = "<group>"; };
+		37A2B4A1199E6D8D005B7671 /* PPReaderSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPReaderSettingsViewController.m; sourceTree = "<group>"; };
+		37A2B4A3199E8943005B7671 /* Whitney-Book.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Whitney-Book.ttf"; sourceTree = "<group>"; };
+		37A2B4A8199EA8CA005B7671 /* PPReaderSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPReaderSettings.h; sourceTree = "<group>"; };
+		37A2B4A9199EA8CA005B7671 /* PPReaderSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPReaderSettings.m; sourceTree = "<group>"; };
 		37A7B5C118345DAE0038677E /* stop@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "stop@2x.png"; path = "Assets/stop@2x.png"; sourceTree = "<group>"; };
 		37A7B5C218345DAE0038677E /* stop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stop.png; path = Assets/stop.png; sourceTree = "<group>"; };
 		37A7B5C318345DAE0038677E /* mark-as-read.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mark-as-read.png"; path = "Assets/mark-as-read.png"; sourceTree = "<group>"; };
@@ -1548,6 +1550,8 @@
 				37F91F3D177AB1D500683D46 /* PPNavigationController.m */,
 				37CFA5FE19683ED300C67338 /* PPNoteViewController.h */,
 				37CFA5FF19683ED300C67338 /* PPNoteViewController.m */,
+				37A2B4A0199E6D8D005B7671 /* PPReaderSettingsViewController.h */,
+				37A2B4A1199E6D8D005B7671 /* PPReaderSettingsViewController.m */,
 				3714DB7617558A2000B23F4F /* PPSavedFeedsViewController.h */,
 				3714DB7717558A2000B23F4F /* PPSavedFeedsViewController.m */,
 				3778CE5118B1C97D004113DC /* PPSearchExamplesViewController.h */,
@@ -1586,10 +1590,6 @@
 				37171A2E18B1714E007FF164 /* LHSBooleanTableViewCell.m */,
 				37516A04186C8AF700AEF7A6 /* PPBookmarkCell.h */,
 				37516A05186C8AF700AEF7A6 /* PPBookmarkCell.m */,
-				378482CA186C92F500DF7A74 /* UITableViewCellSubtitle.h */,
-				378482CB186C92F500DF7A74 /* UITableViewCellSubtitle.m */,
-				374BB3251867CE8B004F8413 /* UITableViewCellValue1.h */,
-				374BB3261867CE8B004F8413 /* UITableViewCellValue1.m */,
 			);
 			name = "Table View Cells";
 			sourceTree = "<group>";
@@ -1800,6 +1800,8 @@
 				374698BF174B33CF00407345 /* PPNotification.m */,
 				3743B7361875DAA800B97E6D /* PPPinboardMetadataCache.h */,
 				3743B7371875DAA800B97E6D /* PPPinboardMetadataCache.m */,
+				37A2B4A8199EA8CA005B7671 /* PPReaderSettings.h */,
+				37A2B4A9199EA8CA005B7671 /* PPReaderSettings.m */,
 				3798AD7C18767718002D684B /* PPScrollView.h */,
 				3798AD7D18767718002D684B /* PPScrollView.m */,
 				37889D4219981212002E245A /* PPSettings.h */,
@@ -1900,6 +1902,7 @@
 				3714DB901757DFFD00B23F4F /* user.png */,
 				3714DB911757DFFD00B23F4F /* user@2x.png */,
 				E804950C180EF20800C5CA8B /* webview-helpers.js */,
+				37A2B4A3199E8943005B7671 /* Whitney-Book.ttf */,
 			);
 			name = Assets;
 			sourceTree = "<group>";
@@ -2582,6 +2585,7 @@
 				3714DB921757DFFD00B23F4F /* user.png in Resources */,
 				3714DB931757DFFD00B23F4F /* user@2x.png in Resources */,
 				E804950E180EF6D700C5CA8B /* webview-helpers.js in Resources */,
+				37A2B4A4199E8943005B7671 /* Whitney-Book.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2745,6 +2749,8 @@
 				3743B7381875DAA800B97E6D /* PPPinboardMetadataCache.m in Sources */,
 				3714DB7517556FC600B23F4F /* PPPinboardNotesDataSource.m in Sources */,
 				37CBB7531881F31C000F9C36 /* PPPlainTextViewController.m in Sources */,
+				37A2B4AA199EA8CA005B7671 /* PPReaderSettings.m in Sources */,
+				37A2B4A2199E6D8D005B7671 /* PPReaderSettingsViewController.m in Sources */,
 				378482CF186C973000DF7A74 /* PPReadLaterActivity.m in Sources */,
 				3714DB7817558A2000B23F4F /* PPSavedFeedsViewController.m in Sources */,
 				3798AD7E18767718002D684B /* PPScrollView.m in Sources */,
@@ -2772,8 +2778,6 @@
 				3780219A198EADE000CE269A /* reader.js in Sources */,
 				372AEEF8186B804F00F131A9 /* ScreenshotViewController.m in Sources */,
 				37F91F38177A91A500683D46 /* UITableView+Additions.m in Sources */,
-				378482CC186C92F500DF7A74 /* UITableViewCellSubtitle.m in Sources */,
-				374BB3271867CE8B004F8413 /* UITableViewCellValue1.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

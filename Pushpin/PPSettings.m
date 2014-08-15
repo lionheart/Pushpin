@@ -7,6 +7,7 @@
 //
 
 #import "PPSettings.h"
+
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
 #import <oauthconsumer/OAuthConsumer.h>
 
@@ -41,6 +42,7 @@
 @synthesize readabilityToken = _readabilityToken;
 @synthesize instapaperToken = _instapaperToken;
 @synthesize fontAdjustment = _fontAdjustment;
+@synthesize readerSettings = _readerSettings;
 
 #ifdef PINBOARD
 @synthesize communityFeedOrder = _communityFeedOrder;
@@ -53,6 +55,26 @@
         settings = [[PPSettings alloc] init];
     });
     return settings;
+}
+
+- (PPReaderSettings *)readerSettings {
+    if (!_readerSettings) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSData *data = [defaults objectForKey:@"io.aurora.pinboard.ReaderSettings"];
+        _readerSettings = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+        if (!_readerSettings) {
+            _readerSettings = [[PPReaderSettings alloc] init];
+        }
+    }
+    return _readerSettings;
+}
+
+- (void)setReaderSettings:(PPReaderSettings *)readerSettings {
+    _readerSettings = readerSettings;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:readerSettings];
+    [defaults setObject:data forKey:@"io.aurora.pinboard.ReaderSettings"];
+    [defaults synchronize];
 }
 
 - (PPFontAdjustmentType)fontAdjustment {

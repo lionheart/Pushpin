@@ -44,9 +44,13 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1422</string>
+	<string>1450</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Whitney-Book.ttf</string>
+	</array>
 	<key>UIPrerenderedIcon</key>
 	<true/>
 	<key>UIRequiredDeviceCapabilities</key>

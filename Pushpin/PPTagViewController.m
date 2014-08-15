@@ -15,7 +15,6 @@
 #import "PPNavigationController.h"
 #import "PPTitleButton.h"
 #import "PPTheme.h"
-#import "UITableViewCellValue1.h"
 #import "PPTableViewTitleView.h"
 #import "PPFeedListViewController.h"
 #import "PPDeliciousDataSource.h"
@@ -23,6 +22,7 @@
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
+#import <LHSTableViewCells/LHSTableViewCellValue1.h>
 
 static NSString *CellIdentifier = @"TagCell";
 
@@ -106,8 +106,8 @@ static NSString *CellIdentifier = @"TagCell";
     self.searchDisplayController.delegate = self;
     self.tableView.tableHeaderView = self.searchBar;
     
-    [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
-    [self.searchDisplayController.searchResultsTableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
+    [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
+    [self.searchDisplayController.searchResultsTableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

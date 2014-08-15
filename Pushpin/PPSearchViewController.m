@@ -11,8 +11,6 @@
 #import "PPSearchExamplesViewController.h"
 #import "PPGenericPostViewController.h"
 #import "PPPinboardDataSource.h"
-#import "UITableViewCellValue1.h"
-#import "UITableViewCellSubtitle.h"
 #import "PPTitleButton.h"
 #import "PPAppDelegate.h"
 #import "PPFeedListViewController.h"
@@ -23,6 +21,8 @@
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSCategoryCollection/UIImage+LHSAdditions.h>
 
+#import <LHSTableViewCells/LHSTableViewCellSubtitle.h>
+#import <LHSTableViewCells/LHSTableViewCellValue1.h>
 #import <LHSKeyboardAdjusting/UIViewController+LHSKeyboardAdjustment.h>
 
 #ifdef PINBOARD
@@ -126,8 +126,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
     [self.searchScopeActionSheet addButtonWithTitle:@"Cancel"];
     self.searchScopeActionSheet.cancelButtonIndex = [PPSearchScopes() count];
     
-    [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
-    [self.tableView registerClass:[UITableViewCellSubtitle class] forCellReuseIdentifier:SubtitleCellIdentifier];
+    [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
+    [self.tableView registerClass:[LHSTableViewCellSubtitle class] forCellReuseIdentifier:SubtitleCellIdentifier];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

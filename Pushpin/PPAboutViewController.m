@@ -17,7 +17,6 @@
 #import "PPChangelogViewController.h"
 #import "PPTheme.h"
 #import "PPTitleButton.h"
-#import "UITableViewCellSubtitle.h"
 #import "PPTableViewTitleView.h"
 #import "PPTheme.h"
 #import "PPPlainTextViewController.h"
@@ -25,6 +24,7 @@
 
 #import "UITableView+Additions.h"
 
+#import <LHSTableViewCells/LHSTableViewCellSubtitle.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 static NSString *CellIdentifier = @"CellIdentifier";
@@ -77,7 +77,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.heights = [NSMutableArray array];
 
     self.loadingIndicator = [[PPLoadingView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-    [self.tableView registerClass:[UITableViewCellSubtitle class] forCellReuseIdentifier:CellIdentifier];
+    [self.tableView registerClass:[LHSTableViewCellSubtitle class] forCellReuseIdentifier:CellIdentifier];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

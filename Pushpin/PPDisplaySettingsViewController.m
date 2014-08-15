@@ -16,12 +16,11 @@
 #import "PPSettings.h"
 #import "PPPinboardMetadataCache.h"
 
-#import "UITableViewCellValue1.h"
-#import "UITableViewCellSubtitle.h"
-
 #import <FMDB/FMDatabase.h>
 #import <TextExpander/SMTEDelegateController.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
+#import <LHSTableViewCells/LHSTableViewCellValue1.h>
+#import <LHSTableViewCells/LHSTableViewCellSubtitle.h>
 
 static NSString *CellIdentifier = @"Cell";
 static NSString *ChoiceCellIdentifier = @"ChoiceCell";
@@ -124,8 +123,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     [self.textExpanderSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
     
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
-    [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:ChoiceCellIdentifier];
-    [self.tableView registerClass:[UITableViewCellSubtitle class] forCellReuseIdentifier:SubtitleCellIdentifier];
+    [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:ChoiceCellIdentifier];
+    [self.tableView registerClass:[LHSTableViewCellSubtitle class] forCellReuseIdentifier:SubtitleCellIdentifier];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

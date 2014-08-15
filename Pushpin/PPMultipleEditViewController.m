@@ -12,12 +12,12 @@
 #import "PPMultipleEditViewController.h"
 #import "PPBadgeWrapperView.h"
 #import "PPTheme.h"
-#import "UITableViewCellValue1.h"
 #import "PPConstants.h"
 
 #import <FMDB/FMDatabase.h>
 #import <LHSCategoryCollection/UIImage+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
+#import <LHSTableViewCells/LHSTableViewCellValue1.h>
 
 static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
 static NSString *CellIdentifier = @"Cell";
@@ -53,7 +53,7 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
+    [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
 }
 
 - (id)initWithTags:(NSArray *)tags {
