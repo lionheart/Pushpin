@@ -7,8 +7,9 @@
 //
 
 #import "PPSearchExamplesViewController.h"
-#import "UITableViewCellValue1.h"
 #import "PPTheme.h"
+
+#import <LHSTableViewCells/LHSTableViewCellValue1.h>
 
 static NSString *CellIdentifier = @"CellIdentifier";
 
@@ -49,7 +50,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                                                                            target:self
                                                                                            action:@selector(openSQLiteFTSDocumentation)];
-    [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
+    [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {

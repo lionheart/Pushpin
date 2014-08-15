@@ -11,7 +11,6 @@
 #import "PPTableViewTitleView.h"
 #import "PPBadgeWrapperView.h"
 #import "PPTheme.h"
-#import "UITableViewCellValue1.h"
 
 #import <FMDB/FMDatabase.h>
 #import <ASPinboard/ASPinboard.h>
@@ -20,6 +19,7 @@
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSKeyboardAdjusting/UIViewController+LHSKeyboardAdjustment.h>
 #import <Crashlytics/Crashlytics.h>
+#import <LHSTableViewCells/LHSTableViewCellValue1.h>
 
 static NSString *CellIdentifier = @"CellIdentifier";
 
@@ -146,7 +146,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.tagTextField.autocorrectionType = UITextAutocorrectionTypeNo;
     self.tagTextField.text = @"";
     
-    [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
+    [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
 }
 
 #pragma mark - UITableViewDataSource

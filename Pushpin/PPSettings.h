@@ -8,6 +8,7 @@
 
 #import "AppSettings.h"
 #import "PPConstants.h"
+#import "PPReaderSettings.h"
 
 @class OAToken;
 
@@ -17,6 +18,8 @@
 @property (nonatomic) PPMobilizerType mobilizer;
 @property (nonatomic) PPReadLaterType readLater;
 @property (nonatomic) PPFontAdjustmentType fontAdjustment;
+
+@property (nonatomic, strong) PPReaderSettings *readerSettings;
 
 @property (nonatomic, strong) NSArray *hiddenFeedNames;
 @property (nonatomic) BOOL bookmarksNeedUpdate;

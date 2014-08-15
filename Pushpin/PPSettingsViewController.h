@@ -22,7 +22,7 @@ typedef enum : NSInteger {
 
 typedef enum : NSInteger {
     PPMainReadLater,
-    PPMainMobilizer,
+    PPMainReader,
     PPMainAdvanced,
     PPMainBrowser
 } PPMainSettingsRowType;
@@ -52,7 +52,6 @@ enum : NSInteger {
 @property (nonatomic, retain) UIAlertView *readabilityAlertView;
 @property (nonatomic, retain) UIAlertView *logOutAlertView;
 
-@property (nonatomic, retain) UIActionSheet *mobilizerActionSheet;
 @property (nonatomic, retain) UIActionSheet *supportActionSheet;
 @property (nonatomic, retain) UIActionSheet *readLaterActionSheet;
 @property (nonatomic, strong) UIActionSheet *twitterAccountActionSheet;

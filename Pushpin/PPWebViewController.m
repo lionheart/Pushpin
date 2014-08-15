@@ -920,9 +920,9 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
             [PPWebViewController mobilizedPageForURL:self.url withCompletion:^(NSDictionary *article, NSError *error) {
                 if (!error) {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        NSString *cssFilePath = [[NSBundle mainBundle] pathForResource:@"reader-base"
-                                                                                ofType:@"css"];
+                        PPSettings *settings = [PPSettings sharedSettings];
 
+                        NSString *cssFilePath = [settings.readerSettings readerCSSFilePath];
                         NSURL *baseURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] resourcePath]];
 
                         if (article) {

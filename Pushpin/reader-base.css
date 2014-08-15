@@ -1,7 +1,9 @@
 body {
-  background: #fbfbfb;
-  color: #080000;
-  line-height: 1.2em;
+  background: #%@;
+  color: #%@;
+  line-height: %.2fem;
+  font-family: "%@";
+  font-size: %.1fpx;
 
 /*
  White: #fbfbfb / #080000
@@ -13,39 +15,27 @@ body {
 }
 
 p {
-  font-size: 14px;
 }
 
 h1 {
-  font-size: 28px; /* 2 * p */
+  font-size: 2em;
+  font-family: "%@";
 }
 
 h2 {
-  font-size: 21px; /* 1.5 p */
+  font-size: 1.5em;
+  font-family: "%@";
 }
 
 div.entry-content {
-  width: 95%;
+  width: %d%%; /* 100, 95, 90, 80 */
   margin: 0 auto;
-  /* 100, 95, 90, 80 */
-}
-
-p {
-  font-family: Georgia,"Times New Roman", Times, serif;
 }
 
 a {
 }
 
-/*
 img {
-  display:none;
-}
-*/
-
-img {
-  display: block;
-  margin: 1em 0;
-  width: 100% !important;
+    %@
 }
 

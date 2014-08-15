@@ -19,11 +19,11 @@
 #import "PPTheme.h"
 #import "PPNavigationController.h"
 #import "PPTitleButton.h"
-#import "UITableViewCellValue1.h"
 #import "PPMobilizerUtility.h"
 #import "PPConstants.h"
 #import "PPTwitter.h"
 #import "PPSettings.h"
+#import "PPReaderSettingsViewController.h"
 
 #import <ASPinboard/ASPinboard.h>
 #import <uservoice-iphone-sdk/UserVoice.h>
@@ -33,6 +33,7 @@
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSDelicious/LHSDelicious.h>
+#import <LHSTableViewCells/LHSTableViewCellValue1.h>
 
 static NSString *CellIdentifier = @"CellIdentifier";
 
@@ -67,12 +68,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.logOutAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"This will log you out and delete the local bookmark database from your device.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Log Out", nil), nil];
 
     self.supportActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Contact Support", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Request a feature", nil), NSLocalizedString(@"Report a bug", nil), @"Tweet us", NSLocalizedString(@"Email us", nil), nil];
-
-    self.mobilizerActionSheet = [[UIActionSheet alloc] initWithTitle:nil
-                                                            delegate:self
-                                                   cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-                                              destructiveButtonTitle:nil
-                                                   otherButtonTitles:@"Google", @"Readability", @"Instapaper", nil];
 
     self.readLaterServices = [NSMutableArray array];
     [self.readLaterServices addObject:@[@(PPReadLaterInstapaper)]];
@@ -117,7 +112,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pocketStartedLogin) name:(NSString *)PocketAPILoginStartedNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pocketFinishedLogin) name:(NSString *)PocketAPILoginFinishedNotification object:nil];
     
-    [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
+    [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
@@ -225,7 +220,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     }
                     break;
                     
-                case PPMainMobilizer:
+                case PPMainReader:
                     cell.textLabel.text = NSLocalizedString(@"Reader Settings", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -491,22 +486,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 return;
             }
         }
-        else if (actionSheet == self.mobilizerActionSheet) {
-            NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
-
-            if ([buttonTitle isEqualToString:@"Google"]) {
-                settings.mobilizer = PPMobilizerGoogle;
-            }
-            else if ([buttonTitle isEqualToString:@"Instapaper"]) {
-                settings.mobilizer = PPMobilizerInstapaper;
-            }
-            else if ([buttonTitle isEqualToString:@"Readability"]) {
-                settings.mobilizer = PPMobilizerReadability;
-            }
-
-            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainMobilizer inSection:PPSectionMainSettings]]
-                                  withRowAnimation:UITableViewRowAnimationFade];
-        }
         else if (actionSheet == self.readLaterActionSheet) {
             NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
 
@@ -574,18 +553,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         [self.readLaterActionSheet showInView:self.navigationController.view];
                     }
                     break;
-                    
-                case PPMainMobilizer:
-                    if (isIPad) {
-                        if (!self.actionSheet) {
-                            [self.mobilizerActionSheet showFromRect:rect inView:tableView animated:YES];
-                            self.actionSheet = self.mobilizerActionSheet;
-                        }
-                    }
-                    else {
-                        [self.mobilizerActionSheet showInView:self.navigationController.view];
-                    }
+
+                case PPMainReader: {
+                    PPReaderSettingsViewController *viewController = [[PPReaderSettingsViewController alloc] init];
+                    [self.navigationController pushViewController:viewController animated:YES];
                     break;
+                }
                     
                 case PPMainAdvanced:
                     [self.navigationController pushViewController:[[PPDisplaySettingsViewController alloc] init] animated:YES];

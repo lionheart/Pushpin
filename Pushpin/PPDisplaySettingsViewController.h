@@ -8,16 +8,16 @@
 
 #import "PPTableViewController.h"
 
-typedef enum : NSInteger {
+typedef NS_ENUM(NSInteger, PPDisplaySettingsSectionType) {
     PPSectionDisplaySettings,
     PPSectionBrowseSettings,
     
     // Where we put the clear cache button.
     PPSectionOtherDisplaySettings,
     PPSectionTextExpanderSettings
-} PPDisplaySettingsSectionType;
+};
 
-typedef enum : NSInteger {
+typedef NS_ENUM(NSInteger, PPEditSettingsRowType) {
     PPEditDefaultToPrivate,
     PPEditDefaultToRead,
     PPEditAutocorrecTextRow,
@@ -26,20 +26,20 @@ typedef enum : NSInteger {
 
     // Unused
     PPEditDoubleTapRow,
-} PPEditSettingsRowType;
+};
 
-typedef enum : NSInteger {
+typedef NS_ENUM(NSInteger, PPBrowseSettingsRowType) {
     PPBrowseCompressRow,
     PPBrowseDimReadRow,
     PPBrowseFontSizeRow,
     PPBrowseDefaultFeedRow,
-} PPBrowseSettingsRowType;
+};
 
-typedef enum : NSInteger {
+typedef NS_ENUM(NSInteger, PPOtherDisplaySettingsRowType) {
     PPOtherOnlyPromptToAddBookmarksOnce,
     PPOtherAlwaysShowAlert,
     PPOtherDisplayClearCache
-} PPOtherDisplaySettingsRowType;
+};
 
 typedef NS_ENUM(NSInteger, PPTextExpanderRowType) {
     PPTextExpanderRowSwitch,

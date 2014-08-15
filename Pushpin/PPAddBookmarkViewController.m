@@ -15,7 +15,6 @@
 #import "NSString+URLEncoding2.h"
 #import "PPNavigationController.h"
 #import "PPTheme.h"
-#import "UITableViewCellValue1.h"
 #import "PPBadgeWrapperView.h"
 #import "PPBadgeView.h"
 #import "UITableView+Additions.h"
@@ -36,6 +35,7 @@
 #import <LHSDelicious/LHSDelicious.h>
 #endif
 
+#import <LHSTableViewCells/LHSTableViewCellValue1.h>
 #import <LHSCategoryCollection/UIImage+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 
@@ -271,7 +271,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self.tableView registerClass:[UITableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
+    [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
