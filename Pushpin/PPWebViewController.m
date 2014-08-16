@@ -923,10 +923,13 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                         PPSettings *settings = [PPSettings sharedSettings];
 
                         NSString *cssFilePath = [settings.readerSettings readerCSSFilePath];
+                        NSString *css = [[NSString alloc] initWithContentsOfFile:cssFilePath
+                                                                        encoding:NSUTF8StringEncoding
+                                                                           error:nil];
                         NSURL *baseURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] resourcePath]];
 
                         if (article) {
-                            NSString *content = [NSString stringWithFormat:@"<html><head><link rel='stylesheet' href='%@'></link><script type='text/javascript'>var isLoaded=true;</script></head><body>%@</body></html>", cssFilePath, article[@"content"]];
+                            NSString *content = [NSString stringWithFormat:@"<html><head><style type='text/css'>%@'</style><script type='text/javascript'>var isLoaded=true;</script></head><body>%@</body></html>", css, article[@"content"]];
                             [self.readerWebView loadHTMLString:content baseURL:baseURL];
                         }
                         else {
