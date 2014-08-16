@@ -90,11 +90,11 @@
                                                         encoding:NSUTF8StringEncoding
                                                            error:nil];
 
-    NSString *customReaderCSS = [NSString stringWithFormat:baseReaderCSS, [self hexStringFromColor:self.backgroundColor], [self hexStringFromColor:self.textColor], self.fontName, self.lineSpacing, self.fontSize, self.headerFontName, self.headerFontName, self.margin, self.imageCSS];
-    [customReaderCSS writeToFile:[self customReaderCSSFilePath]
-                      atomically:YES
-                        encoding:NSUTF8StringEncoding
-                           error:nil];
+    NSString *customReaderCSS = [NSString stringWithFormat:baseReaderCSS, [self hexStringFromColor:self.backgroundColor], [self hexStringFromColor:self.textColor], self.lineSpacing, self.fontName, self.fontSize, self.headerFontName, self.headerFontName, self.margin, self.imageCSS];
+    BOOL success = [customReaderCSS writeToFile:[self customReaderCSSFilePath]
+                                     atomically:YES
+                                       encoding:NSUTF8StringEncoding
+                                          error:nil];
 }
 
 - (NSString *)readerCSSFilePath {

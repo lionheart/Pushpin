@@ -1073,9 +1073,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                           
                                           __block CGFloat amountToAdd = (CGFloat)inserted.count / posts.count;
                                           
-                                          [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
-                                              [db beginTransaction];
-
+                                          [[PPAppDelegate databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
                                               for (NSString *hash in inserted) {
                                                   NSDictionary *post = bookmarks[hash];
                                                   
@@ -1161,8 +1159,6 @@ static BOOL kPinboardSyncInProgress = NO;
                                               [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash NOT IN (SELECT hash FROM bookmark)"];
                                               [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
                                               [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
-                                              
-                                              [db commit];
                                           }];
                                           
                                           NSDate *endDate = [NSDate date];
