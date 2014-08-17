@@ -14,6 +14,10 @@ static NSString *CellIdentifier = @"Cell";
 
 @interface LHSFontSelectionViewController ()
 
+@property (nonatomic) BOOL purchased;
+
+- (NSAttributedString *)attributedFontNameString;
+
 @end
 
 @implementation LHSFontSelectionViewController
@@ -41,6 +45,7 @@ static NSString *CellIdentifier = @"Cell";
     
     self.title = @"Font";
     self.currentFontName = [self.delegate fontNameForFontSelectionViewController:self];
+    self.purchased = NO;
     
     self.fonts = [NSMutableArray array];
     self.fontsForSectionIndex = [NSMutableDictionary dictionary];
@@ -119,17 +124,26 @@ static NSString *CellIdentifier = @"Cell";
         return @"Premium Fonts";
     }
     return self.sectionIndexTitles[section];
-    
-    if (self.onlyShowPreferredFonts) {
-        return nil;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (!self.purchased && indexPath.section == 0 && indexPath.row == 0) {
+        CGRect rect = [[self attributedFontNameString] boundingRectWithSize:CGSizeMake(CGRectGetWidth(self.tableView.frame) - 20, CGFLOAT_MAX)
+                                                                    options:NSStringDrawingUsesLineFragmentOrigin
+                                                                    context:nil];
+        return CGRectGetHeight(rect);
     }
     else {
-        if (self.preferredFontNames.count > 0 && section == 0) {
-            return nil;
+        NSString *fontName;
+        if (self.onlyShowPreferredFonts) {
+            fontName = self.preferredFontNames[indexPath.row];
         }
         else {
-            return self.sectionIndexTitles[section];
+            NSString *sectionName = self.sectionIndexTitles[indexPath.section];
+            fontName = self.fontsForSectionIndex[sectionName][indexPath.row];
         }
+        UIFont *font = [UIFont fontWithName:fontName size:[self.delegate fontSizeForFontSelectionViewController:self] + 4];
+        return [fontName sizeWithAttributes:@{NSFontAttributeName: font}].height;
     }
 }
 
@@ -172,11 +186,16 @@ static NSString *CellIdentifier = @"Cell";
     else if ([fontDisplayName isEqualToString:@"Brando Regular"]) {
         fontDisplayName = @"Brando";
     }
-
-    cell.textLabel.text = fontDisplayName;
-    cell.textLabel.font = font;
-    if ([fontName isEqualToString:self.currentFontName]) {
-        cell.accessoryType = UITableViewCellAccessoryCheckmark;
+    
+    if (!self.purchased && indexPath.section == 0 && indexPath.row == 0) {
+        cell.textLabel.attributedText = [self attributedFontNameString];
+    }
+    else {
+        cell.textLabel.text = fontDisplayName;
+        cell.textLabel.font = font;
+        if ([fontName isEqualToString:self.currentFontName]) {
+            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        }
     }
     
     return cell;
@@ -249,4 +268,24 @@ static NSString *CellIdentifier = @"Cell";
     
     return [indexPaths copy];
 }
+
+- (NSAttributedString *)attributedFontNameString {
+    static NSMutableAttributedString *string;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSRange range = NSMakeRange(0, 0);
+        string = [[NSMutableAttributedString alloc] initWithString:[self.preferredFontNames componentsJoinedByString:@", "]];
+        
+        for (NSString *fontName in self.preferredFontNames) {
+            UIFont *font = [UIFont fontWithName:fontName size:[self.delegate fontSizeForFontSelectionViewController:self] + 4];
+            range.length = fontName.length;
+            [string addAttribute:NSFontAttributeName value:font range:range];
+            
+            range.location += fontName.length + 2;
+        }
+    });
+    
+    return string;
+}
+
 @end
