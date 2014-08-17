@@ -400,6 +400,8 @@
 		37F1E1BB18C617940032B22B /* navigation-recent@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37F1E1B718C617940032B22B /* navigation-recent@2x.png */; };
 		37F1E1BC18C617940032B22B /* navigation-search.png in Resources */ = {isa = PBXBuildFile; fileRef = 37F1E1B818C617940032B22B /* navigation-search.png */; };
 		37F1E1BD18C617940032B22B /* navigation-search@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37F1E1B918C617940032B22B /* navigation-search@2x.png */; };
+		37F6D7D819A10DC9004016DB /* Brando Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 37F6D7D619A10DC9004016DB /* Brando Regular.otf */; };
+		37F6D7D919A10DC9004016DB /* Flex Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 37F6D7D719A10DC9004016DB /* Flex Regular.otf */; };
 		37F7825B198C354200C99139 /* PPShrinkBackTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F7825A198C354200C99139 /* PPShrinkBackTransition.m */; };
 		37F7825E198C354D00C99139 /* PPShrinkBackAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F7825D198C354D00C99139 /* PPShrinkBackAnimator.m */; };
 		37F91F38177A91A500683D46 /* UITableView+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F91F37177A91A500683D46 /* UITableView+Additions.m */; };
@@ -1014,6 +1016,8 @@
 		37F1E1B718C617940032B22B /* navigation-recent@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-recent@2x.png"; path = "Assets/navigation-recent@2x.png"; sourceTree = "<group>"; };
 		37F1E1B818C617940032B22B /* navigation-search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-search.png"; path = "Assets/navigation-search.png"; sourceTree = "<group>"; };
 		37F1E1B918C617940032B22B /* navigation-search@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-search@2x.png"; path = "Assets/navigation-search@2x.png"; sourceTree = "<group>"; };
+		37F6D7D619A10DC9004016DB /* Brando Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Brando Regular.otf"; sourceTree = "<group>"; };
+		37F6D7D719A10DC9004016DB /* Flex Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Flex Regular.otf"; sourceTree = "<group>"; };
 		37F78259198C354200C99139 /* PPShrinkBackTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPShrinkBackTransition.h; sourceTree = "<group>"; };
 		37F7825A198C354200C99139 /* PPShrinkBackTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPShrinkBackTransition.m; sourceTree = "<group>"; };
 		37F7825C198C354D00C99139 /* PPShrinkBackAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPShrinkBackAnimator.h; sourceTree = "<group>"; };
@@ -1696,8 +1700,10 @@
 		37DAAA7F199FFDD50050350D /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
+				37F6D7D619A10DC9004016DB /* Brando Regular.otf */,
 				37DAAA8219A001F90050350D /* Charter Regular.ttf */,
 				37DAAA8419A002380050350D /* Courier Prime.ttf */,
+				37F6D7D719A10DC9004016DB /* Flex Regular.otf */,
 				37DAAA80199FFDE40050350D /* LyonTextApp-Regular.ttf */,
 			);
 			name = Fonts;
@@ -2227,6 +2233,7 @@
 				E89001FF183EB90100C1F969 /* bookmark-favorite@2x.png in Resources */,
 				E8900200183EB90100C1F969 /* bookmark-private.png in Resources */,
 				E8900201183EB90100C1F969 /* bookmark-private@2x.png in Resources */,
+				37F6D7D819A10DC9004016DB /* Brando Regular.otf in Resources */,
 				E8F987E0183E796900EF976D /* browse-all.png in Resources */,
 				E8DA7972183D2416002B1D0B /* browse-all@2x.png in Resources */,
 				E8F987E1183E796900EF976D /* browse-fandom.png in Resources */,
@@ -2273,6 +2280,7 @@
 				372C840A1870E3B300BF520D /* Delete-Button@2x.png in Resources */,
 				37A7B5CF18345F140038677E /* edit.png in Resources */,
 				37A7B5D018345F140038677E /* edit@2x.png in Resources */,
+				37F6D7D919A10DC9004016DB /* Flex Regular.otf in Resources */,
 				37CBB7501881B568000F9C36 /* IC-Star-5.png in Resources */,
 				37CBB74E1881B568000F9C36 /* IC-Star-5@2x.png in Resources */,
 				37CBB74F1881B568000F9C36 /* IC-Wrench-65.png in Resources */,
