@@ -19,7 +19,6 @@ PODS:
   - AFNetworking/UIKit (2.2.4):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
-  - AppSettings (1.0.0)
   - ASPinboard (0.0.3):
     - hpple (~> 0.2.0)
   - BugshotKit (0.1.0)
@@ -61,11 +60,11 @@ PODS:
   - TTTAttributedLabel (1.10.1)
   - uservoice-iphone-sdk (3.1.0)
   - XMLDictionary (1.4)
+  - YHRoundBorderedButton (0.1.0)
 
 DEPENDENCIES:
   - ADNActivityCollection (from `Specs/ADNActivityCollection.podspec`)
   - AFNetworking (= 2.2.0)
-  - AppSettings (= 1.0.0)
   - ASPinboard (from `Vendor/ASPinboard`)
   - BugshotKit (= 0.1.0)
   - CrashlyticsFramework (= 2.2.1)
@@ -90,6 +89,7 @@ DEPENDENCIES:
   - TextExpander (= 2.3.1)
   - TTTAttributedLabel (= 1.10.1)
   - uservoice-iphone-sdk (= 3.1.0)
+  - YHRoundBorderedButton
 
 EXTERNAL SOURCES:
   ADNActivityCollection:
@@ -112,7 +112,6 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   ADNActivityCollection: f370af826e439b5f661bb5619e27d6d16fe94bd5
   AFNetworking: ab63e259fe91eef4519b371ef0a4955af0e73e64
-  AppSettings: 68cbf0e06dec7d62a96b1a3038945d5fc01af6e0
   ASPinboard: 5e25e15c0984073d997301696865779a2b4d7953
   BugshotKit: 1c8bc57927dacc56e53c9ef628a4dc2df300887a
   CrashlyticsFramework: a9d172599c3a34e68067e16446a764041b980162
@@ -139,5 +138,6 @@ SPEC CHECKSUMS:
   TTTAttributedLabel: 94bb04f1e005616002dd2cee0262a0082e533627
   uservoice-iphone-sdk: 36286c4a8de16a1e7e87110de6b2270fe9a31a36
   XMLDictionary: 735e81b9a043e220b0d24e9d4f16719606f2e0fc
+  YHRoundBorderedButton: 6b22ec3f6b160fe6ca9ce8c2057ab1dfe0afb283
 
 COCOAPODS: 0.33.1

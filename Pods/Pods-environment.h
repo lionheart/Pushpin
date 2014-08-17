@@ -60,12 +60,6 @@
 #define COCOAPODS_VERSION_MINOR_ASPinboard 0
 #define COCOAPODS_VERSION_PATCH_ASPinboard 3
 
-// AppSettings
-#define COCOAPODS_POD_AVAILABLE_AppSettings
-#define COCOAPODS_VERSION_MAJOR_AppSettings 1
-#define COCOAPODS_VERSION_MINOR_AppSettings 0
-#define COCOAPODS_VERSION_PATCH_AppSettings 0
-
 // CrashlyticsFramework
 #define COCOAPODS_POD_AVAILABLE_CrashlyticsFramework
 #define COCOAPODS_VERSION_MAJOR_CrashlyticsFramework 2
@@ -221,6 +215,12 @@
 #define COCOAPODS_VERSION_MAJOR_XMLDictionary 1
 #define COCOAPODS_VERSION_MINOR_XMLDictionary 4
 #define COCOAPODS_VERSION_PATCH_XMLDictionary 0
+
+// YHRoundBorderedButton
+#define COCOAPODS_POD_AVAILABLE_YHRoundBorderedButton
+#define COCOAPODS_VERSION_MAJOR_YHRoundBorderedButton 0
+#define COCOAPODS_VERSION_MINOR_YHRoundBorderedButton 1
+#define COCOAPODS_VERSION_PATCH_YHRoundBorderedButton 0
 
 // hpple
 #define COCOAPODS_POD_AVAILABLE_hpple
