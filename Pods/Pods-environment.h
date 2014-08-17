@@ -106,7 +106,7 @@
 #define COCOAPODS_POD_AVAILABLE_LHSCategoryCollection
 #define COCOAPODS_VERSION_MAJOR_LHSCategoryCollection 0
 #define COCOAPODS_VERSION_MINOR_LHSCategoryCollection 0
-#define COCOAPODS_VERSION_PATCH_LHSCategoryCollection 11
+#define COCOAPODS_VERSION_PATCH_LHSCategoryCollection 12
 
 // LHSDelicious
 #define COCOAPODS_POD_AVAILABLE_LHSDelicious
@@ -130,7 +130,7 @@
 #define COCOAPODS_POD_AVAILABLE_LHSFontSelectionViewController
 #define COCOAPODS_VERSION_MAJOR_LHSFontSelectionViewController 0
 #define COCOAPODS_VERSION_MINOR_LHSFontSelectionViewController 0
-#define COCOAPODS_VERSION_PATCH_LHSFontSelectionViewController 3
+#define COCOAPODS_VERSION_PATCH_LHSFontSelectionViewController 4
 
 // LHSKeyboardAdjusting
 #define COCOAPODS_POD_AVAILABLE_LHSKeyboardAdjusting
