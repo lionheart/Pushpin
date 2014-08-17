@@ -1,1 +1,0 @@
-../../AppSettings/AppSettings/AppSettings.h

@@ -27,7 +27,7 @@ pod 'CrashlyticsFramework', '2.2.1'
 pod 'AFNetworking', '2.2.0'
 pod 'LHSKeyboardAdjusting', '0.0.1'
 pod 'RNCryptor'
-pod 'AppSettings', '1.0.0'
+pod 'YHRoundBorderedButton'
 
 target 'DebugPods', :exclusive => true do
   pod 'BugshotKit', '0.1.0'
