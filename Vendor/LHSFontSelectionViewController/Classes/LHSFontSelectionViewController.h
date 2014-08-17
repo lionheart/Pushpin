@@ -6,10 +6,12 @@
 //
 //
 
-#import <UIKit/UIKit.h>
+@import StoreKit;
+@import UIKit;
+
 #import "LHSFontSelecting.h"
 
-@interface LHSFontSelectionViewController : UITableViewController
+@interface LHSFontSelectionViewController : UITableViewController <SKProductsRequestDelegate, SKPaymentTransactionObserver>
 
 @property (nonatomic) BOOL onlyShowPreferredFonts;
 @property (nonatomic, strong) NSMutableArray *preferredFontNames;

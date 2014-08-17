@@ -9,6 +9,8 @@
 #import "LHSFontSelectionViewController.h"
 #import <LHSTableViewCells/LHSTableViewCellValue1.h>
 #import <LHSCategoryCollection/UIFont+LHSAdditions.h>
+#import <YHRoundBorderedButton/YHRoundBorderedButton.h>
+#import <LHSCategoryCollection/UIView+LHSAdditions.h>
 
 static NSString *CellIdentifier = @"Cell";
 
@@ -17,6 +19,8 @@ static NSString *CellIdentifier = @"Cell";
 @property (nonatomic) BOOL purchased;
 
 - (NSAttributedString *)attributedFontNameString;
+- (void)purchasePremiumFonts:(id)sender;
++ (NSString *)fontNameToDisplayName:(NSString *)fontName;
 
 @end
 
@@ -96,6 +100,17 @@ static NSString *CellIdentifier = @"Cell";
                               atScrollPosition:UITableViewScrollPositionTop
                                       animated:NO];
     }
+
+    if (!self.purchased) {
+        SKProductsRequest *request = [[SKProductsRequest alloc] initWithProductIdentifiers:[NSSet setWithArray:@[@"com.lionheartsw.Pushpin.PremiumFonts"]]];
+        request.delegate = self;
+        [request start];
+    }
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
 }
 
 #pragma mark - Table view data source
@@ -111,11 +126,21 @@ static NSString *CellIdentifier = @"Cell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (self.onlyShowPreferredFonts) {
-        return self.preferredFontNames.count;
+        if (self.purchased) {
+            return self.preferredFontNames.count;
+        }
+        else {
+            return 1;
+        }
     }
     else {
         NSString *sectionName = self.sectionIndexTitles[section];
-        return [self.fontsForSectionIndex[sectionName] count];
+        if (section == 0 && !self.purchased) {
+            return 1;
+        }
+        else {
+            return [self.fontsForSectionIndex[sectionName] count];
+        }
     }
 }
 
@@ -126,12 +151,20 @@ static NSString *CellIdentifier = @"Cell";
     return self.sectionIndexTitles[section];
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
+    if (self.preferredFontNames.count > 0 && section == 0) {
+        return @"Tap to restore previous purchase.";
+    }
+    return @"";
+}
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    CGFloat height;
     if (!self.purchased && indexPath.section == 0 && indexPath.row == 0) {
-        CGRect rect = [[self attributedFontNameString] boundingRectWithSize:CGSizeMake(CGRectGetWidth(self.tableView.frame) - 20, CGFLOAT_MAX)
+        CGRect rect = [[self attributedFontNameString] boundingRectWithSize:CGSizeMake(CGRectGetWidth(self.tableView.frame) - 40, CGFLOAT_MAX)
                                                                     options:NSStringDrawingUsesLineFragmentOrigin
                                                                     context:nil];
-        return CGRectGetHeight(rect);
+        height = CGRectGetHeight(rect);
     }
     else {
         NSString *fontName;
@@ -143,8 +176,9 @@ static NSString *CellIdentifier = @"Cell";
             fontName = self.fontsForSectionIndex[sectionName][indexPath.row];
         }
         UIFont *font = [UIFont fontWithName:fontName size:[self.delegate fontSizeForFontSelectionViewController:self] + 4];
-        return [fontName sizeWithAttributes:@{NSFontAttributeName: font}].height;
+        height = [fontName sizeWithAttributes:@{NSFontAttributeName: font}].height;
     }
+    return MAX(10, height) + 30;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -155,6 +189,7 @@ static NSString *CellIdentifier = @"Cell";
     cell.textLabel.font = nil;
     cell.detailTextLabel.text = nil;
     cell.detailTextLabel.font = nil;
+    [cell.contentView lhs_removeSubviews];
     
     NSString *fontName;
     if (self.onlyShowPreferredFonts) {
@@ -167,28 +202,27 @@ static NSString *CellIdentifier = @"Cell";
 
     UIFont *font = [UIFont fontWithName:fontName size:[self.delegate fontSizeForFontSelectionViewController:self] + 4];
     
-    NSString *fontDisplayName = [font lhs_displayName];
-    if ([fontDisplayName isEqualToString:@"Lyon Text App Regular"]) {
-        fontDisplayName = @"Lyon";
-    }
-    else if ([fontDisplayName isEqualToString:@"Avenir Next Regular"]) {
-        fontDisplayName = @"Avenir Next";
-    }
-    else if ([fontDisplayName isEqualToString:@"Arial MT"]) {
-        fontDisplayName = @"Arial";
-    }
-    else if ([fontDisplayName isEqualToString:@"Futura Medium"]) {
-        fontDisplayName = @"Futura";
-    }
-    else if ([fontDisplayName isEqualToString:@"Flex Regular"]) {
-        fontDisplayName = @"Flex";
-    }
-    else if ([fontDisplayName isEqualToString:@"Brando Regular"]) {
-        fontDisplayName = @"Brando";
-    }
+    NSString *fontDisplayName = [LHSFontSelectionViewController fontNameToDisplayName:[font lhs_displayName]];
     
     if (!self.purchased && indexPath.section == 0 && indexPath.row == 0) {
         cell.textLabel.attributedText = [self attributedFontNameString];
+        cell.textLabel.numberOfLines = 0;
+
+        BOOL displayPriceButton = YES;
+        if (displayPriceButton) {
+            YHRoundBorderedButton *priceButton = [[YHRoundBorderedButton alloc] init];
+            priceButton.tag = indexPath.row;
+            [priceButton setTitle:@"$1.99" forState:UIControlStateNormal];
+            [priceButton addTarget:self action:@selector(priceButtonDidTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
+            [priceButton sizeToFit];
+            priceButton.translatesAutoresizingMaskIntoConstraints = NO;
+            
+            [cell.contentView addSubview:priceButton];
+            [cell.contentView lhs_addConstraints:@"[view(width)]-8-|"
+                                         metrics:@{@"width": @(CGRectGetWidth(priceButton.frame)) }
+                                           views:@{@"view": priceButton}];
+            [cell.contentView lhs_centerVerticallyForView:priceButton];
+        }
     }
     else {
         cell.textLabel.text = fontDisplayName;
@@ -215,25 +249,31 @@ static NSString *CellIdentifier = @"Cell";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    NSArray *indexPathsForPreviouslySelectedFont = [self indexPathsForFontName:self.currentFontName];
-    
-    NSString *fontName;
-    if (self.onlyShowPreferredFonts) {
-        fontName = self.preferredFontNames[indexPath.row];
+    if (self.preferredFontNames.count > 0 && !self.purchased && indexPath.section == 0) {
+        [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
+        [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
     }
     else {
-        NSString *sectionName = self.sectionIndexTitles[indexPath.section];
-        fontName = self.fontsForSectionIndex[sectionName][indexPath.row];
-    }
-    
-    if (![fontName isEqualToString:self.currentFontName]) {
-        self.currentFontName = fontName;
-        [self.delegate setFontName:fontName forFontSelectionViewController:self];
+        NSArray *indexPathsForPreviouslySelectedFont = [self indexPathsForFontName:self.currentFontName];
         
-        [self.tableView beginUpdates];
-        [self.tableView reloadRowsAtIndexPaths:[indexPathsForPreviouslySelectedFont arrayByAddingObject:indexPath]
-                              withRowAnimation:UITableViewRowAnimationAutomatic];
-        [self.tableView endUpdates];
+        NSString *fontName;
+        if (self.onlyShowPreferredFonts) {
+            fontName = self.preferredFontNames[indexPath.row];
+        }
+        else {
+            NSString *sectionName = self.sectionIndexTitles[indexPath.section];
+            fontName = self.fontsForSectionIndex[sectionName][indexPath.row];
+        }
+        
+        if (![fontName isEqualToString:self.currentFontName]) {
+            self.currentFontName = fontName;
+            [self.delegate setFontName:fontName forFontSelectionViewController:self];
+            
+            [self.tableView beginUpdates];
+            [self.tableView reloadRowsAtIndexPaths:[indexPathsForPreviouslySelectedFont arrayByAddingObject:indexPath]
+                                  withRowAnimation:UITableViewRowAnimationAutomatic];
+            [self.tableView endUpdates];
+        }
     }
 }
 
@@ -274,18 +314,141 @@ static NSString *CellIdentifier = @"Cell";
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         NSRange range = NSMakeRange(0, 0);
-        string = [[NSMutableAttributedString alloc] initWithString:[self.preferredFontNames componentsJoinedByString:@", "]];
+        NSMutableArray *fontNames = [NSMutableArray array];
+        for (NSString *fontName in self.preferredFontNames) {
+            UIFont *font = [UIFont fontWithName:fontName size:[self.delegate fontSizeForFontSelectionViewController:self] + 4];
+            NSString *displayName = [LHSFontSelectionViewController fontNameToDisplayName:[font lhs_displayName]];
+            [fontNames addObject:displayName];
+        }
+
+        string = [[NSMutableAttributedString alloc] initWithString:[fontNames componentsJoinedByString:@", "]];
         
         for (NSString *fontName in self.preferredFontNames) {
             UIFont *font = [UIFont fontWithName:fontName size:[self.delegate fontSizeForFontSelectionViewController:self] + 4];
-            range.length = fontName.length;
+            NSString *displayName = [LHSFontSelectionViewController fontNameToDisplayName:[font lhs_displayName]];
+            range.length = displayName.length;
             [string addAttribute:NSFontAttributeName value:font range:range];
-            
-            range.location += fontName.length + 2;
+            range.location += displayName.length + 2;
         }
     });
     
     return string;
+}
+
++ (NSString *)fontNameToDisplayName:(NSString *)fontName {
+    if ([fontName isEqualToString:@"Lyon Text App Regular"]) {
+        fontName = @"Lyon";
+    }
+    else if ([fontName isEqualToString:@"Avenir Next Regular"]) {
+        fontName = @"Avenir Next";
+    }
+    else if ([fontName isEqualToString:@"Arial MT"]) {
+        fontName = @"Arial";
+    }
+    else if ([fontName isEqualToString:@"Futura Medium"]) {
+        fontName = @"Futura";
+    }
+    else if ([fontName isEqualToString:@"Flex Regular"]) {
+        fontName = @"Flex";
+    }
+    else if ([fontName isEqualToString:@"Brando Regular"]) {
+        fontName = @"Brando";
+    }
+    return fontName;
+}
+
+#pragma mark - SKProductsRequestDelegate
+
+- (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
+    
+}
+
+#pragma mark - SKPaymentTransactionObserver
+
+- (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions {
+    for (SKPaymentTransaction *transaction in transactions) {
+        switch (transaction.transactionState) {
+            case SKPaymentTransactionStatePurchased: {
+                [queue finishTransaction:transaction];
+                
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Success!"
+                                                                message:@"Thank you for your purchase."
+                                                               delegate:nil
+                                                      cancelButtonTitle:nil
+                                                      otherButtonTitles:@"OK", nil];
+                [alert show];
+                break;
+            }
+                
+            case SKPaymentTransactionStateRestored:
+                [queue finishTransaction:transaction];
+                break;
+                
+            case SKPaymentTransactionStateFailed: {
+                // iOS already displays an error prompt when IAPs are restricted.
+                if (transaction.error.code != SKErrorPaymentNotAllowed && transaction.error.code != SKErrorPaymentCancelled) {
+                    NSString *title = [NSString stringWithFormat:@"Store Error %ld", (long)transaction.error.code];
+                    NSString *message;
+                    
+                    switch (transaction.error.code) {
+                        case SKErrorUnknown:
+                            message = @"An unknown error occured.";
+                            break;
+                            
+                        case SKErrorClientInvalid:
+                            message = @"This client is not authorized to make in-app purchases.";
+                            break;
+                            
+                        default:
+                            message = transaction.error.localizedDescription;
+                            break;
+                    }
+                    
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
+                                                                    message:message
+                                                                   delegate:nil
+                                                          cancelButtonTitle:nil
+                                                          otherButtonTitles:@"OK", nil];
+                    [alert show];
+                }
+                [queue finishTransaction:transaction];
+                break;
+            }
+        }
+    }
+}
+
+- (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableView beginUpdates];
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView endUpdates];
+    });
+}
+
+- (void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSString *title = [NSString stringWithFormat:@"Store Error %ld", (long)error.code];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
+                                                        message:error.localizedDescription
+                                                       delegate:nil
+                                              cancelButtonTitle:nil
+                                              otherButtonTitles:@"OK", nil];
+        [alert show];
+
+        [self.tableView beginUpdates];
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView endUpdates];
+    });
+}
+
+#pragma mark - Utils
+
+- (void)purchasePremiumFonts:(id)sender {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        SKPayment *payment = [SKPayment paymentWithProduct:product];
+        [[SKPaymentQueue defaultQueue] addPayment:payment];
+    });
 }
 
 @end
