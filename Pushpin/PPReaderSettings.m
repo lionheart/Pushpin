@@ -10,6 +10,7 @@
 
 @interface PPReaderSettings ()
 
+- (NSString *)textAlignmentString;
 - (NSString *)customReaderCSSFilePath;
 - (NSString *)hexStringFromColor:(UIColor *)color;
 
@@ -24,7 +25,7 @@
         self.fontName = @"Helvetica-Neue";
         self.fontSize = 14;
         self.displayImages = YES;
-        self.lineSpacing = 1.1;
+        self.lineSpacing = 1.2;
         self.textAlignment = NSTextAlignmentLeft;
         self.margin = 95;
         self.backgroundColor = HEX(0xfbfbfbff);
@@ -90,7 +91,7 @@
                                                         encoding:NSUTF8StringEncoding
                                                            error:nil];
 
-    NSString *customReaderCSS = [NSString stringWithFormat:baseReaderCSS, [self hexStringFromColor:self.backgroundColor], [self hexStringFromColor:self.textColor], self.lineSpacing, self.fontName, self.fontSize, self.headerFontName, self.headerFontName, self.margin, self.imageCSS];
+    NSString *customReaderCSS = [NSString stringWithFormat:baseReaderCSS, [self hexStringFromColor:self.backgroundColor], [self hexStringFromColor:self.textColor], self.lineSpacing, self.fontName, self.fontSize, self.margin, self.textAlignmentString, self.headerFontName, self.imageCSS];
     BOOL success = [customReaderCSS writeToFile:[self customReaderCSSFilePath]
                                      atomically:YES
                                        encoding:NSUTF8StringEncoding
@@ -109,7 +110,38 @@
 - (NSString *)hexStringFromColor:(UIColor *)color {
     const CGFloat *components = CGColorGetComponents(color.CGColor);
     NSInteger hexValue = 0xFF0000 * components[0] + 0x00FF00 * components[1] + 0x0000FF * components[2];
-    return [NSString stringWithFormat:@"%lX", (long)hexValue];
+    NSString *result = [NSString stringWithFormat:@"%06lX", (long)hexValue];
+    return result;
+}
+
+- (NSString *)readerHTMLForArticle:(NSDictionary *)article {
+    NSString *cssFilePath = [self readerCSSFilePath];
+    NSString *css = [[NSString alloc] initWithContentsOfFile:cssFilePath
+                                                    encoding:NSUTF8StringEncoding
+                                                       error:nil];
+    return [NSString stringWithFormat:@"<html><head><style type='text/css'>%@'</style><script type='text/javascript'>var isLoaded=true;</script></head><body>%@</body></html>", css, article[@"content"]];
+}
+
+- (UIFont *)font {
+    return [UIFont fontWithName:self.fontName size:self.fontSize];
+}
+
+- (NSString *)textAlignmentString {
+    switch (self.textAlignment) {
+        case NSTextAlignmentLeft:
+            return @"left";
+            
+        case NSTextAlignmentCenter:
+            return @"center";
+            
+        case NSTextAlignmentRight:
+            return @"right";
+            
+        case NSTextAlignmentJustified:
+            return @"justify";
+    }
+    
+    return @"";
 }
 
 @end

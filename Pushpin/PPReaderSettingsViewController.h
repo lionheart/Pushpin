@@ -9,17 +9,40 @@
 #import "PPTableViewController.h"
 #import <LHSFontSelectionViewController/LHSFontSelecting.h>
 
-typedef NS_ENUM(NSInteger, PPReaderSettingsRowType) {
-    PPReaderSettingsRowFontFamily,
-    PPReaderSettingsRowFontSize,
-    PPReaderSettingsRowFontLineSpacing,
-    PPReaderSettingsRowFontImages,
+#define PPREADER_USE_SLIDERS 1
+
+typedef NS_ENUM(NSInteger, PPReaderSettingsSectionType) {
+    PPReaderSettingsSectionMain,
+    PPReaderSettingsSectionPreview
+};
+
+typedef NS_ENUM(NSInteger, PPReaderSettingsMainRowType) {
+    PPReaderSettingsMainRowFontFamily,
+    PPReaderSettingsMainRowFontSize,
+    PPReaderSettingsMainRowFontLineSpacing,
+    PPReaderSettingsMainRowMargin,
+    PPReaderSettingsMainRowTextAlignment,
+    PPReaderSettingsMainRowDisplayImages,
+    PPReaderSettingsMainRowTheme,
+    PPReaderSettingsMainRowPreview,
+
+    // Unused
+    PPReaderSettingsMainRowHeaderFontFamily,
+};
+
+typedef NS_ENUM(NSInteger, PPReaderSettingsPreviewRowType) {
+    PPReaderSettingsPreviewRowTheme,
+    
+    // Unused
+    PPReaderSettingsPreviewRowHeaderFontFamily,
 };
 
 enum : NSInteger {
-    PPReaderSettingsRowCount = PPReaderSettingsRowFontImages + 1
+    PPReaderSettingsMainRowCount = PPReaderSettingsMainRowDisplayImages + 1,
+    PPReaderSettingsPreviewRowCount = 1,
+    PPReaderSettingsSectionCount = PPReaderSettingsMainRowMargin + 1
 };
 
-@interface PPReaderSettingsViewController : PPTableViewController <LHSFontSelecting>
+@interface PPReaderSettingsViewController : PPTableViewController <LHSFontSelecting, UIActionSheetDelegate>
 
 @end

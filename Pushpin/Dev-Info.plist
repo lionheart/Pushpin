@@ -44,12 +44,14 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1458</string>
+	<string>1556</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Whitney-Book.ttf</string>
+		<string>LyonTextApp-Regular.ttf</string>
+		<string>Courier Prime.ttf</string>
+		<string>Charter Regular.ttf</string>
 	</array>
 	<key>UIPrerenderedIcon</key>
 	<true/>
