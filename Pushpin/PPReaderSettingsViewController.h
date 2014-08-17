@@ -7,7 +7,7 @@
 //
 
 #import "PPTableViewController.h"
-#import <LHSFontSelectionViewController/LHSFontSelecting.h>
+#import "LHSFontSelecting.h"
 
 #define PPREADER_USE_SLIDERS 1
 
