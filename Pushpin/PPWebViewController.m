@@ -20,9 +20,9 @@
 #import "PPGenericPostViewController.h"
 #import "PPActivityViewController.h"
 #import "PPUtilities.h"
-#import "NSData+AES256.h"
 #import "PPMobilizerUtility.h"
 #import "PPSettings.h"
+#import "NSData+AES256.h"
 
 #import <JavaScriptCore/JavaScriptCore.h>
 #import <LHSCategoryCollection/NSData+Base64.h>
@@ -920,17 +920,9 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
             [PPWebViewController mobilizedPageForURL:self.url withCompletion:^(NSDictionary *article, NSError *error) {
                 if (!error) {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        PPSettings *settings = [PPSettings sharedSettings];
-
-                        NSString *cssFilePath = [settings.readerSettings readerCSSFilePath];
-                        NSString *css = [[NSString alloc] initWithContentsOfFile:cssFilePath
-                                                                        encoding:NSUTF8StringEncoding
-                                                                           error:nil];
-                        NSURL *baseURL = [NSURL fileURLWithPath:[[NSBundle mainBundle] resourcePath]];
-
                         if (article) {
-                            NSString *content = [NSString stringWithFormat:@"<html><head><style type='text/css'>%@'</style><script type='text/javascript'>var isLoaded=true;</script></head><body>%@</body></html>", css, article[@"content"]];
-                            [self.readerWebView loadHTMLString:content baseURL:baseURL];
+                            NSString *content = [[PPSettings sharedSettings].readerSettings readerHTMLForArticle:article];
+                            [self.readerWebView loadHTMLString:content baseURL:self.url];
                         }
                         else {
                             self.mobilizeButton.selected = NO;

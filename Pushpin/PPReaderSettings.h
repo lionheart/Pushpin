@@ -27,5 +27,7 @@
 - (NSString *)imageCSS;
 - (void)updateCustomReaderCSSFile;
 - (NSString *)readerCSSFilePath;
+- (NSString *)readerHTMLForArticle:(NSDictionary *)article;
+- (UIFont *)font;
 
 @end
