@@ -21,6 +21,8 @@
 @property (nonatomic, strong) UIActionSheet *sizeAdjustmentActionSheet;
 @property (nonatomic, strong) id<LHSFontSelecting> delegate;
 
+@property (nonatomic) UIStatusBarStyle preferredStatusBarStyle;
+
 - (NSArray *)indexPathsForFontName:(NSString *)fontName;
 - (instancetype)initWithPreferredFontNames:(NSArray *)fontNames
                     onlyShowPreferredFonts:(BOOL)onlyShowPreferredFonts;

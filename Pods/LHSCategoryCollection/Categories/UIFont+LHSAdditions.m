@@ -10,7 +10,7 @@
 
 @implementation UIFont (LHSAdditions)
 
-- (NSString *)displayName {
+- (NSString *)lhs_displayName {
     NSError *error;
     NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:@"([a-z])([A-Z])"
                                                                                 options:0

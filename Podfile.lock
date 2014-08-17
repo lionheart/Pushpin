@@ -32,13 +32,13 @@ PODS:
   - hpple (0.2.0)
   - HTMLParser (0.0.1)
   - KeychainItemWrapper (1.2)
-  - LHSCategoryCollection (0.0.11)
+  - LHSCategoryCollection (0.0.12)
   - LHSDelicious (0.1.1):
     - AFNetworking (~> 2.2.0)
     - XMLDictionary (~> 1.3)
   - LHSDiigo (0.0.1)
   - LHSFMDatabaseAdditions (0.0.1)
-  - LHSFontSelectionViewController (0.0.3):
+  - LHSFontSelectionViewController (0.0.4):
     - LHSCategoryCollection
     - LHSTableViewCells
   - LHSKeyboardAdjusting (0.0.1)
@@ -75,11 +75,11 @@ DEPENDENCIES:
   - FMDB (= 2.3)
   - HTMLParser (from `Specs/HTMLParser.podspec`)
   - KeychainItemWrapper (= 1.2)
-  - LHSCategoryCollection (= 0.0.11)
+  - LHSCategoryCollection (= 0.0.12)
   - LHSDelicious (from `Vendor/LHSDelicious`)
   - LHSDiigo (from `Vendor/LHSDiigo`)
   - LHSFMDatabaseAdditions (from `Specs/LHSFMDatabaseAdditions.podspec`)
-  - LHSFontSelectionViewController (= 0.0.3)
+  - LHSFontSelectionViewController (= 0.0.4)
   - LHSKeyboardAdjusting (= 0.0.1)
   - Mixpanel (= 2.4.0)
   - MWFeedParser (= 1.0.1)
@@ -123,11 +123,11 @@ SPEC CHECKSUMS:
   hpple: f4eb7c21a8db83ec264e5d614ec7509e10e5adec
   HTMLParser: cb83b00acd806cc24f0dd75998c51d20feeef95a
   KeychainItemWrapper: 577e9e920185892873ded075b8ceb730bebdfd91
-  LHSCategoryCollection: e95e1ec4e82108a0b34b86e2ea1364b3cc384c42
+  LHSCategoryCollection: 82d6cd7780acb61eb5dafca6c1de2292d93f7ea8
   LHSDelicious: f504d944af93d22dc94628b3ee947d8a8892d1bf
   LHSDiigo: 1ba2e8b3c56de11bef4054d57b5abf5b03bdd732
   LHSFMDatabaseAdditions: 476a3baaf7af6583f258e672a59eb0f4e4ec639f
-  LHSFontSelectionViewController: fe34dceff2dfe8eb62f495a4f5b452ac8f284840
+  LHSFontSelectionViewController: 6afb77c5b7688e47587de7c09381deea12bccb45
   LHSKeyboardAdjusting: c73332bc21b4727aa8de7255da7d5f4b68f2deda
   LHSTableViewCells: 8bef7749623c57e48286faa418d1ecaaa33d6723
   Mixpanel: 8cdf6fc831ae1f7515f0d8164dcc381990e0a23a

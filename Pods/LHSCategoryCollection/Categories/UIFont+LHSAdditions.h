@@ -10,6 +10,6 @@
 
 @interface UIFont (LHSAdditions)
 
-- (NSString *)displayName;
+- (NSString *)lhs_displayName;
 
 @end

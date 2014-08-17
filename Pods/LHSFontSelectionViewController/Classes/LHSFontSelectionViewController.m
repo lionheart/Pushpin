@@ -45,6 +45,7 @@ static NSString *CellIdentifier = @"Cell";
     self.fonts = [NSMutableArray array];
     self.fontsForSectionIndex = [NSMutableDictionary dictionary];
     self.sectionIndexTitles = [NSMutableArray array];
+    self.preferredStatusBarStyle = UIStatusBarStyleLightContent;
     
     if (self.onlyShowPreferredFonts) {
         
@@ -81,10 +82,15 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    [self setNeedsStatusBarAppearanceUpdate];
     NSArray *indexPathForCurrentlySelectedFont = [self indexPathsForFontName:self.currentFontName];
-    [self.tableView scrollToRowAtIndexPath:[indexPathForCurrentlySelectedFont firstObject]
-                          atScrollPosition:UITableViewScrollPositionTop
-                                  animated:NO];
+    
+    if (self.preferredFontNames.count == 0) {
+        [self.tableView scrollToRowAtIndexPath:[indexPathForCurrentlySelectedFont firstObject]
+                              atScrollPosition:UITableViewScrollPositionTop
+                                      animated:NO];
+    }
 }
 
 #pragma mark - Table view data source
@@ -144,9 +150,24 @@ static NSString *CellIdentifier = @"Cell";
         NSString *sectionName = self.sectionIndexTitles[indexPath.section];
         fontName = self.fontsForSectionIndex[sectionName][indexPath.row];
     }
-    
+
     UIFont *font = [UIFont fontWithName:fontName size:[self.delegate fontSizeForFontSelectionViewController:self] + 4];
-    cell.textLabel.text = font.displayName;
+    
+    NSString *fontDisplayName = [font lhs_displayName];
+    if ([fontDisplayName isEqualToString:@"Lyon Text App Regular"]) {
+        fontDisplayName = @"Lyon Text";
+    }
+    else if ([fontDisplayName isEqualToString:@"Avenir Next Regular"]) {
+        fontDisplayName = @"Avenir Next";
+    }
+    else if ([fontDisplayName isEqualToString:@"Arial MT"]) {
+        fontDisplayName = @"Arial";
+    }
+    else if ([fontDisplayName isEqualToString:@"Futura Medium"]) {
+        fontDisplayName = @"Futura";
+    }
+
+    cell.textLabel.text = fontDisplayName;
     cell.textLabel.font = font;
     if ([fontName isEqualToString:self.currentFontName]) {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
@@ -197,7 +218,7 @@ static NSString *CellIdentifier = @"Cell";
     NSInteger row;
     NSInteger section;
     NSMutableArray *indexPaths = [NSMutableArray array];
-
+    
     if (self.onlyShowPreferredFonts) {
         if ([self.preferredFontNames containsObject:fontName]) {
             row = [self.preferredFontNames indexOfObject:fontName];
@@ -213,7 +234,7 @@ static NSString *CellIdentifier = @"Cell";
                 [indexPaths addObject:[NSIndexPath indexPathForRow:row inSection:section]];
             }
         }
-
+        
         NSString *firstCharacter = [fontName substringToIndex:1];
         section = [self.sectionIndexTitles indexOfObject:firstCharacter];
         row = [self.fontsForSectionIndex[firstCharacter] indexOfObject:fontName];
