@@ -38,9 +38,6 @@ PODS:
     - XMLDictionary (~> 1.3)
   - LHSDiigo (0.0.1)
   - LHSFMDatabaseAdditions (0.0.1)
-  - LHSFontSelectionViewController (0.0.4):
-    - LHSCategoryCollection
-    - LHSTableViewCells
   - LHSKeyboardAdjusting (0.0.1)
   - LHSTableViewCells (0.0.1)
   - Mixpanel (2.4.0)
@@ -79,8 +76,8 @@ DEPENDENCIES:
   - LHSDelicious (from `Vendor/LHSDelicious`)
   - LHSDiigo (from `Vendor/LHSDiigo`)
   - LHSFMDatabaseAdditions (from `Specs/LHSFMDatabaseAdditions.podspec`)
-  - LHSFontSelectionViewController (= 0.0.4)
   - LHSKeyboardAdjusting (= 0.0.1)
+  - LHSTableViewCells
   - Mixpanel (= 2.4.0)
   - MWFeedParser (= 1.0.1)
   - oauthconsumer (from `Specs/oauthconsumer.podspec`)
@@ -127,7 +124,6 @@ SPEC CHECKSUMS:
   LHSDelicious: f504d944af93d22dc94628b3ee947d8a8892d1bf
   LHSDiigo: 1ba2e8b3c56de11bef4054d57b5abf5b03bdd732
   LHSFMDatabaseAdditions: 476a3baaf7af6583f258e672a59eb0f4e4ec639f
-  LHSFontSelectionViewController: 6afb77c5b7688e47587de7c09381deea12bccb45
   LHSKeyboardAdjusting: c73332bc21b4727aa8de7255da7d5f4b68f2deda
   LHSTableViewCells: 8bef7749623c57e48286faa418d1ecaaa33d6723
   Mixpanel: 8cdf6fc831ae1f7515f0d8164dcc381990e0a23a
