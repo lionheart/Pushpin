@@ -6,7 +6,6 @@
 //  Copyright (c) 2014 Lionheart Software. All rights reserved.
 //
 
-#import "AppSettings.h"
 #import "PPConstants.h"
 #import "PPReaderSettings.h"
 
