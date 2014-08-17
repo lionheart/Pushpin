@@ -402,6 +402,9 @@
 		37F1E1BD18C617940032B22B /* navigation-search@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37F1E1B918C617940032B22B /* navigation-search@2x.png */; };
 		37F6D7D819A10DC9004016DB /* Brando Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 37F6D7D619A10DC9004016DB /* Brando Regular.otf */; };
 		37F6D7D919A10DC9004016DB /* Flex Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 37F6D7D719A10DC9004016DB /* Flex Regular.otf */; };
+		37F6D7ED19A1111E004016DB /* LHSFontSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F6D7E819A1111E004016DB /* LHSFontSelectionViewController.m */; };
+		37F6D7EE19A1111E004016DB /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 37F6D7E919A1111E004016DB /* LICENSE */; };
+		37F6D7EF19A1111E004016DB /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 37F6D7EC19A1111E004016DB /* README.md */; };
 		37F7825B198C354200C99139 /* PPShrinkBackTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F7825A198C354200C99139 /* PPShrinkBackTransition.m */; };
 		37F7825E198C354D00C99139 /* PPShrinkBackAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F7825D198C354D00C99139 /* PPShrinkBackAnimator.m */; };
 		37F91F38177A91A500683D46 /* UITableView+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F91F37177A91A500683D46 /* UITableView+Additions.m */; };
@@ -1018,6 +1021,11 @@
 		37F1E1B918C617940032B22B /* navigation-search@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-search@2x.png"; path = "Assets/navigation-search@2x.png"; sourceTree = "<group>"; };
 		37F6D7D619A10DC9004016DB /* Brando Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Brando Regular.otf"; sourceTree = "<group>"; };
 		37F6D7D719A10DC9004016DB /* Flex Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Flex Regular.otf"; sourceTree = "<group>"; };
+		37F6D7E719A1111E004016DB /* LHSFontSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LHSFontSelectionViewController.h; sourceTree = "<group>"; };
+		37F6D7E819A1111E004016DB /* LHSFontSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LHSFontSelectionViewController.m; sourceTree = "<group>"; };
+		37F6D7E919A1111E004016DB /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		37F6D7EB19A1111E004016DB /* LHSFontSelecting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LHSFontSelecting.h; sourceTree = "<group>"; };
+		37F6D7EC19A1111E004016DB /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
 		37F78259198C354200C99139 /* PPShrinkBackTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPShrinkBackTransition.h; sourceTree = "<group>"; };
 		37F7825A198C354200C99139 /* PPShrinkBackTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPShrinkBackTransition.m; sourceTree = "<group>"; };
 		37F7825C198C354D00C99139 /* PPShrinkBackAnimator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPShrinkBackAnimator.h; sourceTree = "<group>"; };
@@ -1208,6 +1216,7 @@
 			isa = PBXGroup;
 			children = (
 				E84A8D9217FB1BCB003B4F50 /* FluidTableview */,
+				37F6D7E519A1111E004016DB /* LHSFontSelectionViewController */,
 				37D2351C16B8DDD0007541DC /* NSString+URLEncoding2.h */,
 				37D2351D16B8DDD0007541DC /* NSString+URLEncoding2.m */,
 				3794AE9F176D33D100250909 /* PSPDFUIKitMainThreadGuard.m */,
@@ -1707,6 +1716,35 @@
 				37DAAA80199FFDE40050350D /* LyonTextApp-Regular.ttf */,
 			);
 			name = Fonts;
+			sourceTree = "<group>";
+		};
+		37F6D7E519A1111E004016DB /* LHSFontSelectionViewController */ = {
+			isa = PBXGroup;
+			children = (
+				37F6D7E619A1111E004016DB /* Classes */,
+				37F6D7E919A1111E004016DB /* LICENSE */,
+				37F6D7EA19A1111E004016DB /* Protocols */,
+				37F6D7EC19A1111E004016DB /* README.md */,
+			);
+			name = LHSFontSelectionViewController;
+			path = Vendor/LHSFontSelectionViewController;
+			sourceTree = "<group>";
+		};
+		37F6D7E619A1111E004016DB /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				37F6D7E719A1111E004016DB /* LHSFontSelectionViewController.h */,
+				37F6D7E819A1111E004016DB /* LHSFontSelectionViewController.m */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		37F6D7EA19A1111E004016DB /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				37F6D7EB19A1111E004016DB /* LHSFontSelecting.h */,
+			);
+			path = Protocols;
 			sourceTree = "<group>";
 		};
 		37F78255198C34FE00C99139 /* Transitions / Animators */ = {
@@ -2288,6 +2326,7 @@
 				370859F917F329D400270A9D /* Images.xcassets in Resources */,
 				3740A24016863CF000F95D82 /* InfoPlist.strings in Resources */,
 				37BC1BD6188641D80022020A /* JSDOMParser.js in Resources */,
+				37F6D7EE19A1111E004016DB /* LICENSE in Resources */,
 				37EAB9C4173F01DA00B2684B /* loading_01.png in Resources */,
 				37EAB9C5173F01DA00B2684B /* loading_01@2x.png in Resources */,
 				37EAB9C6173F01DA00B2684B /* loading_02.png in Resources */,
@@ -2574,6 +2613,7 @@
 				37BC1BD5188641D80022020A /* readabilityInitializer.js in Resources */,
 				37802198198EAD4600CE269A /* reader-base.css in Resources */,
 				3780219B198EB1B900CE269A /* reader.js in Resources */,
+				37F6D7EF19A1111E004016DB /* README.md in Resources */,
 				E80EEF8D185B6A1300979AA3 /* roundbutton-checkmark.png in Resources */,
 				E80EEF8E185B6A1300979AA3 /* roundbutton-checkmark@2x.png in Resources */,
 				E80EEF8F185B6A1300979AA3 /* roundbutton-private.png in Resources */,
@@ -2734,6 +2774,7 @@
 				E84A8D9A17FB1BCB003B4F50 /* FluidTableviewCell.m in Sources */,
 				E84A8D9B17FB1BCB003B4F50 /* FluidTableviewFlowLayout.m in Sources */,
 				37171A2F18B1714E007FF164 /* LHSBooleanTableViewCell.m in Sources */,
+				37F6D7ED19A1111E004016DB /* LHSFontSelectionViewController.m in Sources */,
 				37FEEB9F15745488003F2B77 /* main.m in Sources */,
 				371A48E718ADB516009D7533 /* MFMailComposeViewController+Theme.m in Sources */,
 				37802195198D709000CE269A /* NSData+AES256.m in Sources */,

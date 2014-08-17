@@ -10,8 +10,8 @@
 #import "PPTitleButton.h"
 #import "PPTheme.h"
 #import "PPWebViewController.h"
+#import "LHSFontSelectionViewController.h"
 
-#import <LHSFontSelectionViewController/LHSFontSelectionViewController.h>
 #import <LHSTableViewCells/LHSTableViewCellValue1.h>
 #import <LHSCategoryCollection/UIFont+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
@@ -550,7 +550,7 @@ static NSString *CellIdentifier = @"Cell";
 
 #pragma mark - LHSFontSelecting
 
-- (void)setFontName:(NSString *)fontName forFontSelectionViewController:(LHFontSelectionViewController *)viewController {
+- (void)setFontName:(NSString *)fontName forFontSelectionViewController:(LHSFontSelectionViewController *)viewController {
     PPSettings *settings = [PPSettings sharedSettings];
     PPReaderSettings *readerSettings = settings.readerSettings;
     readerSettings.headerFontName = fontName;
@@ -560,11 +560,11 @@ static NSString *CellIdentifier = @"Cell";
     [self updateExampleWebView];
 }
 
-- (NSString *)fontNameForFontSelectionViewController:(LHFontSelectionViewController *)viewController {
+- (NSString *)fontNameForFontSelectionViewController:(LHSFontSelectionViewController *)viewController {
     return [PPSettings sharedSettings].readerSettings.fontName;
 }
 
-- (CGFloat)fontSizeForFontSelectionViewController:(LHFontSelectionViewController *)viewController {
+- (CGFloat)fontSizeForFontSelectionViewController:(LHSFontSelectionViewController *)viewController {
     return [PPTheme fontSize];
 }
 
