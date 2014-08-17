@@ -116,7 +116,7 @@ static NSString *CellIdentifier = @"Cell";
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (self.preferredFontNames.count > 0 && section == 0) {
-        return nil;
+        return @"Premium Fonts";
     }
     return self.sectionIndexTitles[section];
     
@@ -155,7 +155,7 @@ static NSString *CellIdentifier = @"Cell";
     
     NSString *fontDisplayName = [font lhs_displayName];
     if ([fontDisplayName isEqualToString:@"Lyon Text App Regular"]) {
-        fontDisplayName = @"Lyon Text";
+        fontDisplayName = @"Lyon";
     }
     else if ([fontDisplayName isEqualToString:@"Avenir Next Regular"]) {
         fontDisplayName = @"Avenir Next";
@@ -165,6 +165,12 @@ static NSString *CellIdentifier = @"Cell";
     }
     else if ([fontDisplayName isEqualToString:@"Futura Medium"]) {
         fontDisplayName = @"Futura";
+    }
+    else if ([fontDisplayName isEqualToString:@"Flex Regular"]) {
+        fontDisplayName = @"Flex";
+    }
+    else if ([fontDisplayName isEqualToString:@"Brando Regular"]) {
+        fontDisplayName = @"Brando";
     }
 
     cell.textLabel.text = fontDisplayName;

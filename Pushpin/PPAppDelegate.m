@@ -742,11 +742,10 @@
     NSArray *fontFamilies = [UIFont familyNames];
     for (int i = 0; i < [fontFamilies count]; i++)
     {
-        NSString *fontFamily = [fontFamilies objectAtIndex:i];
-        NSArray *fontNames = [UIFont fontNamesForFamilyName:[fontFamilies objectAtIndex:i]];
+        NSArray *fontNames = [UIFont fontNamesForFamilyName:fontFamily];
         NSLog (@"%@: %@", fontFamily, fontNames);
     }
-    */
+     */
 
     [self.window makeKeyAndVisible];
     

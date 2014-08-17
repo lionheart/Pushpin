@@ -4,8 +4,8 @@ body {
   line-height: %.2fem;
   font-family: "%@";
   font-size: %.1fpx;
-  width: %d%%; /* 100, 95, 90, 80 */
-  margin: 10px auto;
+  width: %d%%;
+  margin: 20px auto;
   text-align: %@;
 }
 
@@ -14,9 +14,6 @@ p {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: "%@";
-}
-
-div.entry-content {
 }
 
 a {

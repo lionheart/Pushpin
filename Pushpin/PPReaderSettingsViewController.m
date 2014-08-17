@@ -238,12 +238,12 @@ static NSString *CellIdentifier = @"Cell";
         case PPReaderSettingsSectionMain:
             switch ((PPReaderSettingsMainRowType)indexPath.row) {
                 case PPReaderSettingsMainRowFontFamily: {
-                    cell.textLabel.text = @"Font Family";
+                    cell.textLabel.text = @"Font";
 
                     UIFont *font = [PPSettings sharedSettings].readerSettings.font;
                     NSString *fontDisplayName = [font lhs_displayName];
                     if ([fontDisplayName isEqualToString:@"Lyon Text App Regular"]) {
-                        fontDisplayName = @"Lyon Text";
+                        fontDisplayName = @"Lyon";
                     }
                     else if ([fontDisplayName isEqualToString:@"Avenir Next Regular"]) {
                         fontDisplayName = @"Avenir Next";
@@ -253,6 +253,12 @@ static NSString *CellIdentifier = @"Cell";
                     }
                     else if ([fontDisplayName isEqualToString:@"Futura Medium"]) {
                         fontDisplayName = @"Futura";
+                    }
+                    else if ([fontDisplayName isEqualToString:@"Flex Regular"]) {
+                        fontDisplayName = @"Flex";
+                    }
+                    else if ([fontDisplayName isEqualToString:@"Brando Regular"]) {
+                        fontDisplayName = @"Brando";
                     }
 
                     self.fontFamilyLabel.font = [PPTheme textLabelFont];
@@ -459,7 +465,8 @@ static NSString *CellIdentifier = @"Cell";
 
     switch ((PPReaderSettingsMainRowType)indexPath.row) {
         case PPReaderSettingsMainRowFontFamily: {
-            NSArray *preferredFontNames = @[@"AvenirNext-Regular", @"Charter", @"LyonTextApp-Regular", @"CourierPrime", @"HelveticaNeue-Light"];
+            // NSArray *preferredFontNames = @[@"Flex-Regular", @"Brando-Regular", @"AvenirNext-Regular", @"Charter", @"LyonTextApp-Regular", @"CourierPrime", @"HelveticaNeue-Light"];
+            NSArray *preferredFontNames = @[@"Flex-Regular", @"Brando-Regular", @"LyonTextApp-Regular"];
             LHSFontSelectionViewController *fontSelectionViewController = [[LHSFontSelectionViewController alloc] initWithPreferredFontNames:preferredFontNames
                                                                                                                       onlyShowPreferredFonts:NO];
             fontSelectionViewController.delegate = self;
