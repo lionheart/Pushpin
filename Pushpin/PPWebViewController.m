@@ -65,6 +65,10 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
 @implementation PPWebViewController
 
+- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
+    return UIStatusBarAnimationSlide;
+}
+
 - (void)viewDidLayoutSubviews {
     self.topLayoutConstraint.constant = [self.topLayoutGuide length];
     [self.view layoutIfNeeded];
@@ -1054,12 +1058,15 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     CGFloat constant;
     if (visible) {
         constant = kToolbarHeight;
+        self.prefersStatusBarHidden = NO;
     }
     else {
         constant = 0;
+        self.prefersStatusBarHidden = YES;
     }
     
     void (^UpdateConstraint)() = ^{
+        [self setNeedsStatusBarAppearanceUpdate];
         self.toolbarConstraint.constant = constant;
         [self.view layoutIfNeeded];
     };

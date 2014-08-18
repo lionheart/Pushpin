@@ -43,6 +43,7 @@
 @synthesize instapaperToken = _instapaperToken;
 @synthesize fontAdjustment = _fontAdjustment;
 @synthesize readerSettings = _readerSettings;
+@synthesize purchasedPremiumFonts = _purchasedPremiumFonts;
 
 #ifdef PINBOARD
 @synthesize communityFeedOrder = _communityFeedOrder;
@@ -600,6 +601,21 @@
     else {
         return nil;
     }
+}
+
+- (BOOL)purchasedPremiumFonts {
+    if (!_purchasedPremiumFonts) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _purchasedPremiumFonts = [defaults boolForKey:@"io.aurora.pinboard.PurchasedPremiumFonts"];
+    }
+    return _purchasedPremiumFonts;
+}
+
+- (void)setPurchasedPremiumFonts:(BOOL)purchasedPremiumFonts {
+    _purchasedPremiumFonts = purchasedPremiumFonts;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:purchasedPremiumFonts forKey:@"io.aurora.pinboard.PurchasedPremiumFonts"];
+    [defaults synchronize];
 }
 
 @end

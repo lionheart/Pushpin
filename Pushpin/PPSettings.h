@@ -44,6 +44,8 @@
 @property (nonatomic, strong) OAToken *instapaperToken;
 @property (nonatomic, strong) OAToken *readabilityToken;
 
+@property (nonatomic) BOOL purchasedPremiumFonts;
+
 #ifdef PINBOARD
 @property (nonatomic, strong) NSArray *communityFeedOrder;
 #endif
