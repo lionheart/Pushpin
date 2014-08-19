@@ -472,6 +472,10 @@ static NSInteger kToolbarHeight = 44;
     }
 }
 
+- (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath {
+    return NO;
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.selectedTableView = tableView;
     self.selectedIndexPath = indexPath;

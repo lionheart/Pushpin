@@ -29,4 +29,6 @@
 - (instancetype)initWithPreferredFontNames:(NSArray *)fontNames
                     onlyShowPreferredFonts:(BOOL)onlyShowPreferredFonts;
 
++ (NSString *)fontNameToDisplayName:(NSString *)fontName;
+
 @end

@@ -22,7 +22,6 @@ static NSString *CellIdentifier = @"Cell";
 
 - (NSAttributedString *)attributedFontNameString;
 - (void)purchasePremiumFonts:(id)sender;
-+ (NSString *)fontNameToDisplayName:(NSString *)fontName;
 - (BOOL)purchased;
 
 @end
@@ -436,7 +435,7 @@ static NSString *CellIdentifier = @"Cell";
             height = 24;
         }
     }
-    return MAX(10, height) + 30;
+    return MAX(10, height) + 20;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -459,7 +458,7 @@ static NSString *CellIdentifier = @"Cell";
         fontName = self.fontsForSectionIndex[sectionName][indexPath.row];
     }
 
-    UIFont *font = [UIFont fontWithName:fontName size:[self.delegate fontSizeForFontSelectionViewController:self] + 4];
+    UIFont *font = [UIFont fontWithName:fontName size:[self.delegate fontSizeForFontSelectionViewController:self]];
     
     NSString *fontDisplayName = [LHSFontSelectionViewController fontNameToDisplayName:[font lhs_displayName]];
     
@@ -560,10 +559,12 @@ static NSString *CellIdentifier = @"Cell";
             }
         }
         
-        NSString *firstCharacter = [fontName substringToIndex:1];
-        section = [self.sectionIndexTitles indexOfObject:firstCharacter];
-        row = [self.fontsForSectionIndex[firstCharacter] indexOfObject:fontName];
-        [indexPaths addObject:[NSIndexPath indexPathForRow:row inSection:section]];
+        if (![self.preferredFontNames containsObject:fontName]) {
+            NSString *firstCharacter = [fontName substringToIndex:1];
+            section = [self.sectionIndexTitles indexOfObject:firstCharacter];
+            row = [self.fontsForSectionIndex[firstCharacter] indexOfObject:fontName];
+            [indexPaths addObject:[NSIndexPath indexPathForRow:row inSection:section]];
+        }
     }
     
     return [indexPaths copy];
@@ -730,7 +731,11 @@ static NSString *CellIdentifier = @"Cell";
 }
 
 - (BOOL)purchased {
+#ifdef TESTING
+    return YES;
+#else
     return [PPSettings sharedSettings].purchasedPremiumFonts;
+#endif
 }
 
 @end
