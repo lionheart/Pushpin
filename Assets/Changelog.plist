@@ -3,6 +3,43 @@
 <plist version="1.0">
 <array>
 	<array>
+		<string>3.1.8</string>
+		<array>
+			<array>
+				<string>FIX</string>
+				<string>Add native reader view and add settings to customize font, font size, line spacing, margins, and image display.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Add premium fonts for use with the reader. Proceeds will be reinvested into licensing additional fonts from independent type foundries.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Allow offline reading for articles already opened with the reader.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Add ability to configure main browser font and font size in settings.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Prevent editing feed order and visibility when no Internet connection is available.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix crash when trying to add a new bookmark from the browser.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix intermittent crash that occurred when searching bookmarks.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix crash when rotating phone while viewing a bookmark.</string>
+			</array>
+		</array>
+	</array>
+	<array>
 		<string>3.1.7</string>
 		<array>
 			<array>
