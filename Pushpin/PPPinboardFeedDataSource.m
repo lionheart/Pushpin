@@ -121,6 +121,14 @@
     return self.posts[index][@"url"];
 }
 
+- (PostMetadata *)metadataForPostAtIndex:(NSInteger)index {
+    return self.metadata[index];
+}
+
+- (PostMetadata *)compressedMetadataForPostAtIndex:(NSInteger)index {
+    return self.compressedMetadata[index];
+}
+
 - (void)syncBookmarksWithCompletion:(void (^)(BOOL, NSError *))completion
                            progress:(void (^)(NSInteger, NSInteger))progress
                             options:(NSDictionary *)options {

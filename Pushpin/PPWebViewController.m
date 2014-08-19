@@ -419,7 +419,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     }];
     
     // Determine if we should mobilize or not
-    if (self.shouldMobilize && [PPMobilizerUtility canMobilizeURL:self.url]) {
+    if (self.shouldMobilize && !self.mobilized && [PPMobilizerUtility canMobilizeURL:self.url]) {
         [self toggleMobilizerAnimated:NO];
     }
 }
@@ -744,6 +744,13 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         BOOL isScrollingDown = self.previousContentOffset.y < currentContentOffset.y;
         BOOL isToolbarVisible = self.toolbarConstraint.constant > 0;
         self.previousContentOffset = currentContentOffset;
+        
+        if (isScrollingDown && !isAtBottomOfView) {
+            [UIView animateWithDuration:0.3 animations:^{
+                self.prefersStatusBarHidden = YES;
+                [self setNeedsStatusBarAppearanceUpdate];
+            }];
+        }
 
         if (!isAtBottomOfView && !isAtTopOfView && isToolbarVisible) {
             CGFloat height = kToolbarHeight - MAX(0, MIN(kToolbarHeight, currentContentOffset.y - self.yOffsetToStartShowingToolbar));
@@ -1058,17 +1065,19 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     CGFloat constant;
     if (visible) {
         constant = kToolbarHeight;
-        self.prefersStatusBarHidden = NO;
     }
     else {
         constant = 0;
-        self.prefersStatusBarHidden = YES;
     }
     
     void (^UpdateConstraint)() = ^{
-        [self setNeedsStatusBarAppearanceUpdate];
         self.toolbarConstraint.constant = constant;
         [self.view layoutIfNeeded];
+        
+        if (visible) {
+            self.prefersStatusBarHidden = NO;
+            [self setNeedsStatusBarAppearanceUpdate];
+        }
     };
     
     if (animated) {
