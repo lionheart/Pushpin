@@ -166,7 +166,6 @@ static NSString *CellIdentifier = @"Cell";
 
     [self.webViewContainer addSubview:self.whiteThemeButton];
     [self.webViewContainer addSubview:self.yellowThemeButton];
-    [self.webViewContainer addSubview:self.greyThemeButton];
     [self.webViewContainer addSubview:self.darkGreyThemeButton];
     [self.webViewContainer addSubview:self.blackThemeButton];
     [self.webViewContainer addSubview:self.exampleWebView];
@@ -180,11 +179,10 @@ static NSString *CellIdentifier = @"Cell";
     
     [self.webViewContainer lhs_addConstraints:@"V:|[white(44)][webview]|" views:views];
     [self.webViewContainer lhs_addConstraints:@"V:|[yellow(==white)]" views:views];
-    [self.webViewContainer lhs_addConstraints:@"V:|[grey(==white)]" views:views];
     [self.webViewContainer lhs_addConstraints:@"V:|[dark(==white)]" views:views];
     [self.webViewContainer lhs_addConstraints:@"V:|[black(==white)]" views:views];
     [self.webViewContainer lhs_addConstraints:@"|[webview]|" views:views];
-    [self.webViewContainer lhs_addConstraints:@"|[white][yellow(==white)][grey(==white)][dark(==white)][black(==white)]|" views:views];
+    [self.webViewContainer lhs_addConstraints:@"|[white][yellow(==white)][dark(==white)][black(==white)]|" views:views];
     
     [self.view addSubview:self.webViewContainer];
     [self.webViewContainer lhs_fillWidthOfSuperview];
@@ -241,28 +239,8 @@ static NSString *CellIdentifier = @"Cell";
                     cell.textLabel.text = @"Font";
 
                     UIFont *font = [PPSettings sharedSettings].readerSettings.font;
-                    NSString *fontDisplayName = [font lhs_displayName];
-                    if ([fontDisplayName isEqualToString:@"Lyon Text App Regular"]) {
-                        fontDisplayName = @"Lyon";
-                    }
-                    else if ([fontDisplayName isEqualToString:@"Avenir Next Regular"]) {
-                        fontDisplayName = @"Avenir Next";
-                    }
-                    else if ([fontDisplayName isEqualToString:@"Arial MT"]) {
-                        fontDisplayName = @"Arial";
-                    }
-                    else if ([fontDisplayName isEqualToString:@"Futura Medium"]) {
-                        fontDisplayName = @"Futura";
-                    }
-                    else if ([fontDisplayName isEqualToString:@"Flex Regular"]) {
-                        fontDisplayName = @"Flex";
-                    }
-                    else if ([fontDisplayName isEqualToString:@"Brando Regular"]) {
-                        fontDisplayName = @"Brando";
-                    }
-
                     self.fontFamilyLabel.font = [PPTheme textLabelFont];
-                    self.fontFamilyLabel.text = fontDisplayName;
+                    self.fontFamilyLabel.text = [LHSFontSelectionViewController fontNameToDisplayName:[font lhs_displayName]];
                     
                     [cell.contentView addSubview:self.fontFamilyLabel];
                     NSDictionary *views = @{@"detail": self.fontFamilyLabel};
@@ -312,7 +290,7 @@ static NSString *CellIdentifier = @"Cell";
                 }
                     
                 case PPReaderSettingsMainRowFontLineSpacing: {
-                    title.text = @"Line Height";
+                    title.text = @"Line Spacing";
                     self.lineSpacingLabel.text = [NSString stringWithFormat:@"%0.1fem", settings.readerSettings.lineSpacing];
                     
                     NSMutableDictionary *views = [@{@"detail": self.lineSpacingLabel, @"title": title} mutableCopy];
@@ -341,9 +319,9 @@ static NSString *CellIdentifier = @"Cell";
                     break;
                     
                 case PPReaderSettingsMainRowMargin: {
-                    title.text = @"Content Width";
+                    title.text = @"Margins";
                     self.marginLabel.text = [NSString stringWithFormat:@"%lu%%", (long)settings.readerSettings.margin];
-                    
+
                     NSMutableDictionary *views = [@{@"detail": self.marginLabel, @"title": title} mutableCopy];
                     
                     [cell.contentView addSubview:title];
@@ -551,6 +529,9 @@ static NSString *CellIdentifier = @"Cell";
 #pragma mark - LHSFontSelecting
 
 - (void)setFontName:(NSString *)fontName forFontSelectionViewController:(LHSFontSelectionViewController *)viewController {
+    Mixpanel *mixpanel = [Mixpanel sharedInstanceWithToken:PPMixpanelToken];
+    [mixpanel.people set:@{@"Reader Font Name": fontName}];
+
     PPSettings *settings = [PPSettings sharedSettings];
     PPReaderSettings *readerSettings = settings.readerSettings;
     readerSettings.headerFontName = fontName;
@@ -571,8 +552,10 @@ static NSString *CellIdentifier = @"Cell";
 - (void)switchChangedValue:(id)sender {
     PPSettings *settings = [PPSettings sharedSettings];
     PPReaderSettings *readerSettings = settings.readerSettings;
+    Mixpanel *mixpanel = [Mixpanel sharedInstanceWithToken:PPMixpanelToken];
     if (sender == self.displayImagesSwitch) {
         readerSettings.displayImages = self.displayImagesSwitch.on;
+        [mixpanel.people set:@{@"Reader Display Images": @(self.displayImagesSwitch.on)}];
     }
     settings.readerSettings = readerSettings;
     [settings.readerSettings updateCustomReaderCSSFile];
@@ -582,25 +565,32 @@ static NSString *CellIdentifier = @"Cell";
 - (void)themeButtonTouchUpInside:(id)sender {
     PPSettings *settings = [PPSettings sharedSettings];
     PPReaderSettings *readerSettings = settings.readerSettings;
+    Mixpanel *mixpanel = [Mixpanel sharedInstanceWithToken:PPMixpanelToken];
+
     if (sender == self.whiteThemeButton) {
         readerSettings.backgroundColor = HEX(0xfbfbfbff);
         readerSettings.textColor = HEX(0x080000ff);
+        [mixpanel.people set:@{@"Reader Background": @"White"}];
     }
     else if (sender == self.yellowThemeButton) {
         readerSettings.backgroundColor = HEX(0xfffff7ff);
         readerSettings.textColor = HEX(0x080000ff);
+        [mixpanel.people set:@{@"Reader Background": @"Yellow"}];
     }
     else if (sender == self.greyThemeButton) {
         readerSettings.backgroundColor = HEX(0xf5f5f5ff);
         readerSettings.textColor = HEX(0x282828ff);
+        [mixpanel.people set:@{@"Reader Background": @"Grey"}];
     }
     else if (sender == self.darkGreyThemeButton) {
         readerSettings.backgroundColor = HEX(0x343a3aff);
         readerSettings.textColor = HEX(0xfdfdfdff);
+        [mixpanel.people set:@{@"Reader Background": @"Dark Grey"}];
     }
     else if (sender == self.blackThemeButton) {
         readerSettings.backgroundColor = HEX(0x080000ff);
         readerSettings.textColor = HEX(0xfdfdfdff);
+        [mixpanel.people set:@{@"Reader Background": @"Black"}];
     }
 
     self.exampleWebView.backgroundColor = readerSettings.backgroundColor;
@@ -613,10 +603,13 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)sliderChangedValue:(id)sender {
     PPSettings *settings = [PPSettings sharedSettings];
+    Mixpanel *mixpanel = [Mixpanel sharedInstanceWithToken:PPMixpanelToken];
     PPReaderSettings *readerSettings = settings.readerSettings;
     if (sender == self.fontSizeSlider) {
         int calculatedValue = (int)self.fontSizeSlider.value;
         if (readerSettings.fontSize != calculatedValue) {
+            [mixpanel.people set:@{@"Reader Font Size": @(calculatedValue)}];
+
             readerSettings.fontSize = calculatedValue;
             settings.readerSettings = readerSettings;
             [settings.readerSettings updateCustomReaderCSSFile];
@@ -628,6 +621,8 @@ static NSString *CellIdentifier = @"Cell";
     else if (sender == self.lineSpacingSlider) {
         float calculatedValue = (int)(10 * self.lineSpacingSlider.value) / 10.;
         if (readerSettings.lineSpacing != calculatedValue) {
+            [mixpanel.people set:@{@"Reader Line Spacing": @(calculatedValue)}];
+
             readerSettings.lineSpacing = calculatedValue;
             settings.readerSettings = readerSettings;
             [settings.readerSettings updateCustomReaderCSSFile];
@@ -639,6 +634,8 @@ static NSString *CellIdentifier = @"Cell";
     else if (sender == self.marginSlider) {
         float calculatedValue = (int)self.marginSlider.value;
         if (readerSettings.margin != calculatedValue) {
+            [mixpanel.people set:@{@"Reader Margin": @(calculatedValue)}];
+
             readerSettings.margin = calculatedValue;
             settings.readerSettings = readerSettings;
             [settings.readerSettings updateCustomReaderCSSFile];
@@ -684,6 +681,9 @@ static NSString *CellIdentifier = @"Cell";
         NSString *title = [self.textAlignmentActionSheet buttonTitleAtIndex:buttonIndex];
         NSNumber *result = map[title];
         if (result) {
+            Mixpanel *mixpanel = [Mixpanel sharedInstanceWithToken:PPMixpanelToken];
+            [mixpanel.people set:@{@"Reader Alignment": title}];
+
             PPSettings *settings = [PPSettings sharedSettings];
             PPReaderSettings *readerSettings = settings.readerSettings;
             readerSettings.textAlignment = [result integerValue];

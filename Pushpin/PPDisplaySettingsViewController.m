@@ -22,6 +22,7 @@
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSTableViewCells/LHSTableViewCellValue1.h>
 #import <LHSTableViewCells/LHSTableViewCellSubtitle.h>
+#import <LHSCategoryCollection/UIFont+LHSAdditions.h>
 
 static NSString *CellIdentifier = @"Cell";
 static NSString *ChoiceCellIdentifier = @"ChoiceCell";
@@ -338,7 +339,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.accessoryView = self.dimReadPostsSwitch;
                     break;
                     
-                case PPBrowseFontRow:
+                case PPBrowseFontRow: {
                     cell = [tableView dequeueReusableCellWithIdentifier:ChoiceCellIdentifier
                                                            forIndexPath:indexPath];
                     cell.textLabel.font = [PPTheme textLabelFont];
@@ -347,11 +348,14 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.accessoryView = nil;
                     
                     cell.textLabel.text = NSLocalizedString(@"Font", nil);
-                    cell.detailTextLabel.text = [PPSettings sharedSettings].fontName;
+
+                    UIFont *font = [PPTheme titleFont];
+                    cell.detailTextLabel.text = [LHSFontSelectionViewController fontNameToDisplayName:[font lhs_displayName]];
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
+                }
                     
-                case PPBrowseFontSizeRow:
+                case PPBrowseFontSizeRow: {
                     cell = [tableView dequeueReusableCellWithIdentifier:ChoiceCellIdentifier
                                                            forIndexPath:indexPath];
                     cell.textLabel.font = [PPTheme textLabelFont];
@@ -363,6 +367,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.detailTextLabel.text = PPFontAdjustmentTypes()[[[PPSettings sharedSettings] fontAdjustment]];
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
+                }
                     
                 case PPBrowseDefaultFeedRow:
                     cell = [tableView dequeueReusableCellWithIdentifier:ChoiceCellIdentifier
@@ -508,6 +513,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                         }
                     }
                     else {
+                        self.fontSizeAdjustmentActionSheet = actionSheet;
                         [self.fontSizeAdjustmentActionSheet showInView:self.navigationController.view];
                     }
                     break;
