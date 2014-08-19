@@ -7,6 +7,7 @@
 //
 
 #import "PPShrinkBackAnimator.h"
+#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 static CGFloat kPPShrinkBackAnimationDuration = 0.6;
 
@@ -36,7 +37,10 @@ static CGFloat kPPShrinkBackAnimationDuration = 0.6;
     void (^animations)();
     if (self.reverse) {
         cover.alpha = 0.4;
-        toViewController.view.frame = containerView.frame;
+        
+        if (![UIApplication isIPad]) {
+            toViewController.view.frame = containerView.frame;
+        }
         toViewController.view.transform = CATransform3DGetAffineTransform(transform3D);
 
         [containerView bringSubviewToFront:fromViewController.view];
@@ -44,19 +48,22 @@ static CGFloat kPPShrinkBackAnimationDuration = 0.6;
         animations = ^{
             cover.alpha = 0;
             toViewController.view.layer.transform = CATransform3DIdentity;
-            fromViewController.view.frame = CGRectOffset(containerView.frame, 0, CGRectGetHeight(containerView.frame));
+            fromViewController.view.frame = CGRectOffset(fromViewController.view.frame, 0, CGRectGetHeight(fromViewController.view.frame));
         };
     }
     else {
         cover.alpha = 0;
-        toViewController.view.frame = CGRectOffset(containerView.frame, 0, CGRectGetHeight(containerView.frame));
-        fromViewController.view.frame = containerView.frame;
+        toViewController.view.frame = CGRectOffset(toViewController.view.frame, 0, CGRectGetHeight(toViewController.view.frame));
+
+        if (![UIApplication isIPad]) {
+            fromViewController.view.frame = containerView.frame;
+        }
         fromViewController.view.layer.transform = CATransform3DIdentity;
 
         [containerView bringSubviewToFront:toViewController.view];
         
         animations = ^{
-            toViewController.view.frame = containerView.frame;
+            toViewController.view.frame = CGRectOffset(toViewController.view.frame, 0, -CGRectGetHeight(toViewController.view.frame));
             cover.alpha = .4;
             fromViewController.view.transform = CATransform3DGetAffineTransform(transform3D);
         };

@@ -130,12 +130,17 @@ static NSInteger kEditButtonOuterMargin = 20;
     self.descriptionLabel = [PPBookmarkCell bookmarkAttributedLabelForWidth:width];
     self.descriptionLabel.text = description;
 
+    PostMetadata *metadata;
     if (compressed) {
         self.titleLabel.numberOfLines = 1;
         self.titleLabel.lineBreakMode = NSLineBreakByTruncatingTail;
 
         self.descriptionLabel.numberOfLines = 2;
         self.descriptionLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        metadata = [dataSource compressedMetadataForPostAtIndex:index];
+    }
+    else {
+        metadata = [dataSource metadataForPostAtIndex:index];
     }
 
     BOOL read;
@@ -175,6 +180,10 @@ static NSInteger kEditButtonOuterMargin = 20;
     mainContentView.translatesAutoresizingMaskIntoConstraints = NO;
     mainContentView.backgroundColor = [UIColor whiteColor];
 
+    [self.titleLabel sizeToFit];
+    [self.linkLabel sizeToFit];
+    [self.descriptionLabel sizeToFit];
+
     [mainContentView addSubview:self.titleLabel];
     [mainContentView addSubview:self.linkLabel];
     [mainContentView addSubview:self.descriptionLabel];
@@ -201,8 +210,20 @@ static NSInteger kEditButtonOuterMargin = 20;
     [self.contentView lhs_addConstraints:@"H:|-(<=outerMargin)-[edit]" metrics:metrics views:views];
     [self.contentView lhs_addConstraints:@"V:|[main]|" views:views];
 
-    self.mainWidthConstraint = [NSLayoutConstraint constraintWithItem:mainContentView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeWidth multiplier:1 constant:0];
-    self.leftPositionConstraint = [NSLayoutConstraint constraintWithItem:mainContentView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self.contentView attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+    self.mainWidthConstraint = [NSLayoutConstraint constraintWithItem:mainContentView
+                                                            attribute:NSLayoutAttributeWidth
+                                                            relatedBy:NSLayoutRelationEqual
+                                                               toItem:self.contentView
+                                                            attribute:NSLayoutAttributeWidth
+                                                           multiplier:1
+                                                             constant:0];
+    self.leftPositionConstraint = [NSLayoutConstraint constraintWithItem:mainContentView
+                                                               attribute:NSLayoutAttributeLeft
+                                                               relatedBy:NSLayoutRelationEqual
+                                                                  toItem:self.contentView
+                                                               attribute:NSLayoutAttributeLeft
+                                                              multiplier:1
+                                                                constant:0];
     
     [self.contentView addConstraints:@[self.mainWidthConstraint, self.leftPositionConstraint]];
 
@@ -210,6 +231,10 @@ static NSInteger kEditButtonOuterMargin = 20;
     [mainContentView lhs_addConstraints:@"H:|-10-[link]-10-|" views:views];
     [mainContentView lhs_addConstraints:@"H:|-10-[description]-10-|" views:views];
     
+    NSMutableDictionary *postMetrics = [@{@"titleHeight": @(metadata.titleHeight + 1),
+                                          @"descriptionHeight": @(metadata.descriptionHeight + 1),
+                                          @"linkHeight": @(metadata.linkHeight + 1) } mutableCopy];
+
     NSArray *badges = [dataSource badgesForPostAtIndex:index];
     if (badges.count > 0) {
         NSMutableDictionary *options = [NSMutableDictionary dictionary];
@@ -232,12 +257,13 @@ static NSInteger kEditButtonOuterMargin = 20;
         CGFloat height = [self.badgeWrapperView calculateHeightForWidth:width];
         self.badgeWrapperView.translatesAutoresizingMaskIntoConstraints = NO;
         
+        postMetrics[@"badgeHeight"] = @(height);
         [mainContentView addSubview:self.badgeWrapperView];
         [mainContentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:views];
-        [mainContentView lhs_addConstraints:@"V:|-5-[title][link][description]-3-[badges(height)]" metrics:@{@"height": @(height)} views:views];
+        [mainContentView lhs_addConstraints:@"V:|-5-[title(titleHeight)][link(linkHeight)][description(descriptionHeight)]-5-[badges(badgeHeight)]" metrics:postMetrics views:views];
     }
     else {
-        [mainContentView lhs_addConstraints:@"V:|-5-[title][link][description]" views:views];
+        [mainContentView lhs_addConstraints:@"V:|-5-[title(titleHeight)][link(linkHeight)][description(descriptionHeight)]" metrics:postMetrics views:views];
     }
 }
 

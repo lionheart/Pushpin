@@ -296,23 +296,28 @@ static NSString *CellIdentifier = @"Cell";
                      @"ZapfDingbatsITC": @(20.80517578125),
                      @"Zapfino": @(70.92749999999999),
                  };
+
     self.fonts = [NSMutableArray array];
     self.fontsForSectionIndex = [NSMutableDictionary dictionary];
     self.sectionIndexTitles = [NSMutableArray array];
     self.preferredStatusBarStyle = UIStatusBarStyleLightContent;
 
     if (!self.onlyShowPreferredFonts) {
+        NSSet *preferredFontSet = [NSSet setWithArray:self.preferredFontNames];
+
         for (NSString *familyName in [UIFont familyNames]) {
             for (NSString *fontName in [UIFont fontNamesForFamilyName:familyName]) {
-                [self.fonts addObject:fontName];
-                
-                NSString *firstCharacter = [fontName substringToIndex:1];
-                if (![self.sectionIndexTitles containsObject:firstCharacter]) {
-                    [self.sectionIndexTitles addObject:firstCharacter];
-                    self.fontsForSectionIndex[firstCharacter] = [NSMutableArray arrayWithObject:fontName];
-                }
-                else {
-                    [self.fontsForSectionIndex[firstCharacter] addObject:fontName];
+                if (![preferredFontSet containsObject:fontName]) {
+                    [self.fonts addObject:fontName];
+
+                    NSString *firstCharacter = [fontName substringToIndex:1];
+                    if (![self.sectionIndexTitles containsObject:firstCharacter]) {
+                        [self.sectionIndexTitles addObject:firstCharacter];
+                        self.fontsForSectionIndex[firstCharacter] = [NSMutableArray arrayWithObject:fontName];
+                    }
+                    else {
+                        [self.fontsForSectionIndex[firstCharacter] addObject:fontName];
+                    }
                 }
             }
         }
@@ -439,6 +444,7 @@ static NSString *CellIdentifier = @"Cell";
     
     cell.accessoryType = UITableViewCellAccessoryNone;
     cell.textLabel.text = nil;
+    cell.textLabel.numberOfLines = 1;
     cell.textLabel.font = nil;
     cell.detailTextLabel.text = nil;
     cell.detailTextLabel.font = nil;
@@ -480,6 +486,7 @@ static NSString *CellIdentifier = @"Cell";
     else {
         cell.textLabel.text = fontDisplayName;
         cell.textLabel.font = font;
+
         if ([fontName isEqualToString:self.currentFontName]) {
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
         }

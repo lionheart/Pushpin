@@ -9,6 +9,12 @@
 #import "PPTheme.h"
 #import "PPSettings.h"
 
+@interface PPTheme ()
+
++ (NSString *)browseFontName;
+
+@end
+
 @implementation PPTheme
 
 + (instancetype)defaultTheme {
@@ -25,19 +31,19 @@
 }
 
 + (UIFont *)titleFont {
-    return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme fontSize] + 1];
+    return [UIFont fontWithName:[PPTheme browseFontName] size:[PPTheme fontSize] + 1];
 }
 
 + (UIFont *)descriptionFont {
-    return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme fontSize] - 3];
+    return [UIFont fontWithName:[PPTheme browseFontName] size:[PPTheme fontSize] - 3];
 }
 
 + (UIFont *)urlFont {
-    return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme fontSize] - 2];
+    return [UIFont fontWithName:[PPTheme browseFontName] size:[PPTheme fontSize] - 2];
 }
 
 + (UIFont *)tagFont {
-    return [UIFont fontWithName:[PPTheme fontName] size:[PPTheme tagFontSize]];
+    return [UIFont fontWithName:[PPTheme browseFontName] size:[PPTheme tagFontSize]];
 }
 
 + (UIFont *)boldTextLabelFont {
@@ -89,14 +95,17 @@
     return 13;
 }
 
++ (NSString *)browseFontName {
+    PPSettings *settings = [PPSettings sharedSettings];
+    return settings.fontName;
+}
+
 + (NSString *)fontName {
     return @"AvenirNext-Regular";
-    return [[NSUserDefaults standardUserDefaults] objectForKey:@"io.aurora.pinboard.FontName"];
 }
 
 + (NSString *)boldFontName {
     return @"AvenirNext-Medium";
-    return [[NSUserDefaults standardUserDefaults] objectForKey:@"io.aurora.pinboard.BoldFontName"];
 }
 
 + (UIColor *)bookmarkBackgroundColor {

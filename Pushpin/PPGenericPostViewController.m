@@ -26,6 +26,7 @@
 #import "PPNavigationController.h"
 #import "PPShrinkBackTransition.h"
 #import "PPNotification.h"
+#import "PPSplitViewController.h"
 
 #import <FMDB/FMDatabase.h>
 #import <oauthconsumer/OAuthConsumer.h>
@@ -433,7 +434,9 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)didReceiveDisplaySettingsUpdateNotification:(NSNotification *)notification {
-    [self updateFromLocalDatabase];
+    [self updateFromLocalDatabaseWithCallback:^{
+        [self.tableView reloadData];
+    }];
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -506,8 +509,13 @@ static NSInteger kToolbarHeight = 44;
                 self.webViewController.shouldMobilize = settings.openLinksWithMobilizer;
                 self.webViewController.transitioningDelegate = self.shrinkBackTransition;
                 
-                if ([self.navigationController topViewController] == self) {
-                    [self presentViewController:self.webViewController animated:YES completion:nil];
+                if ([UIApplication isIPad]) {
+                    [[PPAppDelegate sharedDelegate].window.rootViewController presentViewController:self.webViewController animated:YES completion:nil];
+                }
+                else {
+                    if ([self.navigationController topViewController] == self) {
+                        [self presentViewController:self.webViewController animated:YES completion:nil];
+                    }
                 }
             }
             else {

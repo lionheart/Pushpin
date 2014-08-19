@@ -41,6 +41,7 @@
 @property (nonatomic, strong) NSString *token;
 @property (nonatomic, strong) NSString *username;
 @property (nonatomic, strong) NSString *password;
+@property (nonatomic, strong) NSString *fontName;
 @property (nonatomic, strong) OAToken *instapaperToken;
 @property (nonatomic, strong) OAToken *readabilityToken;
 
@@ -57,7 +58,6 @@
 - (BOOL)isAuthenticated;
 
 - (NSString *)defaultFeedDescription;
-
 - (UITextAutocapitalizationType)autoCapitalizationType;
 - (UITextAutocorrectionType)autoCorrectionType;
 

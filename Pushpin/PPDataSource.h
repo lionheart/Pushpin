@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PostMetadata.h"
 
 static dispatch_queue_t PPBookmarkUpdateQueue() {
     static dispatch_once_t onceToken;
@@ -27,6 +28,9 @@ static dispatch_queue_t PPBookmarkReloadQueue() {
 }
 
 @protocol PPDataSource <NSObject>
+
+- (PostMetadata *)metadataForPostAtIndex:(NSInteger)index;
+- (PostMetadata *)compressedMetadataForPostAtIndex:(NSInteger)index;
 
 - (NSInteger)indexForPost:(NSDictionary *)post;
 - (NSInteger)numberOfPosts;

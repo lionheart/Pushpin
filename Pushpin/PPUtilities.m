@@ -30,7 +30,6 @@
                            hash:(NSString *(^)(id))extractHash
                            meta:(NSString *(^)(id))extractMeta
                      completion:(void (^)(NSSet *inserted, NSSet *updated, NSSet *deleted))completion {
-    
     // Three things we want to do here:
     //
     // 1. Add new bookmarks.

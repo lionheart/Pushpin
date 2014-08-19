@@ -642,8 +642,9 @@
         @"io.aurora.pinboard.DimReadPosts": @(NO),
         @"io.aurora.pinboard.OpenLinksWithMobilizer": @(NO),
         @"io.aurora.pinboard.DoubleTapToEdit": @(NO),
-        @"io.aurora.pinboard.FontName": @"HelveticaNeue-Medium",
-        @"io.aurora.pinboard.BoldFontName": @"HelveticaNeue-Bold",
+        @"io.aurora.pinboard.BrowseFontName": @"AvenirNext-Regular",
+        @"io.aurora.pinboard.FontName": @"AvenirNext-Regular",
+        @"io.aurora.pinboard.BoldFontName": @"AvenirNext-Medium",
         
         // If a user decides not to add a bookmark when it's on the clipboard, don't ask again.
         @"io.aurora.pinboard.OnlyPromptToAddOnce": @(YES),
