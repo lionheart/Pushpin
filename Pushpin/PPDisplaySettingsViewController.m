@@ -15,6 +15,7 @@
 #import "PPTitleButton.h"
 #import "PPSettings.h"
 #import "PPPinboardMetadataCache.h"
+#import "LHSFontSelectionViewController.h"
 
 #import <FMDB/FMDatabase.h>
 #import <TextExpander/SMTEDelegateController.h>
@@ -129,7 +130,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+
+    [self.tableView reloadData];
     [self updateSnippetCounts];
 }
 
@@ -336,15 +338,28 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.accessoryView = self.dimReadPostsSwitch;
                     break;
                     
+                case PPBrowseFontRow:
+                    cell = [tableView dequeueReusableCellWithIdentifier:ChoiceCellIdentifier
+                                                           forIndexPath:indexPath];
+                    cell.textLabel.font = [PPTheme textLabelFont];
+                    cell.detailTextLabel.font = [PPTheme detailLabelFont];
+                    cell.detailTextLabel.textColor = [UIColor grayColor];
+                    cell.accessoryView = nil;
+                    
+                    cell.textLabel.text = NSLocalizedString(@"Font", nil);
+                    cell.detailTextLabel.text = [PPSettings sharedSettings].fontName;
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+                    break;
+                    
                 case PPBrowseFontSizeRow:
                     cell = [tableView dequeueReusableCellWithIdentifier:ChoiceCellIdentifier
                                                            forIndexPath:indexPath];
                     cell.textLabel.font = [PPTheme textLabelFont];
-                    cell.detailTextLabel.font = [PPTheme titleFont];
+                    cell.detailTextLabel.font = [PPTheme detailLabelFont];
                     cell.detailTextLabel.textColor = [UIColor grayColor];
                     cell.accessoryView = nil;
 
-                    cell.textLabel.text = NSLocalizedString(@"Font adjustment", nil);
+                    cell.textLabel.text = NSLocalizedString(@"Font size", nil);
                     cell.detailTextLabel.text = PPFontAdjustmentTypes()[[[PPSettings sharedSettings] fontAdjustment]];
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
@@ -460,23 +475,34 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     [self.navigationController pushViewController:vc animated:YES];
                     break;
                 }
+                    
+                case PPBrowseFontRow: {
+                    NSArray *preferredFontNames = @[@"Flex-Regular", @"Brando-Regular", @"LyonTextApp-Regular"];
+                    LHSFontSelectionViewController *fontSelectionViewController = [[LHSFontSelectionViewController alloc] initWithPreferredFontNames:preferredFontNames
+                                                                                                                              onlyShowPreferredFonts:NO];
+                    fontSelectionViewController.delegate = self;
+                    fontSelectionViewController.preferredStatusBarStyle = UIStatusBarStyleLightContent;
+                    [self.navigationController pushViewController:fontSelectionViewController animated:YES];
+                    break;
+                }
 
                 case PPBrowseFontSizeRow: {
-                    self.fontSizeAdjustmentActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Font Adjustment", nil)
-                                                                                     delegate:self
-                                                                            cancelButtonTitle:nil
-                                                                       destructiveButtonTitle:nil
-                                                                            otherButtonTitles:nil];
+                    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Font Adjustment", nil)
+                                                                             delegate:self
+                                                                    cancelButtonTitle:nil
+                                                               destructiveButtonTitle:nil
+                                                                    otherButtonTitles:nil];
                     
                     for (NSString *title in PPFontAdjustmentTypes()) {
-                        [self.fontSizeAdjustmentActionSheet addButtonWithTitle:title];
+                        [actionSheet addButtonWithTitle:title];
                     }
 
-                    [self.fontSizeAdjustmentActionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
-                    self.fontSizeAdjustmentActionSheet.cancelButtonIndex = [PPFontAdjustmentTypes() count];
+                    [actionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
+                    actionSheet.cancelButtonIndex = [PPFontAdjustmentTypes() count];
                     
                     if ([UIApplication isIPad]) {
                         if (!self.fontSizeAdjustmentActionSheet) {
+                            self.fontSizeAdjustmentActionSheet = actionSheet;
                             CGRect rect = [tableView rectForRowAtIndexPath:indexPath];
                             [self.fontSizeAdjustmentActionSheet showFromRect:rect inView:tableView animated:YES];
                         }
@@ -724,6 +750,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             PPFontAdjustmentType fontAdjustment = (PPFontAdjustmentType)buttonIndex;
             PPSettings *settings = [PPSettings sharedSettings];
             settings.fontAdjustment = fontAdjustment;
+            
+            self.fontSizeAdjustmentActionSheet = nil;
 
             [self.tableView beginUpdates];
             [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPBrowseFontSizeRow inSection:PPSectionBrowseSettings]]
@@ -732,9 +760,29 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 [[PPPinboardMetadataCache sharedCache] reset];
+                [[NSNotificationCenter defaultCenter] postNotificationName:PPBookmarkDisplaySettingUpdated object:nil];
             });
         }
     }
+}
+
+#pragma mark - LHSFontSelecting
+
+- (void)setFontName:(NSString *)fontName forFontSelectionViewController:(LHSFontSelectionViewController *)viewController {
+    [PPSettings sharedSettings].fontName = fontName;
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [[PPPinboardMetadataCache sharedCache] reset];
+        [[NSNotificationCenter defaultCenter] postNotificationName:PPBookmarkDisplaySettingUpdated object:nil];
+    });
+}
+
+- (NSString *)fontNameForFontSelectionViewController:(LHSFontSelectionViewController *)viewController {
+    return [PPSettings sharedSettings].fontName;
+}
+
+- (CGFloat)fontSizeForFontSelectionViewController:(LHSFontSelectionViewController *)viewController {
+    return [PPTheme fontSize];
 }
 
 @end

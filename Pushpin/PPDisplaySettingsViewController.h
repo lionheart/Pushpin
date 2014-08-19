@@ -7,6 +7,7 @@
 //
 
 #import "PPTableViewController.h"
+#import "LHSFontSelecting.h"
 
 typedef NS_ENUM(NSInteger, PPDisplaySettingsSectionType) {
     PPSectionDisplaySettings,
@@ -31,6 +32,7 @@ typedef NS_ENUM(NSInteger, PPEditSettingsRowType) {
 typedef NS_ENUM(NSInteger, PPBrowseSettingsRowType) {
     PPBrowseCompressRow,
     PPBrowseDimReadRow,
+    PPBrowseFontRow,
     PPBrowseFontSizeRow,
     PPBrowseDefaultFeedRow,
 };
@@ -52,6 +54,6 @@ enum : NSInteger {
     PPRowCountOtherSettings = PPOtherDisplayClearCache + 1
 };
 
-@interface PPDisplaySettingsViewController : PPTableViewController <UIAlertViewDelegate, UIActionSheetDelegate>
+@interface PPDisplaySettingsViewController : PPTableViewController <UIAlertViewDelegate, UIActionSheetDelegate, LHSFontSelecting>
 
 @end

@@ -44,6 +44,7 @@
 @synthesize fontAdjustment = _fontAdjustment;
 @synthesize readerSettings = _readerSettings;
 @synthesize purchasedPremiumFonts = _purchasedPremiumFonts;
+@synthesize fontName = _fontName;
 
 #ifdef PINBOARD
 @synthesize communityFeedOrder = _communityFeedOrder;
@@ -459,6 +460,21 @@
         _lastUpdated = [defaults objectForKey:@"io.aurora.pinboard.LastUpdated"];
     }
     return _lastUpdated;
+}
+
+- (void)setFontName:(NSString *)fontName {
+    _fontName = fontName;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:fontName forKey:@"io.aurora.pinboard.BrowseFontName"];
+    [defaults synchronize];
+}
+
+- (NSString *)fontName {
+    if (!_fontName) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _fontName = [defaults objectForKey:@"io.aurora.pinboard.BrowseFontName"];
+    }
+    return _fontName;
 }
 
 - (NSString *)username {

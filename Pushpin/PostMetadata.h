@@ -17,6 +17,11 @@
 @property (nonatomic, strong) NSAttributedString *linkString;
 @property (nonatomic, strong) NSNumber *height;
 @property (nonatomic, strong) NSArray *badges;
+@property (nonatomic) CGFloat titleHeight;
+@property (nonatomic) CGFloat badgeHeight;
+@property (nonatomic) CGFloat descriptionHeight;
+@property (nonatomic) CGFloat linkHeight;
+
 @property (nonatomic, strong) PPBadgeWrapperView *badgeWrapperView;
 
 + (PostMetadata *)metadataForPost:(NSDictionary *)post

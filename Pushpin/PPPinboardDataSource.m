@@ -320,6 +320,14 @@ static BOOL kPinboardSyncInProgress = NO;
     return self.posts[index][@"url"];
 }
 
+- (PostMetadata *)metadataForPostAtIndex:(NSInteger)index {
+    return self.metadata[index];
+}
+
+- (PostMetadata *)compressedMetadataForPostAtIndex:(NSInteger)index {
+    return self.compressedMetadata[index];
+}
+
 - (NSDictionary *)postAtIndex:(NSInteger)index {
     return self.posts[index];
 }
