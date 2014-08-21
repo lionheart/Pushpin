@@ -236,7 +236,7 @@ static NSString *CellIdentifier = @"Cell";
         case PPReaderSettingsSectionMain:
             switch ((PPReaderSettingsMainRowType)indexPath.row) {
                 case PPReaderSettingsMainRowFontFamily: {
-                    cell.textLabel.text = @"Font";
+                    cell.textLabel.text = NSLocalizedString(@"Font", nil);
 
                     UIFont *font = [PPSettings sharedSettings].readerSettings.font;
                     self.fontFamilyLabel.font = [PPTheme textLabelFont];
@@ -253,7 +253,7 @@ static NSString *CellIdentifier = @"Cell";
                     
                 case PPReaderSettingsMainRowFontSize: {
 #if PPREADER_USE_SLIDERS
-                    title.text = @"Font size";
+                    title.text = NSLocalizedString(@"Font size", nil);
                     self.fontSizeLabel.text = [NSString stringWithFormat:@"%0.0fpx", settings.readerSettings.fontSize];
                     
                     NSMutableDictionary *views = [@{@"detail": self.fontSizeLabel, @"title": title} mutableCopy];
@@ -273,14 +273,14 @@ static NSString *CellIdentifier = @"Cell";
                         [cell.contentView lhs_addConstraints:@"V:[slider]-12-|" views:views];
                     }
 #else
-                    cell.textLabel.text = @"Font size";
+                    cell.textLabel.text = NSLocalizedString(@"Font size", nil);
                     cell.accessoryView = self.fontSizeStepper;
 #endif
                     break;
                 }
                     
                 case PPReaderSettingsMainRowDisplayImages: {
-                    cell.textLabel.text = @"Display images?";
+                    cell.textLabel.text = NSLocalizedString(@"Display images?", nil);
 
                     CGSize size = cell.frame.size;
                     CGSize switchSize = self.displayImagesSwitch.frame.size;
@@ -290,7 +290,7 @@ static NSString *CellIdentifier = @"Cell";
                 }
                     
                 case PPReaderSettingsMainRowFontLineSpacing: {
-                    title.text = @"Line Spacing";
+                    title.text = NSLocalizedString(@"Line Spacing", nil);
                     self.lineSpacingLabel.text = [NSString stringWithFormat:@"%0.1fem", settings.readerSettings.lineSpacing];
                     
                     NSMutableDictionary *views = [@{@"detail": self.lineSpacingLabel, @"title": title} mutableCopy];
@@ -314,12 +314,12 @@ static NSString *CellIdentifier = @"Cell";
                 }
             
                 case PPReaderSettingsMainRowHeaderFontFamily:
-                    cell.textLabel.text = @"Header Font";
+                    cell.textLabel.text = NSLocalizedString(@"Header Font", nil);
                     cell.detailTextLabel.text = settings.readerSettings.headerFontName;
                     break;
                     
                 case PPReaderSettingsMainRowMargin: {
-                    title.text = @"Margins";
+                    title.text = NSLocalizedString(@"Margins", nil);
                     self.marginLabel.text = [NSString stringWithFormat:@"%lu%%", (long)settings.readerSettings.margin];
 
                     NSMutableDictionary *views = [@{@"detail": self.marginLabel, @"title": title} mutableCopy];
@@ -343,23 +343,23 @@ static NSString *CellIdentifier = @"Cell";
                 }
 
                 case PPReaderSettingsMainRowTextAlignment:
-                    cell.textLabel.text = @"Text Alignment";
+                    cell.textLabel.text = NSLocalizedString(@"Text Alignment", nil);
                     
                     switch (settings.readerSettings.textAlignment) {
                         case NSTextAlignmentLeft:
-                            cell.detailTextLabel.text = @"Left";
+                            cell.detailTextLabel.text = NSLocalizedString(@"Left", nil);
                             break;
 
                         case NSTextAlignmentCenter:
-                            cell.detailTextLabel.text = @"Center";
+                            cell.detailTextLabel.text = NSLocalizedString(@"Center", nil);
                             break;
                             
                         case NSTextAlignmentRight:
-                            cell.detailTextLabel.text = @"Right";
+                            cell.detailTextLabel.text = NSLocalizedString(@"Right", nil);
                             break;
                             
                         case NSTextAlignmentJustified:
-                            cell.detailTextLabel.text = @"Justified";
+                            cell.detailTextLabel.text = NSLocalizedString(@"Justified", nil);
                             break;
                     }
                     break;
@@ -706,11 +706,11 @@ static NSString *CellIdentifier = @"Cell";
                      animations:^{
                          if ([self.view.constraints containsObject:self.webViewContainerPinnedToTopConstraint]) {
                              [self.view removeConstraint:self.webViewContainerPinnedToTopConstraint];
-                             self.navigationItem.rightBarButtonItem.title = @"Preview";
+                             self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Preview", nil);
                          }
                          else {
                              [self.view addConstraint:self.webViewContainerPinnedToTopConstraint];
-                             self.navigationItem.rightBarButtonItem.title = @"Minimize";
+                             self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Minimize", nil);
                          }
                          
                          [self.view layoutIfNeeded];

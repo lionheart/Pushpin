@@ -220,7 +220,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
         if (!validCredentialsProvided) {
 #ifdef DELICIOUS
-            NSString *message = @"Please enter both a username and password to sign into Delicious.";
+            NSString *message = NSLocalizedString(@"Please enter both a username and password to sign into Delicious.", nil);
 #endif
 
 #ifdef PINBOARD
@@ -724,7 +724,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
             UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"56_Key-alt"]];
             cell.accessoryView = imageView;
-            cell.textLabel.text = @"Launch 1Password";
+            cell.textLabel.text = NSLocalizedString(@"Launch 1Password", nil);
             cell.textLabel.font = [PPTheme titleFont];
             break;
         }

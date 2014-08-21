@@ -96,7 +96,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.title = @"Edit Tags";
+    self.title = NSLocalizedString(@"Edit Tags", nil);
     
 #ifdef PINBOARD
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Suggest", nil) style:UIBarButtonItemStyleDone target:self action:@selector(rightBarButtonItemTouchUpInside:)];
@@ -379,7 +379,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         NSInteger finalAmount;
         if (self.filteredPopularAndRecommendedTagsVisible) {
             finalAmount = self.filteredPopularAndRecommendedTags.count;
-            self.navigationItem.rightBarButtonItem.title = @"Suggest";
+            self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Suggest", nil);
         }
         else {
             finalAmount = 0;
@@ -750,7 +750,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (void)rightBarButtonItemTouchUpInside:(id)sender {
-    self.navigationItem.rightBarButtonItem.title = @"Suggest";
+    self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Suggest", nil);
     
     if (self.filteredPopularAndRecommendedTagsVisible) {
         // Hide them if they're already showing
@@ -777,7 +777,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                        }];
     }
     else {
-        self.navigationItem.rightBarButtonItem.title = @"Hide";
+        self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Hide", nil);
         [self prefillPopularTags];
     }
 }

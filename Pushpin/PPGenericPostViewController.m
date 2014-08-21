@@ -229,7 +229,7 @@ static NSInteger kToolbarHeight = 44;
         self.searchBar.keyboardType = UIKeyboardTypeASCIICapable;
         self.searchBar.searchBarStyle = UISearchBarStyleProminent;
         self.searchBar.isAccessibilityElement = YES;
-        self.searchBar.accessibilityLabel = @"Search Bar";
+        self.searchBar.accessibilityLabel = NSLocalizedString(@"Search Bar", nil);
 #ifdef DELICIOUS
         self.searchBar.scopeButtonTitles = @[@"All", @"Title", @"Desc.", @"Tags"];
 #endif
@@ -1274,7 +1274,7 @@ static NSInteger kToolbarHeight = 44;
                 updated = YES;
                 
                 if (posts.count == 1) {
-                    message = @"Bookmark marked as read.";
+                    message = NSLocalizedString(@"Bookmark marked as read.", nil);
                 }
                 else {
                     message = [NSString stringWithFormat:@"%lu bookmarks marked as read.", (unsigned long)posts.count];
@@ -1673,7 +1673,7 @@ static NSInteger kToolbarHeight = 44;
     
     NSString *title;
     if (selectedRowCount == 1) {
-        title = @"1 bookmark selected";
+        title = NSLocalizedString(@"1 bookmark selected", nil);
     }
     else {
         title = [NSString stringWithFormat:@"%lu %@", (unsigned long)selectedRowCount, NSLocalizedString(@"bookmarks selected", nil)];
