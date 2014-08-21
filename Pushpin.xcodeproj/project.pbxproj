@@ -714,7 +714,7 @@
 		3772DE591933B0D1004B348D /* DebugPods.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DebugPods.m; sourceTree = "<group>"; };
 		3772DE901933B0E0004B348D /* DebugPodsTests copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "DebugPodsTests copy-Info.plist"; path = "/Users/dan/Documents/Projects/Pushpin/DebugPodsTests copy-Info.plist"; sourceTree = "<absolute>"; };
 		3778CE5118B1C97D004113DC /* PPSearchExamplesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSearchExamplesViewController.h; sourceTree = "<group>"; };
-		3778CE5218B1C97D004113DC /* PPSearchExamplesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPSearchExamplesViewController.m; sourceTree = "<group>"; };
+		3778CE5218B1C97D004113DC /* PPSearchExamplesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPSearchExamplesViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		377E46D6174C396C00CE3813 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		377E46DA174C3A7500CE3813 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		377E46DC174C73DD00CE3813 /* PPBrowserSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBrowserSettingsViewController.h; sourceTree = "<group>"; };
@@ -758,7 +758,7 @@
 		3798B08D18767DAB002D684B /* navigation-edit-blue@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-edit-blue@2x.png"; path = "Assets/navigation-edit-blue@2x.png"; sourceTree = "<group>"; };
 		379C3C1F1894BD4C003A02FF /* DeliciousAppStore.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DeliciousAppStore.plist; sourceTree = "<group>"; };
 		37A2B4A0199E6D8D005B7671 /* PPReaderSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPReaderSettingsViewController.h; sourceTree = "<group>"; };
-		37A2B4A1199E6D8D005B7671 /* PPReaderSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPReaderSettingsViewController.m; sourceTree = "<group>"; };
+		37A2B4A1199E6D8D005B7671 /* PPReaderSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPReaderSettingsViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37A2B4A8199EA8CA005B7671 /* PPReaderSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPReaderSettings.h; sourceTree = "<group>"; };
 		37A2B4A9199EA8CA005B7671 /* PPReaderSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPReaderSettings.m; sourceTree = "<group>"; };
 		37A7B5C118345DAE0038677E /* stop@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "stop@2x.png"; path = "Assets/stop@2x.png"; sourceTree = "<group>"; };
@@ -781,7 +781,7 @@
 		37B348C7175EFAFA00929E2E /* PPDisplaySettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPDisplaySettingsViewController.h; sourceTree = "<group>"; };
 		37B348C8175EFAFA00929E2E /* PPDisplaySettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPDisplaySettingsViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37B348CA175FF9D400929E2E /* PPChangelogViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPChangelogViewController.h; sourceTree = "<group>"; };
-		37B348CB175FF9D500929E2E /* PPChangelogViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPChangelogViewController.m; sourceTree = "<group>"; };
+		37B348CB175FF9D500929E2E /* PPChangelogViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPChangelogViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37B348CD175FFDCD00929E2E /* Changelog.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Changelog.plist; path = Assets/Changelog.plist; sourceTree = SOURCE_ROOT; };
 		37B348D3176011F800929E2E /* star-table.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "star-table.png"; path = "Assets/star-table.png"; sourceTree = "<group>"; };
 		37B348D4176011F800929E2E /* star-table@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "star-table@2x.png"; path = "Assets/star-table@2x.png"; sourceTree = "<group>"; };
@@ -1041,7 +1041,7 @@
 		E80495111810419500C5CA8B /* activity-readinglist.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "activity-readinglist.png"; path = "Assets/activity-readinglist.png"; sourceTree = "<group>"; };
 		E80495121810419500C5CA8B /* activity-readinglist@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "activity-readinglist@2x.png"; path = "Assets/activity-readinglist@2x.png"; sourceTree = "<group>"; };
 		E80495191810597A00C5CA8B /* PPDefaultFeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PPDefaultFeedViewController.h; path = ../PPDefaultFeedViewController.h; sourceTree = "<group>"; };
-		E804951A1810597A00C5CA8B /* PPDefaultFeedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PPDefaultFeedViewController.m; path = ../PPDefaultFeedViewController.m; sourceTree = "<group>"; };
+		E804951A1810597A00C5CA8B /* PPDefaultFeedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = PPDefaultFeedViewController.m; path = ../PPDefaultFeedViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		E80EEF68184E9AA000979AA3 /* toolbar-checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "toolbar-checkmark.png"; path = "Assets/toolbar-checkmark.png"; sourceTree = "<group>"; };
 		E80EEF69184E9AA000979AA3 /* toolbar-checkmark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "toolbar-checkmark@2x.png"; path = "Assets/toolbar-checkmark@2x.png"; sourceTree = "<group>"; };
 		E80EEF6A184E9AA000979AA3 /* toolbar-trash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "toolbar-trash.png"; path = "Assets/toolbar-trash.png"; sourceTree = "<group>"; };
@@ -3193,6 +3193,7 @@
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Beta.entitlements;
+				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = "";
@@ -3228,6 +3229,7 @@
 					"-ObjC",
 					"-all_load",
 				);
+				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "\"$(BUILD_ROOT)/../IntermediateBuildFilesPath/UninstalledProducts\"";
