@@ -53,7 +53,7 @@ static NSString *CellIdentifier = @"Cell";
 #endif 
 
     self.data = [NSArray arrayWithContentsOfFile:plistPath];
-    self.title = @"Changelog";
+    self.title = NSLocalizedString(@"Changelog", nil);
     self.titles = [NSMutableArray array];
     
     NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];

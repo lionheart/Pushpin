@@ -116,7 +116,7 @@ static NSString *CellIdentifier = @"Cell";
 
                     switch (browser) {
                         case PPBrowserWebview:
-                            cell.detailTextLabel.text = @"Webview";
+                            cell.detailTextLabel.text = NSLocalizedString(@"Webview", nil);
                             break;
 
                         case PPBrowserSafari:

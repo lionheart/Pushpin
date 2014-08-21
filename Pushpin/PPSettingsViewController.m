@@ -231,7 +231,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     cell.isAccessibilityElement = YES;
-                    cell.accessibilityLabel = @"Advanced Settings";
+                    cell.accessibilityLabel = NSLocalizedString(@"Advanced Settings", nil);
                     break;
 
                 case PPMainBrowser:

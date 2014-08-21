@@ -116,7 +116,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     [titleView setTitle:NSLocalizedString(@"Browse", nil) imageName:nil];
     titleView.delegate = self;
 
-    self.title = @"Browse";
+    self.title = NSLocalizedString(@"Browse", nil);
     self.navigationItem.titleView = titleView;
     self.extendedLayoutIncludesOpaqueBars = YES;
     self.edgesForExtendedLayout = UIRectEdgeNone;
@@ -659,7 +659,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     break;
 
                 case PPPinboardCommunityFeedWikipedia:
-                    cell.textLabel.text = @"Wikipedia";
+                    cell.textLabel.text = NSLocalizedString(@"Wikipedia", nil);
                     cell.imageView.image = [UIImage imageNamed:@"browse-wikipedia"];
                     break;
 
@@ -669,12 +669,12 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     break;
 
                 case PPPinboardCommunityFeedJapan:
-                    cell.textLabel.text = @"日本語";
+                    cell.textLabel.text = NSLocalizedString(@"日本語", nil);
                     cell.imageView.image = [UIImage imageNamed:@"browse-japanese"];
                     break;
                     
                 case PPPinboardCommunityFeedRecent:
-                    cell.textLabel.text = @"Recent";
+                    cell.textLabel.text = NSLocalizedString(@"Recent", nil);
                     cell.imageView.image = [UIImage imageNamed:@"browse-recent"];
                     break;
             }
@@ -689,7 +689,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
             if (tableView.editing) {
                 if (indexPath.row == 0) {
-                    cell.textLabel.text = @"Add Feed";
+                    cell.textLabel.text = NSLocalizedString(@"Add Feed", nil);
                     cell.imageView.image = nil;
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                 }

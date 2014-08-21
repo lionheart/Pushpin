@@ -411,7 +411,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.detailTextLabel.text = NSLocalizedString(@"Resets the list of URLs that you've decided not to add from the clipboard.", nil);
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     cell.isAccessibilityElement = YES;
-                    cell.accessibilityLabel = @"Reset URL";
+                    cell.accessibilityLabel = NSLocalizedString(@"Reset URL", nil);
                     break;
                     
                 case PPOtherAlwaysShowAlert:
@@ -435,7 +435,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 
             switch ((PPTextExpanderRowType)indexPath.row) {
                 case PPTextExpanderRowSwitch:
-                    cell.textLabel.text = @"Enable TextExpander";
+                    cell.textLabel.text = NSLocalizedString(@"Enable TextExpander", nil);
                     cell.detailTextLabel.text = nil;
                     
                     size = cell.frame.size;
@@ -445,13 +445,13 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     break;
 
                 case PPTextExpanderRowUpdate:
-                    cell.textLabel.text = @"Update TextExpander Snippets";
+                    cell.textLabel.text = NSLocalizedString(@"Update TextExpander Snippets", nil);
                     
                     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
                     formatter.dateStyle = NSDateFormatterShortStyle;
                     
                     if (self.TESnippetCount == 1) {
-                        cell.detailTextLabel.text = @"1 snippet";
+                        cell.detailTextLabel.text = NSLocalizedString(@"1 snippet", nil);
                     }
                     else {
                         cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld snippets", (long)self.TESnippetCount];
