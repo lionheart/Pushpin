@@ -113,7 +113,6 @@
     defaultParagraphStyle.tailIndent = 0;
     defaultParagraphStyle.lineHeightMultiple = 1;
     defaultParagraphStyle.hyphenationFactor = 0;
-//    defaultParagraphStyle.lineSpacing = 1;
     defaultParagraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
 
     NSMutableDictionary *linkAttributes = [@{NSFontAttributeName: [PPTheme urlFont],

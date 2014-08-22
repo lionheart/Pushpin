@@ -24,6 +24,10 @@
 #import "PPSettings.h"
 #import "NSData+AES256.h"
 
+#ifdef PINBOARD
+#import "PPPinboardDataSource.h"
+#endif
+
 #import <JavaScriptCore/JavaScriptCore.h>
 #import <LHSCategoryCollection/NSData+Base64.h>
 #import "NSString+URLEncoding2.h"
@@ -57,11 +61,14 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 - (void)updateInterfaceWithComputedWebPageBackgroundColor;
 - (void)updateInterfaceWithComputedWebPageBackgroundColorTimedOut:(BOOL)timedOut;
 - (void)handleKeyCommand:(UIKeyCommand *)keyCommand;
+- (void)markAsReadButtonTouchUpInside:(id)sender;
 //- (BOOL)mobilized;
 - (UIWebView *)currentWebView;
 
 - (void)setReaderViewVisible:(BOOL)visible animated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
 - (void)setToolbarVisible:(BOOL)visible animated:(BOOL)animated;
+
+- (void)addTouchOverridesForWebView:(UIWebView *)webView;
 
 @end
 
@@ -128,6 +135,10 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     self.longPressGestureRecognizer.delegate = self;
     [self.webView addGestureRecognizer:self.longPressGestureRecognizer];
+
+    self.readerLongPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+    self.readerLongPressGestureRecognizer.delegate = self;
+    [self.readerWebView addGestureRecognizer:self.readerLongPressGestureRecognizer];
     
     self.toolbar = [[UIView alloc] init];
     self.toolbar.backgroundColor = [UIColor whiteColor];
@@ -154,7 +165,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
     self.markAsReadButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.markAsReadButton setImage:markAsReadImage forState:UIControlStateNormal];
-    [self.markAsReadButton addTarget:self action:@selector(forwardButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
+    [self.markAsReadButton addTarget:self action:@selector(markAsReadButtonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
     self.markAsReadButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.markAsReadButton.enabled = NO;
     self.markAsReadButton.hidden = YES;
@@ -343,11 +354,13 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 }
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer {
-    if (recognizer == self.longPressGestureRecognizer) {
+    if (recognizer == self.longPressGestureRecognizer || recognizer == self.readerLongPressGestureRecognizer) {
+        UIWebView *webView = (UIWebView *)recognizer.view;
+
         // Get the coordinates of the selected element
-        CGPoint webViewCoordinates = [recognizer locationInView:self.webView];
-        CGSize viewSize = self.webView.frame.size;
-        CGFloat webViewContentWidth = [[self.webView stringByEvaluatingJavaScriptFromString:@"window.innerWidth"] integerValue];
+        CGPoint webViewCoordinates = [recognizer locationInView:webView];
+        CGSize viewSize = webView.frame.size;
+        CGFloat webViewContentWidth = [[webView stringByEvaluatingJavaScriptFromString:@"window.innerWidth"] integerValue];
         CGFloat scaleRatio = webViewContentWidth / viewSize.width;
         webViewCoordinates.x = webViewCoordinates.x * scaleRatio;
         webViewCoordinates.y = webViewCoordinates.y * scaleRatio;
@@ -356,26 +369,30 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         if (self.selectedActionSheetIsVisible) {
             return;
         }
-        
+
         // Search the DOM for the link - will just return immediately if there is an A element at our exact coordinates
-        [self.webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"PINBOARD_ACTIVE_ELEMENT = PINBOARD_CLOSEST_LINK_AT(%f, %f)", webViewCoordinates.x, webViewCoordinates.y]];
+        [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"PINBOARD_ACTIVE_ELEMENT = PINBOARD_CLOSEST_LINK_AT(%f, %f)", webViewCoordinates.x, webViewCoordinates.y]];
         NSString *locatorString = @"PINBOARD_ACTIVE_ELEMENT.nodeName";
         
         // Only process link elements any further
         locatorString = @"PINBOARD_ACTIVE_ELEMENT.nodeName";
-        if (![[self.webView stringByEvaluatingJavaScriptFromString:locatorString] isEqualToString:@"A"]) {
+        if (![[webView stringByEvaluatingJavaScriptFromString:locatorString] isEqualToString:@"A"]) {
             return;
         }
         
         // Parse the link and title into an NSDictionary
         locatorString = @"PINBOARD_ACTIVE_ELEMENT.innerText";
-        NSString *title = [self.webView stringByEvaluatingJavaScriptFromString:locatorString];
+        NSString *title = [webView stringByEvaluatingJavaScriptFromString:locatorString];
         locatorString = @"PINBOARD_ACTIVE_ELEMENT.href";
-        NSString *url = [self.webView stringByEvaluatingJavaScriptFromString:locatorString];
+        NSString *url = [webView stringByEvaluatingJavaScriptFromString:locatorString];
         self.selectedLink = @{ @"url": url, @"title": title };
         
         // Show the context menu
-        self.selectedActionSheet = [[UIActionSheet alloc] initWithTitle:url delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Add to Pinboard", nil), NSLocalizedString(@"Copy URL", nil), nil];
+        self.selectedActionSheet = [[UIActionSheet alloc] initWithTitle:url
+                                                               delegate:self
+                                                      cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                                 destructiveButtonTitle:nil
+                                                      otherButtonTitles:NSLocalizedString(@"Add to Pinboard", nil), NSLocalizedString(@"Copy URL", nil), nil];
         [self setSelectedActionSheetIsVisible:YES];
         [(UIActionSheet *)self.selectedActionSheet showFromRect:self.actionButton.frame inView:self.toolbar animated:YES];
     }
@@ -515,6 +532,10 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                              [self setNeedsStatusBarAppearanceUpdate];
                          }];
 
+        if ([self.presentingViewController respondsToSelector:@selector(setNeedsUpdate:)]) {
+            [(PPGenericPostViewController *)self.presentingViewController setNeedsUpdate:YES];
+        }
+
         [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
     }
 }
@@ -609,6 +630,9 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
     self.mobilizeButton.selected = !self.mobilized;
     self.mobilized = !self.mobilized;
+
+    [self.indicator startAnimating];
+    self.markAsReadButton.hidden = YES;
     if (self.mobilized) {
         self.webView.scrollView.scrollsToTop = NO;
         self.readerWebView.scrollView.scrollsToTop = YES;
@@ -627,6 +651,8 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
             if (![weakself.loadedURLs containsObject:weakself.url]) {
                 [weakself loadURL];
             }
+            [weakself.indicator stopAnimating];
+            weakself.markAsReadButton.hidden = NO;
         }];
     }
 }
@@ -901,9 +927,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
             self.mobilizeButton.enabled = [PPMobilizerUtility canMobilizeURL:self.url];
             
             // Disable the default action sheet
-            [webView stringByEvaluatingJavaScriptFromString:@"document.body.style.webkitTouchCallout='none';"];
-            [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitTouchCallout='none';"];
-            [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"webview-helpers" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil]];
+            [self addTouchOverridesForWebView:webView];
             
             if (self.numberOfRequestsInProgress == 0) {
                 [self updateInterfaceWithComputedWebPageBackgroundColor];
@@ -929,6 +953,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
             [self.indicator stopAnimating];
 
             [self setReaderViewVisible:YES animated:YES completion:nil];
+            [self addTouchOverridesForWebView:self.readerWebView];
             [self enableOrDisableButtons];
         }
         else {
@@ -1209,7 +1234,11 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                             options:UIViewAnimationOptionCurveLinear | UIViewAnimationOptionBeginFromCurrentState
                          animations:animations
                          completion:^(BOOL finished) {
-                             if (!visible) {
+                             if (visible) {
+                                 [self.indicator stopAnimating];
+                                 self.markAsReadButton.hidden = NO;
+                             }
+                             else {
                                  self.readerWebView.hidden = YES;
                              }
                              
@@ -1221,6 +1250,59 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     else {
         animations();
     }
+}
+
+- (void)markAsReadButtonTouchUpInside:(id)sender {
+#ifdef PINBOARD
+    id<PPDataSource> dataSource = [[PPPinboardDataSource alloc] init];
+#endif
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        __block NSDictionary *post;
+        
+        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+            FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[self.url.absoluteString]];
+            [results next];
+            post = [PPUtilities dictionaryFromResultSet:results];
+            [results close];
+        }];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];
+            [self.indicator startAnimating];
+            self.markAsReadButton.hidden = YES;
+
+            [dataSource markPostAsRead:post[@"url"] callback:^(NSError *error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
+                    [self.indicator stopAnimating];
+
+                    NSString *message;
+                    BOOL success = YES, updated = YES;
+                    self.markAsReadButton.hidden = NO;
+
+                    // If we have any errors, update the local notification
+                    if (error) {
+                        success = NO;
+                        updated = NO;
+                        message = NSLocalizedString(@"There was an error marking your bookmarks as read.", nil);
+                    }
+                    else {
+                        self.markAsReadButton.enabled = NO;
+                        message = NSLocalizedString(@"Bookmark marked as read.", nil);
+                    }
+
+                    [PPNotification notifyWithMessage:message success:success updated:updated];
+                });
+            }];
+        });
+    });
+}
+
+- (void)addTouchOverridesForWebView:(UIWebView *)webView {
+    [webView stringByEvaluatingJavaScriptFromString:@"document.body.style.webkitTouchCallout='none';"];
+    [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitTouchCallout='none';"];
+    [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"webview-helpers" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil]];
 }
 
 @end

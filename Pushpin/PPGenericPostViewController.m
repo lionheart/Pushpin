@@ -58,6 +58,7 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic, strong) NSString *formattedSearchString;
 @property (nonatomic, strong) NSTimer *fullTextSearchTimer;
 @property (nonatomic) BOOL isProcessingPosts;
+@property (nonatomic) BOOL viewIsAppearing;
 
 @property (nonatomic, strong) NSLayoutConstraint *tableViewPinnedToTopConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *tableViewPinnedToBottomConstraint;
@@ -326,6 +327,8 @@ static NSInteger kToolbarHeight = 44;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    self.viewIsAppearing = YES;
+    
     if ([self.postDataSource respondsToSelector:@selector(barTintColor)]) {
         [self.navigationController.navigationBar setBarTintColor:[self.postDataSource barTintColor]];
     }
@@ -390,6 +393,8 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
+    self.viewIsAppearing = NO;
 
     [UIView animateWithDuration:0.3
                      animations:^{
@@ -676,16 +681,11 @@ static NSInteger kToolbarHeight = 44;
     self.latestSearchTime = time;
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSDate *date = [NSDate date];
-        DLog(@"A: %@", date);
-
         if (self.searchDisplayController.isActive) {
             [self.searchPostDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (!error) {
                         UITableView *tableView = self.searchDisplayController.searchResultsTableView;
-                        
-                        DLog(@"B: %@", date);
                         
                         CLS_LOG(@"Table View Reload 1");
 
@@ -704,7 +704,7 @@ static NSInteger kToolbarHeight = 44;
                 });
             } cancel:^BOOL{
                 BOOL isHidden = !self.isViewLoaded || self.view.window == nil;
-                if (isHidden) {
+                if (isHidden && !self.viewIsAppearing) {
                     return YES;
                 }
                 else {
@@ -980,7 +980,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    NSInteger num = [[self dataSourceForTableView:tableView] numberOfPosts];
+    NSInteger num = [self.currentDataSource numberOfPosts];
     return num;
 }
 
