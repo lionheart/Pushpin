@@ -175,7 +175,9 @@ static NSString *CellIdentifier = @"Cell";
                             @"grey": self.greyThemeButton,
                             @"dark": self.darkGreyThemeButton,
                             @"black": self.blackThemeButton,
-                            @"webview": self.exampleWebView };
+                            @"webview": self.exampleWebView,
+                            @"bottom": self.bottomLayoutGuide,
+                            @"container": self.webViewContainer };
     
     [self.webViewContainer lhs_addConstraints:@"V:|[white(44)][webview]|" views:views];
     [self.webViewContainer lhs_addConstraints:@"V:|[yellow(==white)]" views:views];
@@ -186,7 +188,7 @@ static NSString *CellIdentifier = @"Cell";
     
     [self.view addSubview:self.webViewContainer];
     [self.webViewContainer lhs_fillWidthOfSuperview];
-    [self.view lhs_addConstraints:@"V:[container(>=160)]|" views:@{@"container": self.webViewContainer}];
+    [self.view lhs_addConstraints:@"V:[container(>=160)][bottom]" views:views];
     
     self.webViewContainerPinnedToTopConstraint = [NSLayoutConstraint constraintWithItem:self.webViewContainer
                                                                               attribute:NSLayoutAttributeTop

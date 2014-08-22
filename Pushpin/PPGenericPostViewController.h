@@ -86,6 +86,7 @@ typedef enum : NSInteger {
 @property (nonatomic) BOOL compressPosts;
 @property (nonatomic) BOOL dimReadPosts;
 @property (nonatomic) CGPoint selectedPoint;
+@property (nonatomic) BOOL needsUpdate;
 
 - (void)handleCellTap;
 - (void)popViewController;

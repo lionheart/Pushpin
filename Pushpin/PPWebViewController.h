@@ -36,6 +36,7 @@
 @property (nonatomic, strong) UIPanGestureRecognizer *panGestureRecognizer;
 @property (nonatomic, strong) UITapGestureRecognizer *bottomTapGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
+@property (nonatomic, strong) UILongPressGestureRecognizer *readerLongPressGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *backButtonLongPressGestureRecognizer;
 
 @property (nonatomic) BOOL actionSheetIsVisible;

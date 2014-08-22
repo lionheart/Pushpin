@@ -333,6 +333,10 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (void)markPostAsRead:(NSString *)url callback:(void (^)(NSError *))callback {
+    if (!callback) {
+        callback = ^(NSError *error) {};
+    }
+
     ASPinboard *pinboard = [ASPinboard sharedInstance];
     [pinboard bookmarkWithURL:url
                       success:^(NSDictionary *bookmark) {
@@ -370,8 +374,8 @@ static BOOL kPinboardSyncInProgress = NO;
                       }
                       failure:^(NSError *error) {
                           if (error.code == PinboardErrorBookmarkNotFound) {
-                              callback(error);
                           }
+                          callback(error);
                       }];
 }
 
