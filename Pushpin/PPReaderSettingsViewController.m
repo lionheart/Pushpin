@@ -702,6 +702,13 @@ static NSString *CellIdentifier = @"Cell";
 }
 
 - (void)toggleFullScreenExampleWebView {
+    if ([self.view.constraints containsObject:self.webViewContainerPinnedToTopConstraint]) {
+        self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Preview", nil);
+    }
+    else {
+        self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Minimize", nil);
+    }
+
     [UIView animateWithDuration:0.4
                      animations:^{
                          if ([self.view.constraints containsObject:self.webViewContainerPinnedToTopConstraint]) {

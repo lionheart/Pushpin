@@ -51,12 +51,7 @@
     self.textView.translatesAutoresizingMaskIntoConstraints = NO;
     
     [self.view addSubview:self.textView];
-    
-    NSDictionary *views = @{@"text": self.textView,
-                            @"top": self.topLayoutGuide,
-                            @"bottom": self.bottomLayoutGuide };
-    [self.view lhs_addConstraints:@"H:|[text]|" views:views];
-    [self.view lhs_addConstraints:@"V:[top][text][bottom]" views:views];
+    [self.textView lhs_expandToFillSuperview];
 }
 
 - (void)setText:(NSString *)text {
