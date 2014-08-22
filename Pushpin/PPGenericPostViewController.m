@@ -371,23 +371,21 @@ static NSInteger kToolbarHeight = 44;
     PPSettings *settings = [PPSettings sharedSettings];
     self.compressPosts = settings.compressPosts;
     PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
-    
-    if (self.postDataSource.posts.count == 0) {
-        [self updateFromLocalDatabaseWithCallback:^{
-            if (delegate.connectionAvailable) {
-                [self.postDataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
-                    if (error) {
-                        [self responseFailureHandler:error];
+
+    [self updateFromLocalDatabaseWithCallback:^{
+        if (delegate.connectionAvailable) {
+            [self.postDataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
+                if (error) {
+                    [self responseFailureHandler:error];
+                }
+                else {
+                    if (updated) {
+                        [self updateFromLocalDatabaseWithCallback:nil];
                     }
-                    else {
-                        if (updated) {
-                            [self updateFromLocalDatabaseWithCallback:nil];
-                        }
-                    }
-                } progress:nil];
-            }
-        }];
-    }
+                }
+            } progress:nil];
+        }
+    }];
 }
 
 - (void)viewDidAppear:(BOOL)animated {

@@ -11,15 +11,15 @@
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Add premium fonts for use with the reader. Proceeds will be reinvested into licensing additional fonts from independent type foundries.</string>
+				<string>Add three premium fonts: Flex and Brando from Bold Monday, and Lyon from Commercial Type.</string>
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Allow offline reading for articles already opened with the reader.</string>
+				<string>Allow articles manually opened with the reader to be read offline.</string>
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Add ability to configure main browser font and font size in settings.</string>
+				<string>Allow main bookmark font and font size to be adjusted in settings.</string>
 			</array>
 			<array>
 				<string>FIX</string>

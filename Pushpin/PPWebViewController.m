@@ -37,6 +37,8 @@
 #import <RNCryptor/RNDecryptor.h>
 #import <RNCryptor/RNCryptor.h>
 
+#define HIDE_STATUS_BAR_WHILE_SCROLLING NO
+
 static NSInteger kToolbarHeight = 44;
 static NSInteger kTitleHeight = 40;
 static CGFloat kPPReaderViewAnimationDuration = 0.3;
@@ -745,12 +747,14 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         BOOL isToolbarVisible = self.toolbarConstraint.constant > 0;
         self.previousContentOffset = currentContentOffset;
         
+#if HIDE_STATUS_BAR_WHILE_SCROLLING
         if (isScrollingDown && !isAtBottomOfView) {
             [UIView animateWithDuration:0.3 animations:^{
                 self.prefersStatusBarHidden = YES;
                 [self setNeedsStatusBarAppearanceUpdate];
             }];
         }
+#endif
 
         if (!isAtBottomOfView && !isAtTopOfView && isToolbarVisible) {
             CGFloat height = kToolbarHeight - MAX(0, MIN(kToolbarHeight, currentContentOffset.y - self.yOffsetToStartShowingToolbar));
@@ -991,7 +995,9 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 }
 
 - (void)updateInterfaceWithComputedWebPageBackgroundColorTimedOut:(BOOL)timedOut {
+#if HIDE_STATUS_BAR_WHILE_SCROLLING
     self.prefersStatusBarHidden = NO;
+#endif
     UIWebView *webView = self.currentWebView;
     UIColor *backgroundColor = [UIColor whiteColor];
     BOOL isDark = NO;
@@ -1074,10 +1080,12 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         self.toolbarConstraint.constant = constant;
         [self.view layoutIfNeeded];
         
+#if HIDE_STATUS_BAR_WHILE_SCROLLING
         if (visible) {
             self.prefersStatusBarHidden = NO;
             [self setNeedsStatusBarAppearanceUpdate];
         }
+#endif
     };
     
     if (animated) {
