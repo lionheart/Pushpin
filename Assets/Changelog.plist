@@ -27,6 +27,14 @@
 			</array>
 			<array>
 				<string>FIX</string>
+				<string>Updated Dutch translations.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Updated French translations.</string>
+			</array>
+			<array>
+				<string>FIX</string>
 				<string>Fix issue where tapping the browser mark as read button would have no effect.</string>
 			</array>
 			<array>

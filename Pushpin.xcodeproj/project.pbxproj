@@ -815,6 +815,7 @@
 		37CBB7511881F31C000F9C36 /* PPPlainTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PPPlainTextViewController.h; path = Pushpin/PPPlainTextViewController.h; sourceTree = "<group>"; };
 		37CBB7521881F31C000F9C36 /* PPPlainTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PPPlainTextViewController.m; path = Pushpin/PPPlainTextViewController.m; sourceTree = "<group>"; };
 		37CBB7541881FFBC000F9C36 /* About.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = About.json; path = Assets/About.json; sourceTree = SOURCE_ROOT; };
+		37CD84CF19ABF4BD0045CD6D /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/Localizable.strings; sourceTree = "<group>"; };
 		37CFA5FE19683ED300C67338 /* PPNoteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPNoteViewController.h; sourceTree = "<group>"; };
 		37CFA5FF19683ED300C67338 /* PPNoteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPNoteViewController.m; sourceTree = "<group>"; };
 		37D0D0C016B8E2310062C27E /* about.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = about.html; path = Assets/about.html; sourceTree = "<group>"; };
@@ -2165,6 +2166,7 @@
 				pt,
 				Base,
 				"zh-Hans",
+				da,
 			);
 			mainGroup = 37FEEB8315745488003F2B77;
 			productRefGroup = 37FEEB8F15745488003F2B77 /* Products */;
@@ -2804,6 +2806,7 @@
 		3740A23916863CF000F95D82 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
+				37CD84CF19ABF4BD0045CD6D /* da */,
 				3740A23A16863CF000F95D82 /* de */,
 				3740A23C16863CF000F95D82 /* en */,
 				3740A23D16863CF000F95D82 /* fr */,

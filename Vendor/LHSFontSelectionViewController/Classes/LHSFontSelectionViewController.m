@@ -731,7 +731,7 @@ static NSString *CellIdentifier = @"Cell";
 }
 
 - (BOOL)purchased {
-#ifdef TESTING
+#if TESTING
     return YES;
 #else
     return [PPSettings sharedSettings].purchasedPremiumFonts;
