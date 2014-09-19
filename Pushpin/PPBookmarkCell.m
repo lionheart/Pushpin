@@ -328,4 +328,8 @@ static NSInteger kEditButtonOuterMargin = 20;
     }
 }
 
+- (NSString *)accessibilityLabel {
+    return [NSString stringWithFormat:@"%@, %@", self.titleLabel.text, self.linkLabel.text];
+}
+
 @end
