@@ -25,6 +25,7 @@
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <ASPinboard/ASPinboard.h>
 #import <LHSDelicious/LHSDelicious.h>
+#import <OnePasswordExtension.h>
 
 @interface PPLoginViewController ()
 
@@ -763,9 +764,25 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             break;
 #endif
 
-        case PPLogin1PasswordSection:
-            [[UIApplication sharedApplication] openURL:[RPSTPasswordManagementAppService passwordManagementAppCompleteURLForSearchQuery:@"pinboard"]];
+        case PPLogin1PasswordSection: {
+            __weak typeof (self) weakself = self;
+            [[OnePasswordExtension sharedExtension] findLoginForURLString:@"https://pinboard.in"
+                                                        forViewController:self
+                                                                   sender:self
+                                                               completion:^(NSDictionary *loginDict, NSError *error) {
+                                                                   if (!loginDict) {
+                                                                       if (error.code != AppExtensionErrorCodeCancelledByUser) {
+                                                                           NSLog(@"Error invoking 1Password App Extension for find login: %@", error);
+                                                                       }
+                                                                       return;
+                                                                   }
+
+                                                                   __strong typeof(self) strongself = weakself;
+                                                                   strongself.usernameTextField.text = loginDict[AppExtensionUsernameKey];
+                                                                   strongself.passwordTextField.text = loginDict[AppExtensionPasswordKey];
+            }];
             break;
+        }
             
         default:
             break;
