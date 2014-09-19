@@ -680,6 +680,9 @@
             ],
 #endif
      }];
+    
+    UIUserNotificationSettings* notificationSettings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories:nil];
+    [[UIApplication sharedApplication] registerUserNotificationSettings:notificationSettings];
 
     Reachability *reach = [Reachability reachabilityForInternetConnection];
     self.connectionAvailable = [reach isReachable];
