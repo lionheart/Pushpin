@@ -728,7 +728,7 @@ static NSString *CellIdentifier = @"Cell";
             [[SKPaymentQueue defaultQueue] addPayment:payment];
         }
     });
-}
+} 
 
 - (BOOL)purchased {
 #if TESTING

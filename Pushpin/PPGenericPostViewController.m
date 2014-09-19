@@ -736,7 +736,6 @@ static NSInteger kToolbarHeight = 44;
 #warning XXX - Crash: http://crashes.to/s/d4cb56826ff
                         // attempt to delete row 99 from section 0 which only contains 2 rows before the update
                         // attempt to delete row 99 from section 0 which only contains 0 rows before the update
-                        DLog(@"B: %@", date);
                         
                         CLS_LOG(@"Table View Reload 2");
                         // attempt to delete row 99 from section 0 which only contains 2 rows before the update
