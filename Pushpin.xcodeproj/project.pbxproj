@@ -850,8 +850,8 @@
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
                 "HEADER_SEARCH_PATHS": [
                     "${SDKROOT}/usr/include/libxml2",
-                    "\u201a\u00c4\u00f9$(TARGET_BUILD_DIR)/usr/local/lib/include\u201a\u00c4\u00f9",
-                    "\u201a\u00c4\u00f9$(OBJROOT)/UninstalledProducts/include\u201a\u00c4\u00f9"
+                    "\u201a\u00c4\u00f6\u221a\u00d1\u221a\u03c0$(TARGET_BUILD_DIR)/usr/local/lib/include\u201a\u00c4\u00f6\u221a\u00d1\u221a\u03c0",
+                    "\u201a\u00c4\u00f6\u221a\u00d1\u221a\u03c0$(OBJROOT)/UninstalledProducts/include\u201a\u00c4\u00f6\u221a\u00d1\u221a\u03c0"
                 ],
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LIBRARY_SEARCH_PATHS": "$(inherited)",
@@ -2901,8 +2901,8 @@
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
                 "HEADER_SEARCH_PATHS": [
                     "${SDKROOT}/usr/include/libxml2",
-                    "\u201a\u00c4\u00f9$(TARGET_BUILD_DIR)/usr/local/lib/include\u201a\u00c4\u00f9",
-                    "\"$(OBJROOT)/UninstalledProducts/include\u201a\u00c4\u00f9"
+                    "\u201a\u00c4\u00f6\u221a\u00d1\u221a\u03c0$(TARGET_BUILD_DIR)/usr/local/lib/include\u201a\u00c4\u00f6\u221a\u00d1\u221a\u03c0",
+                    "\"$(OBJROOT)/UninstalledProducts/include\u201a\u00c4\u00f6\u221a\u00d1\u221a\u03c0"
                 ],
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LIBRARY_SEARCH_PATHS": "$(inherited)",
@@ -3298,7 +3298,7 @@
                 "3790437419CC688F00409D34"
             ],
             "isa": "PBXNativeTarget",
-            "name": "Pinboard",
+            "name": "Share Extension",
             "productName": "Pinboard",
             "productReference": "3790424619CBD49A00409D34",
             "productType": "com.apple.product-type.app-extension"
@@ -3411,8 +3411,8 @@
                 "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
                 "CLANG_WARN_UNREACHABLE_CODE": "YES",
                 "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
-                "CODE_SIGN_ENTITLEMENTS": "Pinboard/Pinboard.entitlements",
-                "CODE_SIGN_IDENTITY": "",
+                "CODE_SIGN_ENTITLEMENTS": "Pinboard/Share-Dev.entitlements",
+                "CODE_SIGN_IDENTITY": "iPhone Developer",
                 "COPY_PHASE_STRIP": "NO",
                 "ENABLE_STRICT_OBJC_MSGSEND": "YES",
                 "GCC_C_LANGUAGE_STANDARD": "gnu99",
@@ -3435,7 +3435,7 @@
                 "MTL_ENABLE_DEBUG_INFO": "YES",
                 "ONLY_ACTIVE_ARCH": "YES",
                 "PRODUCT_NAME": "$(TARGET_NAME)",
-                "PROVISIONING_PROFILE": "",
+                "PROVISIONING_PROFILE": "665b6e99-b258-4101-ad1e-44c81a5a443b",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES"
             },
@@ -3458,8 +3458,8 @@
                 "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
                 "CLANG_WARN_UNREACHABLE_CODE": "YES",
                 "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
-                "CODE_SIGN_ENTITLEMENTS": "Pinboard/Pinboard.entitlements",
-                "CODE_SIGN_IDENTITY": "",
+                "CODE_SIGN_ENTITLEMENTS": "Beta.entitlements",
+                "CODE_SIGN_IDENTITY": "iPhone Developer",
                 "COPY_PHASE_STRIP": "NO",
                 "ENABLE_NS_ASSERTIONS": "NO",
                 "ENABLE_STRICT_OBJC_MSGSEND": "YES",
@@ -3476,12 +3476,12 @@
                 "GCC_WARN_UNINITIALIZED_AUTOS": "YES_AGGRESSIVE",
                 "GCC_WARN_UNUSED_FUNCTION": "YES",
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
-                "INFOPLIST_FILE": "Pinboard/Info.plist",
+                "INFOPLIST_FILE": "Pushpin/Info.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
                 "MTL_ENABLE_DEBUG_INFO": "NO",
                 "PRODUCT_NAME": "$(TARGET_NAME)",
-                "PROVISIONING_PROFILE": "",
+                "PROVISIONING_PROFILE": "45D6F4CF-F5A8-4BC7-92FE-4F506DCFF13A",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES",
                 "VALIDATE_PRODUCT": "YES"
@@ -3506,8 +3506,8 @@
                 "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
                 "CLANG_WARN_UNREACHABLE_CODE": "YES",
                 "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
-                "CODE_SIGN_ENTITLEMENTS": "Pinboard/Pinboard.entitlements",
-                "CODE_SIGN_IDENTITY": "",
+                "CODE_SIGN_ENTITLEMENTS": "Pinboard/Share-AppStore.entitlements",
+                "CODE_SIGN_IDENTITY": "iPhone Distribution: Lionheart Software LLC (63553QQ62F)",
                 "COPY_PHASE_STRIP": "YES",
                 "ENABLE_NS_ASSERTIONS": "NO",
                 "ENABLE_STRICT_OBJC_MSGSEND": "YES",
@@ -3523,12 +3523,12 @@
                 "GCC_WARN_UNINITIALIZED_AUTOS": "YES_AGGRESSIVE",
                 "GCC_WARN_UNUSED_FUNCTION": "YES",
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
-                "INFOPLIST_FILE": "Pinboard/Info.plist",
+                "INFOPLIST_FILE": "Pinboard/Info-AppStore.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
                 "MTL_ENABLE_DEBUG_INFO": "NO",
                 "PRODUCT_NAME": "$(TARGET_NAME)",
-                "PROVISIONING_PROFILE": "",
+                "PROVISIONING_PROFILE": "e025a654-80a5-4148-a99e-404a62ed0035",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES",
                 "VALIDATE_PRODUCT": "YES"
@@ -3553,8 +3553,8 @@
                 "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
                 "CLANG_WARN_UNREACHABLE_CODE": "YES",
                 "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
-                "CODE_SIGN_ENTITLEMENTS": "Pinboard/Pinboard.entitlements",
-                "CODE_SIGN_IDENTITY": "",
+                "CODE_SIGN_ENTITLEMENTS": "Pinboard/Share-AppStore.entitlements",
+                "CODE_SIGN_IDENTITY": "iPhone Developer",
                 "COPY_PHASE_STRIP": "YES",
                 "ENABLE_NS_ASSERTIONS": "NO",
                 "ENABLE_STRICT_OBJC_MSGSEND": "YES",
@@ -3570,12 +3570,12 @@
                 "GCC_WARN_UNINITIALIZED_AUTOS": "YES_AGGRESSIVE",
                 "GCC_WARN_UNUSED_FUNCTION": "YES",
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
-                "INFOPLIST_FILE": "Pinboard/Info.plist",
+                "INFOPLIST_FILE": "Pinboard/Info-AppStore.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
                 "MTL_ENABLE_DEBUG_INFO": "NO",
                 "PRODUCT_NAME": "$(TARGET_NAME)",
-                "PROVISIONING_PROFILE": "",
+                "PROVISIONING_PROFILE": "e025a654-80a5-4148-a99e-404a62ed0035",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES",
                 "VALIDATE_PRODUCT": "YES"
@@ -3599,8 +3599,8 @@
                 "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
                 "CLANG_WARN_UNREACHABLE_CODE": "YES",
                 "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
-                "CODE_SIGN_ENTITLEMENTS": "Pinboard/Pinboard.entitlements",
-                "CODE_SIGN_IDENTITY": "",
+                "CODE_SIGN_ENTITLEMENTS": "Pushpin.entitlements",
+                "CODE_SIGN_IDENTITY": "iPhone Distribution: Lionheart Software LLC (63553QQ62F)",
                 "COPY_PHASE_STRIP": "YES",
                 "ENABLE_NS_ASSERTIONS": "NO",
                 "ENABLE_STRICT_OBJC_MSGSEND": "YES",
@@ -3617,12 +3617,12 @@
                 "GCC_WARN_UNINITIALIZED_AUTOS": "YES_AGGRESSIVE",
                 "GCC_WARN_UNUSED_FUNCTION": "YES",
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
-                "INFOPLIST_FILE": "Pinboard/Info.plist",
+                "INFOPLIST_FILE": "Pushpin/Info.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
                 "MTL_ENABLE_DEBUG_INFO": "NO",
                 "PRODUCT_NAME": "$(TARGET_NAME)",
-                "PROVISIONING_PROFILE": "",
+                "PROVISIONING_PROFILE": "29099fb1-0606-4967-884d-96f3d84d94b2",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES",
                 "VALIDATE_PRODUCT": "YES"
@@ -3647,8 +3647,8 @@
                 "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
                 "CLANG_WARN_UNREACHABLE_CODE": "YES",
                 "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
-                "CODE_SIGN_ENTITLEMENTS": "Pinboard/Pinboard.entitlements",
-                "CODE_SIGN_IDENTITY": "",
+                "CODE_SIGN_ENTITLEMENTS": "Pinboard/Share-Beta.entitlements",
+                "CODE_SIGN_IDENTITY": "iPhone Distribution: Lionheart Software LLC (63553QQ62F)",
                 "COPY_PHASE_STRIP": "YES",
                 "ENABLE_NS_ASSERTIONS": "NO",
                 "ENABLE_STRICT_OBJC_MSGSEND": "YES",
@@ -3664,12 +3664,12 @@
                 "GCC_WARN_UNINITIALIZED_AUTOS": "YES_AGGRESSIVE",
                 "GCC_WARN_UNUSED_FUNCTION": "YES",
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
-                "INFOPLIST_FILE": "Pinboard/Info.plist",
+                "INFOPLIST_FILE": "Pinboard/Info-Beta.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
                 "MTL_ENABLE_DEBUG_INFO": "NO",
                 "PRODUCT_NAME": "$(TARGET_NAME)",
-                "PROVISIONING_PROFILE": "",
+                "PROVISIONING_PROFILE": "9fbcbd7b-8937-442d-9743-693f740c99e0",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES",
                 "VALIDATE_PRODUCT": "YES"
@@ -3693,8 +3693,8 @@
                 "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
                 "CLANG_WARN_UNREACHABLE_CODE": "YES",
                 "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
-                "CODE_SIGN_ENTITLEMENTS": "Pinboard/Pinboard.entitlements",
-                "CODE_SIGN_IDENTITY": "",
+                "CODE_SIGN_ENTITLEMENTS": "Dev.entitlements",
+                "CODE_SIGN_IDENTITY": "iPhone Distribution: Lionheart Software LLC (63553QQ62F)",
                 "COPY_PHASE_STRIP": "YES",
                 "ENABLE_NS_ASSERTIONS": "NO",
                 "ENABLE_STRICT_OBJC_MSGSEND": "YES",
@@ -3711,12 +3711,12 @@
                 "GCC_WARN_UNINITIALIZED_AUTOS": "YES_AGGRESSIVE",
                 "GCC_WARN_UNUSED_FUNCTION": "YES",
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
-                "INFOPLIST_FILE": "Pinboard/Info.plist",
+                "INFOPLIST_FILE": "Pushpin/Info.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
                 "MTL_ENABLE_DEBUG_INFO": "NO",
                 "PRODUCT_NAME": "$(TARGET_NAME)",
-                "PROVISIONING_PROFILE": "",
+                "PROVISIONING_PROFILE": "dd5ba893-f367-431a-895c-677065acf85d",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES",
                 "VALIDATE_PRODUCT": "YES"
@@ -4857,8 +4857,8 @@
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
                 "HEADER_SEARCH_PATHS": [
                     "${SDKROOT}/usr/include/libxml2",
-                    "\u201a\u00c4\u00f9$(TARGET_BUILD_DIR)/usr/local/lib/include\u201a\u00c4\u00f9",
-                    "\"$(OBJROOT)/UninstalledProducts/include\u201a\u00c4\u00f9"
+                    "\u201a\u00c4\u00f6\u221a\u00d1\u221a\u03c0$(TARGET_BUILD_DIR)/usr/local/lib/include\u201a\u00c4\u00f6\u221a\u00d1\u221a\u03c0",
+                    "\"$(OBJROOT)/UninstalledProducts/include\u201a\u00c4\u00f6\u221a\u00d1\u221a\u03c0"
                 ],
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LIBRARY_SEARCH_PATHS": "$(inherited)",
@@ -4946,8 +4946,8 @@
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
                 "HEADER_SEARCH_PATHS": [
                     "${SDKROOT}/usr/include/libxml2",
-                    "\u201a\u00c4\u00f9$(TARGET_BUILD_DIR)/usr/local/lib/include\u201a\u00c4\u00f9",
-                    "\u201a\u00c4\u00f9$(OBJROOT)/UninstalledProducts/include\u201a\u00c4\u00f9"
+                    "\u201a\u00c4\u00f6\u221a\u00d1\u221a\u03c0$(TARGET_BUILD_DIR)/usr/local/lib/include\u201a\u00c4\u00f6\u221a\u00d1\u221a\u03c0",
+                    "\u201a\u00c4\u00f6\u221a\u00d1\u221a\u03c0$(OBJROOT)/UninstalledProducts/include\u201a\u00c4\u00f6\u221a\u00d1\u221a\u03c0"
                 ],
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LIBRARY_SEARCH_PATHS": "$(inherited)",
@@ -5033,8 +5033,8 @@
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
                 "HEADER_SEARCH_PATHS": [
                     "${SDKROOT}/usr/include/libxml2",
-                    "\u201a\u00c4\u00f9$(TARGET_BUILD_DIR)/usr/local/lib/include\u201a\u00c4\u00f9",
-                    "\u201a\u00c4\u00f9$(OBJROOT)/UninstalledProducts/include\u201a\u00c4\u00f9"
+                    "\u201a\u00c4\u00f6\u221a\u00d1\u221a\u03c0$(TARGET_BUILD_DIR)/usr/local/lib/include\u201a\u00c4\u00f6\u221a\u00d1\u221a\u03c0",
+                    "\u201a\u00c4\u00f6\u221a\u00d1\u221a\u03c0$(OBJROOT)/UninstalledProducts/include\u201a\u00c4\u00f6\u221a\u00d1\u221a\u03c0"
                 ],
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LIBRARY_SEARCH_PATHS": "$(inherited)",
@@ -7699,8 +7699,8 @@
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
                 "HEADER_SEARCH_PATHS": [
                     "${SDKROOT}/usr/include/libxml2",
-                    "\u201a\u00c4\u00f9$(TARGET_BUILD_DIR)/usr/local/lib/include\u201a\u00c4\u00f9",
-                    "\u201a\u00c4\u00f9$(OBJROOT)/UninstalledProducts/include\u201a\u00c4\u00f9"
+                    "\u201a\u00c4\u00f6\u221a\u00d1\u221a\u03c0$(TARGET_BUILD_DIR)/usr/local/lib/include\u201a\u00c4\u00f6\u221a\u00d1\u221a\u03c0",
+                    "\u201a\u00c4\u00f6\u221a\u00d1\u221a\u03c0$(OBJROOT)/UninstalledProducts/include\u201a\u00c4\u00f6\u221a\u00d1\u221a\u03c0"
                 ],
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LIBRARY_SEARCH_PATHS": "$(inherited)",
@@ -7767,8 +7767,8 @@
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
                 "HEADER_SEARCH_PATHS": [
                     "${SDKROOT}/usr/include/libxml2",
-                    "\u201a\u00c4\u00f9$(TARGET_BUILD_DIR)/usr/local/lib/include\u201a\u00c4\u00f9",
-                    "\u201a\u00c4\u00f9$(OBJROOT)/UninstalledProducts/include\u201a\u00c4\u00f9"
+                    "\u201a\u00c4\u00f6\u221a\u00d1\u221a\u03c0$(TARGET_BUILD_DIR)/usr/local/lib/include\u201a\u00c4\u00f6\u221a\u00d1\u221a\u03c0",
+                    "\u201a\u00c4\u00f6\u221a\u00d1\u221a\u03c0$(OBJROOT)/UninstalledProducts/include\u201a\u00c4\u00f6\u221a\u00d1\u221a\u03c0"
                 ],
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LIBRARY_SEARCH_PATHS": "$(inherited)",
