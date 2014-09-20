@@ -24,6 +24,7 @@ pl = plistlib.readPlist(path)
 root = pl['rootObject']
 objects = pl['objects']
 targets = objects[root]['targets']
+keys_to_delete = ['CODE_SIGN_IDENTITY[sdk=iphoneos*]']
 
 for target in targets:
     data = objects[target]
@@ -35,20 +36,25 @@ for target in targets:
         except:
             raise
         else:
+            build_settings = pl['objects'][build_configuration]['buildSettings']
             if data['name'] == "Pushpin":
-                pl['objects'][build_configuration]['buildSettings']['CODE_SIGN_ENTITLEMENTS'] = configurations['app'][name]['entitlements']
-                pl['objects'][build_configuration]['buildSettings']['CODE_SIGN_IDENTITY'] = configurations['app'][name]['code_sign_identity']
-                pl['objects'][build_configuration]['buildSettings']['INFOPLIST_FILE'] = configurations['app'][name]['info']
-                pl['objects'][build_configuration]['buildSettings']['PROVISIONING_PROFILE'] = configurations['app'][name]['profile']
-                del pl['objects'][build_configuration]['buildSettings']['CODE_SIGN_IDENTITY[sdk=iphoneos*]']
+                build_settings['CODE_SIGN_ENTITLEMENTS'] = configurations['app'][name]['entitlements']
+                build_settings['CODE_SIGN_IDENTITY'] = configurations['app'][name]['code_sign_identity']
+                build_settings['INFOPLIST_FILE'] = configurations['app'][name]['info']
+                build_settings['PROVISIONING_PROFILE'] = configurations['app'][name]['profile']
             elif data['name'] == "PushpinFramework":
-                del pl['objects'][build_configuration]['buildSettings']['CODE_SIGN_IDENTITY[sdk=iphoneos*]']
-                del pl['objects'][build_configuration]['buildSettings']['CODE_SIGN_IDENTITY']
+                if 'CODE_SIGN_IDENTITY' in build_settings:
+                    del build_settings['CODE_SIGN_IDENTITY']
             elif data['name'] == "Share Extension":
-                pl['objects'][build_configuration]['buildSettings']['CODE_SIGN_ENTITLEMENTS'] = configurations['extension'][name]['entitlements']
-                pl['objects'][build_configuration]['buildSettings']['CODE_SIGN_IDENTITY'] = configurations['extension'][name]['code_sign_identity']
-                pl['objects'][build_configuration]['buildSettings']['INFOPLIST_FILE'] = configurations['extension'][name]['info']
-                pl['objects'][build_configuration]['buildSettings']['PROVISIONING_PROFILE'] = configurations['extension'][name]['profile']
-                del pl['objects'][build_configuration]['buildSettings']['CODE_SIGN_IDENTITY[sdk=iphoneos*]']
+                build_settings['CODE_SIGN_ENTITLEMENTS'] = configurations['extension'][name]['entitlements']
+                build_settings['CODE_SIGN_IDENTITY'] = configurations['extension'][name]['code_sign_identity']
+                build_settings['INFOPLIST_FILE'] = configurations['extension'][name]['info']
+                build_settings['PROVISIONING_PROFILE'] = configurations['extension'][name]['profile']
+
+            for key in keys_to_delete:
+                if key in build_settings:
+                    del build_settings[key]
+
+            pl['objects'][build_configuration]['buildSettings'] = build_settings
 
 plistlib.writePlist(pl, "Pushpin.xcodeproj/project.pbxproj")
