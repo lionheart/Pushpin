@@ -13,12 +13,12 @@ configs:
     pinboard_dev:
       info: "Pushpin/Dev-Info.plist"
       profile: "dd5ba893-f367-431a-895c-677065acf85d"
-      entitlements: "Pushpin/Beta.entitlements"
+      entitlements: "Pushpin/Dev.entitlements"
       code_sign_identity: "iPhone Developer: Daniel Loewenherz (32S53QJB5F)"
     pinboard_beta:
       info: "Pushpin/Beta-Info.plist"
       profile: "f4e91b56-e108-4bcc-8deb-eebef30e2931"
-      entitlements: "Pushpin/Dev.entitlements"
+      entitlements: "Pushpin/Beta.entitlements"
       code_sign_identity: "iPhone Distribution: Lionheart Software LLC (63553QQ62F)"
     delicious_app_store:
       info: "Pushpin/PushpinAppStore.plist"
