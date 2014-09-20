@@ -433,6 +433,9 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:token forKey:@"io.aurora.pinboard.Token"];
     [defaults synchronize];
+
+    NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.Pushpin"];
+    [sharedDefaults setObject:token forKey:@"token"];
 }
 
 - (NSString *)token {

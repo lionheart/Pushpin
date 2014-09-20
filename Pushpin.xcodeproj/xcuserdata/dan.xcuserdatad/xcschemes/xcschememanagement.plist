@@ -6,8 +6,15 @@
 	<dict>
 		<key>DebugPods.xcscheme</key>
 		<dict>
+			<key>isShown</key>
+			<false/>
 			<key>orderHint</key>
-			<integer>27</integer>
+			<integer>2</integer>
+		</dict>
+		<key>Pinboard.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>36</integer>
 		</dict>
 		<key>Pushpin for Delicious.xcscheme_^#shared#^_</key>
 		<dict>
@@ -18,6 +25,11 @@
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
+		</dict>
+		<key>PushpinFramework.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>37</integer>
 		</dict>
 		<key>SQLite.xcscheme</key>
 		<dict>
@@ -53,6 +65,36 @@
 			<true/>
 		</dict>
 		<key>3772DE7C1933B0DE004B348D</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>379041F419CBCFED00409D34</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>3790421119CBD27C00409D34</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>3790422B19CBD46800409D34</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>3790424519CBD49A00409D34</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>379042B119CC646700409D34</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>379042BB19CC646900409D34</key>
 		<dict>
 			<key>primary</key>
 			<true/>

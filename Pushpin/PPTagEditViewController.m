@@ -18,7 +18,6 @@
 #import <LHSCategoryCollection/UIImage+LHSAdditions.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSKeyboardAdjusting/UIViewController+LHSKeyboardAdjustment.h>
-#import <Crashlytics/Crashlytics.h>
 #import <LHSTableViewCells/LHSTableViewCellValue1.h>
 
 static NSString *CellIdentifier = @"CellIdentifier";
@@ -77,6 +76,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [self lhs_activateKeyboardAdjustmentWithShow:nil hide:^{
         self.autocompleteInProgress = NO;
     }];
+    
+    if (self.presentedFromShareSheet) {
+        [[ASPinboard sharedInstance] tagsWithSuccess:^(NSDictionary *tags) {
+            self.allTags = [tags keysSortedByValueUsingSelector:@selector(compare:)];
+            self.tagCounts = [tags mutableCopy];
+        }];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -309,9 +315,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
             }
             else if (self.filteredPopularAndRecommendedTagsVisible) {
                 completion = self.filteredPopularAndRecommendedTags[index];
-
-                CLS_LOG(@"Popular: %@", [self.popularTags componentsJoinedByString:@" "]);
-                CLS_LOG(@"Recommended: %@", [self.recommendedTags componentsJoinedByString:@" "]);
                 
                 if (index < self.popularTags.count) {
                     completion = self.popularTags[index];
@@ -618,64 +621,97 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 NSArray *existingTags = [self existingTags];
                 __block NSInteger skipPivot = 0;
                 
-                [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
-                    NSMutableArray *queryComponents = [NSMutableArray array];
-                    NSMutableArray *arguments = [NSMutableArray array];
-                    [arguments addObject:searchString];
-                    
-                    [queryComponents addObject:@"SELECT DISTINCT tag_fts.name, tag.count FROM tag_fts, tag WHERE tag_fts.name MATCH ? AND tag_fts.name = tag.name"];
-                    
-                    for (NSString *tag in self.existingTags) {
-                        [queryComponents addObject:@"AND tag.name != ?"];
-                        [arguments addObject:tag];
-                    }
-                    
-                    [queryComponents addObject:@"ORDER BY tag.count DESC LIMIT ?"];
-                    [arguments addObject:@(MAX([self minTagsToAutocomplete], (NSInteger)([self maxTagsToAutocomplete] - self.existingTags.count)))];
-                    
-#warning XXX For some reason, getting double results here sometimes. Search duplication?
-                    FMResultSet *result = [db executeQuery:[queryComponents componentsJoinedByString:@" "] withArgumentsInArray:arguments];
-                    
-                    NSString *tag, *count;
+                if (self.presentedFromShareSheet) {
                     NSInteger index = [self tagOffset];
-                    BOOL tagFound = NO;
-                    
-                    while ([result next]) {
-                        tagFound = NO;
-                        tag = [result stringForColumnIndex:0];
-                        count = [result stringForColumnIndex:1];
-                        
-                        if (!count || count.length == 0) {
-                            count = @"0";
-                        }
-                        
-                        self.tagCounts[tag] = count;
-                        if (![existingTags containsObject:tag]) {
-                            for (NSInteger i=skipPivot; i<oldTagCompletions.count; i++) {
-                                if ([oldTagCompletions[i] isEqualToString:tag]) {
-                                    // Delete all posts that were skipped
-                                    for (NSInteger j=skipPivot; j<i; j++) {
-                                        [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(j+[self tagOffset]) inSection:0]];
+
+                    for (NSString *tag in self.allTags) {
+                        if ([tag hasPrefix:string]) {
+                            BOOL tagFound = NO;
+
+                            if (![existingTags containsObject:tag]) {
+                                for (NSInteger i=skipPivot; i<oldTagCompletions.count; i++) {
+                                    if ([oldTagCompletions[i] isEqualToString:tag]) {
+                                        // Delete all posts that were skipped
+                                        for (NSInteger j=skipPivot; j<i; j++) {
+                                            [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(j+[self tagOffset]) inSection:0]];
+                                        }
+                                        
+                                        tagFound = YES;
+                                        skipPivot = i+1;
+                                        break;
                                     }
-                                    
-                                    tagFound = YES;
-                                    skipPivot = i+1;
-                                    break;
                                 }
+                                
+                                if (!tagFound) {
+                                    [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+                                }
+                                
+                                index++;
+                                [newTagCompletions addObject:tag];
                             }
-                            
-                            if (!tagFound) {
-                                [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:index inSection:0]];
-                            }
-                            
-                            index++;
-                            [newTagCompletions addObject:tag];
                         }
                     }
+                }
+                else {
+                    [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                        NSMutableArray *queryComponents = [NSMutableArray array];
+                        NSMutableArray *arguments = [NSMutableArray array];
+                        [arguments addObject:searchString];
+                        
+                        [queryComponents addObject:@"SELECT DISTINCT tag_fts.name, tag.count FROM tag_fts, tag WHERE tag_fts.name MATCH ? AND tag_fts.name = tag.name"];
+                        
+                        for (NSString *tag in self.existingTags) {
+                            [queryComponents addObject:@"AND tag.name != ?"];
+                            [arguments addObject:tag];
+                        }
+                        
+                        [queryComponents addObject:@"ORDER BY tag.count DESC LIMIT ?"];
+                        [arguments addObject:@(MAX([self minTagsToAutocomplete], (NSInteger)([self maxTagsToAutocomplete] - self.existingTags.count)))];
+                        
+#warning XXX For some reason, getting double results here sometimes. Search duplication?
+                        FMResultSet *result = [db executeQuery:[queryComponents componentsJoinedByString:@" "] withArgumentsInArray:arguments];
+                        
+                        NSString *tag, *count;
+                        NSInteger index = [self tagOffset];
+                        BOOL tagFound = NO;
+                        
+                        while ([result next]) {
+                            tagFound = NO;
+                            tag = [result stringForColumnIndex:0];
+                            count = [result stringForColumnIndex:1];
+                            
+                            if (!count || count.length == 0) {
+                                count = @"0";
+                            }
+                            
+                            self.tagCounts[tag] = count;
+                            if (![existingTags containsObject:tag]) {
+                                for (NSInteger i=skipPivot; i<oldTagCompletions.count; i++) {
+                                    if ([oldTagCompletions[i] isEqualToString:tag]) {
+                                        // Delete all posts that were skipped
+                                        for (NSInteger j=skipPivot; j<i; j++) {
+                                            [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(j+[self tagOffset]) inSection:0]];
+                                        }
+                                        
+                                        tagFound = YES;
+                                        skipPivot = i+1;
+                                        break;
+                                    }
+                                }
+                                
+                                if (!tagFound) {
+                                    [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+                                }
+                                
+                                index++;
+                                [newTagCompletions addObject:tag];
+                            }
+                        }
+                        
+                        [result close];
+                    }];
+                }
 
-                    [result close];
-                }];
-                
                 if (self.filteredPopularAndRecommendedTagsVisible) {
                     [indexPathsToDelete addObjectsFromArray:self.indexPathsForPopularAndSuggestedRows];
                 }
