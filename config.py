@@ -19,7 +19,7 @@ mappings = {
     'Pinboard App Store Debug': "pinboard_app_store_debug",
 }
 
-path = "Pushpin.xcodeproj/out.pbxproj"
+path = "Pushpin.xcodeproj/project.pbxproj"
 pl = plistlib.readPlist(path)
 root = pl['rootObject']
 objects = pl['objects']
@@ -57,4 +57,5 @@ for target in targets:
 
             pl['objects'][build_configuration]['buildSettings'] = build_settings
 
-plistlib.writePlist(pl, "Pushpin.xcodeproj/project.pbxproj")
+plistlib.writePlist(pl, path)
+
