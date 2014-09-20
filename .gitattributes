@@ -1,5 +1,5 @@
 # *.png diff=png filter=bigstore
-*.pbxproj filter=xcode
+*.pbxproj filter=plist
 
 Pushpin/Beta-Info.plist merge=bundleversion
 Pushpin/DeliciousAppStore.plist merge=bundleversion
