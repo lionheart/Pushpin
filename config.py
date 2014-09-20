@@ -3,6 +3,7 @@
 import pprint
 import plistlib
 import yaml
+import subprocess
 
 with open("config.yaml", 'rb') as f:
     config = yaml.load(f)
@@ -20,6 +21,8 @@ mappings = {
 }
 
 path = "Pushpin.xcodeproj/project.pbxproj"
+
+subprocess.call("plutil -convert xml1 {}".format(path), shell=True)
 pl = plistlib.readPlist(path)
 root = pl['rootObject']
 objects = pl['objects']
