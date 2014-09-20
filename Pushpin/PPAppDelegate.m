@@ -416,23 +416,6 @@
     [self.navigationController pushViewController:settingsViewController animated:YES];
 }
 
-- (void)customizeUIElements {
-    NSDictionary *normalAttributes = @{NSFontAttributeName: [PPTheme textLabelFont],
-                                       NSForegroundColorAttributeName: [UIColor whiteColor] };
-    [[UIBarButtonItem appearance] setTitleTextAttributes:normalAttributes
-                                                forState:UIControlStateNormal];
-    [[UIBarButtonItem appearance] setTintColor:[UIColor whiteColor]];
-    
-    // UIToolbar items
-    UIColor *barButtonItemColor = [UIColor colorWithRed:40/255.0f green:141/255.0f blue:219/255.0f alpha:1.0f];
-    [[UIBarButtonItem appearanceWhenContainedIn:[UIToolbar class], nil] setTintColor:barButtonItemColor];
-    
-    [[UISwitch appearance] setOnTintColor:HEX(0x0096FFFF)];
-    [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithRed:0 green:0.5863 blue:1 alpha:1]];
-    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
-    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
-}
-
 - (PPSplitViewController *)splitViewController {
     if (!_splitViewController) {
         _splitViewController = [[PPSplitViewController alloc] init];
@@ -621,7 +604,7 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
 
-    [self customizeUIElements];
+    [PPTheme customizeUIElements];
 
     Mixpanel *mixpanel = [Mixpanel sharedInstanceWithToken:PPMixpanelToken];
     
@@ -680,6 +663,9 @@
             ],
 #endif
      }];
+    
+    NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.Pushpin"];
+    [sharedDefaults setObject:[[PPSettings sharedSettings] token] forKey:@"token"];
     
     UIUserNotificationSettings* notificationSettings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories:nil];
     [[UIApplication sharedApplication] registerUserNotificationSettings:notificationSettings];
@@ -1065,7 +1051,7 @@
                         [[PPSettings sharedSettings] setCommunityFeedOrder:[communityFeedOrder arrayByAddingObject:@(PPPinboardCommunityFeedRecent)]];
                         [db executeUpdate:@"PRAGMA user_version=10;"];
                     }
-                        
+
                     default:
                         break;
 #endif

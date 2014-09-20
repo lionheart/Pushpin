@@ -24,6 +24,8 @@
 
 @property (nonatomic) BOOL autocompleteInProgress;
 @property (nonatomic) BOOL loadingTags;
+@property (nonatomic) BOOL presentedFromShareSheet;
+
 @property (nonatomic, strong) NSDictionary *bookmarkData;
 @property (nonatomic, strong) NSMutableArray *existingTags;
 @property (nonatomic, strong) NSMutableArray *popularTags;
@@ -40,6 +42,7 @@
 @property (nonatomic, strong) UITextField *tagTextField;
 @property (nonatomic, weak) id<PPTagEditing> tagDelegate;
 @property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) NSArray *allTags;
 
 - (NSInteger)maxTagsToAutocomplete;
 - (NSInteger)minTagsToAutocomplete;

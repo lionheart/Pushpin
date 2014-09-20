@@ -12,6 +12,8 @@
 
 + (instancetype)defaultTheme;
 
++ (void)customizeUIElements;
+
 + (UIFont *)extraLargeFont;
 + (UIFont *)titleFont;
 + (UIFont *)descriptionFont;

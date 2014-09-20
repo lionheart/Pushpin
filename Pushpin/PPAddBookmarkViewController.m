@@ -8,6 +8,7 @@
 //
 
 @import QuartzCore;
+@import MobileCoreServices;
 
 #import "PPAddBookmarkViewController.h"
 #import "FMDatabase.h"
@@ -55,6 +56,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)handleKeyCommand:(UIKeyCommand *)keyCommand;
 - (void)openDescriptionViewController;
 - (void)openTagEditViewController;
+- (void)configureWithBookmark:(NSDictionary *)bookmark
+                       update:(NSNumber *)isUpdate
+                     callback:(void (^)(NSDictionary *))callback;
 
 @end
 
@@ -69,6 +73,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         self.tableView.scrollEnabled = YES;
         
         self.postDescription = @"";
+        self.presentedFromShareSheet = NO;
         
         NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
         paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
@@ -192,85 +197,92 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                                                    callback:callback];
 }
 
+- (void)configureWithBookmark:(NSDictionary *)bookmark
+                       update:(NSNumber *)isUpdate
+                     callback:(void (^)(NSDictionary *))callback {
+    self.bookmarkData = bookmark;
+    [self setIsUpdate:isUpdate.boolValue];
+    
+    if (isUpdate.boolValue) {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Update", nil) style:UIBarButtonItemStyleDone target:self action:@selector(rightBarButtonTouchUpInside:)];
+        self.title = NSLocalizedString(@"Update Bookmark", nil);
+        self.urlTextField.textColor = [UIColor grayColor];
+    }
+    else {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add", nil) style:UIBarButtonItemStylePlain target:self action:@selector(rightBarButtonTouchUpInside:)];
+        self.title = NSLocalizedString(@"Add Bookmark", nil);
+    }
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(leftBarButtonTouchUpInside:)];
+    
+    if (bookmark[@"title"]) {
+        self.titleTextField.text = bookmark[@"title"];
+    }
+    
+    if (bookmark[@"url"]) {
+        self.urlTextField.text = bookmark[@"url"];
+        
+        if (isUpdate.boolValue) {
+            self.urlTextField.enabled = NO;
+        }
+    }
+    
+    if (bookmark[@"tags"]) {
+        NSString *tags = [bookmark[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        
+        if (tags.length > 0) {
+            self.existingTags = [[tags componentsSeparatedByString:@" "] mutableCopy];
+        }
+    }
+    
+    self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
+    self.badgeWrapperView.userInteractionEnabled = NO;
+    
+    if (bookmark[@"description"]) {
+        self.postDescription = [bookmark[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        
+        if (![self.postDescription isEqualToString:@""]) {
+            self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:self.postDescription
+                                                                                       attributes:self.descriptionAttributes];
+        }
+    }
+    
+    if (callback) {
+        self.callback = callback;
+    }
+    
+    if (bookmark[@"private"]) {
+        self.setAsPrivate = [bookmark[@"private"] boolValue];
+    }
+    else {
+        self.setAsPrivate = [PPSettings sharedSettings].privateByDefault;
+    }
+    
+    if (bookmark[@"unread"]) {
+        BOOL isRead = !([bookmark[@"unread"] boolValue]);
+        self.markAsRead = isRead;
+    }
+    else {
+        self.markAsRead = [PPSettings sharedSettings].readByDefault;
+    }
+    
+    self.privateButton.selected = self.setAsPrivate;
+    self.readButton.selected = self.markAsRead;
+}
+
 + (PPNavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark
                                                            update:(NSNumber *)isUpdate
                                                          callback:(void (^)(NSDictionary *))callback {
     PPAddBookmarkViewController *addBookmarkViewController = [[PPAddBookmarkViewController alloc] init];
     PPNavigationController *addBookmarkViewNavigationController = [[PPNavigationController alloc] initWithRootViewController:addBookmarkViewController];
-
-    addBookmarkViewController.bookmarkData = bookmark;
-    [addBookmarkViewController setIsUpdate:isUpdate.boolValue];
-    
-    if (isUpdate.boolValue) {
-        addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Update", nil) style:UIBarButtonItemStyleDone target:addBookmarkViewController action:@selector(rightBarButtonTouchUpInside:)];
-        addBookmarkViewController.title = NSLocalizedString(@"Update Bookmark", nil);
-        addBookmarkViewController.urlTextField.textColor = [UIColor grayColor];
-    }
-    else {
-        addBookmarkViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(rightBarButtonTouchUpInside:)];
-        addBookmarkViewController.title = NSLocalizedString(@"Add Bookmark", nil);
-    }
-
-    addBookmarkViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:addBookmarkViewController action:@selector(leftBarButtonTouchUpInside:)];
-    
-    if (bookmark[@"title"]) {
-        addBookmarkViewController.titleTextField.text = bookmark[@"title"];
-    }
-    
-    if (bookmark[@"url"]) {
-        addBookmarkViewController.urlTextField.text = bookmark[@"url"];
-        
-        if (isUpdate.boolValue) {
-            addBookmarkViewController.urlTextField.enabled = NO;
-        }
-    }
-
-    if (bookmark[@"tags"]) {
-        NSString *tags = [bookmark[@"tags"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        
-        if (tags.length > 0) {
-            addBookmarkViewController.existingTags = [[tags componentsSeparatedByString:@" "] mutableCopy];
-        }
-    }
-
-    addBookmarkViewController.badgeWrapperView = [addBookmarkViewController badgeWrapperViewForCurrentTags];
-    addBookmarkViewController.badgeWrapperView.userInteractionEnabled = NO;
-
-    if (bookmark[@"description"]) {
-        addBookmarkViewController.postDescription = [bookmark[@"description"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        
-        if (![addBookmarkViewController.postDescription isEqualToString:@""]) {
-            addBookmarkViewController.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:addBookmarkViewController.postDescription attributes:addBookmarkViewController.descriptionAttributes];
-        }
-    }
-    
-    if (callback) {
-        addBookmarkViewController.callback = callback;
-    }
-    
-    if (bookmark[@"private"]) {
-        addBookmarkViewController.setAsPrivate = [bookmark[@"private"] boolValue];
-    }
-    else {
-        addBookmarkViewController.setAsPrivate = [PPSettings sharedSettings].privateByDefault;
-    }
-    
-    if (bookmark[@"unread"]) {
-        BOOL isRead = !([bookmark[@"unread"] boolValue]);
-        addBookmarkViewController.markAsRead = isRead;
-    }
-    else {
-        addBookmarkViewController.markAsRead = [PPSettings sharedSettings].readByDefault;
-    }
-    
-    addBookmarkViewController.privateButton.selected = addBookmarkViewController.setAsPrivate;
-    addBookmarkViewController.readButton.selected = addBookmarkViewController.markAsRead;
+    [addBookmarkViewController configureWithBookmark:bookmark update:isUpdate callback:callback];
     return addBookmarkViewNavigationController;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
     [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
 }
 
@@ -298,6 +310,35 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
     // We need to set this here, since on iPad the table view's frame isn't set until this happens.
     self.descriptionTextLabel.preferredMaxLayoutWidth = self.tableView.frame.size.width - 50;
+
+    if (self.presentedFromShareSheet) {
+        NSExtensionItem *item = self.extensionContext.inputItems.firstObject;
+        for (NSItemProvider *itemProvider in item.attachments) {
+            if ([itemProvider hasItemConformingToTypeIdentifier:(__bridge NSString *)kUTTypeURL]) {
+                [itemProvider loadItemForTypeIdentifier:(__bridge NSString *)kUTTypeURL
+                                                options:0
+                                      completionHandler:^(NSURL *url, NSError *error) {
+                                          dispatch_async(dispatch_get_main_queue(), ^{
+                                              self.urlTextField.text = url.absoluteString;
+                                          });
+                                      }];
+            }
+
+            if ([itemProvider hasItemConformingToTypeIdentifier:(__bridge NSString *)kUTTypeUTF8PlainText]) {
+                [itemProvider loadItemForTypeIdentifier:(__bridge NSString *)kUTTypeUTF8PlainText
+                                                options:0
+                                      completionHandler:^(NSString *text, NSError *error) {
+                                          dispatch_async(dispatch_get_main_queue(), ^{
+                                              self.titleTextField.text = text;
+                                          });
+                                      }];
+            }
+        }
+
+        [self configureWithBookmark:@{}
+                             update:@(NO)
+                           callback:nil];
+    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -435,7 +476,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 case kBookmarkTagRow: {
                     UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-tag"] lhs_imageWithColor:HEX(0xD8DDE4FF)]];
                     topImageView.translatesAutoresizingMaskIntoConstraints = NO;
-                    
+
                     NSDictionary *views = @{@"image": topImageView,
                                             @"text": self.tagTextField,
                                             @"badges": self.badgeWrapperView };
@@ -902,13 +943,115 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (void)rightBarButtonTouchUpInside:(id)sender {
-    [self addBookmark];
+    if (self.presentedFromShareSheet) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if ([self.urlTextField.text isEqualToString:@""] || [self.titleTextField.text isEqualToString:@""]) {
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Uh oh.", nil)
+                                                                               message:NSLocalizedString(@"You can't add a bookmark without a URL or title.", nil)
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+                [self presentViewController:alert animated:YES completion:nil];
+                return;
+            }
+            
+            NSCharacterSet *characterSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+            NSString *url = self.urlTextField.text;
+            if (!url) {
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil
+                                                                               message:NSLocalizedString(@"Unable to add bookmark without a URL.", nil)
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+                [self presentViewController:alert animated:YES completion:nil];
+                return;
+            }
+            
+            self.navigationItem.leftBarButtonItem.enabled = NO;
+            self.navigationItem.rightBarButtonItem.enabled = NO;
+
+            NSString *title = [self.titleTextField.text stringByTrimmingCharactersInSet:characterSet];
+            NSString *description = [self.postDescription stringByTrimmingCharactersInSet:characterSet];
+            NSString *tags = [[self existingTags] componentsJoinedByString:@" "];
+            BOOL private = self.setAsPrivate;
+            BOOL unread = !self.markAsRead;
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                void (^BookmarkSuccessBlock)() = ^{
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [UIView animateWithDuration:0.4
+                                         animations:^{
+                                             self.parentViewController.view.transform = CGAffineTransformMakeTranslation(0, self.parentViewController.view.frame.size.height);
+                                         }
+                                         completion:^(BOOL finished) {
+                                             [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
+                                         }];
+                    });
+                };
+                
+                void (^BookmarkFailureBlock)(NSError *) = ^(NSError *error) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        self.navigationItem.leftBarButtonItem.enabled = YES;
+                        self.navigationItem.rightBarButtonItem.enabled = YES;
+                        
+                        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Uh oh.", nil)
+                                                                                       message:NSLocalizedString(@"There was an error adding your bookmark.", nil)
+                                                                                preferredStyle:UIAlertControllerStyleAlert];
+                        [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+                        [self presentViewController:alert animated:YES completion:nil];
+                    });
+                };
+                
+#ifdef DELICIOUS
+                LHSDelicious *delicious = [LHSDelicious sharedInstance];
+                [delicious addBookmarkWithURL:url
+                                        title:title
+                                  description:description
+                                         tags:tags
+                                       shared:!private
+                                   completion:^(NSError *error) {
+                                       if (error) {
+                                           BookmarkFailureBlock(error);
+                                       }
+                                       else {
+                                           BookmarkSuccessBlock();
+                                       }
+                                   }];
+#endif
+                
+#ifdef PINBOARD
+                ASPinboard *pinboard = [ASPinboard sharedInstance];
+                [pinboard addBookmarkWithURL:url
+                                       title:title
+                                 description:description
+                                        tags:tags
+                                      shared:!private
+                                      unread:unread
+                                     success:BookmarkSuccessBlock
+                                     failure:BookmarkFailureBlock];
+#endif
+                
+            });
+        });
+    }
+    else {
+        [self addBookmark];
+    }
 }
 
 - (void)leftBarButtonTouchUpInside:(id)sender {
-    [self.parentViewController dismissViewControllerAnimated:YES completion:^{
-        self.callback(@{});
-    }];
+    if (self.presentedFromShareSheet) {
+        [UIView animateWithDuration:0.4
+                         animations:^{
+                             self.parentViewController.view.transform = CGAffineTransformMakeTranslation(0, self.parentViewController.view.frame.size.height);
+                         }
+                         completion:^(BOOL finished) {
+                             [self.extensionContext cancelRequestWithError:nil];
+                         }];
+    }
+    else {
+        [self.parentViewController dismissViewControllerAnimated:YES completion:^{
+            self.callback(@{});
+        }];
+    }
 }
 
 #pragma mark - UIGestureRecognizerDelegate
@@ -987,6 +1130,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     tagEditViewController.tagDelegate = self;
     tagEditViewController.bookmarkData = self.bookmarkData;
     tagEditViewController.existingTags = [self.existingTags mutableCopy];
+    tagEditViewController.presentedFromShareSheet = self.presentedFromShareSheet;
     [self.navigationController pushViewController:tagEditViewController animated:YES];
 }
 

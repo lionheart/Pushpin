@@ -38,6 +38,7 @@ typedef enum BookmarkSections {
 @property (nonatomic, strong) NSDictionary *bookmarkData;
 
 @property (nonatomic) BOOL isUpdate;
+@property (nonatomic) BOOL presentedFromShareSheet;
 @property (nonatomic) BOOL loadingTitle;
 @property (nonatomic, copy) void (^callback)(NSDictionary *);
 

@@ -120,4 +120,21 @@
     return 1;
 }
 
++ (void)customizeUIElements {
+    NSDictionary *normalAttributes = @{NSFontAttributeName: [PPTheme textLabelFont],
+                                       NSForegroundColorAttributeName: [UIColor whiteColor] };
+    [[UIBarButtonItem appearance] setTitleTextAttributes:normalAttributes
+                                                forState:UIControlStateNormal];
+    [[UIBarButtonItem appearance] setTintColor:[UIColor whiteColor]];
+    
+    // UIToolbar items
+    UIColor *barButtonItemColor = [UIColor colorWithRed:40/255.0f green:141/255.0f blue:219/255.0f alpha:1.0f];
+    [[UIBarButtonItem appearanceWhenContainedIn:[UIToolbar class], nil] setTintColor:barButtonItemColor];
+    
+    [[UISwitch appearance] setOnTintColor:HEX(0x0096FFFF)];
+    [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithRed:0 green:0.5863 blue:1 alpha:1]];
+    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
+}
+
 @end
