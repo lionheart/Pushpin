@@ -4,7 +4,7 @@ configs:
       info: "Pushpin/PushpinAppStore.plist"
       profile: "dd5ba893-f367-431a-895c-677065acf85d"
       entitlements: "Pushpin.entitlements"
-      code_sign_identity: "iPhone Developer"
+      code_sign_identity: "iPhone Developer: Daniel Loewenherz (32S53QJB5F)"
     pinboard_app_store:
       info: "Pushpin/PushpinAppStore.plist"
       profile: "29099fb1-0606-4967-884d-96f3d84d94b2"
@@ -14,7 +14,7 @@ configs:
       info: "Pushpin/Dev-Info.plist"
       profile: "dd5ba893-f367-431a-895c-677065acf85d"
       entitlements: "Beta.entitlements"
-      code_sign_identity: "iPhone Developer"
+      code_sign_identity: "iPhone Developer: Daniel Loewenherz (32S53QJB5F)"
     pinboard_beta:
       info: "Pushpin/Beta-Info.plist"
       profile: "f4e91b56-e108-4bcc-8deb-eebef30e2931"
@@ -29,7 +29,7 @@ configs:
       info: "Pushpin/Dev-Info.plist"
       profile: "45D6F4CF-F5A8-4BC7-92FE-4F506DCFF13A"
       entitlements: "Beta.entitlements"
-      code_sign_identity: "iPhone Developer"
+      code_sign_identity: "iPhone Developer: Daniel Loewenherz (32S53QJB5F)"
     delicious_beta:
       info: "Pushpin/Beta-Info.plist"
       profile: "dd5ba893-f367-431a-895c-677065acf85d"
@@ -40,7 +40,7 @@ configs:
       info: "Pinboard/Info-AppStore.plist"
       profile: "e025a654-80a5-4148-a99e-404a62ed0035"
       entitlements: "Pinboard/Share-AppStore.entitlements"
-      code_sign_identity: "iPhone Developer"
+      code_sign_identity: "iPhone Developer: Daniel Loewenherz (32S53QJB5F)"
     pinboard_app_store:
       info: "Pinboard/Info-AppStore.plist"
       profile: "e025a654-80a5-4148-a99e-404a62ed0035"
@@ -50,7 +50,7 @@ configs:
       info: "Pinboard/Info.plist"
       profile: "665b6e99-b258-4101-ad1e-44c81a5a443b"
       entitlements: "Pinboard/Share-Dev.entitlements"
-      code_sign_identity: "iPhone Developer"
+      code_sign_identity: "iPhone Developer: Daniel Loewenherz (32S53QJB5F)"
     pinboard_beta:
       info: "Pinboard/Info-Beta.plist"
       profile: "9fbcbd7b-8937-442d-9743-693f740c99e0"
@@ -65,7 +65,7 @@ configs:
       info: "Pushpin/Info.plist"
       profile: "45D6F4CF-F5A8-4BC7-92FE-4F506DCFF13A"
       entitlements: "Beta.entitlements"
-      code_sign_identity: "iPhone Developer"
+      code_sign_identity: "iPhone Developer: Daniel Loewenherz (32S53QJB5F)"
     delicious_beta:
       info: "Pushpin/Info.plist"
       profile: "dd5ba893-f367-431a-895c-677065acf85d"
