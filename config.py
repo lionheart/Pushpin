@@ -48,7 +48,7 @@ for target in targets:
             elif data['name'] == "PushpinFramework":
                 if 'CODE_SIGN_IDENTITY' in build_settings:
                     del build_settings['CODE_SIGN_IDENTITY']
-            elif data['name'] == "Share Extension":
+            elif data['name'] == "Extension":
                 build_settings['CODE_SIGN_ENTITLEMENTS'] = configurations['extension'][name]['entitlements']
                 build_settings['CODE_SIGN_IDENTITY'] = configurations['extension'][name]['code_sign_identity']
                 build_settings['INFOPLIST_FILE'] = configurations['extension'][name]['info']
