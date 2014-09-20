@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>EF6AC2B8-CA31-4377-BA90-FE20A3613CCC</string>
 	<key>IDESourceControlProjectName</key>
@@ -10,10 +12,10 @@
 	<dict>
 		<key>56E411DC-59EB-41EC-9DEA-BCC9A33D600C</key>
 		<string>ssh://github.com/aurorasoftware/ASPinboard.git</string>
-		<key>E176CC03-AD92-4FD4-A4A0-5E24D2E58F7A</key>
-		<string>ssh://github.com/aurorasoftware/Pushpin.git</string>
-		<key>EBB63828-F5E9-4735-A7E2-9E6FA2A52CD9</key>
+		<key>9EE95AE564A8FA1EB03FB1B2D3BCDFB5090990E4</key>
 		<string>ssh://github.com/aurorasoftware/pushpin-localizations.git</string>
+		<key>CA1D079377A2BD66346D3AB72C980A5DB6CE1C06</key>
+		<string>ssh://github.com/aurorasoftware/Pushpin.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>Pushpin.xcodeproj/project.xcworkspace</string>
@@ -21,35 +23,19 @@
 	<dict>
 		<key>56E411DC-59EB-41EC-9DEA-BCC9A33D600C</key>
 		<string>../../Vendor/ASPinboard</string>
-		<key>E176CC03-AD92-4FD4-A4A0-5E24D2E58F7A</key>
-		<string>../..</string>
-		<key>EBB63828-F5E9-4735-A7E2-9E6FA2A52CD9</key>
+		<key>9EE95AE564A8FA1EB03FB1B2D3BCDFB5090990E4</key>
 		<string>../../Localizations</string>
+		<key>CA1D079377A2BD66346D3AB72C980A5DB6CE1C06</key>
+		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>ssh://github.com/aurorasoftware/Pushpin.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>E176CC03-AD92-4FD4-A4A0-5E24D2E58F7A</string>
+	<string>CA1D079377A2BD66346D3AB72C980A5DB6CE1C06</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
-		<dict>
-			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
-			<string>public.vcs.git</string>
-			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>E176CC03-AD92-4FD4-A4A0-5E24D2E58F7A</string>
-			<key>IDESourceControlWCCName</key>
-			<string>Pushpin</string>
-		</dict>
-		<dict>
-			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
-			<string>public.vcs.git</string>
-			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>EBB63828-F5E9-4735-A7E2-9E6FA2A52CD9</string>
-			<key>IDESourceControlWCCName</key>
-			<string>Localizations</string>
-		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
@@ -57,6 +43,22 @@
 			<string>56E411DC-59EB-41EC-9DEA-BCC9A33D600C</string>
 			<key>IDESourceControlWCCName</key>
 			<string>ASPinboard</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>9EE95AE564A8FA1EB03FB1B2D3BCDFB5090990E4</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Localizations</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>CA1D079377A2BD66346D3AB72C980A5DB6CE1C06</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Pushpin</string>
 		</dict>
 	</array>
 </dict>
