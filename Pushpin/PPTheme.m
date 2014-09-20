@@ -92,7 +92,7 @@
 }
 
 + (CGFloat)staticBadgeFontSize {
-    return 13;
+    return 15;
 }
 
 + (NSString *)browseFontName {

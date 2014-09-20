@@ -86,7 +86,7 @@ static const CGFloat PADDING_Y = 2;
 
         self.textLabel = [[UILabel alloc] init];
         self.textLabel.text = text;
-        self.textLabel.font = [PPTheme tagFont];
+        self.textLabel.font = [UIFont fontWithName:[PPTheme fontName] size:[badgeOptions[PPBadgeFontSize] floatValue]];
         self.textLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         self.textLabel.backgroundColor = self.normalColor;
         self.textLabel.textColor = badgeOptions[PPBadgeFontColor];

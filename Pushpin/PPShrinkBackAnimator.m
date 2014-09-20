@@ -37,9 +37,9 @@ static CGFloat kPPShrinkBackAnimationDuration = 0.6;
     void (^animations)();
     if (self.reverse) {
         cover.alpha = 0.4;
-        
+
         if (![UIApplication isIPad]) {
-            toViewController.view.frame = containerView.frame;
+            fromViewController.view.frame = containerView.frame;
         }
         toViewController.view.transform = CATransform3DGetAffineTransform(transform3D);
 
@@ -48,6 +48,7 @@ static CGFloat kPPShrinkBackAnimationDuration = 0.6;
         animations = ^{
             cover.alpha = 0;
             toViewController.view.layer.transform = CATransform3DIdentity;
+            toViewController.view.frame = containerView.frame;
             fromViewController.view.frame = CGRectOffset(fromViewController.view.frame, 0, CGRectGetHeight(fromViewController.view.frame));
         };
     }

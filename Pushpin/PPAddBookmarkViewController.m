@@ -311,7 +311,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
     // We need to set this here, since on iPad the table view's frame isn't set until this happens.
     self.descriptionTextLabel.preferredMaxLayoutWidth = self.tableView.frame.size.width - 50;
 
-    if (self.presentedFromShareSheet) {
+    BOOL urlTextFieldHasText = self.urlTextField.text.length > 0;
+    if (self.presentedFromShareSheet && !urlTextFieldHasText) {
         NSExtensionItem *item = self.extensionContext.inputItems.firstObject;
         for (NSItemProvider *itemProvider in item.attachments) {
             if ([itemProvider hasItemConformingToTypeIdentifier:(__bridge NSString *)kUTTypeURL]) {
@@ -323,13 +324,24 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                           });
                                       }];
             }
-
-            if ([itemProvider hasItemConformingToTypeIdentifier:(__bridge NSString *)kUTTypeUTF8PlainText]) {
-                [itemProvider loadItemForTypeIdentifier:(__bridge NSString *)kUTTypeUTF8PlainText
+            
+            if ([itemProvider hasItemConformingToTypeIdentifier:(__bridge NSString *)kUTTypePlainText]) {
+                [itemProvider loadItemForTypeIdentifier:(__bridge NSString *)kUTTypePlainText
                                                 options:0
                                       completionHandler:^(NSString *text, NSError *error) {
                                           dispatch_async(dispatch_get_main_queue(), ^{
                                               self.titleTextField.text = text;
+                                          });
+                                      }];
+            }
+
+            if ([itemProvider hasItemConformingToTypeIdentifier:(__bridge NSString *)kUTTypePropertyList]) {
+                [itemProvider loadItemForTypeIdentifier:(__bridge NSString *)kUTTypePropertyList
+                                                options:0
+                                      completionHandler:^(NSDictionary *results, NSError *error) {
+                                          dispatch_async(dispatch_get_main_queue(), ^{
+                                              self.titleTextField.text = results[NSExtensionJavaScriptPreprocessingResultsKey][@"title"];
+                                              self.urlTextField.text = results[NSExtensionJavaScriptPreprocessingResultsKey][@"url"];
                                           });
                                       }];
             }
@@ -666,7 +678,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)prefillTitleAndForceUpdate:(BOOL)forceUpdate {
     NSURL *url = [NSURL URLWithString:self.urlTextField.text];
     self.previousURLContents = self.urlTextField.text;
-    
+
     BOOL shouldPrefillTitle = !self.loadingTitle
     && (forceUpdate || self.titleTextField == nil || [self.titleTextField.text isEqualToString:@""])
     && [[UIApplication sharedApplication] canOpenURL:url]
@@ -679,19 +691,19 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [self.tableView beginUpdates];
         [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView endUpdates];
-        [[PPAppDelegate sharedDelegate] retrievePageTitle:url
-                                               callback:^(NSString *title, NSString *description) {
-                                                   self.titleTextField.text = title;
-                                                   self.postDescription = description;
-
-                                                   self.descriptionAttributes[NSForegroundColorAttributeName] = [UIColor blackColor];
-                                                   self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:self.postDescription attributes:self.descriptionAttributes];
-                                                   self.loadingTitle = NO;
-
-                                                   [self.tableView beginUpdates];
-                                                   [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
-                                                   [self.tableView endUpdates];
-                                               }];
+        [PPUtilities retrievePageTitle:url
+                              callback:^(NSString *title, NSString *description) {
+                                  self.titleTextField.text = title;
+                                  self.postDescription = description;
+                                  
+                                  self.descriptionAttributes[NSForegroundColorAttributeName] = [UIColor blackColor];
+                                  self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:self.postDescription attributes:self.descriptionAttributes];
+                                  self.loadingTitle = NO;
+                                  
+                                  [self.tableView beginUpdates];
+                                  [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
+                                  [self.tableView endUpdates];
+                              }];
     }
 }
 

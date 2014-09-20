@@ -35,7 +35,6 @@
 #import <ASPinboard/ASPinboard.h>
 #import <FMDB/FMDatabase.h>
 #import <Reachability/Reachability.h>
-#import <HTMLParser/HTMLParser.h>
 #import <PocketAPI/PocketAPI.h>
 #import <TestFlightSDK/TestFlight.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -359,21 +358,21 @@
             else {
                 NSURL *candidateURL = [NSURL URLWithString:self.clipboardBookmarkURL];
                 if (candidateURL && candidateURL.scheme && candidateURL.host) {
-                    [[PPAppDelegate sharedDelegate] retrievePageTitle:candidateURL
-                                                           callback:^(NSString *title, NSString *description) {
-                                                               dispatch_async(dispatch_get_main_queue(), ^{
-                                                                   self.clipboardBookmarkTitle = title;
-
-                                                                   NSString *message = [NSString stringWithFormat:@"%@\n\n%@", NSLocalizedString(@"We've detected a URL in your clipboard. Would you like to bookmark it?", nil), self.clipboardBookmarkURL];
-                                                                   self.addBookmarkAlertView = [[UIAlertView alloc] initWithTitle:nil
-                                                                                                                          message:message
-                                                                                                                         delegate:self
-                                                                                                                cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-                                                                                                                otherButtonTitles:NSLocalizedString(@"Add", nil), nil];
-                                                                   [self.addBookmarkAlertView show];
-                                                               });
-                                                               [mixpanel track:@"Prompted to add bookmark from clipboard"];
-                                                           }];
+                    [PPUtilities retrievePageTitle:candidateURL
+                                          callback:^(NSString *title, NSString *description) {
+                                              dispatch_async(dispatch_get_main_queue(), ^{
+                                                  self.clipboardBookmarkTitle = title;
+                                                  
+                                                  NSString *message = [NSString stringWithFormat:@"%@\n\n%@", NSLocalizedString(@"We've detected a URL in your clipboard. Would you like to bookmark it?", nil), self.clipboardBookmarkURL];
+                                                  self.addBookmarkAlertView = [[UIAlertView alloc] initWithTitle:nil
+                                                                                                         message:message
+                                                                                                        delegate:self
+                                                                                               cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                                                                               otherButtonTitles:NSLocalizedString(@"Add", nil), nil];
+                                                  [self.addBookmarkAlertView show];
+                                              });
+                                              [mixpanel track:@"Prompted to add bookmark from clipboard"];
+                                          }];
                     
                 }
             }
@@ -1071,42 +1070,6 @@
 }
 
 #pragma mark - Helpers
-
-- (void)retrievePageTitle:(NSURL *)url callback:(void (^)(NSString *title, NSString *description))callback {
-    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:5];
-    [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];
-    [NSURLConnection sendAsynchronousRequest:request
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
-                               
-                               NSString *description = @"";
-                               NSString *title = @"";
-                               if (!error) {
-                                   HTMLParser *parser = [[HTMLParser alloc] initWithData:data error:&error];
-
-                                   if (!error) {
-                                       NSCharacterSet *whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
-
-                                       HTMLNode *root = [parser head];
-                                       HTMLNode *titleTag = [root findChildTag:@"title"];
-                                       NSArray *metaTags = [root findChildTags:@"meta"];
-                                       for (HTMLNode *tag in metaTags) {
-                                           if ([[tag getAttributeNamed:@"name"] isEqualToString:@"description"]) {
-                                               description = [[tag getAttributeNamed:@"content"] stringByTrimmingCharactersInSet:whitespace];
-                                               break;
-                                           }
-                                       }
-                                       
-                                       if (titleTag && titleTag.contents) {
-                                           title = [titleTag.contents stringByTrimmingCharactersInSet:whitespace];
-                                       }
-                                   }
-                               }
-
-                               callback(title, description);
-                           }];
-}
 
 - (void)closeModal:(UIViewController *)sender success:(void (^)())success {
     [self.navigationController dismissViewControllerAnimated:YES completion:success];
