@@ -46,8 +46,7 @@ for target in targets:
                 build_settings['INFOPLIST_FILE'] = configurations['app'][name]['info']
                 build_settings['PROVISIONING_PROFILE'] = configurations['app'][name]['profile']
             elif data['name'] == "PushpinFramework":
-                if 'CODE_SIGN_IDENTITY' in build_settings:
-                    del build_settings['CODE_SIGN_IDENTITY']
+                build_settings['CODE_SIGN_IDENTITY'] = configurations['framework'][name]['code_sign_identity']
             elif data['name'] == "Extension":
                 build_settings['CODE_SIGN_ENTITLEMENTS'] = configurations['extension'][name]['entitlements']
                 build_settings['CODE_SIGN_IDENTITY'] = configurations['extension'][name]['code_sign_identity']
