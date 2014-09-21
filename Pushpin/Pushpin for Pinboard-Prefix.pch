@@ -61,3 +61,5 @@ static NSString *kSavedFeedsKey = @"SavedFeeds";
 #else
 #define APP_GROUP @"group.Pushpin"
 #endif
+
+#define PUSH_WEBVIEW_IN_NAVIGATION_CONTROLLER 0
