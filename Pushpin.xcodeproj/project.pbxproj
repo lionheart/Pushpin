@@ -660,6 +660,9 @@
         "372943EA19CF53FD00ABF006": {
             "buildActionMask": "2147483647",
             "files": [
+                "3729440619CF546700ABF006",
+                "3729440519CF546700ABF006",
+                "3729440719CF546700ABF006",
                 "372943F419CF53FD00ABF006"
             ],
             "isa": "PBXResourcesBuildPhase",
@@ -689,10 +692,10 @@
         },
         "372943ED19CF53FD00ABF006": {
             "children": [
-                "372943F019CF53FD00ABF006",
-                "372943F119CF53FD00ABF006",
+                "372943EE19CF53FD00ABF006",
                 "372943F319CF53FD00ABF006",
-                "372943EE19CF53FD00ABF006"
+                "372943F019CF53FD00ABF006",
+                "372943F119CF53FD00ABF006"
             ],
             "isa": "PBXGroup",
             "path": "Read Later Extension",
@@ -700,16 +703,12 @@
         },
         "372943EE19CF53FD00ABF006": {
             "children": [
-                "372943EF19CF53FD00ABF006"
+                "3729440319CF546700ABF006",
+                "3729440219CF546700ABF006",
+                "3729440419CF546700ABF006"
             ],
             "isa": "PBXGroup",
             "name": "Supporting Files",
-            "sourceTree": "<group>"
-        },
-        "372943EF19CF53FD00ABF006": {
-            "isa": "PBXFileReference",
-            "lastKnownFileType": "text.plist.xml",
-            "path": "Info.plist",
             "sourceTree": "<group>"
         },
         "372943F019CF53FD00ABF006": {
@@ -1061,7 +1060,41 @@
                 "3729440019CF53FE00ABF006"
             ],
             "defaultConfigurationIsVisible": "0",
+            "defaultConfigurationName": "Pinboard Debug",
             "isa": "XCConfigurationList"
+        },
+        "3729440219CF546700ABF006": {
+            "fileEncoding": "4",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "text.plist.xml",
+            "path": "Beta-Info.plist",
+            "sourceTree": "<group>"
+        },
+        "3729440319CF546700ABF006": {
+            "fileEncoding": "4",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "text.plist.xml",
+            "path": "AppStore-Info.plist",
+            "sourceTree": "<group>"
+        },
+        "3729440419CF546700ABF006": {
+            "fileEncoding": "4",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "text.plist.xml",
+            "path": "Dev-Info.plist",
+            "sourceTree": "<group>"
+        },
+        "3729440519CF546700ABF006": {
+            "fileRef": "3729440219CF546700ABF006",
+            "isa": "PBXBuildFile"
+        },
+        "3729440619CF546700ABF006": {
+            "fileRef": "3729440319CF546700ABF006",
+            "isa": "PBXBuildFile"
+        },
+        "3729440719CF546700ABF006": {
+            "fileRef": "3729440419CF546700ABF006",
+            "isa": "PBXBuildFile"
         },
         "372AEEF6186B804F00F131A9": {
             "fileEncoding": "4",
@@ -7595,7 +7628,6 @@
             "children": [
                 "37FEEBDC15748BA7003F2B77",
                 "3772DE541933B0D1004B348D",
-                "372943ED19CF53FD00ABF006",
                 "37FEEB9115745488003F2B77",
                 "3740A23616863CF000F95D82",
                 "37FEEB8F15745488003F2B77",
@@ -7603,6 +7635,7 @@
                 "3717968418A885FE004B2D08",
                 "379042B319CC646900409D34",
                 "379042BD19CC646B00409D34",
+                "372943ED19CF53FD00ABF006",
                 "3790424719CBD49A00409D34",
                 "37076D41158AD0B1002566CD",
                 "3772DE901933B0E0004B348D",
