@@ -11,6 +11,18 @@
 			</array>
 			<array>
 				<string>FIX</string>
+				<string>Add full VoiceOver support.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Add 1Password Extension integration.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Add bookmark and read later share extensions for easy sharing to Pinboard within other apps.</string>
+			</array>
+			<array>
+				<string>FIX</string>
 				<string>Add three premium fonts: Flex and Brando from Bold Monday, and Lyon from Commercial Type.</string>
 			</array>
 			<array>
