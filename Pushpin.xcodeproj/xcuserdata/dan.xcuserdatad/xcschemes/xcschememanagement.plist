@@ -31,6 +31,11 @@
 			<key>orderHint</key>
 			<integer>37</integer>
 		</dict>
+		<key>Read Later Extension.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>38</integer>
+		</dict>
 		<key>SQLite.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -45,6 +50,11 @@
 			<true/>
 		</dict>
 		<key>3717967F18A885F7004B2D08</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>372943EB19CF53FD00ABF006</key>
 		<dict>
 			<key>primary</key>
 			<true/>
