@@ -833,7 +833,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     PPAddSavedFeedViewController *addSavedFeedViewController = [[PPAddSavedFeedViewController alloc] init];
                     addSavedFeedViewController.SuccessCallback = ^{
                         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                            [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                            [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                                 [self updateSavedFeeds:db];
                             }];
                         });
@@ -1725,7 +1725,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSMutableArray *indexPathsToReload = [NSMutableArray array];
-        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+        [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
             
 #ifdef DELICIOUS
             NSArray *resultSets = @[
@@ -1788,7 +1788,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 [self.tableView reloadData];
 
 #ifdef PINBOARD
-                [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                     [self updateSavedFeeds:db];
                 }];
 #endif

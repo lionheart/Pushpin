@@ -38,7 +38,7 @@ typedef enum BookmarkSections {
 @property (nonatomic, strong) NSDictionary *bookmarkData;
 
 @property (nonatomic) BOOL isUpdate;
-@property (nonatomic) BOOL presentedFromShareSheet;
+@property (nonatomic, strong) NSExtensionContext *presentingViewControllersExtensionContext;
 @property (nonatomic) BOOL loadingTitle;
 @property (nonatomic, copy) void (^callback)(NSDictionary *);
 
@@ -65,6 +65,8 @@ typedef enum BookmarkSections {
 @property (nonatomic, strong) UIViewController *editTextViewController;
 @property (nonatomic, strong) UITapGestureRecognizer *badgeTapGestureRecognizer;
 
+- (BOOL)presentedFromShareSheet;
+
 - (void)leftBarButtonTouchUpInside:(id)sender;
 - (void)urlTextFieldDidChange:(NSNotification *)notification;
 - (void)prefillTitleAndForceUpdate:(BOOL)forceUpdate;
@@ -73,6 +75,9 @@ typedef enum BookmarkSections {
 - (void)addBookmark;
 - (void)close;
 - (void)gestureDetected:(UISwipeGestureRecognizer *)gestureRecognizer;
+- (void)configureWithBookmark:(NSDictionary *)bookmark
+                       update:(NSNumber *)isUpdate
+                     callback:(void (^)(NSDictionary *))callback;
 
 + (PPNavigationController *)updateBookmarkViewControllerWithURLString:(NSString *)urlString callback:(void (^)(NSDictionary *))callback;
 + (PPNavigationController *)addBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)(NSDictionary *))callback;

@@ -14,7 +14,7 @@ configs:
       code_sign_identity: "iPhone Distribution: Lionheart Software LLC (63553QQ62F)"
     pinboard_dev:
       info: "Pushpin/Dev-Info.plist"
-      profile: "dd5ba893-f367-431a-895c-677065acf85d"
+      profile: "3a6325c1-3986-492c-ba77-5ff91e502cf0"
       entitlements: "Pushpin/Dev.entitlements"
       code_sign_identity: "iPhone Developer: Daniel Loewenherz (32S53QJB5F)"
     pinboard_beta:

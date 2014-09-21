@@ -33,7 +33,6 @@
 
 #import <LHSDelicious/LHSDelicious.h>
 #import <ASPinboard/ASPinboard.h>
-#import <FMDB/FMDatabase.h>
 #import <Reachability/Reachability.h>
 #import <PocketAPI/PocketAPI.h>
 #import <TestFlightSDK/TestFlight.h>
@@ -58,37 +57,6 @@
 @implementation PPAppDelegate
 
 @synthesize splitViewController = _splitViewController;
-
-+ (NSString *)databasePath {
-#ifdef DELICIOUS
-    NSString *pathComponent = @"/delicious.db";
-#endif
-    
-#ifdef PINBOARD
-    NSString *pathComponent = @"/pinboard.db";
-#endif
-
-#if TARGET_IPHONE_SIMULATOR
-    return [@"/tmp" stringByAppendingString:pathComponent];
-#else
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    if (paths.count > 0) {
-        return [paths[0] stringByAppendingPathComponent:pathComponent];
-    }
-    else {
-        return pathComponent;
-    }
-#endif
-}
-
-+ (FMDatabaseQueue *)databaseQueue {
-    static dispatch_once_t onceToken;
-    static FMDatabaseQueue *queue;
-    dispatch_once(&onceToken, ^{
-        queue = [FMDatabaseQueue databaseQueueWithPath:[self databasePath]];
-    });
-    return queue;
-}
 
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
 }
@@ -292,6 +260,14 @@
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
+    // Copy over the database file to the shared container URL
+    NSURL *containerURL = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:APP_GROUP];
+    NSURL *newDatabaseURL = [containerURL URLByAppendingPathComponent:@"shared.db"];
+    NSURL *databaseURL = [NSURL fileURLWithPath:[PPUtilities databasePath]];
+    BOOL success = [[NSFileManager defaultManager] copyItemAtURL:databaseURL
+                                                           toURL:newDatabaseURL
+                                                           error:nil];
+
     PPSettings *settings = [PPSettings sharedSettings];
 #ifdef DELICIOUS
     BOOL isAuthenticated = settings.username != nil && settings.password != nil;
@@ -321,7 +297,7 @@
             __block BOOL alreadyExistsInBookmarks;
             __block BOOL alreadyRejected;
 
-            [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+            [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                 FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[self.clipboardBookmarkURL]];
                 [results next];
                 alreadyExistsInBookmarks = [results intForColumnIndex:0] != 0;
@@ -598,7 +574,7 @@
                                                       diskPath:@"urlcache"];
     [NSURLCache setSharedURLCache:self.urlCache];
 
-    [self migrateDatabase];
+    [PPUtilities migrateDatabase];
 
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor whiteColor];
@@ -663,7 +639,7 @@
 #endif
      }];
     
-    NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"group.Pushpin"];
+    NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
     [sharedDefaults setObject:[[PPSettings sharedSettings] token] forKey:@"token"];
     
     UIUserNotificationSettings* notificationSettings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories:nil];
@@ -754,317 +730,6 @@
     return YES;
 }
 
-- (void)migrateDatabase {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        // Create the database if it does not yet exist.
-        FMDatabase *db = [FMDatabase databaseWithPath:[PPAppDelegate databasePath]];
-        [db open];
-        [db close];
-        
-        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
-            // http://stackoverflow.com/a/875422/39155
-            [db executeUpdate:@"PRAGMA cache_size=100;"];
-            
-            // http://stackoverflow.com/a/875422/39155
-            [db executeUpdate:@"PRAGMA syncronous=OFF;"];
-            
-            FMResultSet *s = [db executeQuery:@"PRAGMA user_version"];
-            BOOL success = [s next];
-            if (success) {
-                int version = [s intForColumnIndex:0];
-                [s close];
-                
-                [db beginTransaction];
-                
-                switch (version) {
-#ifdef DELICIOUS
-                    case 0:
-                        [db executeUpdate:
-                         @"CREATE TABLE feeds("
-                         "components TEXT UNIQUE,"
-                         "created_at DATETIME DEFAULT CURRENT_TIMESTAMP"
-                         ");"];
-                        
-                        [db executeUpdate:
-                         @"CREATE TABLE rejected_bookmark("
-                         "url TEXT UNIQUE CHECK(length(url) < 2000),"
-                         "created_at DATETIME DEFAULT CURRENT_TIMESTAMP"
-                         ");"];
-                        [db executeUpdate:@"CREATE INDEX rejected_bookmark_url_idx ON rejected_bookmark (url);"];
-                        
-                        [db executeUpdate:
-                         @"CREATE TABLE bookmark("
-                         "title TEXT,"
-                         "description TEXT,"
-                         "tags TEXT,"
-                         "url TEXT,"
-                         "count INTEGER,"
-                         "private BOOL,"
-                         "unread BOOL,"
-                         "hash VARCHAR(32) UNIQUE,"
-                         "meta VARCHAR(32),"
-                         "created_at DATETIME"
-                         ");" ];
-                        
-                        [db executeUpdate:@"CREATE INDEX bookmark_created_at_idx ON bookmark (created_at);"];
-                        [db executeUpdate:@"CREATE INDEX bookmark_private_idx ON bookmark (private);"];
-                        [db executeUpdate:@"CREATE INDEX bookmark_unread_idx ON bookmark (unread);"];
-                        [db executeUpdate:@"CREATE INDEX bookmark_url_idx ON bookmark (url);"];
-                        [db executeUpdate:@"CREATE INDEX bookmark_hash_idx ON bookmark (hash);"];
-                        
-                        [db executeUpdate:@"CREATE VIRTUAL TABLE bookmark_fts USING fts4(hash, title, description, tags, url, prefix='2,3,4,5,6');"];
-                        [db executeUpdate:@"CREATE VIRTUAL TABLE tag_fts USING fts4(id, name, prefix='2,3,4,5');"];
-                        
-                        [db executeUpdate:@"CREATE TRIGGER bookmark_fts_insert_trigger AFTER INSERT ON bookmark BEGIN INSERT INTO bookmark_fts (hash, title, description, tags, url) VALUES(new.hash, new.title, new.description, new.tags, new.url); END;"];
-                        [db executeUpdate:@"CREATE TRIGGER bookmark_fts_update_trigger AFTER UPDATE ON bookmark BEGIN UPDATE bookmark_fts SET title=new.title, description=new.description, tags=new.tags, url=new.url WHERE hash=new.hash AND old.meta != new.meta; END;"];
-                        [db executeUpdate:@"CREATE TRIGGER bookmark_fts_delete_trigger AFTER DELETE ON bookmark BEGIN DELETE FROM bookmark_fts WHERE hash=old.hash; END;"];
-                        
-                        // Tagging
-                        [db executeUpdate:
-                         @"CREATE TABLE tag("
-                             "name TEXT UNIQUE,"
-                             "count INTEGER"
-                         ");" ];
-                        
-                        [db executeUpdate:@"CREATE INDEX tag_name_idx ON tag (name);"];
-                        
-                        [db executeUpdate:
-                         @"CREATE TABLE tagging("
-                             "tag_name TEXT,"
-                             "bookmark_hash TEXT"
-                         ");" ];
-                        
-                        [db executeUpdate:@"CREATE INDEX tagging_tag_name_idx ON tagging (tag_name);"];
-                        [db executeUpdate:@"CREATE INDEX tagging_bookmark_hash_idx ON tagging (bookmark_hash);"];
-                        
-                        [db executeUpdate:@"CREATE TRIGGER tag_fts_insert_trigger AFTER INSERT ON tag BEGIN INSERT INTO tag_fts (name) VALUES(new.name); END;"];
-                        [db executeUpdate:@"CREATE TRIGGER tag_fts_delete_trigger AFTER DELETE ON tag BEGIN DELETE FROM tag_fts WHERE name=old.name; END;"];
-                        
-                        [db executeUpdate:@"PRAGMA user_version=1;"];
-                        
-                    default:
-                        break;
-#endif
-                        
-#ifdef PINBOARD
-                    case 0:
-                        [db executeUpdate:
-                         @"CREATE TABLE bookmark("
-                         "id INTEGER PRIMARY KEY ASC,"
-                         "title VARCHAR(255),"
-                         "description TEXT,"
-                         "tags TEXT,"
-                         "url TEXT UNIQUE CHECK(length(url) < 2000),"
-                         "count INTEGER,"
-                         "private BOOL,"
-                         "unread BOOL,"
-                         "hash VARCHAR(32) UNIQUE,"
-                         "meta VARCHAR(32),"
-                         "created_at DATETIME"
-                         ");" ];
-                        [db executeUpdate:
-                         @"CREATE TABLE tag("
-                         "id INTEGER PRIMARY KEY ASC,"
-                         "name VARCHAR(255) UNIQUE,"
-                         "count INTEGER"
-                         ");" ];
-                        [db executeUpdate:
-                         @"CREATE TABLE tagging("
-                         "tag_id INTEGER,"
-                         "bookmark_id INTEGER,"
-                         "PRIMARY KEY (tag_id, bookmark_id),"
-                         "FOREIGN KEY (tag_id) REFERENCES tag (id) ON DELETE CASCADE,"
-                         "FOREIGN KEY (bookmark_id) REFERENCES bookmark (id) ON DELETE CASCADE"
-                         ");" ];
-                        [db executeUpdate:
-                         @"CREATE TABLE note("
-                         "id INTEGER PRIMARY KEY ASC,"
-                         "remote_id VARCHAR(20) UNIQUE,"
-                         "hash VARCHAR(20) UNIQUE,"
-                         "title VARCHAR(255),"
-                         "text TEXT,"
-                         "length INTEGER,"
-                         "created_at DATETIME,"
-                         "updated_at DATETIME"
-                         ");" ];
-                        
-                        // Full text search
-                        [db executeUpdate:@"CREATE VIRTUAL TABLE bookmark_fts USING fts4(id, title, description, tags);"];
-                        [db executeUpdate:@"CREATE VIRTUAL TABLE note_fts USING fts4(id, title, text);"];
-                        [db executeUpdate:@"CREATE VIRTUAL TABLE tag_fts USING fts4(id, name);"];
-                        [db executeUpdate:@"CREATE TRIGGER bookmark_fts_insert_trigger AFTER INSERT ON bookmark BEGIN INSERT INTO bookmark_fts (id, title, description, tags) VALUES(new.id, new.title, new.description, new.tags); END;"];
-                        [db executeUpdate:@"CREATE TRIGGER bookmark_fts_update_trigger AFTER UPDATE ON bookmark BEGIN UPDATE bookmark_fts SET title=new.title, description=new.description, tags=new.tags WHERE id=new.id; END;"];
-                        [db executeUpdate:@"CREATE TRIGGER note_fts_insert_trigger AFTER INSERT ON note BEGIN INSERT INTO note_fts (id, title, text) VALUES(new.id, new.title, new.text); END;"];
-                        [db executeUpdate:@"CREATE TRIGGER note_fts_update_trigger AFTER UPDATE ON note BEGIN UPDATE note_fts SET title=new.title, description=new.text WHERE id=new.id; END;"];
-                        [db executeUpdate:@"CREATE TRIGGER tag_fts_insert_trigger AFTER INSERT ON tag BEGIN INSERT INTO tag_fts (id, name) VALUES(new.id, new.name); END;"];
-                        [db executeUpdate:@"CREATE TRIGGER tag_fts_update_trigger AFTER UPDATE ON tag BEGIN UPDATE tag_fts SET name=new.name WHERE id=new.id; END;"];
-                        
-                        [db executeUpdate:@"CREATE INDEX bookmark_title_idx ON bookmark (title);"];
-                        [db executeUpdate:@"CREATE INDEX note_title_idx ON note (title);"];
-                        
-                        // Has no effect here
-                        // [db executeUpdate:@"PRAGMA foreign_keys=1;"];
-                        
-                        [db executeUpdate:@"PRAGMA user_version=1;"];
-                        
-                    case 1:
-                        [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_id=tag.id)"];
-                        [db executeUpdate:@"PRAGMA user_version=2;"];
-                        
-                    case 2:
-                        [[PPSettings sharedSettings] setReadLater:PPReadLaterNone];
-                        [db executeUpdate:@"CREATE TABLE rejected_bookmark(url TEXT UNIQUE CHECK(length(url) < 2000));"];
-                        [db executeUpdate:@"CREATE INDEX rejected_bookmark_url_idx ON rejected_bookmark (url);"];
-                        [db executeUpdate:@"CREATE INDEX tag_name_idx ON tag (name);"];
-                        [db executeUpdate:@"CREATE INDEX bookmark_hash_idx ON bookmark (hash);"];
-                        [db executeUpdate:@"PRAGMA user_version=3;"];
-                        
-                    case 3:
-                        [db executeUpdate:@"ALTER TABLE rejected_bookmark RENAME TO rejected_bookmark_old;"];
-                        [db executeUpdate:
-                         @"CREATE TABLE rejected_bookmark("
-                         "url TEXT UNIQUE CHECK(length(url) < 2000),"
-                         "created_at DATETIME DEFAULT CURRENT_TIMESTAMP"
-                         ");"];
-                        [db executeUpdate:@"INSERT INTO rejected_bookmark (url) SELECT url FROM rejected_bookmark_old;"];
-                        
-                        [db executeUpdate:@"ALTER TABLE bookmark ADD COLUMN starred BOOL DEFAULT 0;"];
-                        [db executeUpdate:@"CREATE INDEX bookmark_starred_idx ON bookmark (starred);"];
-                        [db executeUpdate:@"PRAGMA user_version=4;"];
-                        
-                    case 4:
-                        [db executeUpdate:
-                         @"CREATE TABLE feeds("
-                         "components TEXT UNIQUE,"
-                         "created_at DATETIME DEFAULT CURRENT_TIMESTAMP"
-                         ");"];
-                        [db executeUpdate:@"PRAGMA user_version=5;"];
-                        
-                    case 5:
-                        [db closeOpenResultSets];
-                        [db executeUpdate:@"CREATE INDEX bookmark_created_at_idx ON bookmark (created_at);"];
-                        [db executeUpdate:@"DROP INDEX bookmark_hash_idx"];
-                        [db executeUpdate:@"PRAGMA user_version=6;"];
-                        
-                    case 6:
-                        [db closeOpenResultSets];
-                        [db executeUpdate:@"ALTER TABLE bookmark RENAME TO bookmark_old;"];
-                        [db executeUpdate:@"ALTER TABLE tagging RENAME TO tagging_old;"];
-                        [db executeUpdate:@"ALTER TABLE tag RENAME TO tag_old;"];
-                        
-                        [db executeUpdate:@"DROP INDEX bookmark_created_at_idx"];
-                        [db executeUpdate:@"DROP INDEX bookmark_starred_idx"];
-                        [db executeUpdate:@"DROP INDEX bookmark_title_idx"];
-                        [db executeUpdate:
-                         @"CREATE TABLE bookmark("
-                         "title TEXT,"
-                         "description TEXT,"
-                         "tags TEXT,"
-                         "url TEXT,"
-                         "count INTEGER,"
-                         "private BOOL,"
-                         "unread BOOL,"
-                         "starred BOOL,"
-                         "hash VARCHAR(32) UNIQUE,"
-                         "meta VARCHAR(32),"
-                         "created_at DATETIME"
-                         ");" ];
-                        [db executeUpdate:@"CREATE INDEX bookmark_created_at_idx ON bookmark (created_at);"];
-                        [db executeUpdate:@"CREATE INDEX bookmark_starred_idx ON bookmark (starred);"];
-                        [db executeUpdate:@"CREATE INDEX bookmark_private_idx ON bookmark (private);"];
-                        [db executeUpdate:@"CREATE INDEX bookmark_unread_idx ON bookmark (unread);"];
-                        [db executeUpdate:@"CREATE INDEX bookmark_url_idx ON bookmark (url);"];
-                        
-                        // Tag
-                        [db executeUpdate:@"DROP TRIGGER tag_fts_insert_trigger;"];
-                        [db executeUpdate:@"DROP TRIGGER tag_fts_update_trigger;"];
-                        
-                        [db executeUpdate:
-                         @"CREATE TABLE tag("
-                         "name TEXT UNIQUE,"
-                         "count INTEGER"
-                         ");" ];
-                        
-                        [db executeUpdate:@"CREATE TRIGGER tag_fts_insert_trigger AFTER INSERT ON tag BEGIN INSERT INTO tag_fts (name) VALUES(new.name); END;"];
-                        [db executeUpdate:@"CREATE TRIGGER tag_fts_delete_trigger AFTER DELETE ON tag BEGIN DELETE FROM tag_fts WHERE name=old.name; END;"];
-                        [db executeUpdate:@"INSERT INTO tag (name, count) SELECT name, count FROM tag_old;"];
-                        
-                        // Tagging
-                        [db executeUpdate:
-                         @"CREATE TABLE tagging("
-                         "tag_name TEXT,"
-                         "bookmark_hash TEXT"
-                         ");" ];
-                        
-                        [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) SELECT tag_old.name, bookmark_old.hash FROM bookmark_old, tagging_old, tag_old WHERE tagging_old.bookmark_id=bookmark_old.id AND tagging_old.tag_id=tag_old.id"];
-                        [db executeUpdate:@"CREATE INDEX tagging_tag_name_idx ON tagging (tag_name);"];
-                        [db executeUpdate:@"CREATE INDEX tagging_bookmark_hash_idx ON tagging (bookmark_hash);"];
-                        
-                        // FTS Updates
-                        [db executeUpdate:@"DROP TRIGGER bookmark_fts_insert_trigger;"];
-                        [db executeUpdate:@"DROP TRIGGER bookmark_fts_update_trigger;"];
-                        [db executeUpdate:@"DROP TRIGGER bookmark_fts_delete_trigger;"];
-                        [db executeUpdate:@"DROP TABLE bookmark_fts;"];
-                        
-                        [db executeUpdate:@"CREATE VIRTUAL TABLE bookmark_fts USING fts4(hash, title, description, tags, url);"];
-                        [db executeUpdate:@"CREATE TRIGGER bookmark_fts_insert_trigger AFTER INSERT ON bookmark BEGIN INSERT INTO bookmark_fts (hash, title, description, tags, url) VALUES(new.hash, new.title, new.description, new.tags, new.url); END;"];
-                        [db executeUpdate:@"CREATE TRIGGER bookmark_fts_update_trigger AFTER UPDATE ON bookmark BEGIN UPDATE bookmark_fts SET title=new.title, description=new.description, tags=new.tags, url=new.url WHERE hash=new.hash AND old.meta != new.meta; END;"];
-                        [db executeUpdate:@"CREATE TRIGGER bookmark_fts_delete_trigger AFTER DELETE ON bookmark BEGIN DELETE FROM bookmark_fts WHERE hash=old.hash; END;"];
-                        
-                        [db commit];
-                        [db beginTransaction];
-                        // Repopulate bookmarks
-                        [db executeUpdate:@"INSERT INTO bookmark (title, description, tags, url, count, private, unread, starred, hash, meta, created_at) SELECT title, description, tags, url, count, private, unread, starred, hash, meta, created_at FROM bookmark_old;"];
-                        
-                        [db executeUpdate:@"DROP TABLE tagging_old;"];
-                        [db executeUpdate:@"DROP TABLE tag_old;"];
-                        [db executeUpdate:@"DROP TABLE bookmark_old;"];
-                        [db executeUpdate:@"PRAGMA user_version=7;"];
-                        
-                    case 7:
-                        [db closeOpenResultSets];
-                        
-                        [db executeUpdate:@"CREATE INDEX bookmark_hash_idx ON bookmark (hash);"];
-                        
-                        // FTS Updates
-                        [db executeUpdate:@"DROP TRIGGER bookmark_fts_insert_trigger;"];
-                        [db executeUpdate:@"DROP TRIGGER bookmark_fts_update_trigger;"];
-                        [db executeUpdate:@"DROP TRIGGER bookmark_fts_delete_trigger;"];
-                        [db executeUpdate:@"DROP TABLE bookmark_fts;"];
-                        
-                        [db executeUpdate:@"CREATE VIRTUAL TABLE bookmark_fts USING fts4(hash, title, description, tags, url, prefix='2,3,4,5,6');"];
-                        [db executeUpdate:@"CREATE TRIGGER bookmark_fts_insert_trigger AFTER INSERT ON bookmark BEGIN INSERT INTO bookmark_fts (hash, title, description, tags, url) VALUES(new.hash, new.title, new.description, new.tags, new.url); END;"];
-                        [db executeUpdate:@"CREATE TRIGGER bookmark_fts_update_trigger AFTER UPDATE ON bookmark BEGIN UPDATE bookmark_fts SET title=new.title, description=new.description, tags=new.tags, url=new.url WHERE hash=new.hash AND old.meta != new.meta; END;"];
-                        [db executeUpdate:@"CREATE TRIGGER bookmark_fts_delete_trigger AFTER DELETE ON bookmark BEGIN DELETE FROM bookmark_fts WHERE hash=old.hash; END;"];
-                        
-                        // Repopulate bookmarks
-                        [db executeUpdate:@"INSERT INTO bookmark_fts (hash, title, description, tags, url) SELECT hash, title, description, tags, url FROM bookmark;"];
-                        [db executeUpdate:@"PRAGMA user_version=8;"];
-                        
-                    case 8:
-                        [db executeUpdate:@"DELETE FROM tagging WHERE tag_name='';"];
-                        [db executeUpdate:@"PRAGMA user_version=9;"];
-                        
-                    case 9: {
-                        NSArray *communityFeedOrder = [PPSettings sharedSettings].communityFeedOrder;
-                        [[PPSettings sharedSettings] setCommunityFeedOrder:[communityFeedOrder arrayByAddingObject:@(PPPinboardCommunityFeedRecent)]];
-                        [db executeUpdate:@"PRAGMA user_version=10;"];
-                    }
-
-                    default:
-                        break;
-#endif
-                }
-                
-                [db commit];
-            }
-            else {
-                [s close];
-            }
-        }];
-    });
-}
-
 + (PPAppDelegate *)sharedDelegate {
     return (PPAppDelegate *)[[UIApplication sharedApplication] delegate];
 }
@@ -1095,7 +760,7 @@
         }
         else {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                     [db executeUpdate:@"INSERT INTO rejected_bookmark (url) VALUES(?)" withArgumentsInArray:@[self.clipboardBookmarkURL]];
                 }];
             });
@@ -1116,7 +781,7 @@
         }
         else {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                     [db executeUpdate:@"INSERT INTO rejected_bookmark (url) VALUES(?)" withArgumentsInArray:@[self.clipboardBookmarkURL]];
                 }];
             });
@@ -1133,7 +798,7 @@
     KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"PinboardCredentials" accessGroup:nil];
 #endif
 
-    [self resetDatabase];
+    [PPUtilities resetDatabase];
 
     // Reset all values in settings
 #warning Need to decide which settings are reset and which ones aren't.
@@ -1211,36 +876,5 @@
     [self.presentingController dismissViewControllerAnimated:YES completion:nil];
 }
 #endif
-
-- (void)deleteDatabaseFile {
-    NSError *error;
-
-    // Remove the database.
-    NSFileManager *manager = [NSFileManager defaultManager];
-    BOOL fileExists = [manager fileExistsAtPath:[PPAppDelegate databasePath]];
-    
-    if (fileExists){
-        BOOL success = [manager removeItemAtPath:[PPAppDelegate databasePath] error:&error];
-    }
-}
-
-- (void)resetDatabase {
-    [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
-        db.logsErrors = YES;
-        [db executeUpdate:@"DROP TABLE feeds"];
-        [db executeUpdate:@"DROP TABLE rejected_bookmark"];
-        [db executeUpdate:@"DROP TABLE bookmark"];
-        [db executeUpdate:@"DROP TABLE tag"];
-        [db executeUpdate:@"DROP TABLE tagging"];
-        [db executeUpdate:@"DROP TABLE bookmark_fts"];
-        [db executeUpdate:@"DROP TABLE tag_fts"];
-
-#ifdef PINBOARD
-        [db executeUpdate:@"DROP TABLE note"];
-#endif
-
-        [db executeUpdate:@"PRAGMA user_version=0;"];
-    }];
-}
 
 @end

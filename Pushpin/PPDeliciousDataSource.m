@@ -204,7 +204,7 @@ static BOOL kPinboardSyncInProgress = NO;
 - (NSInteger)totalNumberOfPosts {
     if (!_totalNumberOfPosts) {
         __block NSInteger count;
-        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+        [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
             FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM bookmark;"];
             [result next];
             count = [result intForColumnIndex:0];
@@ -241,7 +241,7 @@ static BOOL kPinboardSyncInProgress = NO;
             __block NSUInteger total;
             __block NSMutableArray *previousBookmarks;
 
-            [[PPAppDelegate databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
+            [[PPUtilities databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
                 [db executeUpdate:@"DELETE FROM bookmark WHERE hash IS NULL"];
 
                 FMResultSet *results;
@@ -292,7 +292,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                           __block NSUInteger tagAddCount = 0;
                                           __block NSUInteger tagDeleteCount = 0;
                                           
-                                          [[PPAppDelegate databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
+                                          [[PPUtilities databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
                                               // Only track one date error per update
                                               BOOL dateError = NO;
                                               
@@ -493,7 +493,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 return;
             }
 
-            [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+            [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                 FMResultSet *results = [db executeQuery:query withArgumentsInArray:parameters];
 
                 if (cancel && cancel()) {
@@ -646,7 +646,7 @@ static BOOL kPinboardSyncInProgress = NO;
 #warning XXX Check tags instead of "toread"
                                 if ([bookmark[@"toread"] isEqualToString:@"no"]) {
                                     // Bookmark has already been marked as read on server.
-                                    [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                                    [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                                         [db executeUpdate:@"UPDATE bookmark SET unread=0, meta=random() WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
                                     }];
                                     
@@ -665,7 +665,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                                 }
                                                 else {
                                                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                                                        [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                                                             [db executeUpdate:@"UPDATE bookmark SET unread=0, meta=random() WHERE hash=?" withArgumentsInArray:@[bookmark[@"hash"]]];
                                                         }];
 
@@ -693,7 +693,7 @@ static BOOL kPinboardSyncInProgress = NO;
         SuccessBlock = ^{
             NSString *hash = self.posts[indexPath.row][@"hash"];
             
-            [[PPAppDelegate databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
+            [[PPUtilities databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
                 [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
                 [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[hash]];
             }];
@@ -722,7 +722,7 @@ static BOOL kPinboardSyncInProgress = NO;
     dispatch_group_notify(group, queue, ^{
         dispatch_group_t inner_group = dispatch_group_create();
         
-        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+        [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
             [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
             [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
         }];
@@ -748,7 +748,7 @@ static BOOL kPinboardSyncInProgress = NO;
     for (NSDictionary *post in posts) {
         SuccessBlock = ^{
             dispatch_group_async(group, queue, ^{
-                [[PPAppDelegate databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
+                [[PPUtilities databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
                     [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
                     [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
                     [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[post[@"hash"]]];

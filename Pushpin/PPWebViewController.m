@@ -483,7 +483,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
             __block BOOL bookmarkExists;
             __block BOOL isRead;
 
-            [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+            [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                 FMResultSet *results = [db executeQuery:@"SELECT COUNT(*), unread FROM bookmark WHERE url=?" withArgumentsInArray:@[self.url.absoluteString]];
                 [results next];
                 bookmarkExists = [results intForColumnIndex:0] > 0;
@@ -705,7 +705,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         __block NSDictionary *post;
 
-        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+        [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
             FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[self.url.absoluteString]];
             [results next];
             post = [PPUtilities dictionaryFromResultSet:results];
@@ -1260,7 +1260,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         __block NSDictionary *post;
         
-        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+        [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
             FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[self.url.absoluteString]];
             [results next];
             post = [PPUtilities dictionaryFromResultSet:results];

@@ -10,7 +10,7 @@
 	</array>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.Pushpin</string>
+		<string>group.PushpinBeta</string>
 	</array>
 </dict>
 </plist>

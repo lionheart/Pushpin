@@ -241,7 +241,7 @@ static BOOL kPinboardSyncInProgress = NO;
     if (!_totalNumberOfPosts) {
         __block NSInteger count;
         
-        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+        [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
             FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM bookmark;"];
             [result next];
             count = [result intForColumnIndex:0];
@@ -258,7 +258,7 @@ static BOOL kPinboardSyncInProgress = NO;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSMutableArray *previous = [NSMutableArray array];
             
-            [[PPAppDelegate databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
+            [[PPUtilities databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
                 FMResultSet *results = [db executeQuery:@"SELECT url FROM bookmark WHERE starred=1 ORDER BY created_at DESC"];
                 while ([results next]) {
                     NSString *url = [results stringForColumnIndex:0];
@@ -272,7 +272,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                          updated:posts
                                             hash:^NSString *(id obj) { return obj[@"u"]; }
                                       completion:^(NSSet *inserted, NSSet *deleted) {
-                                          [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                                          [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                                               for (NSString *url in deleted) {
                                                   [db executeUpdate:@"UPDATE bookmark SET starred=0, meta=random() WHERE url=?" withArgumentsInArray:@[url]];
                                               }
@@ -343,7 +343,7 @@ static BOOL kPinboardSyncInProgress = NO;
                           dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                               if ([bookmark[@"toread"] isEqualToString:@"no"]) {
                                   // Bookmark has already been marked as read on server.
-                                  [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                                  [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                                       [db executeUpdate:@"UPDATE bookmark SET unread=0, meta=random() WHERE hash=?"
                                    withArgumentsInArray:@[bookmark[@"hash"]]];
                                   }];
@@ -359,7 +359,7 @@ static BOOL kPinboardSyncInProgress = NO;
                               [pinboard addBookmark:newBookmark
                                             success:^{
                                                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                    [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                                                    [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                                                         [db executeUpdate:@"UPDATE bookmark SET unread=0, meta=random() WHERE hash=?"
                                                      withArgumentsInArray:@[bookmark[@"hash"]]];
                                                     }];
@@ -394,7 +394,7 @@ static BOOL kPinboardSyncInProgress = NO;
         SuccessBlock = ^{
             NSString *hash = self.posts[indexPath.row][@"hash"];
 
-            [[PPAppDelegate databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
+            [[PPUtilities databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
                 [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
                 [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
                 [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
@@ -437,7 +437,7 @@ static BOOL kPinboardSyncInProgress = NO;
     for (NSDictionary *post in posts) {
         SuccessBlock = ^{
             dispatch_group_async(group, queue, ^{
-                [[PPAppDelegate databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
+                [[PPUtilities databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
                     [db executeUpdate:@"DELETE FROM bookmark WHERE url=?" withArgumentsInArray:@[post[@"url"]]];
                     [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[post[@"hash"]]];
                     [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
@@ -492,7 +492,7 @@ static BOOL kPinboardSyncInProgress = NO;
 
 - (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index callback:(void (^)())callback {
     return [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:self.posts[index] update:@(YES) callback:^(NSDictionary *post) {
-        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+        [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
             [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, meta=:meta WHERE hash=:hash" withParameterDictionary:post];
         }];
 
@@ -1010,7 +1010,7 @@ static BOOL kPinboardSyncInProgress = NO;
             __block NSUInteger total;
             __block NSMutableArray *previousBookmarks;
 
-            [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+            [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                 [db executeUpdate:@"DELETE FROM bookmark WHERE hash IS NULL"];
                 
                 FMResultSet *results;
@@ -1085,7 +1085,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                           
                                           __block CGFloat amountToAdd = (CGFloat)inserted.count / posts.count;
                                           
-                                          [[PPAppDelegate databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
+                                          [[PPUtilities databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
                                               for (NSString *hash in inserted) {
                                                   NSDictionary *post = bookmarks[hash];
                                                   
@@ -1303,7 +1303,7 @@ static BOOL kPinboardSyncInProgress = NO;
             
             __block BOOL shouldReturn = NO;
             
-            [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+            [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                 FMResultSet *results = [db executeQuery:query withArgumentsInArray:parameters];
 
                 if (cancel && cancel()) {

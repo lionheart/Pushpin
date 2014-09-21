@@ -556,7 +556,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     [activity startAnimating];
                     [loadingAlertView addSubview:activity];
                     
-                    [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                    [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                         [db executeUpdate:@"DELETE FROM rejected_bookmark;"];
                     }];
                     
