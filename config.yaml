@@ -28,12 +28,12 @@ configs:
       entitlements: "Pushpin.entitlements"
       code_sign_identity: "iPhone Distribution: Lionheart Software LLC (63553QQ62F)"
     delicious_dev:
-      info: "Pushpin/Dev-Info.plist"
+      info: "Pushpin/DeliciousDebug.plist"
       profile: "45D6F4CF-F5A8-4BC7-92FE-4F506DCFF13A"
       entitlements: "Pushpin/Dev.entitlements"
       code_sign_identity: "iPhone Developer: Daniel Loewenherz (32S53QJB5F)"
     delicious_beta:
-      info: "Pushpin/Beta-Info.plist"
+      info: "Pushpin/PushpinBeta.plist"
       profile: "dd5ba893-f367-431a-895c-677065acf85d"
       entitlements: "Pushpin/Beta.entitlements"
       code_sign_identity: "iPhone Distribution: Lionheart Software LLC (63553QQ62F)"

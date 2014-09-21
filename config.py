@@ -26,41 +26,52 @@ subprocess.call("plutil -convert xml1 {}".format(path), shell=True)
 pl = plistlib.readPlist(path)
 root = pl['rootObject']
 objects = pl['objects']
-targets = objects[root]['targets']
 keys_to_delete = ['CODE_SIGN_IDENTITY[sdk=iphoneos*]']
+
+project_wide_configuration_id = objects[root]['buildConfigurationList']
+
+def update_build_configuration(build_name, build_configuration):
+    try:
+        name = mappings[objects[build_configuration]['name']]
+    except:
+        raise
+    else:
+        build_settings = objects[build_configuration]['buildSettings']
+        if build_name == "Pushpin":
+            build_settings['CODE_SIGN_ENTITLEMENTS'] = configurations['app'][name]['entitlements']
+            build_settings['CODE_SIGN_IDENTITY'] = configurations['app'][name]['code_sign_identity']
+            build_settings['INFOPLIST_FILE'] = configurations['app'][name]['info']
+            build_settings['PROVISIONING_PROFILE'] = configurations['app'][name]['profile']
+        elif build_name == "PushpinFramework":
+            build_settings['INFOPLIST_FILE'] = configurations['framework'][name]['info']
+            build_settings['CODE_SIGN_IDENTITY'] = configurations['framework'][name]['code_sign_identity']
+            build_settings['PROVISIONING_PROFILE'] = ""
+            build_settings['CODE_SIGN_ENTITLEMENTS'] = ""
+        elif build_name == "Extension":
+            build_settings['CODE_SIGN_ENTITLEMENTS'] = configurations['extension'][name]['entitlements']
+            build_settings['CODE_SIGN_IDENTITY'] = configurations['extension'][name]['code_sign_identity']
+            build_settings['INFOPLIST_FILE'] = configurations['extension'][name]['info']
+            build_settings['PROVISIONING_PROFILE'] = configurations['extension'][name]['profile']
+
+        for key in keys_to_delete:
+            if key in build_settings:
+                del build_settings[key]
+
+        return build_settings
+
+targets = objects[root]['targets']
+build_configuration_ids = [project_wide_configuration_id]
+
+build_configurations = objects[project_wide_configuration_id]['buildConfigurations']
+for build_configuration in build_configurations:
+    pl['objects'][build_configuration]['buildSettings'] = update_build_configuration("Pushpin", build_configuration)
 
 for target in targets:
     data = objects[target]
     build_configuration_id = data['buildConfigurationList']
     build_configurations = objects[build_configuration_id]['buildConfigurations']
     for build_configuration in build_configurations:
-        try:
-            name = mappings[objects[build_configuration]['name']]
-        except:
-            raise
-        else:
-            build_settings = pl['objects'][build_configuration]['buildSettings']
-            if data['name'] == "Pushpin":
-                build_settings['CODE_SIGN_ENTITLEMENTS'] = configurations['app'][name]['entitlements']
-                build_settings['CODE_SIGN_IDENTITY'] = configurations['app'][name]['code_sign_identity']
-                build_settings['INFOPLIST_FILE'] = configurations['app'][name]['info']
-                build_settings['PROVISIONING_PROFILE'] = configurations['app'][name]['profile']
-            elif data['name'] == "PushpinFramework":
-                build_settings['CODE_SIGN_IDENTITY'] = configurations['framework'][name]['code_sign_identity']
-                build_settings['INFOPLIST_FILE'] = configurations['framework'][name]['info']
-                build_settings['PROVISIONING_PROFILE'] = ""
-                build_settings['CODE_SIGN_ENTITLEMENTS'] = ""
-            elif data['name'] == "Extension":
-                build_settings['CODE_SIGN_ENTITLEMENTS'] = configurations['extension'][name]['entitlements']
-                build_settings['CODE_SIGN_IDENTITY'] = configurations['extension'][name]['code_sign_identity']
-                build_settings['INFOPLIST_FILE'] = configurations['extension'][name]['info']
-                build_settings['PROVISIONING_PROFILE'] = configurations['extension'][name]['profile']
-
-            for key in keys_to_delete:
-                if key in build_settings:
-                    del build_settings[key]
-
-            pl['objects'][build_configuration]['buildSettings'] = build_settings
+        pl['objects'][build_configuration]['buildSettings'] = update_build_configuration(data['name'], build_configuration)
 
 plistlib.writePlist(pl, path)
 
