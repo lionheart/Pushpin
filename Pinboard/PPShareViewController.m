@@ -42,7 +42,9 @@
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Invalid Token"
                                                                            message:@"Please open Pushpin to refresh your credentials."
                                                                     preferredStyle:UIAlertControllerStyleAlert];
-            [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+            [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
+            }]];
             [controller presentViewController:alert animated:YES completion:nil];
         });
     };

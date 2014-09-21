@@ -89,18 +89,27 @@
             };
             
             dispatch_group_notify(group, dispatch_get_main_queue(), ^{
-                [[ASPinboard sharedInstance] addBookmarkWithURL:urlString
-                                                          title:title
-                                                    description:@""
-                                                           tags:@""
-                                                         shared:YES
-                                                         unread:YES
-                                                        success:^{
-                                                            Block(NSLocalizedString(@"Success!", nil), NSLocalizedString(@"Your bookmark was added.", nil));
-                                                        }
-                                                        failure:^(NSError *error) {
-                                                            Block(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:@"%@. %@", NSLocalizedString(@"There was an error saving this bookmark.", nil), error.localizedDescription]);
-                                                        }];
+                if (!title) {
+                    title = @"Untitled";
+                }
+                
+                if (urlString) {
+                    [[ASPinboard sharedInstance] addBookmarkWithURL:urlString
+                                                              title:title
+                                                        description:@""
+                                                               tags:@""
+                                                             shared:YES
+                                                             unread:YES
+                                                            success:^{
+                                                                Block(NSLocalizedString(@"Success!", nil), NSLocalizedString(@"Your bookmark was added.", nil));
+                                                            }
+                                                            failure:^(NSError *error) {
+                                                                Block(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:@"%@. %@", NSLocalizedString(@"There was an error saving this bookmark.", nil), error.localizedDescription]);
+                                                            }];
+                }
+                else {
+                    Block(NSLocalizedString(@"Uh oh.", nil), NSLocalizedString(@"You can't add a bookmark without a URL or title.", nil));
+                }
             });
         });
     }
@@ -108,7 +117,9 @@
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Invalid Token"
                                                                        message:@"Please open Pushpin to refresh your credentials."
                                                                 preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
+        }]];
         [self presentViewController:alert animated:YES completion:nil];
     }
 }
