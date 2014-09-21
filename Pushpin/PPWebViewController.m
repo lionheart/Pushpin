@@ -356,46 +356,96 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer {
     if (recognizer == self.longPressGestureRecognizer || recognizer == self.readerLongPressGestureRecognizer) {
-        UIWebView *webView = (UIWebView *)recognizer.view;
-
-        // Get the coordinates of the selected element
-        CGPoint webViewCoordinates = [recognizer locationInView:webView];
-        CGSize viewSize = webView.frame.size;
-        CGFloat webViewContentWidth = [[webView stringByEvaluatingJavaScriptFromString:@"window.innerWidth"] integerValue];
-        CGFloat scaleRatio = webViewContentWidth / viewSize.width;
-        webViewCoordinates.x = webViewCoordinates.x * scaleRatio;
-        webViewCoordinates.y = webViewCoordinates.y * scaleRatio;
-        
-        // We were getting multiple gesture notifications, so make sure we only process one
-        if (self.selectedActionSheetIsVisible) {
-            return;
-        }
-
-        // Search the DOM for the link - will just return immediately if there is an A element at our exact coordinates
-        [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"PINBOARD_ACTIVE_ELEMENT = PINBOARD_CLOSEST_LINK_AT(%f, %f)", webViewCoordinates.x, webViewCoordinates.y]];
-        NSString *locatorString = @"PINBOARD_ACTIVE_ELEMENT.nodeName";
-        
-        // Only process link elements any further
-        locatorString = @"PINBOARD_ACTIVE_ELEMENT.nodeName";
-        if (![[webView stringByEvaluatingJavaScriptFromString:locatorString] isEqualToString:@"A"]) {
-            return;
-        }
-        
-        // Parse the link and title into an NSDictionary
-        locatorString = @"PINBOARD_ACTIVE_ELEMENT.innerText";
-        NSString *title = [webView stringByEvaluatingJavaScriptFromString:locatorString];
-        locatorString = @"PINBOARD_ACTIVE_ELEMENT.href";
-        NSString *url = [webView stringByEvaluatingJavaScriptFromString:locatorString];
-        self.selectedLink = @{ @"url": url, @"title": title };
-        
-        // Show the context menu
-        self.selectedActionSheet = [[UIActionSheet alloc] initWithTitle:url
-                                                               delegate:self
-                                                      cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-                                                 destructiveButtonTitle:nil
-                                                      otherButtonTitles:NSLocalizedString(@"Add to Pinboard", nil), NSLocalizedString(@"Copy URL", nil), nil];
-        [self setSelectedActionSheetIsVisible:YES];
-        [(UIActionSheet *)self.selectedActionSheet showFromRect:self.actionButton.frame inView:self.toolbar animated:YES];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            WKWebView *webView = (WKWebView *)recognizer.view;
+            
+            // Get the coordinates of the selected element
+            CGPoint webViewCoordinates = [recognizer locationInView:webView];
+            CGSize viewSize = webView.frame.size;
+            
+            __block CGFloat webViewContentWidth;
+            dispatch_semaphore_t sem = dispatch_semaphore_create(0);
+            [webView evaluateJavaScript:@"window.innerWidth" completionHandler:^(NSNumber *result, NSError *error) {
+                webViewContentWidth = [result floatValue];
+                dispatch_semaphore_signal(sem);
+            }];
+            
+            dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
+            
+            CGFloat scaleRatio = webViewContentWidth / viewSize.width;
+            webViewCoordinates.x = webViewCoordinates.x * scaleRatio;
+            webViewCoordinates.y = webViewCoordinates.y * scaleRatio;
+            
+            // We were getting multiple gesture notifications, so make sure we only process one
+            if (self.selectedActionSheetIsVisible) {
+                return;
+            }
+            
+            sem = dispatch_semaphore_create(0);
+            
+            // Search the DOM for the link - will just return immediately if there is an A element at our exact coordinates
+            [webView evaluateJavaScript:[NSString stringWithFormat:@"PINBOARD_ACTIVE_ELEMENT = PINBOARD_CLOSEST_LINK_AT(%f, %f)", webViewCoordinates.x, webViewCoordinates.y]
+                      completionHandler:^(NSNumber *result, NSError *error) {
+                          webViewContentWidth = [result floatValue];
+                          dispatch_semaphore_signal(sem);
+                      }];
+            
+            dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
+            
+            __block NSString *result;
+            
+            sem = dispatch_semaphore_create(0);
+            
+            // Only process link elements any further
+            // Search the DOM for the link - will just return immediately if there is an A element at our exact coordinates
+            [webView evaluateJavaScript:@"PINBOARD_ACTIVE_ELEMENT.nodeName"
+                      completionHandler:^(NSString *_result, NSError *error) {
+                          result = _result;
+                          dispatch_semaphore_signal(sem);
+                      }];
+            
+            dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
+            
+            if (![result isEqualToString:@"A"]) {
+                return;
+            }
+            
+            // Parse the link and title into an NSDictionary
+            __block NSString *title;
+            
+            sem = dispatch_semaphore_create(0);
+            [webView evaluateJavaScript:@"PINBOARD_ACTIVE_ELEMENT.innerText"
+                      completionHandler:^(NSString *result, NSError *error) {
+                          title = result;
+                          dispatch_semaphore_signal(sem);
+                      }];
+            
+            dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
+            
+            __block NSString *url;
+            
+            sem = dispatch_semaphore_create(0);
+            [webView evaluateJavaScript:@"PINBOARD_ACTIVE_ELEMENT.href"
+                      completionHandler:^(NSString *result, NSError *error) {
+                          url = result;
+                          dispatch_semaphore_signal(sem);
+                      }];
+            
+            dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
+            
+            self.selectedLink = @{ @"url": url, @"title": title };
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                // Show the context menu
+                self.selectedActionSheet = [[UIActionSheet alloc] initWithTitle:url
+                                                                       delegate:self
+                                                              cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                                         destructiveButtonTitle:nil
+                                                              otherButtonTitles:NSLocalizedString(@"Add to Pinboard", nil), NSLocalizedString(@"Copy URL", nil), nil];
+                [self setSelectedActionSheetIsVisible:YES];
+                [(UIActionSheet *)self.selectedActionSheet showFromRect:self.actionButton.frame inView:self.toolbar animated:YES];
+            });
+        });
     }
     else if (recognizer == self.backButtonLongPressGestureRecognizer) {
         if (recognizer.state == UIGestureRecognizerStateBegan) {
@@ -812,7 +862,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     return NO;
 }
 
-#pragma mark - UIWebViewDelegate
+#pragma mark - WKWebViewDelegate
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
     if (navigationAction.navigationType == WKNavigationTypeLinkActivated) {
@@ -1027,18 +1077,63 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 #if HIDE_STATUS_BAR_WHILE_SCROLLING
     self.prefersStatusBarHidden = NO;
 #endif
-    WKWebView *webView = self.currentWebView;
-    UIColor *backgroundColor = [UIColor whiteColor];
-    BOOL isDark = NO;
-    
-    void (^UpdateBackgroundColor)(UIColor *color, BOOL dark) = ^(UIColor *color, BOOL dark) {
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        WKWebView *webView = self.currentWebView;
+        __block UIColor *backgroundColor = [UIColor whiteColor];
+        __block BOOL isDark = NO;
+        
+        if (!timedOut) {
+            dispatch_semaphore_t sem = dispatch_semaphore_create(0);
+            [webView evaluateJavaScript:@"window.getComputedStyle(document.body, null).getPropertyValue(\"background-color\")"
+                      completionHandler:^(NSString *response, NSError *e) {
+                          if (!e) {
+                              NSError *error;
+                              NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:@"rgba?\\((\\d*), (\\d*), (\\d*)(, (\\d*))?\\)"
+                                                                                                          options:NSRegularExpressionCaseInsensitive
+                                                                                                            error:&error];
+                              NSTextCheckingResult *match = [expression firstMatchInString:response options:0 range:NSMakeRange(0, response.length)];
+                              if (match) {
+                                  NSString *redString = [response substringWithRange:[match rangeAtIndex:1]];
+                                  NSString *greenString = [response substringWithRange:[match rangeAtIndex:2]];
+                                  NSString *blueString = [response substringWithRange:[match rangeAtIndex:3]];
+                                  CGFloat R = [redString floatValue] / 255;
+                                  CGFloat G = [greenString floatValue] / 255;
+                                  CGFloat B = [blueString floatValue] / 255;
+                                  CGFloat alpha = 1;
+                                  
+                                  NSRange alphaRange = [match rangeAtIndex:5];
+                                  if (alphaRange.location != NSNotFound) {
+                                      NSString *alphaString = [response substringWithRange:alphaRange];
+                                      alpha = [alphaString floatValue];
+                                  }
+                                  
+                                  // Formula derived from here:
+                                  // http://www.w3.org/WAI/ER/WD-AERT/#color-contrast
+                                  
+                                  // Alpha blending:
+                                  // http://stackoverflow.com/a/746937/39155
+                                  CGFloat newR = (255 * (1 - alpha) + 255 * R * alpha) / 255.;
+                                  CGFloat newG = (255 * (1 - alpha) + 255 * G * alpha) / 255.;
+                                  CGFloat newB = (255 * (1 - alpha) + 255 * B * alpha) / 255.;
+                                  isDark = ((newR * 255 * 299) + (newG * 255 * 587) + (newB * 255 * 114)) / 1000 < 200;
+                                  backgroundColor = [UIColor colorWithRed:newR green:newG blue:newB alpha:1];
+                              }
+                              
+                              dispatch_semaphore_signal(sem);
+                          }
+                      }];
+            
+            dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
+        }
+        
         dispatch_async(dispatch_get_main_queue(), ^{
             [UIView animateWithDuration:0.3 animations:^{
-                self.statusBarBackgroundView.backgroundColor = color;
-                self.toolbarBackgroundView.backgroundColor = color;
-                webView.backgroundColor = color;
+                self.statusBarBackgroundView.backgroundColor = backgroundColor;
+                self.toolbarBackgroundView.backgroundColor = backgroundColor;
+                webView.backgroundColor = backgroundColor;
                 
-                if (dark) {
+                if (isDark) {
                     [self tintButtonsWithColor:[UIColor whiteColor]];
                     self.titleLabel.textColor = [UIColor whiteColor];
                     self.preferredStatusBarStyle = UIStatusBarStyleLightContent;
@@ -1052,46 +1147,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                 [self setNeedsStatusBarAppearanceUpdate];
             }];
         });
-    };
-
-    if (timedOut) {
-        UpdateBackgroundColor(backgroundColor, isDark);
-    }
-    else {
-        [webView evaluateJavaScript:@"window.getComputedStyle(document.body, null).getPropertyValue(\"background-color\")"
-                  completionHandler:^(NSString *response, NSError *e) {
-                      NSError *error;
-                      NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:@"rgba?\\((\\d*), (\\d*), (\\d*)(, (\\d*))?\\)" options:NSRegularExpressionCaseInsensitive error:&error];
-                      NSTextCheckingResult *match = [expression firstMatchInString:response options:0 range:NSMakeRange(0, response.length)];
-                      if (match) {
-                          NSString *redString = [response substringWithRange:[match rangeAtIndex:1]];
-                          NSString *greenString = [response substringWithRange:[match rangeAtIndex:2]];
-                          NSString *blueString = [response substringWithRange:[match rangeAtIndex:3]];
-                          CGFloat R = [redString floatValue] / 255;
-                          CGFloat G = [greenString floatValue] / 255;
-                          CGFloat B = [blueString floatValue] / 255;
-                          CGFloat alpha = 1;
-                          
-                          NSRange alphaRange = [match rangeAtIndex:5];
-                          if (alphaRange.location != NSNotFound) {
-                              NSString *alphaString = [response substringWithRange:alphaRange];
-                              alpha = [alphaString floatValue];
-                          }
-                          
-                          // Formula derived from here:
-                          // http://www.w3.org/WAI/ER/WD-AERT/#color-contrast
-                          
-                          // Alpha blending:
-                          // http://stackoverflow.com/a/746937/39155
-                          CGFloat newR = (255 * (1 - alpha) + 255 * R * alpha) / 255.;
-                          CGFloat newG = (255 * (1 - alpha) + 255 * G * alpha) / 255.;
-                          CGFloat newB = (255 * (1 - alpha) + 255 * B * alpha) / 255.;
-                          BOOL isDark = ((newR * 255 * 299) + (newG * 255 * 587) + (newB * 255 * 114)) / 1000 < 200;
-                          UIColor *backgroundColor = [UIColor colorWithRed:newR green:newG blue:newB alpha:1];
-                          UpdateBackgroundColor(backgroundColor, isDark);
-                      }
-                  }];
-    }
+    });
 }
 
 - (void)tintButtonsWithColor:(UIColor *)color {
