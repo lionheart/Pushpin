@@ -3193,8 +3193,8 @@
         "3790424219CBD49A00409D34": {
             "buildActionMask": "2147483647",
             "files": [
-                "372943E519CF3A3200ABF006",
-                "3790437819CC97AD00409D34"
+                "3790437819CC97AD00409D34",
+                "372943E519CF3A3200ABF006"
             ],
             "isa": "PBXSourcesBuildPhase",
             "runOnlyForDeploymentPostprocessing": "0"
@@ -4068,7 +4068,6 @@
         "379042AD19CC646700409D34": {
             "buildActionMask": "2147483647",
             "files": [
-                "372943E719CF3AFF00ABF006",
                 "3790426119CBDCDF00409D34",
                 "3790426219CBDCDF00409D34",
                 "3790426319CBDCDF00409D34",
@@ -4139,6 +4138,7 @@
                 "379042A419CBDCDF00409D34",
                 "379042A519CBDCDF00409D34",
                 "379042A619CBDCDF00409D34",
+                "372943E719CF3AFF00ABF006",
                 "379042A819CBDCDF00409D34",
                 "379042A919CBDCDF00409D34",
                 "379042AA19CBDCDF00409D34",
