@@ -953,13 +953,22 @@ static NSString *CellIdentifier = @"CellIdentifier";
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 void (^BookmarkSuccessBlock)() = ^{
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        [UIView animateWithDuration:0.4
-                                         animations:^{
-                                             self.parentViewController.view.transform = CGAffineTransformMakeTranslation(0, self.parentViewController.view.frame.size.height);
-                                         }
-                                         completion:^(BOOL finished) {
-                                             [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
-                                         }];
+                        UIViewController *shareViewController = self.parentViewController.presentingViewController;
+                        [shareViewController dismissViewControllerAnimated:YES completion:^{
+                            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Success!", nil)
+                                                                                           message:NSLocalizedString(@"Your bookmark was added.", nil)
+                                                                                    preferredStyle:UIAlertControllerStyleAlert];
+
+                            [shareViewController presentViewController:alert animated:YES completion:^{
+                                double delayInSeconds = 1;
+                                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                                    [shareViewController dismissViewControllerAnimated:YES completion:^{
+                                        [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
+                                    }];
+                                });
+                            }];
+                        }];
                     });
                 };
                 
