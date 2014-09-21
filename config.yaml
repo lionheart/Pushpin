@@ -3,12 +3,12 @@ mappings:
 configs:
   app:
     pinboard_app_store_debug:
-      info: "Pushpin/PushpinAppStore.plist"
+      info: "Pushpin/PinboardAppStore.plist"
       profile: "dd5ba893-f367-431a-895c-677065acf85d"
       entitlements: "Pushpin.entitlements"
       code_sign_identity: "iPhone Developer: Daniel Loewenherz (32S53QJB5F)"
     pinboard_app_store:
-      info: "Pushpin/PushpinAppStore.plist"
+      info: "Pushpin/PinboardAppStore.plist"
       profile: "ef758106-b962-43f8-ae7e-ddcb930b9c4d"
       entitlements: "Pushpin.entitlements"
       code_sign_identity: "iPhone Distribution: Lionheart Software LLC (63553QQ62F)"
@@ -23,7 +23,7 @@ configs:
       entitlements: "Pushpin/Beta.entitlements"
       code_sign_identity: "iPhone Distribution: Lionheart Software LLC (63553QQ62F)"
     delicious_app_store:
-      info: "Pushpin/PushpinAppStore.plist"
+      info: "Pushpin/DeliciousAppStore.plist"
       profile: "29099fb1-0606-4967-884d-96f3d84d94b2"
       entitlements: "Pushpin.entitlements"
       code_sign_identity: "iPhone Distribution: Lionheart Software LLC (63553QQ62F)"
@@ -45,7 +45,7 @@ configs:
       code_sign_identity: "iPhone Developer: Daniel Loewenherz (32S53QJB5F)"
     pinboard_app_store:
       info: "Read Later Extension/AppStore-Info.plist"
-      profile: "e025a654-80a5-4148-a99e-404a62ed0035"
+      profile: "2a455488-c071-40b8-88d9-c723f244fb78"
       entitlements: "Pinboard/Share-AppStore.entitlements"
       code_sign_identity: "iPhone Distribution: Lionheart Software LLC (63553QQ62F)"
     pinboard_dev:

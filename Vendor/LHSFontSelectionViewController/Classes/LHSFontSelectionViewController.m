@@ -387,7 +387,7 @@ static NSString *CellIdentifier = @"Cell";
     else {
         NSString *sectionName = self.sectionIndexTitles[section];
         if (section == 0 && !self.purchased) {
-            return 1;
+            return 2;
         }
         else {
             return [self.fontsForSectionIndex[sectionName] count];
@@ -400,13 +400,6 @@ static NSString *CellIdentifier = @"Cell";
         return @"Premium Fonts";
     }
     return self.sectionIndexTitles[section];
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-    if (self.preferredFontNames.count > 0 && section == 0 && !self.purchased) {
-        return @"Tap to restore previous purchase.";
-    }
-    return @"";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -462,24 +455,30 @@ static NSString *CellIdentifier = @"Cell";
     
     NSString *fontDisplayName = [LHSFontSelectionViewController fontNameToDisplayName:[font lhs_displayName]];
     
-    if (!self.purchased && indexPath.section == 0 && indexPath.row == 0) {
-        cell.textLabel.attributedText = [self attributedFontNameString];
-        cell.textLabel.numberOfLines = 0;
+    if (!self.purchased && indexPath.section == 0) {
+        if (indexPath.row == 0) {
+            cell.textLabel.attributedText = [self attributedFontNameString];
+            cell.textLabel.numberOfLines = 0;
 
-        BOOL displayPriceButton = YES;
-        if (displayPriceButton) {
-            YHRoundBorderedButton *priceButton = [[YHRoundBorderedButton alloc] init];
-            priceButton.tag = indexPath.row;
-            [priceButton setTitle:@"$1.99" forState:UIControlStateNormal];
-            [priceButton addTarget:self action:@selector(purchasePremiumFonts:) forControlEvents:UIControlEventTouchUpInside];
-            [priceButton sizeToFit];
-            priceButton.translatesAutoresizingMaskIntoConstraints = NO;
-            
-            [cell.contentView addSubview:priceButton];
-            [cell.contentView lhs_addConstraints:@"[view(width)]-8-|"
-                                         metrics:@{@"width": @(CGRectGetWidth(priceButton.frame)) }
-                                           views:@{@"view": priceButton}];
-            [cell.contentView lhs_centerVerticallyForView:priceButton];
+            BOOL displayPriceButton = YES;
+            if (displayPriceButton) {
+                YHRoundBorderedButton *priceButton = [[YHRoundBorderedButton alloc] init];
+                priceButton.tag = indexPath.row;
+                [priceButton setTitle:@"$1.99" forState:UIControlStateNormal];
+                [priceButton addTarget:self action:@selector(purchasePremiumFonts:) forControlEvents:UIControlEventTouchUpInside];
+                [priceButton sizeToFit];
+                priceButton.translatesAutoresizingMaskIntoConstraints = NO;
+                
+                [cell.contentView addSubview:priceButton];
+                [cell.contentView lhs_addConstraints:@"[view(width)]-8-|"
+                                             metrics:@{@"width": @(CGRectGetWidth(priceButton.frame)) }
+                                               views:@{@"view": priceButton}];
+                [cell.contentView lhs_centerVerticallyForView:priceButton];
+            }
+        }
+        else {
+            cell.textLabel.text = @"Restore Purchases";
+            cell.textLabel.textColor = [UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0];
         }
     }
     else {
@@ -509,8 +508,13 @@ static NSString *CellIdentifier = @"Cell";
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     if (self.preferredFontNames.count > 0 && !self.purchased && indexPath.section == 0) {
-        [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
-        [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
+        if (indexPath.row == 0) {
+            [self purchasePremiumFonts:nil];
+        }
+        else {
+            [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
+            [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
+        }
     }
     else {
         NSArray *indexPathsForPreviouslySelectedFont = [self indexPathsForFontName:self.currentFontName];
@@ -732,7 +736,7 @@ static NSString *CellIdentifier = @"Cell";
 
 - (BOOL)purchased {
 #if TESTING
-    return YES;
+    return NO;
 #else
     return [PPSettings sharedSettings].purchasedPremiumFonts;
 #endif
