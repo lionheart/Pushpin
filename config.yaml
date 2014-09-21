@@ -1,3 +1,5 @@
+mappings:
+  "Delicious Beta": "delicious_beta"
 configs:
   app:
     pinboard_app_store_debug:
@@ -74,15 +76,22 @@ configs:
   framework:
     pinboard_app_store_debug:
       code_sign_identity: "iPhone Developer: Daniel Loewenherz (32S53QJB5F)"
+      info: "PushpinFramework/Info.plist"
     pinboard_app_store:
       code_sign_identity: "iPhone Distribution: Lionheart Software LLC (63553QQ62F)"
+      info: "PushpinFramework/Info.plist"
     pinboard_dev:
       code_sign_identity: "iPhone Developer: Daniel Loewenherz (32S53QJB5F)"
+      info: "PushpinFramework/Info.plist"
     pinboard_beta:
       code_sign_identity: "iPhone Distribution: Lionheart Software LLC (63553QQ62F)"
+      info: "PushpinFramework/Info.plist"
     delicious_app_store:
       code_sign_identity: "iPhone Distribution: Lionheart Software LLC (63553QQ62F)"
+      info: "PushpinFramework/Info.plist"
     delicious_dev:
       code_sign_identity: "iPhone Developer: Daniel Loewenherz (32S53QJB5F)"
+      info: "PushpinFramework/Info.plist"
     delicious_beta:
       code_sign_identity: "iPhone Distribution: Lionheart Software LLC (63553QQ62F)"
+      info: "PushpinFramework/Info.plist"
