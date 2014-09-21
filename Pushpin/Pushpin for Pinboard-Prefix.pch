@@ -53,3 +53,11 @@ static float kSmallFontSize __attribute__((unused)) = 13.0f;
 static NSString *kSavedFeedsKey = @"SavedFeeds";
 
 #define TESTING (defined DEBUG || defined BETA)
+
+#ifdef DEBUG
+#define APP_GROUP @"group.PushpinDev"
+#elif BETA
+#define APP_GROUP @"group.PushpinBeta"
+#else
+#define APP_GROUP @"group.Pushpin"
+#endif

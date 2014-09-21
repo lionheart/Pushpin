@@ -13,7 +13,6 @@
 #import "PPConstants.h"
 
 #import <TextExpander/SMTEDelegateController.h>
-#import <FMDB/FMDatabaseQueue.h>
 
 @class PPNavigationController;
 @class PPSplitViewController;
@@ -47,10 +46,6 @@
 
 - (NSMutableDictionary *)parseQueryParameters:(NSString *)query;
 
-- (void)migrateDatabase;
-- (void)deleteDatabaseFile;
-- (void)resetDatabase;
-
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback;
 
 - (void)openSettings;
@@ -60,7 +55,5 @@
 - (NSString *)defaultFeedDescription;
 
 + (PPAppDelegate *)sharedDelegate;
-+ (NSString *)databasePath;
-+ (FMDatabaseQueue *)databaseQueue;
 
 @end

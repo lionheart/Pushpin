@@ -394,7 +394,7 @@
     PPGenericPostViewController *postViewController = [[PPGenericPostViewController alloc] init];
     PPPinboardFeedDataSource *dataSource = [[PPPinboardFeedDataSource alloc] initWithComponents:components];
     
-    [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+    [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
         FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM feeds WHERE components=?" withArgumentsInArray:@[[components componentsJoinedByString:@" "]]];
         [result next];
 
@@ -420,7 +420,7 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSString *componentString = [self.components componentsJoinedByString:@" "];
 
-        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+        [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
             [db executeUpdate:@"INSERT INTO feeds (components) VALUES (?)" withArgumentsInArray:@[componentString]];
         }];
         
@@ -441,7 +441,7 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSString *componentString = [self.components componentsJoinedByString:@" "];
 
-        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+        [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
             [db executeUpdate:@"DELETE FROM feeds WHERE components=?" withArgumentsInArray:@[componentString]];
         }];
 

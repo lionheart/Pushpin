@@ -243,7 +243,7 @@ static NSString *CellIdentifier = @"TagCell";
             NSMutableArray *indexPathsToReload = [NSMutableArray array];
             __block NSInteger index = 0;
 
-            [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+            [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                 FMResultSet *result = [db executeQuery:@"SELECT name, count FROM tag WHERE name in (SELECT tag_fts.name FROM tag_fts WHERE tag_fts.name MATCH ?) ORDER BY count DESC" withArgumentsInArray:@[[searchText stringByAppendingString:@"*"]]];
                 
                 for (NSDictionary *tag in self.filteredTags) {
@@ -434,7 +434,7 @@ static NSString *CellIdentifier = @"TagCell";
             NSMutableDictionary *updatedTagCounts = [NSMutableDictionary dictionary];
             NSMutableDictionary *updatedDuplicates = [NSMutableDictionary dictionary];
 
-            [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+            [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                 FMResultSet *results = [db executeQuery:@"SELECT name, group_concat(name, ' '), SUM(count) FROM tag GROUP BY lower(name) ORDER BY lower(name) ASC"];
                 while ([results next]) {
                     NSString *name = [results stringForColumnIndex:0];
@@ -587,7 +587,7 @@ static NSString *CellIdentifier = @"TagCell";
                         // Delete the tag from the database.
 
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                        [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                             [db executeUpdate:@"DELETE FROM tag WHERE name=?" withArgumentsInArray:@[name]];
                             
                             NSMutableArray *hashesToUpdate = [NSMutableArray array];

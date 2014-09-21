@@ -394,8 +394,8 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                 [mixpanel.people set:@"Browser" to:@"Webview"];
             };
 
-            [delegate resetDatabase];
-            [delegate migrateDatabase];
+            [PPUtilities resetDatabase];
+            [PPUtilities migrateDatabase];
 #ifdef DELICIOUS
 
             LHSDelicious *delicious = [LHSDelicious sharedInstance];

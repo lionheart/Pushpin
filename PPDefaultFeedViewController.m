@@ -66,7 +66,7 @@ static NSString *CellIdentifier = @"Cell";
     
 #ifdef PINBOARD
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+        [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
             FMResultSet *result = [db executeQuery:@"SELECT components FROM feeds ORDER BY components ASC"];
             [self.savedFeeds removeAllObjects];
 

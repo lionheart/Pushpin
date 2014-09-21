@@ -56,9 +56,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)handleKeyCommand:(UIKeyCommand *)keyCommand;
 - (void)openDescriptionViewController;
 - (void)openTagEditViewController;
-- (void)configureWithBookmark:(NSDictionary *)bookmark
-                       update:(NSNumber *)isUpdate
-                     callback:(void (^)(NSDictionary *))callback;
 
 @end
 
@@ -73,7 +70,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
         self.tableView.scrollEnabled = YES;
         
         self.postDescription = @"";
-        self.presentedFromShareSheet = NO;
         
         NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
         paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
@@ -184,7 +180,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 + (PPNavigationController *)updateBookmarkViewControllerWithURLString:(NSString *)urlString
                                                              callback:(void (^)(NSDictionary *))callback {
     __block NSDictionary *post;
-    [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+    [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
         FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[urlString]];
         [results next];
         post = [PPPinboardDataSource postFromResultSet:results];
@@ -204,16 +200,25 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [self setIsUpdate:isUpdate.boolValue];
     
     if (isUpdate.boolValue) {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Update", nil) style:UIBarButtonItemStyleDone target:self action:@selector(rightBarButtonTouchUpInside:)];
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Update", nil)
+                                                                                  style:UIBarButtonItemStyleDone
+                                                                                 target:self
+                                                                                 action:@selector(rightBarButtonTouchUpInside:)];
         self.title = NSLocalizedString(@"Update Bookmark", nil);
         self.urlTextField.textColor = [UIColor grayColor];
     }
     else {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add", nil) style:UIBarButtonItemStylePlain target:self action:@selector(rightBarButtonTouchUpInside:)];
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add", nil)
+                                                                                  style:UIBarButtonItemStylePlain
+                                                                                 target:self
+                                                                                 action:@selector(rightBarButtonTouchUpInside:)];
         self.title = NSLocalizedString(@"Add Bookmark", nil);
     }
     
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil) style:UIBarButtonItemStylePlain target:self action:@selector(leftBarButtonTouchUpInside:)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                                             style:UIBarButtonItemStylePlain
+                                                                            target:self
+                                                                            action:@selector(leftBarButtonTouchUpInside:)];
     
     if (bookmark[@"title"]) {
         self.titleTextField.text = bookmark[@"title"];
@@ -310,47 +315,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
     // We need to set this here, since on iPad the table view's frame isn't set until this happens.
     self.descriptionTextLabel.preferredMaxLayoutWidth = self.tableView.frame.size.width - 50;
-
-    BOOL urlTextFieldHasText = self.urlTextField.text.length > 0;
-    if (self.presentedFromShareSheet && !urlTextFieldHasText) {
-        NSExtensionItem *item = self.extensionContext.inputItems.firstObject;
-        for (NSItemProvider *itemProvider in item.attachments) {
-            if ([itemProvider hasItemConformingToTypeIdentifier:(__bridge NSString *)kUTTypeURL]) {
-                [itemProvider loadItemForTypeIdentifier:(__bridge NSString *)kUTTypeURL
-                                                options:0
-                                      completionHandler:^(NSURL *url, NSError *error) {
-                                          dispatch_async(dispatch_get_main_queue(), ^{
-                                              self.urlTextField.text = url.absoluteString;
-                                          });
-                                      }];
-            }
-            
-            if ([itemProvider hasItemConformingToTypeIdentifier:(__bridge NSString *)kUTTypePlainText]) {
-                [itemProvider loadItemForTypeIdentifier:(__bridge NSString *)kUTTypePlainText
-                                                options:0
-                                      completionHandler:^(NSString *text, NSError *error) {
-                                          dispatch_async(dispatch_get_main_queue(), ^{
-                                              self.titleTextField.text = text;
-                                          });
-                                      }];
-            }
-
-            if ([itemProvider hasItemConformingToTypeIdentifier:(__bridge NSString *)kUTTypePropertyList]) {
-                [itemProvider loadItemForTypeIdentifier:(__bridge NSString *)kUTTypePropertyList
-                                                options:0
-                                      completionHandler:^(NSDictionary *results, NSError *error) {
-                                          dispatch_async(dispatch_get_main_queue(), ^{
-                                              self.titleTextField.text = results[NSExtensionJavaScriptPreprocessingResultsKey][@"title"];
-                                              self.urlTextField.text = results[NSExtensionJavaScriptPreprocessingResultsKey][@"url"];
-                                          });
-                                      }];
-            }
-        }
-
-        [self configureWithBookmark:@{}
-                             update:@(NO)
-                           callback:nil];
-    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -752,7 +716,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     __block BOOL bookmarkAdded;
                     __block NSDictionary *post;
 
-                    [[PPAppDelegate databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
+                    [[PPUtilities databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
                         FMResultSet *results = [db executeQuery:@"SELECT hash, COUNT(*) FROM bookmark WHERE url=?" withArgumentsInArray:@[url]];
                         [results next];
                         
@@ -1051,13 +1015,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)leftBarButtonTouchUpInside:(id)sender {
     if (self.presentedFromShareSheet) {
-        [UIView animateWithDuration:0.4
-                         animations:^{
-                             self.parentViewController.view.transform = CGAffineTransformMakeTranslation(0, self.parentViewController.view.frame.size.height);
-                         }
-                         completion:^(BOOL finished) {
-                             [self.extensionContext cancelRequestWithError:nil];
-                         }];
+        UIViewController *shareViewController = self.parentViewController.presentingViewController;
+        [shareViewController dismissViewControllerAnimated:YES completion:^{
+            [self.extensionContext cancelRequestWithError:[NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]];
+        }];
     }
     else {
         [self.parentViewController dismissViewControllerAnimated:YES completion:^{
@@ -1144,6 +1105,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
     tagEditViewController.existingTags = [self.existingTags mutableCopy];
     tagEditViewController.presentedFromShareSheet = self.presentedFromShareSheet;
     [self.navigationController pushViewController:tagEditViewController animated:YES];
+}
+
+- (BOOL)presentedFromShareSheet {
+    return self.presentingViewControllersExtensionContext != nil;
+}
+
+- (NSExtensionContext *)extensionContext {
+    return self.presentingViewControllersExtensionContext;
 }
 
 @end

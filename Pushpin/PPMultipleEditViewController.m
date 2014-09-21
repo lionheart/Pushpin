@@ -280,7 +280,7 @@ static NSString *CellIdentifier = @"Cell";
                     __block NSInteger skipPivot = 0;
                     __block BOOL tagFound = NO;
 
-                    [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                    [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
 #warning XXX For some reason, getting double results here sometimes. Search duplication?
                         FMResultSet *result = [db executeQuery:@"SELECT DISTINCT tag_fts.name, tag.count FROM tag_fts, tag WHERE tag_fts.name MATCH ? AND tag_fts.name = tag.name ORDER BY tag.count DESC LIMIT 6" withArgumentsInArray:@[searchString]];
                         

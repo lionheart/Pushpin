@@ -627,22 +627,6 @@
             "sourceTree": "<group>",
             "xcLanguageSpecificationIdentifier": "xcode.lang.objc"
         },
-        "372943E319CF26F700ABF006": {
-            "fileRef": "3790424D19CBD49A00409D34",
-            "isa": "PBXBuildFile"
-        },
-        "372943E519CF3A3200ABF006": {
-            "fileRef": "37B4FFE21923AD18002F8558",
-            "isa": "PBXBuildFile"
-        },
-        "372943E619CF3A4500ABF006": {
-            "fileRef": "37B4FFE21923AD18002F8558",
-            "isa": "PBXBuildFile"
-        },
-        "372943E719CF3AFF00ABF006": {
-            "fileRef": "37B4FFE21923AD18002F8558",
-            "isa": "PBXBuildFile"
-        },
         "372AEEF6186B804F00F131A9": {
             "fileEncoding": "4",
             "isa": "PBXFileReference",
@@ -3193,7 +3177,6 @@
         "3790424219CBD49A00409D34": {
             "buildActionMask": "2147483647",
             "files": [
-                "372943E519CF3A3200ABF006",
                 "3790437819CC97AD00409D34"
             ],
             "isa": "PBXSourcesBuildPhase",
@@ -3256,7 +3239,6 @@
                 "3740A24116863CF000F95D82",
                 "37DAAA81199FFDE40050350D",
                 "3715EEC715787CAA00FD21EE",
-                "372943E319CF26F700ABF006",
                 "37A7B5C918345DAE0038677E",
                 "37A7B5CA18345DAE0038677E",
                 "37CBB74B1881B568000F9C36",
@@ -4045,6 +4027,10 @@
             "fileRef": "37BC1BDA1889C6740022020A",
             "isa": "PBXBuildFile"
         },
+        "379042A719CBDCDF00409D34": {
+            "fileRef": "37B4FFE21923AD18002F8558",
+            "isa": "PBXBuildFile"
+        },
         "379042A819CBDCDF00409D34": {
             "fileRef": "377E46E1174C85C500CE3813",
             "isa": "PBXBuildFile"
@@ -4068,7 +4054,6 @@
         "379042AD19CC646700409D34": {
             "buildActionMask": "2147483647",
             "files": [
-                "372943E719CF3AFF00ABF006",
                 "3790426119CBDCDF00409D34",
                 "3790426219CBDCDF00409D34",
                 "3790426319CBDCDF00409D34",
@@ -4139,6 +4124,7 @@
                 "379042A419CBDCDF00409D34",
                 "379042A519CBDCDF00409D34",
                 "379042A619CBDCDF00409D34",
+                "379042A719CBDCDF00409D34",
                 "379042A819CBDCDF00409D34",
                 "379042A919CBDCDF00409D34",
                 "379042AA19CBDCDF00409D34",
@@ -4291,7 +4277,6 @@
                 "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
                 "CLANG_WARN_UNREACHABLE_CODE": "YES",
                 "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
-                "CODE_SIGN_ENTITLEMENTS": "",
                 "CODE_SIGN_IDENTITY": "iPhone Developer: Daniel Loewenherz (32S53QJB5F)",
                 "COPY_PHASE_STRIP": "NO",
                 "CURRENT_PROJECT_VERSION": "1",
@@ -4352,7 +4337,6 @@
                 "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
                 "CLANG_WARN_UNREACHABLE_CODE": "YES",
                 "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
-                "CODE_SIGN_ENTITLEMENTS": "",
                 "CODE_SIGN_IDENTITY": "iPhone Developer: Daniel Loewenherz (32S53QJB5F)",
                 "COPY_PHASE_STRIP": "YES",
                 "CURRENT_PROJECT_VERSION": "1",
@@ -4407,7 +4391,6 @@
                 "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
                 "CLANG_WARN_UNREACHABLE_CODE": "YES",
                 "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
-                "CODE_SIGN_ENTITLEMENTS": "",
                 "CODE_SIGN_IDENTITY": "iPhone Distribution: Lionheart Software LLC (63553QQ62F)",
                 "COPY_PHASE_STRIP": "YES",
                 "CURRENT_PROJECT_VERSION": "1",
@@ -4463,7 +4446,6 @@
                 "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
                 "CLANG_WARN_UNREACHABLE_CODE": "YES",
                 "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
-                "CODE_SIGN_ENTITLEMENTS": "",
                 "CODE_SIGN_IDENTITY": "iPhone Developer: Daniel Loewenherz (32S53QJB5F)",
                 "COPY_PHASE_STRIP": "YES",
                 "CURRENT_PROJECT_VERSION": "1",
@@ -4518,7 +4500,6 @@
                 "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
                 "CLANG_WARN_UNREACHABLE_CODE": "YES",
                 "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
-                "CODE_SIGN_ENTITLEMENTS": "",
                 "CODE_SIGN_IDENTITY": "iPhone Distribution: Lionheart Software LLC (63553QQ62F)",
                 "COPY_PHASE_STRIP": "YES",
                 "CURRENT_PROJECT_VERSION": "1",
@@ -4574,7 +4555,6 @@
                 "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
                 "CLANG_WARN_UNREACHABLE_CODE": "YES",
                 "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
-                "CODE_SIGN_ENTITLEMENTS": "",
                 "CODE_SIGN_IDENTITY": "iPhone Distribution: Lionheart Software LLC (63553QQ62F)",
                 "COPY_PHASE_STRIP": "YES",
                 "CURRENT_PROJECT_VERSION": "1",
@@ -4629,7 +4609,6 @@
                 "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
                 "CLANG_WARN_UNREACHABLE_CODE": "YES",
                 "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
-                "CODE_SIGN_ENTITLEMENTS": "",
                 "CODE_SIGN_IDENTITY": "iPhone Distribution: Lionheart Software LLC (63553QQ62F)",
                 "COPY_PHASE_STRIP": "YES",
                 "CURRENT_PROJECT_VERSION": "1",
@@ -7267,9 +7246,7 @@
         },
         "37FEEB8A15745488003F2B77": {
             "buildActionMask": "2147483647",
-            "files": [
-                "372943E619CF3A4500ABF006"
-            ],
+            "files": [],
             "isa": "PBXSourcesBuildPhase",
             "runOnlyForDeploymentPostprocessing": "0"
         },
@@ -7774,7 +7751,7 @@
                     "-ObjC",
                     "-all_load"
                 ],
-                "PROVISIONING_PROFILE": "3a6325c1-3986-492c-ba77-5ff91e502cf0",
+                "PROVISIONING_PROFILE": "dd5ba893-f367-431a-895c-677065acf85d",
                 "SDKROOT": "iphoneos",
                 "TARGETED_DEVICE_FAMILY": "1,2",
                 "USER_HEADER_SEARCH_PATHS": "\"$(BUILT_PRODUCTS_DIR)\" \"$(PROJECT_TEMP_DIR)/../UninstalledProducts/include\"",
@@ -7881,7 +7858,7 @@
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks",
                 "PRODUCT_NAME": "$(TARGET_NAME)",
-                "PROVISIONING_PROFILE": "3a6325c1-3986-492c-ba77-5ff91e502cf0",
+                "PROVISIONING_PROFILE": "dd5ba893-f367-431a-895c-677065acf85d",
                 "SDKROOT": "iphoneos",
                 "STRIP_INSTALLED_PRODUCT": "NO",
                 "TARGETED_DEVICE_FAMILY": "1,2",

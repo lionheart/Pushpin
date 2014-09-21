@@ -325,7 +325,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                  completion:nil];
             }
 
-            [[PPAppDelegate sharedDelegate] migrateDatabase];
+            [PPUtilities migrateDatabase];
         }
     }
     else if (alertView == self.instapaperAlertView) {
@@ -613,7 +613,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     [self.loadingIndicator startAnimating];
                     [loadingAlertView addSubview:self.loadingIndicator];
                     
-                    [[PPAppDelegate databaseQueue] inDatabase:^(FMDatabase *db) {
+                    [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                         [db executeUpdate:@"DELETE FROM rejected_bookmark;"];
                     }];
                     
