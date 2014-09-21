@@ -48,7 +48,6 @@
     };
 
     NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
-    DLog(@"%@", APP_GROUP);
     NSString *token = [sharedDefaults objectForKey:@"token"];
     self.hasToken = token.length > 0;
     

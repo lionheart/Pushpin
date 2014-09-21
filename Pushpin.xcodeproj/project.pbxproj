@@ -627,18 +627,6 @@
             "sourceTree": "<group>",
             "xcLanguageSpecificationIdentifier": "xcode.lang.objc"
         },
-        "372943E319CF26F700ABF006": {
-            "fileRef": "3790424D19CBD49A00409D34",
-            "isa": "PBXBuildFile"
-        },
-        "372943E519CF3A3200ABF006": {
-            "fileRef": "37B4FFE21923AD18002F8558",
-            "isa": "PBXBuildFile"
-        },
-        "372943E619CF3A4500ABF006": {
-            "fileRef": "37B4FFE21923AD18002F8558",
-            "isa": "PBXBuildFile"
-        },
         "372943E719CF3AFF00ABF006": {
             "fileRef": "37B4FFE21923AD18002F8558",
             "isa": "PBXBuildFile"
@@ -646,20 +634,24 @@
         "372943E819CF53FD00ABF006": {
             "buildActionMask": "2147483647",
             "files": [
-                "372943F219CF53FD00ABF006"
+                "3729440B19CF58F900ABF006"
             ],
             "isa": "PBXSourcesBuildPhase",
             "runOnlyForDeploymentPostprocessing": "0"
         },
         "372943E919CF53FD00ABF006": {
             "buildActionMask": "2147483647",
-            "files": [],
+            "files": [
+                "3729440F19CF5B2600ABF006",
+                "3729440D19CF5B0200ABF006"
+            ],
             "isa": "PBXFrameworksBuildPhase",
             "runOnlyForDeploymentPostprocessing": "0"
         },
         "372943EA19CF53FD00ABF006": {
             "buildActionMask": "2147483647",
             "files": [
+                "3729441019CF5E5700ABF006",
                 "3729440619CF546700ABF006",
                 "3729440519CF546700ABF006",
                 "3729440719CF546700ABF006",
@@ -687,7 +679,7 @@
             "explicitFileType": "wrapper.app-extension",
             "includeInIndex": "0",
             "isa": "PBXFileReference",
-            "path": "Read Later Extension.appex",
+            "path": "Read Later.appex",
             "sourceTree": "BUILT_PRODUCTS_DIR"
         },
         "372943ED19CF53FD00ABF006": {
@@ -722,10 +714,6 @@
             "lastKnownFileType": "sourcecode.c.objc",
             "path": "ShareViewController.m",
             "sourceTree": "<group>"
-        },
-        "372943F219CF53FD00ABF006": {
-            "fileRef": "372943F119CF53FD00ABF006",
-            "isa": "PBXBuildFile"
         },
         "372943F319CF53FD00ABF006": {
             "isa": "PBXFileReference",
@@ -771,6 +759,7 @@
             "targetProxy": "372943F819CF53FD00ABF006"
         },
         "372943FA19CF53FE00ABF006": {
+            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -786,6 +775,7 @@
                 "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
                 "CLANG_WARN_UNREACHABLE_CODE": "YES",
                 "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
+                "CODE_SIGN_ENTITLEMENTS": "Pinboard/Share-Dev.entitlements",
                 "CODE_SIGN_IDENTITY": "iPhone Developer: Daniel Loewenherz (32S53QJB5F)",
                 "COPY_PHASE_STRIP": "NO",
                 "ENABLE_STRICT_OBJC_MSGSEND": "YES",
@@ -803,12 +793,17 @@
                 "GCC_WARN_UNINITIALIZED_AUTOS": "YES_AGGRESSIVE",
                 "GCC_WARN_UNUSED_FUNCTION": "YES",
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
-                "INFOPLIST_FILE": "Read Later Extension/Info.plist",
+                "INFOPLIST_FILE": "Read Later Extension/Dev-Info.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+                "LIBRARY_SEARCH_PATHS": [
+                    "$(inherited)",
+                    "$(PROJECT_DIR)/Pods/build/Debug-iphoneos"
+                ],
                 "MTL_ENABLE_DEBUG_INFO": "YES",
                 "ONLY_ACTIVE_ARCH": "YES",
-                "PRODUCT_NAME": "$(TARGET_NAME)",
+                "PRODUCT_NAME": "Read Later",
+                "PROVISIONING_PROFILE": "5312f80c-7253-49c0-86eb-a95adeaa41a1",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES"
             },
@@ -831,6 +826,7 @@
                 "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
                 "CLANG_WARN_UNREACHABLE_CODE": "YES",
                 "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
+                "CODE_SIGN_ENTITLEMENTS": "Beta.entitlements",
                 "CODE_SIGN_IDENTITY": "iPhone Developer: Daniel Loewenherz (32S53QJB5F)",
                 "COPY_PHASE_STRIP": "YES",
                 "ENABLE_NS_ASSERTIONS": "NO",
@@ -842,11 +838,16 @@
                 "GCC_WARN_UNINITIALIZED_AUTOS": "YES_AGGRESSIVE",
                 "GCC_WARN_UNUSED_FUNCTION": "YES",
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
-                "INFOPLIST_FILE": "Read Later Extension/Info.plist",
+                "INFOPLIST_FILE": "Pushpin/Info.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+                "LIBRARY_SEARCH_PATHS": [
+                    "$(inherited)",
+                    "$(PROJECT_DIR)/Pods/build/Debug-iphoneos"
+                ],
                 "MTL_ENABLE_DEBUG_INFO": "NO",
-                "PRODUCT_NAME": "$(TARGET_NAME)",
+                "PRODUCT_NAME": "Read Later",
+                "PROVISIONING_PROFILE": "45D6F4CF-F5A8-4BC7-92FE-4F506DCFF13A",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES",
                 "VALIDATE_PRODUCT": "YES"
@@ -855,6 +856,7 @@
             "name": "Delicious Debug"
         },
         "372943FC19CF53FE00ABF006": {
+            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -870,6 +872,7 @@
                 "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
                 "CLANG_WARN_UNREACHABLE_CODE": "YES",
                 "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
+                "CODE_SIGN_ENTITLEMENTS": "Pinboard/Share-AppStore.entitlements",
                 "CODE_SIGN_IDENTITY": "iPhone Distribution: Lionheart Software LLC (63553QQ62F)",
                 "COPY_PHASE_STRIP": "YES",
                 "ENABLE_NS_ASSERTIONS": "NO",
@@ -881,11 +884,16 @@
                 "GCC_WARN_UNINITIALIZED_AUTOS": "YES_AGGRESSIVE",
                 "GCC_WARN_UNUSED_FUNCTION": "YES",
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
-                "INFOPLIST_FILE": "Read Later Extension/Info.plist",
+                "INFOPLIST_FILE": "Read Later Extension/AppStore-Info.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+                "LIBRARY_SEARCH_PATHS": [
+                    "$(inherited)",
+                    "$(PROJECT_DIR)/Pods/build/Debug-iphoneos"
+                ],
                 "MTL_ENABLE_DEBUG_INFO": "NO",
-                "PRODUCT_NAME": "$(TARGET_NAME)",
+                "PRODUCT_NAME": "Read Later",
+                "PROVISIONING_PROFILE": "e025a654-80a5-4148-a99e-404a62ed0035",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES",
                 "VALIDATE_PRODUCT": "YES"
@@ -894,6 +902,7 @@
             "name": "Pinboard App Store"
         },
         "372943FD19CF53FE00ABF006": {
+            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -909,6 +918,7 @@
                 "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
                 "CLANG_WARN_UNREACHABLE_CODE": "YES",
                 "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
+                "CODE_SIGN_ENTITLEMENTS": "Pinboard/Share-AppStore.entitlements",
                 "CODE_SIGN_IDENTITY": "iPhone Developer: Daniel Loewenherz (32S53QJB5F)",
                 "COPY_PHASE_STRIP": "YES",
                 "ENABLE_NS_ASSERTIONS": "NO",
@@ -920,11 +930,16 @@
                 "GCC_WARN_UNINITIALIZED_AUTOS": "YES_AGGRESSIVE",
                 "GCC_WARN_UNUSED_FUNCTION": "YES",
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
-                "INFOPLIST_FILE": "Read Later Extension/Info.plist",
+                "INFOPLIST_FILE": "Read Later Extension/AppStore-Info.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+                "LIBRARY_SEARCH_PATHS": [
+                    "$(inherited)",
+                    "$(PROJECT_DIR)/Pods/build/Debug-iphoneos"
+                ],
                 "MTL_ENABLE_DEBUG_INFO": "NO",
-                "PRODUCT_NAME": "$(TARGET_NAME)",
+                "PRODUCT_NAME": "Read Later",
+                "PROVISIONING_PROFILE": "e025a654-80a5-4148-a99e-404a62ed0035",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES",
                 "VALIDATE_PRODUCT": "YES"
@@ -933,6 +948,7 @@
             "name": "Pinboard App Store Debug"
         },
         "372943FE19CF53FE00ABF006": {
+            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -948,6 +964,7 @@
                 "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
                 "CLANG_WARN_UNREACHABLE_CODE": "YES",
                 "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
+                "CODE_SIGN_ENTITLEMENTS": "Pushpin.entitlements",
                 "CODE_SIGN_IDENTITY": "iPhone Distribution: Lionheart Software LLC (63553QQ62F)",
                 "COPY_PHASE_STRIP": "YES",
                 "ENABLE_NS_ASSERTIONS": "NO",
@@ -959,11 +976,16 @@
                 "GCC_WARN_UNINITIALIZED_AUTOS": "YES_AGGRESSIVE",
                 "GCC_WARN_UNUSED_FUNCTION": "YES",
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
-                "INFOPLIST_FILE": "Read Later Extension/Info.plist",
+                "INFOPLIST_FILE": "Pushpin/Info.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+                "LIBRARY_SEARCH_PATHS": [
+                    "$(inherited)",
+                    "$(PROJECT_DIR)/Pods/build/Debug-iphoneos"
+                ],
                 "MTL_ENABLE_DEBUG_INFO": "NO",
-                "PRODUCT_NAME": "$(TARGET_NAME)",
+                "PRODUCT_NAME": "Read Later",
+                "PROVISIONING_PROFILE": "29099fb1-0606-4967-884d-96f3d84d94b2",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES",
                 "VALIDATE_PRODUCT": "YES"
@@ -972,6 +994,7 @@
             "name": "Delicious App Store"
         },
         "372943FF19CF53FE00ABF006": {
+            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -987,6 +1010,7 @@
                 "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
                 "CLANG_WARN_UNREACHABLE_CODE": "YES",
                 "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
+                "CODE_SIGN_ENTITLEMENTS": "Pinboard/Share-Beta.entitlements",
                 "CODE_SIGN_IDENTITY": "iPhone Distribution: Lionheart Software LLC (63553QQ62F)",
                 "COPY_PHASE_STRIP": "YES",
                 "ENABLE_NS_ASSERTIONS": "NO",
@@ -998,11 +1022,16 @@
                 "GCC_WARN_UNINITIALIZED_AUTOS": "YES_AGGRESSIVE",
                 "GCC_WARN_UNUSED_FUNCTION": "YES",
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
-                "INFOPLIST_FILE": "Read Later Extension/Info.plist",
+                "INFOPLIST_FILE": "Read Later Extension/Beta-Info.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+                "LIBRARY_SEARCH_PATHS": [
+                    "$(inherited)",
+                    "$(PROJECT_DIR)/Pods/build/Debug-iphoneos"
+                ],
                 "MTL_ENABLE_DEBUG_INFO": "NO",
-                "PRODUCT_NAME": "$(TARGET_NAME)",
+                "PRODUCT_NAME": "Read Later",
+                "PROVISIONING_PROFILE": "9fbcbd7b-8937-442d-9743-693f740c99e0",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES",
                 "VALIDATE_PRODUCT": "YES"
@@ -1011,6 +1040,7 @@
             "name": "Pinboard Beta"
         },
         "3729440019CF53FE00ABF006": {
+            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -1026,6 +1056,7 @@
                 "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
                 "CLANG_WARN_UNREACHABLE_CODE": "YES",
                 "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
+                "CODE_SIGN_ENTITLEMENTS": "Dev.entitlements",
                 "CODE_SIGN_IDENTITY": "iPhone Distribution: Lionheart Software LLC (63553QQ62F)",
                 "COPY_PHASE_STRIP": "YES",
                 "ENABLE_NS_ASSERTIONS": "NO",
@@ -1037,11 +1068,16 @@
                 "GCC_WARN_UNINITIALIZED_AUTOS": "YES_AGGRESSIVE",
                 "GCC_WARN_UNUSED_FUNCTION": "YES",
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
-                "INFOPLIST_FILE": "Read Later Extension/Info.plist",
+                "INFOPLIST_FILE": "Pushpin/Info.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
+                "LIBRARY_SEARCH_PATHS": [
+                    "$(inherited)",
+                    "$(PROJECT_DIR)/Pods/build/Debug-iphoneos"
+                ],
                 "MTL_ENABLE_DEBUG_INFO": "NO",
-                "PRODUCT_NAME": "$(TARGET_NAME)",
+                "PRODUCT_NAME": "Read Later",
+                "PROVISIONING_PROFILE": "dd5ba893-f367-431a-895c-677065acf85d",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES",
                 "VALIDATE_PRODUCT": "YES"
@@ -1094,6 +1130,36 @@
         },
         "3729440719CF546700ABF006": {
             "fileRef": "3729440419CF546700ABF006",
+            "isa": "PBXBuildFile"
+        },
+        "3729440B19CF58F900ABF006": {
+            "fileRef": "372943F119CF53FD00ABF006",
+            "isa": "PBXBuildFile"
+        },
+        "3729440C19CF5B0200ABF006": {
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "archive.ar",
+            "name": "libPods-ASPinboard.a",
+            "path": "Pods/build/Debug-iphoneos/libPods-ASPinboard.a",
+            "sourceTree": "<group>"
+        },
+        "3729440D19CF5B0200ABF006": {
+            "fileRef": "3729440C19CF5B0200ABF006",
+            "isa": "PBXBuildFile"
+        },
+        "3729440E19CF5B2600ABF006": {
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "archive.ar",
+            "name": "libPods-hpple.a",
+            "path": "Pods/build/Debug-iphoneos/libPods-hpple.a",
+            "sourceTree": "<group>"
+        },
+        "3729440F19CF5B2600ABF006": {
+            "fileRef": "3729440E19CF5B2600ABF006",
+            "isa": "PBXBuildFile"
+        },
+        "3729441019CF5E5700ABF006": {
+            "fileRef": "374D91DF19CE26A700995DF1",
             "isa": "PBXBuildFile"
         },
         "372AEEF6186B804F00F131A9": {
@@ -3647,8 +3713,7 @@
         "3790424219CBD49A00409D34": {
             "buildActionMask": "2147483647",
             "files": [
-                "3790437819CC97AD00409D34",
-                "372943E519CF3A3200ABF006"
+                "3790437819CC97AD00409D34"
             ],
             "isa": "PBXSourcesBuildPhase",
             "runOnlyForDeploymentPostprocessing": "0"
@@ -3710,7 +3775,6 @@
                 "3740A24116863CF000F95D82",
                 "37DAAA81199FFDE40050350D",
                 "3715EEC715787CAA00FD21EE",
-                "372943E319CF26F700ABF006",
                 "37A7B5C918345DAE0038677E",
                 "37A7B5CA18345DAE0038677E",
                 "37CBB74B1881B568000F9C36",
@@ -3810,7 +3874,7 @@
                 "374D91DC19CE26A700995DF1"
             ],
             "isa": "PBXGroup",
-            "name": "Share Extension",
+            "name": "Bookmark Extension",
             "path": "Pinboard",
             "sourceTree": "<group>"
         },
@@ -3924,7 +3988,7 @@
                 "MTL_ENABLE_DEBUG_INFO": "YES",
                 "ONLY_ACTIVE_ARCH": "YES",
                 "PRODUCT_NAME": "Pushpin",
-                "PROVISIONING_PROFILE": "665b6e99-b258-4101-ad1e-44c81a5a443b",
+                "PROVISIONING_PROFILE": "f2b976cb-cc25-4f18-8b46-214657ebc7b3",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES"
             },
@@ -4017,7 +4081,7 @@
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
                 "MTL_ENABLE_DEBUG_INFO": "NO",
                 "PRODUCT_NAME": "Pushpin",
-                "PROVISIONING_PROFILE": "e025a654-80a5-4148-a99e-404a62ed0035",
+                "PROVISIONING_PROFILE": "e4501265-682c-4424-9db8-a3cd76af8c35",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES",
                 "VALIDATE_PRODUCT": "YES"
@@ -4064,7 +4128,7 @@
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
                 "MTL_ENABLE_DEBUG_INFO": "NO",
                 "PRODUCT_NAME": "Pushpin",
-                "PROVISIONING_PROFILE": "e025a654-80a5-4148-a99e-404a62ed0035",
+                "PROVISIONING_PROFILE": "e4501265-682c-4424-9db8-a3cd76af8c35",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES",
                 "VALIDATE_PRODUCT": "YES"
@@ -4073,6 +4137,7 @@
             "name": "Pinboard App Store Debug"
         },
         "3790425919CBD49A00409D34": {
+            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "YES",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -4158,7 +4223,7 @@
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
                 "MTL_ENABLE_DEBUG_INFO": "NO",
                 "PRODUCT_NAME": "Pushpin",
-                "PROVISIONING_PROFILE": "9fbcbd7b-8937-442d-9743-693f740c99e0",
+                "PROVISIONING_PROFILE": "78e5b688-de7c-4fbd-8343-fc0aec173d77",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES",
                 "VALIDATE_PRODUCT": "YES"
@@ -4167,6 +4232,7 @@
             "name": "Pinboard Beta"
         },
         "3790425B19CBD49A00409D34": {
+            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "YES",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -4846,6 +4912,7 @@
             "name": "Delicious Debug"
         },
         "379042C519CC646B00409D34": {
+            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -4957,6 +5024,7 @@
             "name": "Pinboard App Store Debug"
         },
         "379042C719CC646B00409D34": {
+            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -5068,6 +5136,7 @@
             "name": "Pinboard Beta"
         },
         "379042C919CC646B00409D34": {
+            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -7727,9 +7796,7 @@
         },
         "37FEEB8A15745488003F2B77": {
             "buildActionMask": "2147483647",
-            "files": [
-                "372943E619CF3A4500ABF006"
-            ],
+            "files": [],
             "isa": "PBXSourcesBuildPhase",
             "runOnlyForDeploymentPostprocessing": "0"
         },
@@ -8001,6 +8068,8 @@
         },
         "37FEEB9115745488003F2B77": {
             "children": [
+                "3729440E19CF5B2600ABF006",
+                "3729440C19CF5B0200ABF006",
                 "377E46D6174C396C00CE3813",
                 "37DE5AB8174F2A2E0073A2F4",
                 "370EE75115ED108300B262E2",
