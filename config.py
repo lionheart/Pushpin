@@ -47,11 +47,16 @@ def update_build_configuration(build_name, build_configuration):
             build_settings['CODE_SIGN_IDENTITY'] = configurations['framework'][name]['code_sign_identity']
             build_settings['PROVISIONING_PROFILE'] = ""
             build_settings['CODE_SIGN_ENTITLEMENTS'] = ""
-        elif build_name == "Extension":
-            build_settings['CODE_SIGN_ENTITLEMENTS'] = configurations['extension'][name]['entitlements']
-            build_settings['CODE_SIGN_IDENTITY'] = configurations['extension'][name]['code_sign_identity']
-            build_settings['INFOPLIST_FILE'] = configurations['extension'][name]['info']
-            build_settings['PROVISIONING_PROFILE'] = configurations['extension'][name]['profile']
+        elif build_name == "Bookmark Extension":
+            build_settings['CODE_SIGN_ENTITLEMENTS'] = configurations['bookmark_extension'][name]['entitlements']
+            build_settings['CODE_SIGN_IDENTITY'] = configurations['bookmark_extension'][name]['code_sign_identity']
+            build_settings['INFOPLIST_FILE'] = configurations['bookmark_extension'][name]['info']
+            build_settings['PROVISIONING_PROFILE'] = configurations['bookmark_extension'][name]['profile']
+        elif build_name == "Read Later Extension":
+            build_settings['CODE_SIGN_ENTITLEMENTS'] = configurations['read_later_extension'][name]['entitlements']
+            build_settings['CODE_SIGN_IDENTITY'] = configurations['read_later_extension'][name]['code_sign_identity']
+            build_settings['INFOPLIST_FILE'] = configurations['read_later_extension'][name]['info']
+            build_settings['PROVISIONING_PROFILE'] = configurations['read_later_extension'][name]['profile']
 
         for key in keys_to_delete:
             if key in build_settings:
