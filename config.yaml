@@ -9,7 +9,7 @@ configs:
       code_sign_identity: "iPhone Developer: Daniel Loewenherz (32S53QJB5F)"
     pinboard_app_store:
       info: "Pushpin/PushpinAppStore.plist"
-      profile: "29099fb1-0606-4967-884d-96f3d84d94b2"
+      profile: "ef758106-b962-43f8-ae7e-ddcb930b9c4d"
       entitlements: "Pushpin.entitlements"
       code_sign_identity: "iPhone Distribution: Lionheart Software LLC (63553QQ62F)"
     pinboard_dev:
