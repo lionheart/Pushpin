@@ -505,6 +505,9 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self stopLoading];
+
+    self.webView.scrollView.delegate = nil;
+    self.readerWebView.scrollView.delegate = nil;
 }
 
 - (void)stopLoading {
