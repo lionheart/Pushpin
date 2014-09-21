@@ -893,7 +893,7 @@
                 ],
                 "MTL_ENABLE_DEBUG_INFO": "NO",
                 "PRODUCT_NAME": "Read Later",
-                "PROVISIONING_PROFILE": "e025a654-80a5-4148-a99e-404a62ed0035",
+                "PROVISIONING_PROFILE": "2a455488-c071-40b8-88d9-c723f244fb78",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES",
                 "VALIDATE_PRODUCT": "YES"
@@ -1388,7 +1388,7 @@
                     "$(TARGET_BUILD_DIR)/usr/local/lib/include",
                     "$(OBJROOT)/UninstalledProducts/include"
                 ],
-                "INFOPLIST_FILE": "Pushpin/PushpinAppStore.plist",
+                "INFOPLIST_FILE": "Pushpin/PinboardAppStore.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LIBRARY_SEARCH_PATHS": "$(inherited)",
                 "ONLY_ACTIVE_ARCH": "NO",
@@ -1424,7 +1424,7 @@
                 "GCC_PRECOMPILE_PREFIX_HEADER": "YES",
                 "GCC_PREFIX_HEADER": "Pushpin/Pushpin for Pinboard-Prefix.pch",
                 "GCC_SYMBOLS_PRIVATE_EXTERN": "NO",
-                "INFOPLIST_FILE": "Pushpin/PushpinAppStore.plist",
+                "INFOPLIST_FILE": "Pushpin/PinboardAppStore.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks",
                 "PRODUCT_NAME": "$(TARGET_NAME)",
@@ -5523,7 +5523,7 @@
                     "$(TARGET_BUILD_DIR)/usr/local/lib/include",
                     "$(OBJROOT)/UninstalledProducts/include"
                 ],
-                "INFOPLIST_FILE": "Pushpin/PushpinAppStore.plist",
+                "INFOPLIST_FILE": "Pushpin/DeliciousAppStore.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LIBRARY_SEARCH_PATHS": "$(inherited)",
                 "ONLY_ACTIVE_ARCH": "NO",
@@ -5557,7 +5557,7 @@
                 "CODE_SIGN_IDENTITY": "iPhone Distribution: Lionheart Software LLC (63553QQ62F)",
                 "GCC_PRECOMPILE_PREFIX_HEADER": "YES",
                 "GCC_PREFIX_HEADER": "Pushpin/Pushpin for Pinboard-Prefix.pch",
-                "INFOPLIST_FILE": "Pushpin/PushpinAppStore.plist",
+                "INFOPLIST_FILE": "Pushpin/DeliciousAppStore.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks",
                 "PRODUCT_NAME": "$(TARGET_NAME)",
@@ -6045,7 +6045,7 @@
             "outputPaths": [],
             "runOnlyForDeploymentPostprocessing": "0",
             "shellPath": "/bin/sh",
-            "shellScript": "SHORT_VERSION_STRING=`/usr/libexec/PlistBuddy -c 'print :CFBundleShortVersionString' \"Pushpin/PinboardAppStore.plist\"`\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $SHORT_VERSION_STRING\" \"Pushpin/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $SHORT_VERSION_STRING\" \"Pushpin/Dev-Info.plist\"\n\nSHORT_VERSION_STRING=`/usr/libexec/PlistBuddy -c 'print :CFBundleShortVersionString' \"Pushpin/DeliciousAppStore.plist\"`\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $SHORT_VERSION_STRING\" \"Pushpin/DeliciousBeta.plist\"\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $SHORT_VERSION_STRING\" \"Pushpin/DeliciousDebug.plist\"\n\nBUNDLE_VERSION=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\nBUNDLE_VERSION=$(($BUNDLE_VERSION + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $BUNDLE_VERSION\" \"$INFOPLIST_FILE\"\n\n"
+            "shellScript": "SHORT_VERSION_STRING=`/usr/libexec/PlistBuddy -c 'print :CFBundleShortVersionString' \"Pushpin/PinboardAppStore.plist\"`\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $SHORT_VERSION_STRING\" \"Pushpin/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $SHORT_VERSION_STRING\" \"Pushpin/Dev-Info.plist\"\n\nSHORT_VERSION_STRING=`/usr/libexec/PlistBuddy -c 'print :CFBundleShortVersionString' \"Pushpin/DeliciousAppStore.plist\"`\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $SHORT_VERSION_STRING\" \"Pushpin/DeliciousBeta.plist\"\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $SHORT_VERSION_STRING\" \"Pushpin/DeliciousDebug.plist\"\n\nBUNDLE_VERSION=$(/usr/libexec/PlistBuddy -c \"Print :CFBundleVersion\" \"$INFOPLIST_FILE\")\nBUNDLE_VERSION=$(($BUNDLE_VERSION + 1))\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $BUNDLE_VERSION\" \"$INFOPLIST_FILE\"\n\n"
         },
         "37BC1BD3188641D80022020A": {
             "fileEncoding": "4",
@@ -8364,7 +8364,7 @@
                     "$(TARGET_BUILD_DIR)/usr/local/lib/include",
                     "$(OBJROOT)/UninstalledProducts/include"
                 ],
-                "INFOPLIST_FILE": "Pushpin/PushpinAppStore.plist",
+                "INFOPLIST_FILE": "Pushpin/PinboardAppStore.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LIBRARY_SEARCH_PATHS": "$(inherited)",
                 "ONLY_ACTIVE_ARCH": "NO",
@@ -8435,7 +8435,7 @@
                 "CODE_SIGN_IDENTITY": "iPhone Distribution: Lionheart Software LLC (63553QQ62F)",
                 "GCC_PRECOMPILE_PREFIX_HEADER": "YES",
                 "GCC_PREFIX_HEADER": "Pushpin/Pushpin for Pinboard-Prefix.pch",
-                "INFOPLIST_FILE": "Pushpin/PushpinAppStore.plist",
+                "INFOPLIST_FILE": "Pushpin/PinboardAppStore.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks",
                 "PRODUCT_NAME": "$(TARGET_NAME)",
