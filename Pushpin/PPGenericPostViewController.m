@@ -515,10 +515,7 @@ static NSInteger kToolbarHeight = 44;
                 self.webViewController = [PPWebViewController webViewControllerWithURL:urlString];
                 self.webViewController.shouldMobilize = settings.openLinksWithMobilizer;
                 self.webViewController.transitioningDelegate = self.shrinkBackTransition;
-
-#if PUSH_WEBVIEW_IN_NAVIGATION_CONTROLLER
-                [self.navigationController pushViewController:self.webViewController animated:YES];
-#else
+                
                 if ([UIApplication isIPad]) {
                     [[PPAppDelegate sharedDelegate].window.rootViewController presentViewController:self.webViewController animated:YES completion:nil];
                 }
@@ -527,7 +524,6 @@ static NSInteger kToolbarHeight = 44;
                         [self presentViewController:self.webViewController animated:YES completion:nil];
                     }
                 }
-#endif
             }
             else {
                 PPBrowserType browser = settings.browser;
