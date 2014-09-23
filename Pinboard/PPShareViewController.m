@@ -68,6 +68,7 @@
                                   completionHandler:^(NSURL *url, NSError *error) {
                                       dispatch_async(dispatch_get_main_queue(), ^{
                                           addBookmarkViewController.urlTextField.text = url.absoluteString;
+                                          [addBookmarkViewController prefillTitleAndForceUpdate:YES];
                                       });
                                   }];
         }
@@ -77,7 +78,14 @@
                                             options:0
                                   completionHandler:^(NSString *text, NSError *error) {
                                       dispatch_async(dispatch_get_main_queue(), ^{
-                                          addBookmarkViewController.titleTextField.text = text;
+                                          NSURL *url = [NSURL URLWithString:text];
+                                          if (url) {
+                                              addBookmarkViewController.urlTextField.text = text;
+                                              [addBookmarkViewController prefillTitleAndForceUpdate:YES];
+                                          }
+                                          else {
+                                              addBookmarkViewController.titleTextField.text = text;
+                                          }
                                       });
                                   }];
         }
@@ -89,6 +97,7 @@
                                       dispatch_async(dispatch_get_main_queue(), ^{
                                           addBookmarkViewController.titleTextField.text = results[NSExtensionJavaScriptPreprocessingResultsKey][@"title"];
                                           addBookmarkViewController.urlTextField.text = results[NSExtensionJavaScriptPreprocessingResultsKey][@"url"];
+                                          [addBookmarkViewController prefillTitleAndForceUpdate:YES];
                                       });
                                   }];
         }
