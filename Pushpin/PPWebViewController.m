@@ -54,7 +54,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 @property (nonatomic, strong) UIPopoverController *popover;
 @property (nonatomic, strong) PPActivityViewController *activityView;
 @property (nonatomic, strong) UIKeyCommand *goBackKeyCommand;
-@property (nonatomic, strong) WKWebView *readerWebView;
+@property (nonatomic, strong) UIWebView *readerWebView;
 @property (nonatomic) BOOL mobilized;
 @property (nonatomic, strong) NSMutableSet *loadedURLs;
 
@@ -62,12 +62,13 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 - (void)updateInterfaceWithComputedWebPageBackgroundColorTimedOut:(BOOL)timedOut;
 - (void)handleKeyCommand:(UIKeyCommand *)keyCommand;
 - (void)markAsReadButtonTouchUpInside:(id)sender;
-- (WKWebView *)currentWebView;
+//- (BOOL)mobilized;
+- (UIWebView *)currentWebView;
 
 - (void)setReaderViewVisible:(BOOL)visible animated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
 - (void)setToolbarVisible:(BOOL)visible animated:(BOOL)animated;
 
-- (void)addTouchOverridesForWebView:(WKWebView *)webView;
+- (void)addTouchOverridesForWebView:(UIWebView *)webView;
 
 @end
 
@@ -107,19 +108,17 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     self.statusBarBackgroundView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.statusBarBackgroundView];
 
-    WKWebViewConfiguration *webViewConfiguration = [[WKWebViewConfiguration alloc] init];
-    webViewConfiguration.allowsInlineMediaPlayback = YES;
-    
-    self.webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:webViewConfiguration];
+    self.webView = [[UIWebView alloc] init];
     self.webView.translatesAutoresizingMaskIntoConstraints = NO;
-    self.webView.navigationDelegate = self;
+    self.webView.delegate = self;
+    self.webView.scalesPageToFit = YES;
     self.webView.scrollView.delegate = self;
     self.webView.scrollView.contentInset = UIEdgeInsetsMake(0, 0, kToolbarHeight, 0);
     [self.view addSubview:self.webView];
     
-    self.readerWebView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:webViewConfiguration];
+    self.readerWebView = [[UIWebView alloc] init];
     self.readerWebView.backgroundColor = [UIColor whiteColor];
-    self.readerWebView.navigationDelegate = self;
+    self.readerWebView.delegate = self;
     self.readerWebView.alpha = 0;
     self.readerWebView.scrollView.contentInset = UIEdgeInsetsMake(0, 0, kToolbarHeight, 0);
     self.readerWebView.scrollView.delegate = self;
@@ -422,7 +421,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         }
     }
     else if (recognizer == self.bottomTapGestureRecognizer) {
-        WKWebView *webView = self.currentWebView;
+        UIWebView *webView = self.currentWebView;
         self.yOffsetToStartShowingToolbar = webView.scrollView.contentOffset.y;
 
         if (webView.scrollView.scrollsToTop && webView.scrollView.scrollEnabled) {
@@ -679,7 +678,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 }
 
 - (NSURL *)url {
-    NSURL *url = [self.webView URL];
+    NSURL *url = [self.webView.request URL];
     if (!url || ![url isKindOfClass:[NSURL class]] || [url.absoluteString isEqualToString:@""]) {
         return [NSURL URLWithString:self.urlString];
     }
@@ -687,10 +686,11 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 }
 
 - (void)showAddViewController {
+    NSString *pageTitle = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
     NSDictionary *post = @{
-                           @"title": self.webView.title,
-                           @"url": self.url.absoluteString
-                           };
+        @"title": pageTitle,
+        @"url": self.url.absoluteString
+    };
     [self showAddViewController:post];
 }
 
@@ -817,34 +817,34 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
 #pragma mark - UIWebViewDelegate
 
-- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
-    if (navigationAction.navigationType == WKNavigationTypeLinkActivated) {
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+    if (navigationType == UIWebViewNavigationTypeLinkClicked) {
         // Reset the "loaded" state on the reader view.
-        [self.readerWebView evaluateJavaScript:@"isLoaded = false" completionHandler:nil];
+        [[self.readerWebView stringByEvaluatingJavaScriptFromString:@"isLoaded"] isEqualToString:@"false"];
     }
-    
+
     if (webView == self.webView) {
         if (self.mobilized) {
-            decisionHandler(WKNavigationActionPolicyCancel);
+            return NO;
         }
         else {
-            if ([@[@"http", @"https", @"file"] containsObject:navigationAction.request.URL.scheme] || [navigationAction.request.URL.scheme isEqualToString:@"about"]) {
+            if ([@[@"http", @"https", @"file"] containsObject:request.URL.scheme] || [request.URL.scheme isEqualToString:@"about"]) {
                 self.numberOfRequestsCompleted = 0;
                 self.numberOfRequests = 0;
                 self.markAsReadButton.hidden = YES;
                 [self.indicator startAnimating];
                 
-                switch (navigationAction.navigationType) {
-                    case WKNavigationTypeLinkActivated:
+                switch (navigationType) {
+                    case UIWebViewNavigationTypeLinkClicked:
+                        break;
+
+                    case UIWebViewNavigationTypeOther:
                         break;
                         
-                    case WKNavigationTypeOther:
+                    case UIWebViewNavigationTypeReload:
                         break;
                         
-                    case WKNavigationTypeReload:
-                        break;
-                        
-                    case WKNavigationTypeBackForward:
+                    case UIWebViewNavigationTypeBackForward:
                         // We've disabled forward in the UI, so it must be a pop of the stack.
                         [self.history removeLastObject];
                         
@@ -853,7 +853,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                         break;
                 }
                 
-                decisionHandler(WKNavigationActionPolicyAllow);
+                return YES;
             }
             else {
                 if (!self.openLinkExternallyAlertView) {
@@ -863,28 +863,27 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                                                                         cancelButtonTitle:@"Cancel"
                                                                         otherButtonTitles:@"Open", nil];
                     [self.openLinkExternallyAlertView show];
-                    self.urlToOpenExternally = navigationAction.request.URL;
+                    self.urlToOpenExternally = webView.request.URL;
                 }
-                
-                decisionHandler(WKNavigationActionPolicyCancel);
+                return NO;
             }
         }
     }
     else {
-        if (navigationAction.navigationType == UIWebViewNavigationTypeLinkClicked) {
+        if (navigationType == UIWebViewNavigationTypeLinkClicked) {
             [self toggleMobilizer];
             
-            NSURLRequest *newRequest = [NSURLRequest requestWithURL:navigationAction.request.URL];
+            NSURLRequest *newRequest = [NSURLRequest requestWithURL:request.URL];
             [self.webView loadRequest:newRequest];
-            decisionHandler(WKNavigationActionPolicyCancel);
+            return NO;
         }
         else {
-            decisionHandler(WKNavigationActionPolicyAllow);
+            return YES;
         }
     }
 }
 
-- (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
     if (webView == self.webView) {
         self.numberOfRequestsCompleted++;
         [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
@@ -893,7 +892,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     [self enableOrDisableButtons];
 }
 
-- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
     if (webView == self.webView) {
         self.numberOfRequestsCompleted++;
         
@@ -902,8 +901,8 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         
         // Only run the following when this is an actual web URL.
         if (![self.url.scheme isEqualToString:@"file"]) {
-            self.title = webView.title;
-            
+            self.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+
             if ([[self.title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@""]) {
                 self.titleLabel.text = self.url.host;
             }
@@ -927,7 +926,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                                           @"host": self.url.host,
                                           @"title": [finalTitleComponents componentsJoinedByString:@" "] }];
             }
-            
+
             self.mobilizeButton.enabled = [PPMobilizerUtility canMobilizeURL:self.url];
             
             // Disable the default action sheet
@@ -949,43 +948,40 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         }
     }
     else {
-        [self.readerWebView evaluateJavaScript:@"isLoaded"
-                             completionHandler:^(NSNumber *result, NSError *error) {
-                                 BOOL isLoaded = [result boolValue];
-                                 if (isLoaded) {
-                                     [self updateInterfaceWithComputedWebPageBackgroundColor];
-                                     
-                                     self.markAsReadButton.hidden = NO;
-                                     [self.indicator stopAnimating];
-                                     
-                                     [self setReaderViewVisible:YES animated:YES completion:nil];
-                                     [self addTouchOverridesForWebView:self.readerWebView];
-                                     [self enableOrDisableButtons];
-                                 }
-                                 else {
-                                     [PPWebViewController mobilizedPageForURL:self.url withCompletion:^(NSDictionary *article, NSError *error) {
-                                         if (!error) {
-                                             dispatch_async(dispatch_get_main_queue(), ^{
-                                                 if (article) {
-                                                     NSString *content = [[PPSettings sharedSettings].readerSettings readerHTMLForArticle:article];
-                                                     [self.readerWebView loadHTMLString:content baseURL:self.url];
-                                                 }
-                                                 else {
-                                                     self.mobilizeButton.selected = NO;
-                                                 }
-                                             });
-                                         }
-                                     }];
-                                 }
-                             }];
+        BOOL isLoaded = [[self.readerWebView stringByEvaluatingJavaScriptFromString:@"isLoaded"] isEqualToString:@"true"];
+        if (isLoaded) {
+            [self updateInterfaceWithComputedWebPageBackgroundColor];
+            
+            self.markAsReadButton.hidden = NO;
+            [self.indicator stopAnimating];
+
+            [self setReaderViewVisible:YES animated:YES completion:nil];
+            [self addTouchOverridesForWebView:self.readerWebView];
+            [self enableOrDisableButtons];
+        }
+        else {
+            [PPWebViewController mobilizedPageForURL:self.url withCompletion:^(NSDictionary *article, NSError *error) {
+                if (!error) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if (article) {
+                            NSString *content = [[PPSettings sharedSettings].readerSettings readerHTMLForArticle:article];
+                            [self.readerWebView loadHTMLString:content baseURL:self.url];
+                        }
+                        else {
+                            self.mobilizeButton.selected = NO;
+                        }
+                    });
+                }
+            }];
+        }
     }
 }
 
-- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
+- (void)webViewDidStartLoad:(UIWebView *)webView {
     if (webView == self.webView) {
         [self.webViewTimeoutTimer invalidate];
-
-        #warning https://crashlytics.com/lionheart-software2/ios/apps/io.aurora.pushpin/issues/532e17d2fabb27481b18f9ce
+        
+    #warning https://crashlytics.com/lionheart-software2/ios/apps/io.aurora.pushpin/issues/532e17d2fabb27481b18f9ce
         self.webViewTimeoutTimer = [NSTimer timerWithTimeInterval:5
                                                            target:self
                                                          selector:@selector(webViewLoadTimedOut)
@@ -1030,71 +1026,64 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 #if HIDE_STATUS_BAR_WHILE_SCROLLING
     self.prefersStatusBarHidden = NO;
 #endif
-    WKWebView *webView = self.currentWebView;
+    UIWebView *webView = self.currentWebView;
     UIColor *backgroundColor = [UIColor whiteColor];
     BOOL isDark = NO;
-    
-    void (^UpdateBackgroundColor)(UIColor *color, BOOL dark) = ^(UIColor *color, BOOL dark) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [UIView animateWithDuration:0.3 animations:^{
-                self.statusBarBackgroundView.backgroundColor = color;
-                self.toolbarBackgroundView.backgroundColor = color;
-                webView.backgroundColor = color;
-                
-                if (dark) {
-                    [self tintButtonsWithColor:[UIColor whiteColor]];
-                    self.titleLabel.textColor = [UIColor whiteColor];
-                    self.preferredStatusBarStyle = UIStatusBarStyleLightContent;
-                }
-                else {
-                    [self tintButtonsWithColor:HEX(0x555555FF)];
-                    self.titleLabel.textColor = [UIColor darkTextColor];
-                    self.preferredStatusBarStyle = UIStatusBarStyleDefault;
-                }
-                
-                [self setNeedsStatusBarAppearanceUpdate];
-            }];
-        });
-    };
 
-    if (timedOut) {
-        UpdateBackgroundColor(backgroundColor, isDark);
+    if (!timedOut) {
+        NSString *response = [webView stringByEvaluatingJavaScriptFromString:@"window.getComputedStyle(document.body, null).getPropertyValue(\"background-color\")"];
+        
+        NSError *error;
+        NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:@"rgba?\\((\\d*), (\\d*), (\\d*)(, (\\d*))?\\)" options:NSRegularExpressionCaseInsensitive error:&error];
+        NSTextCheckingResult *match = [expression firstMatchInString:response options:0 range:NSMakeRange(0, response.length)];
+        if (match) {
+            NSString *redString = [response substringWithRange:[match rangeAtIndex:1]];
+            NSString *greenString = [response substringWithRange:[match rangeAtIndex:2]];
+            NSString *blueString = [response substringWithRange:[match rangeAtIndex:3]];
+            CGFloat R = [redString floatValue] / 255;
+            CGFloat G = [greenString floatValue] / 255;
+            CGFloat B = [blueString floatValue] / 255;
+            CGFloat alpha = 1;
+            
+            NSRange alphaRange = [match rangeAtIndex:5];
+            if (alphaRange.location != NSNotFound) {
+                NSString *alphaString = [response substringWithRange:alphaRange];
+                alpha = [alphaString floatValue];
+            }
+            
+            // Formula derived from here:
+            // http://www.w3.org/WAI/ER/WD-AERT/#color-contrast
+            
+            // Alpha blending:
+            // http://stackoverflow.com/a/746937/39155
+            CGFloat newR = (255 * (1 - alpha) + 255 * R * alpha) / 255.;
+            CGFloat newG = (255 * (1 - alpha) + 255 * G * alpha) / 255.;
+            CGFloat newB = (255 * (1 - alpha) + 255 * B * alpha) / 255.;
+            isDark = ((newR * 255 * 299) + (newG * 255 * 587) + (newB * 255 * 114)) / 1000 < 200;
+            backgroundColor = [UIColor colorWithRed:newR green:newG blue:newB alpha:1];
+        }
     }
-    else {
-        [webView evaluateJavaScript:@"window.getComputedStyle(document.body, null).getPropertyValue(\"background-color\")"
-                  completionHandler:^(NSString *response, NSError *e) {
-                      NSError *error;
-                      NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:@"rgba?\\((\\d*), (\\d*), (\\d*)(, (\\d*))?\\)" options:NSRegularExpressionCaseInsensitive error:&error];
-                      NSTextCheckingResult *match = [expression firstMatchInString:response options:0 range:NSMakeRange(0, response.length)];
-                      if (match) {
-                          NSString *redString = [response substringWithRange:[match rangeAtIndex:1]];
-                          NSString *greenString = [response substringWithRange:[match rangeAtIndex:2]];
-                          NSString *blueString = [response substringWithRange:[match rangeAtIndex:3]];
-                          CGFloat R = [redString floatValue] / 255;
-                          CGFloat G = [greenString floatValue] / 255;
-                          CGFloat B = [blueString floatValue] / 255;
-                          CGFloat alpha = 1;
-                          
-                          NSRange alphaRange = [match rangeAtIndex:5];
-                          if (alphaRange.location != NSNotFound) {
-                              NSString *alphaString = [response substringWithRange:alphaRange];
-                              alpha = [alphaString floatValue];
-                          }
-                          
-                          // Formula derived from here:
-                          // http://www.w3.org/WAI/ER/WD-AERT/#color-contrast
-                          
-                          // Alpha blending:
-                          // http://stackoverflow.com/a/746937/39155
-                          CGFloat newR = (255 * (1 - alpha) + 255 * R * alpha) / 255.;
-                          CGFloat newG = (255 * (1 - alpha) + 255 * G * alpha) / 255.;
-                          CGFloat newB = (255 * (1 - alpha) + 255 * B * alpha) / 255.;
-                          BOOL isDark = ((newR * 255 * 299) + (newG * 255 * 587) + (newB * 255 * 114)) / 1000 < 200;
-                          UIColor *backgroundColor = [UIColor colorWithRed:newR green:newG blue:newB alpha:1];
-                          UpdateBackgroundColor(backgroundColor, isDark);
-                      }
-                  }];
-    }
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [UIView animateWithDuration:0.3 animations:^{
+            self.statusBarBackgroundView.backgroundColor = backgroundColor;
+            self.toolbarBackgroundView.backgroundColor = backgroundColor;
+            webView.backgroundColor = backgroundColor;
+            
+            if (isDark) {
+                [self tintButtonsWithColor:[UIColor whiteColor]];
+                self.titleLabel.textColor = [UIColor whiteColor];
+                self.preferredStatusBarStyle = UIStatusBarStyleLightContent;
+            }
+            else {
+                [self tintButtonsWithColor:HEX(0x555555FF)];
+                self.titleLabel.textColor = [UIColor darkTextColor];
+                self.preferredStatusBarStyle = UIStatusBarStyleDefault;
+            }
+
+            [self setNeedsStatusBarAppearanceUpdate];
+        }];
+    });
 }
 
 - (void)tintButtonsWithColor:(UIColor *)color {
@@ -1159,8 +1148,8 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
 #pragma mark -
 
-- (WKWebView *)currentWebView {
-    WKWebView *webView;
+- (UIWebView *)currentWebView {
+    UIWebView *webView;
     if (self.mobilized) {
         webView = self.readerWebView;
     }
@@ -1313,10 +1302,10 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     });
 }
 
-- (void)addTouchOverridesForWebView:(WKWebView *)webView {
-    [webView evaluateJavaScript:@"document.body.style.webkitTouchCallout='none';" completionHandler:nil];
-    [webView evaluateJavaScript:@"document.documentElement.style.webkitTouchCallout='none';" completionHandler:nil];
-    [webView evaluateJavaScript:[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"webview-helpers" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil] completionHandler:nil];
+- (void)addTouchOverridesForWebView:(UIWebView *)webView {
+    [webView stringByEvaluatingJavaScriptFromString:@"document.body.style.webkitTouchCallout='none';"];
+    [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitTouchCallout='none';"];
+    [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"webview-helpers" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil]];
 }
 
 @end

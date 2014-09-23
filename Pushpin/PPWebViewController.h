@@ -7,17 +7,15 @@
 //
 
 @import UIKit;
-@import WebKit;
-
 #import <MessageUI/MessageUI.h>
 #import "PPAppDelegate.h"
 #import "PPToolbar.h"
 
-@interface PPWebViewController : UIViewController <UIActionSheetDelegate, UIAlertViewDelegate, WKNavigationDelegate, MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate, NSURLConnectionDataDelegate, NSURLSessionTaskDelegate, NSURLSessionDataDelegate>
+@interface PPWebViewController : UIViewController <UIActionSheetDelegate, UIAlertViewDelegate, UIWebViewDelegate, MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate, NSURLConnectionDataDelegate, NSURLSessionTaskDelegate, NSURLSessionDataDelegate>
 
 @property (nonatomic, strong) UIView *statusBarBackgroundView;
 @property (nonatomic, strong) UIView *webViewContainer;
-@property (nonatomic, strong) WKWebView *webView;
+@property (nonatomic, strong) UIWebView *webView;
 @property (nonatomic, strong) NSMutableData *data;
 @property (nonatomic, strong) NSHTTPURLResponse *response;
 @property (nonatomic, strong) NSString *urlString;
