@@ -979,16 +979,17 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    NSInteger num = [self.currentDataSource numberOfPosts];
+    NSInteger num = [[self dataSourceForTableView:tableView] numberOfPosts];
     return num;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    if (self.compressPosts && [self.currentDataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)]) {
-        return [self.currentDataSource compressedHeightForPostAtIndex:indexPath.row];
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    id <PPDataSource> dataSource = [self dataSourceForTableView:tableView];
+    if (self.compressPosts && [dataSource respondsToSelector:@selector(compressedHeightForPostAtIndex:)]) {
+        return [dataSource compressedHeightForPostAtIndex:indexPath.row];
     }
     
-    return [self.currentDataSource heightForPostAtIndex:indexPath.row];
+    return [dataSource heightForPostAtIndex:indexPath.row];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
