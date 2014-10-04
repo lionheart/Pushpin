@@ -1310,7 +1310,7 @@ static NSInteger kToolbarHeight = 44;
 - (void)showConfirmDeletionAlert {
     NSString *message = [NSString stringWithFormat:@"%@\n\n%@", NSLocalizedString(@"Are you sure you want to delete this bookmark?", nil), self.selectedPost[@"url"]];
 
-    self.confirmDeletionAlertView = [[UIAlertView alloc] initWithTitle:nil
+    self.confirmDeletionAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Confirm Deletion", nil)
                                                                message:message
                                                               delegate:self
                                                      cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
@@ -1319,7 +1319,11 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)showConfirmDeletionActionSheet {
-    self.confirmDeletionActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Are you sure you want to delete this bookmark?", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:NSLocalizedString(@"Delete", nil) otherButtonTitles:nil];
+    self.confirmDeletionActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Are you sure you want to delete this bookmark?", nil)
+                                                                  delegate:self
+                                                         cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                                                    destructiveButtonTitle:NSLocalizedString(@"Delete", nil)
+                                                         otherButtonTitles:nil];
     [self.confirmDeletionActionSheet showInView:self.view];
 }
 
