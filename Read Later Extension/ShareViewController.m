@@ -114,12 +114,14 @@
                                                                                      preferredStyle:UIAlertControllerStyleAlert];
                         
                         [controller addAction:[UIAlertAction actionWithTitle:@"Add" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                            AddBookmarkBlock(urlString, title);
+                            AddBookmarkBlock(urlString, urlString);
                         }]];
                         
                         [controller addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
                             return;
                         }]];
+                        
+                        [self presentViewController:controller animated:YES completion:nil];
                     }
                 }
                 else {
