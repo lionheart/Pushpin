@@ -72,7 +72,7 @@
                 }
             }
             
-            void (^Block)(NSString *title, NSString *message) = ^(NSString *title, NSString *message) {
+            void (^CompletionBlock)(NSString *title, NSString *message) = ^(NSString *title, NSString *message) {
                 UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
                                                                                message:message
                                                                         preferredStyle:UIAlertControllerStyleAlert];
@@ -88,27 +88,42 @@
                 }];
             };
             
+            void (^AddBookmarkBlock)(NSString *urlString, NSString *title) = ^(NSString *urlString, NSString *title) {
+                [[ASPinboard sharedInstance] addBookmarkWithURL:urlString
+                                                          title:title
+                                                    description:@""
+                                                           tags:@""
+                                                         shared:YES
+                                                         unread:YES
+                                                        success:^{
+                                                            CompletionBlock(NSLocalizedString(@"Success!", nil), NSLocalizedString(@"Your bookmark was added.", nil));
+                                                        }
+                                                        failure:^(NSError *error) {
+                                                            CompletionBlock(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:@"%@. %@", NSLocalizedString(@"There was an error saving this bookmark.", nil), error.localizedDescription]);
+                                                        }];
+            };
+            
             dispatch_group_notify(group, dispatch_get_main_queue(), ^{
-                if (!title) {
-                    title = @"Untitled";
-                }
-                
                 if (urlString) {
-                    [[ASPinboard sharedInstance] addBookmarkWithURL:urlString
-                                                              title:title
-                                                        description:@""
-                                                               tags:@""
-                                                             shared:YES
-                                                             unread:YES
-                                                            success:^{
-                                                                Block(NSLocalizedString(@"Success!", nil), NSLocalizedString(@"Your bookmark was added.", nil));
-                                                            }
-                                                            failure:^(NSError *error) {
-                                                                Block(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:@"%@. %@", NSLocalizedString(@"There was an error saving this bookmark.", nil), error.localizedDescription]);
-                                                            }];
+                    if (title.length > 0) {
+                        AddBookmarkBlock(urlString, title);
+                    }
+                    else {
+                        UIAlertController *controller = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"No Title Found", nil)
+                                                                                            message:NSLocalizedString(@"Pushpin couldn't retrieve a title for this bookmark. Would you like to add this bookmark with the URL as the title?", nil)
+                                                                                     preferredStyle:UIAlertControllerStyleAlert];
+                        
+                        [controller addAction:[UIAlertAction actionWithTitle:@"Add" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                            AddBookmarkBlock(urlString, title);
+                        }]];
+                        
+                        [controller addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+                            return;
+                        }]];
+                    }
                 }
                 else {
-                    Block(NSLocalizedString(@"Uh oh.", nil), NSLocalizedString(@"You can't add a bookmark without a URL or title.", nil));
+                    CompletionBlock(NSLocalizedString(@"Uh oh.", nil), NSLocalizedString(@"You can't add a bookmark without a URL.", nil));
                 }
             });
         });

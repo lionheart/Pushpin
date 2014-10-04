@@ -828,7 +828,7 @@
                 "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
                 "CODE_SIGN_ENTITLEMENTS": "Beta.entitlements",
                 "CODE_SIGN_IDENTITY": "iPhone Developer: Daniel Loewenherz (32S53QJB5F)",
-                "COPY_PHASE_STRIP": "YES",
+                "COPY_PHASE_STRIP": "NO",
                 "ENABLE_NS_ASSERTIONS": "NO",
                 "ENABLE_STRICT_OBJC_MSGSEND": "YES",
                 "GCC_C_LANGUAGE_STANDARD": "gnu99",
