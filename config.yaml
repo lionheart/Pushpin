@@ -4,7 +4,7 @@ configs:
   app:
     pinboard_app_store_debug:
       info: "Pushpin/PinboardAppStore.plist"
-      profile: "dd5ba893-f367-431a-895c-677065acf85d"
+      profile: "e53d0bf9-2bca-48e3-bbc8-dcd071bd93d4"
       entitlements: "Pushpin.entitlements"
       code_sign_identity: "iPhone Developer: Daniel Loewenherz (32S53QJB5F)"
     pinboard_app_store:

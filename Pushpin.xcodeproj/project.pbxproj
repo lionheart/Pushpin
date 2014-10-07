@@ -1403,7 +1403,7 @@
                     "-ObjC",
                     "-all_load"
                 ],
-                "PROVISIONING_PROFILE": "dd5ba893-f367-431a-895c-677065acf85d",
+                "PROVISIONING_PROFILE": "e53d0bf9-2bca-48e3-bbc8-dcd071bd93d4",
                 "SDKROOT": "iphoneos",
                 "STRIP_INSTALLED_PRODUCT": "NO",
                 "TARGETED_DEVICE_FAMILY": "1,2",
@@ -1428,7 +1428,7 @@
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks",
                 "PRODUCT_NAME": "$(TARGET_NAME)",
-                "PROVISIONING_PROFILE": "dd5ba893-f367-431a-895c-677065acf85d",
+                "PROVISIONING_PROFILE": "e53d0bf9-2bca-48e3-bbc8-dcd071bd93d4",
                 "SDKROOT": "iphoneos",
                 "TARGETED_DEVICE_FAMILY": "1,2",
                 "WRAPPER_EXTENSION": "app"

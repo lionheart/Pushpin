@@ -99,87 +99,94 @@
     }
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
+        NSDateFormatter *enUSPOSIXDateFormatter;
+        NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+
+        enUSPOSIXDateFormatter = [[NSDateFormatter alloc] init];
+        enUSPOSIXDateFormatter.locale = enUSPOSIXLocale;
+        enUSPOSIXDateFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss";
+        enUSPOSIXDateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];
         [[ASPinboard sharedInstance] notesWithSuccess:^(NSArray *notes) {
-            [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
 
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                static NSDateFormatter *enUSPOSIXDateFormatter;
-                dispatch_once_t onceToken;
-                dispatch_once(&onceToken, ^{
-                    NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-                    
-                    enUSPOSIXDateFormatter = [[NSDateFormatter alloc] init];
-                    enUSPOSIXDateFormatter.locale = enUSPOSIXLocale;
-                    enUSPOSIXDateFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss";
-                    enUSPOSIXDateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
-                });
-                
-                NSInteger index = 0;
-                for (NSDictionary *note in notes) {
-                    NSString *noteID = note[@"id"];
-                    NSString *title = note[@"title"];
-                    NSDate *date = [enUSPOSIXDateFormatter dateFromString:note[@"updated_at"]];
-                    
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    NSInteger index = 0;
+                    for (NSDictionary *note in notes) {
+                        NSString *noteID = note[@"id"];
+                        NSString *title = note[@"title"];
+                        NSDate *date = [enUSPOSIXDateFormatter dateFromString:note[@"updated_at"]];
+                        
 #warning XXX
-                    if (note[@"updated_at"]) {
-                        CLS_LOG(@"updated_at: %@", note[@"updated_at"]);
-                    }
-                    else {
-                        date = [NSDate date];
-                    }
-                    
-                    if (title) {
-                        CLS_LOG(@"title: %@", note[@"title"]);
-                    }
-                    else {
-                        title = @"Untitled";
-                    }
-                    
-                    if (noteID) {
-                        CLS_LOG(@"noteID: %@", noteID);
-                    }
-
-                    [newNotesUnsorted addObject:@{
-                                                  @"updated_at": date,
-                                                  @"description": [self.dateFormatter stringFromDate:date],
-                                                  @"title": title,
-                                                  @"id": noteID,
-                                              }];
-                }
-                
-                NSArray *newNotes = [newNotesUnsorted sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-                    return [obj2[@"updated_at"] compare:obj1[@"updated_at"]];
-                }];
-                
-                [self.metadata removeAllObjects];
-                for (NSDictionary *note in newNotes) {
-                    [newIDs addObject:note[@"id"]];
-                    
-                    if (![oldIDs containsObject:note[@"id"]]) {
-                        [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
-                    }
-                    else {
-                        [indexPathsToReload addObject:[NSIndexPath indexPathForRow:[oldIDs indexOfObject:note[@"id"]] inSection:0]];
+                        if (note[@"updated_at"]) {
+                            CLS_LOG(@"updated_at: %@", note[@"updated_at"]);
+                        }
+                        else {
+                            date = [NSDate date];
+                        }
+                        
+                        if (title) {
+                            CLS_LOG(@"title: %@", note[@"title"]);
+                        }
+                        else {
+                            title = @"Untitled";
+                        }
+                        
+                        if (noteID) {
+                            CLS_LOG(@"noteID: %@", noteID);
+                        }
+                        
+                        [newNotesUnsorted addObject:@{
+                                                      @"updated_at": date,
+                                                      @"description": [self.dateFormatter stringFromDate:date],
+                                                      @"title": title,
+                                                      @"id": noteID,
+                                                      }];
                     }
                     
-                    PostMetadata *metadata = [PostMetadata metadataForPost:note compressed:NO width:width tagsWithFrequency:@{} cache:NO];
-                    [self.metadata addObject:metadata];
-                    index++;
-                }
-                
-                NSInteger i;
-                for (i=0; i<oldIDs.count; i++) {
-                    if (![newIDs containsObject:oldIDs[i]]) {
-                        [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+                    NSArray *newNotes = [newNotesUnsorted sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                        return [obj2[@"updated_at"] compare:obj1[@"updated_at"]];
+                    }];
+                    
+                    [self.metadata removeAllObjects];
+                    for (NSDictionary *note in newNotes) {
+                        [newIDs addObject:note[@"id"]];
+                        
+                        if (![oldIDs containsObject:note[@"id"]]) {
+                            [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
+                        }
+                        else {
+                            [indexPathsToReload addObject:[NSIndexPath indexPathForRow:[oldIDs indexOfObject:note[@"id"]] inSection:0]];
+                        }
+                        
+                        PostMetadata *metadata = [PostMetadata metadataForPost:note compressed:NO width:width tagsWithFrequency:@{} cache:NO];
+                        [self.metadata addObject:metadata];
+                        index++;
                     }
-                }
-                
-                self.posts = [newNotes copy];
-                completion(indexPathsToAdd, indexPathsToReload, indexPathsToRemove, nil);
+                    
+                    NSInteger i;
+                    for (i=0; i<oldIDs.count; i++) {
+                        if (![newIDs containsObject:oldIDs[i]]) {
+                            [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+                        }
+                    }
+                    
+                    self.posts = [newNotes copy];
+                    completion(indexPathsToAdd, indexPathsToReload, indexPathsToRemove, nil);
+                });
             });
         }];
     });
+}
+
+- (PostMetadata *)metadataForPostAtIndex:(NSInteger)index {
+    return self.metadata[index];
+}
+
+- (PostMetadata *)compressedMetadataForPostAtIndex:(NSInteger)index {
+    return self.metadata[index];
 }
 
 - (void)syncBookmarksWithCompletion:(void (^)(BOOL updated, NSError *))completion
@@ -214,6 +221,13 @@
 - (CGFloat)compressedHeightForPostAtIndex:(NSInteger)index {
     PostMetadata *metadata = self.metadata[index];
     return [metadata.height floatValue];
+}
+
+- (NSInteger)indexForPost:(NSDictionary *)post {
+#warning O(N^2)
+    return [self.posts indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+        return [obj[@"id"] isEqualToString:post[@"id"]];
+    }];
 }
 
 - (BOOL)supportsTagDrilldown {
