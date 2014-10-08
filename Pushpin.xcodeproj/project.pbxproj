@@ -3,6 +3,10 @@
     "classes": {},
     "objectVersion": "46",
     "objects": {
+        "320A68A8A35849EE81559441": {
+            "fileRef": "784337BD93F74E058D4FD66B",
+            "isa": "PBXBuildFile"
+        },
         "37018CE3180E3C0B00226408": {
             "fileEncoding": "4",
             "isa": "PBXFileReference",
@@ -1031,7 +1035,7 @@
                 ],
                 "MTL_ENABLE_DEBUG_INFO": "NO",
                 "PRODUCT_NAME": "Read Later",
-                "PROVISIONING_PROFILE": "ed7436ff-4ebe-4259-b520-475185d98442",
+                "PROVISIONING_PROFILE": "cadb8c0c-e002-4125-842f-08b58c4ba60e",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES",
                 "VALIDATE_PRODUCT": "YES"
@@ -3449,7 +3453,7 @@
                     "-ObjC",
                     "-all_load"
                 ],
-                "PROVISIONING_PROFILE": "aa6065fc-dc49-4703-8e1e-c98987ef1e27",
+                "PROVISIONING_PROFILE": "b0b07efc-f391-43c5-98a3-c34aa5c2cd3e",
                 "SDKROOT": "iphoneos",
                 "STRIP_INSTALLED_PRODUCT": "NO",
                 "TARGETED_DEVICE_FAMILY": "1,2",
@@ -3473,7 +3477,7 @@
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks",
                 "PRODUCT_NAME": "$(TARGET_NAME)",
-                "PROVISIONING_PROFILE": "aa6065fc-dc49-4703-8e1e-c98987ef1e27",
+                "PROVISIONING_PROFILE": "b0b07efc-f391-43c5-98a3-c34aa5c2cd3e",
                 "SDKROOT": "iphoneos",
                 "STRIP_INSTALLED_PRODUCT": "NO",
                 "TARGETED_DEVICE_FAMILY": "1,2",
@@ -3672,6 +3676,419 @@
         "378BFDEB19E59872006B48DC": {
             "fileRef": "374D91DC19CE26A700995DF1",
             "isa": "PBXBuildFile"
+        },
+        "378BFDEC19E5E29A006B48DC": {
+            "buildActionMask": "2147483647",
+            "files": [
+                "378BFDF519E5E29B006B48DC"
+            ],
+            "isa": "PBXSourcesBuildPhase",
+            "runOnlyForDeploymentPostprocessing": "0"
+        },
+        "378BFDED19E5E29A006B48DC": {
+            "buildActionMask": "2147483647",
+            "files": [
+                "CD798E3D1E064046B50977EC"
+            ],
+            "isa": "PBXFrameworksBuildPhase",
+            "runOnlyForDeploymentPostprocessing": "0"
+        },
+        "378BFDEE19E5E29A006B48DC": {
+            "buildActionMask": "2147483647",
+            "files": [],
+            "isa": "PBXResourcesBuildPhase",
+            "runOnlyForDeploymentPostprocessing": "0"
+        },
+        "378BFDEF19E5E29A006B48DC": {
+            "buildConfigurationList": "378BFDFF19E5E29C006B48DC",
+            "buildPhases": [
+                "6088368C3D6E4CE6B91B63D5",
+                "378BFDEC19E5E29A006B48DC",
+                "378BFDED19E5E29A006B48DC",
+                "378BFDEE19E5E29A006B48DC",
+                "5F28B6E1D3524C49B29042CC"
+            ],
+            "buildRules": [],
+            "dependencies": [
+                "378BFDF719E5E29B006B48DC"
+            ],
+            "isa": "PBXNativeTarget",
+            "name": "Tests",
+            "productName": "Tests",
+            "productReference": "378BFDF019E5E29A006B48DC",
+            "productType": "com.apple.product-type.bundle.unit-test"
+        },
+        "378BFDF019E5E29A006B48DC": {
+            "explicitFileType": "wrapper.cfbundle",
+            "includeInIndex": "0",
+            "isa": "PBXFileReference",
+            "path": "Tests.xctest",
+            "sourceTree": "BUILT_PRODUCTS_DIR"
+        },
+        "378BFDF119E5E29B006B48DC": {
+            "children": [
+                "378BFDF419E5E29B006B48DC",
+                "378BFDF219E5E29B006B48DC"
+            ],
+            "isa": "PBXGroup",
+            "path": "Tests",
+            "sourceTree": "<group>"
+        },
+        "378BFDF219E5E29B006B48DC": {
+            "children": [
+                "378BFDF319E5E29B006B48DC"
+            ],
+            "isa": "PBXGroup",
+            "name": "Supporting Files",
+            "sourceTree": "<group>"
+        },
+        "378BFDF319E5E29B006B48DC": {
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "text.plist.xml",
+            "path": "Info.plist",
+            "sourceTree": "<group>"
+        },
+        "378BFDF419E5E29B006B48DC": {
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "sourcecode.c.objc",
+            "path": "Tests.m",
+            "sourceTree": "<group>"
+        },
+        "378BFDF519E5E29B006B48DC": {
+            "fileRef": "378BFDF419E5E29B006B48DC",
+            "isa": "PBXBuildFile"
+        },
+        "378BFDF619E5E29B006B48DC": {
+            "containerPortal": "37FEEB8515745488003F2B77",
+            "isa": "PBXContainerItemProxy",
+            "proxyType": "1",
+            "remoteGlobalIDString": "37FEEB8D15745488003F2B77",
+            "remoteInfo": "Pushpin"
+        },
+        "378BFDF719E5E29B006B48DC": {
+            "isa": "PBXTargetDependency",
+            "target": "37FEEB8D15745488003F2B77",
+            "targetProxy": "378BFDF619E5E29B006B48DC"
+        },
+        "378BFDF819E5E29B006B48DC": {
+            "baseConfigurationReference": "EBA4EAC846B548A5A0618913",
+            "buildSettings": {
+                "ALWAYS_SEARCH_USER_PATHS": "NO",
+                "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
+                "CLANG_CXX_LIBRARY": "libc++",
+                "CLANG_ENABLE_MODULES": "YES",
+                "CLANG_ENABLE_OBJC_ARC": "YES",
+                "CLANG_WARN_BOOL_CONVERSION": "YES",
+                "CLANG_WARN_CONSTANT_CONVERSION": "YES",
+                "CLANG_WARN_DIRECT_OBJC_ISA_USAGE": "YES_ERROR",
+                "CLANG_WARN_EMPTY_BODY": "YES",
+                "CLANG_WARN_ENUM_CONVERSION": "YES",
+                "CLANG_WARN_INT_CONVERSION": "YES",
+                "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
+                "CLANG_WARN_UNREACHABLE_CODE": "YES",
+                "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
+                "COPY_PHASE_STRIP": "NO",
+                "ENABLE_STRICT_OBJC_MSGSEND": "YES",
+                "FRAMEWORK_SEARCH_PATHS": [
+                    "$(SDKROOT)/Developer/Library/Frameworks",
+                    "$(inherited)"
+                ],
+                "GCC_C_LANGUAGE_STANDARD": "gnu99",
+                "GCC_DYNAMIC_NO_PIC": "NO",
+                "GCC_OPTIMIZATION_LEVEL": "0",
+                "GCC_PREPROCESSOR_DEFINITIONS": [
+                    "DEBUG=1",
+                    "$(inherited)"
+                ],
+                "GCC_SYMBOLS_PRIVATE_EXTERN": "NO",
+                "GCC_WARN_64_TO_32_BIT_CONVERSION": "YES",
+                "GCC_WARN_ABOUT_RETURN_TYPE": "YES_ERROR",
+                "GCC_WARN_UNDECLARED_SELECTOR": "YES",
+                "GCC_WARN_UNINITIALIZED_AUTOS": "YES_AGGRESSIVE",
+                "GCC_WARN_UNUSED_FUNCTION": "YES",
+                "GCC_WARN_UNUSED_VARIABLE": "YES",
+                "INFOPLIST_FILE": "Tests/Info.plist",
+                "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
+                "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @loader_path/Frameworks",
+                "MTL_ENABLE_DEBUG_INFO": "YES",
+                "ONLY_ACTIVE_ARCH": "YES",
+                "PRODUCT_NAME": "$(TARGET_NAME)",
+                "SDKROOT": "iphoneos",
+                "TEST_HOST": "$(BUILT_PRODUCTS_DIR)/Pushpin.app/Pushpin"
+            },
+            "isa": "XCBuildConfiguration",
+            "name": "Pinboard Debug"
+        },
+        "378BFDF919E5E29B006B48DC": {
+            "baseConfigurationReference": "EBA4EAC846B548A5A0618913",
+            "buildSettings": {
+                "ALWAYS_SEARCH_USER_PATHS": "NO",
+                "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
+                "CLANG_CXX_LIBRARY": "libc++",
+                "CLANG_ENABLE_MODULES": "YES",
+                "CLANG_ENABLE_OBJC_ARC": "YES",
+                "CLANG_WARN_BOOL_CONVERSION": "YES",
+                "CLANG_WARN_CONSTANT_CONVERSION": "YES",
+                "CLANG_WARN_DIRECT_OBJC_ISA_USAGE": "YES_ERROR",
+                "CLANG_WARN_EMPTY_BODY": "YES",
+                "CLANG_WARN_ENUM_CONVERSION": "YES",
+                "CLANG_WARN_INT_CONVERSION": "YES",
+                "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
+                "CLANG_WARN_UNREACHABLE_CODE": "YES",
+                "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
+                "COPY_PHASE_STRIP": "YES",
+                "ENABLE_NS_ASSERTIONS": "NO",
+                "ENABLE_STRICT_OBJC_MSGSEND": "YES",
+                "FRAMEWORK_SEARCH_PATHS": [
+                    "$(SDKROOT)/Developer/Library/Frameworks",
+                    "$(inherited)"
+                ],
+                "GCC_C_LANGUAGE_STANDARD": "gnu99",
+                "GCC_WARN_64_TO_32_BIT_CONVERSION": "YES",
+                "GCC_WARN_ABOUT_RETURN_TYPE": "YES_ERROR",
+                "GCC_WARN_UNDECLARED_SELECTOR": "YES",
+                "GCC_WARN_UNINITIALIZED_AUTOS": "YES_AGGRESSIVE",
+                "GCC_WARN_UNUSED_FUNCTION": "YES",
+                "GCC_WARN_UNUSED_VARIABLE": "YES",
+                "INFOPLIST_FILE": "Tests/Info.plist",
+                "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
+                "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @loader_path/Frameworks",
+                "MTL_ENABLE_DEBUG_INFO": "NO",
+                "PRODUCT_NAME": "$(TARGET_NAME)",
+                "SDKROOT": "iphoneos",
+                "TEST_HOST": "$(BUILT_PRODUCTS_DIR)/Pushpin.app/Pushpin",
+                "VALIDATE_PRODUCT": "YES"
+            },
+            "isa": "XCBuildConfiguration",
+            "name": "Delicious Debug"
+        },
+        "378BFDFA19E5E29B006B48DC": {
+            "baseConfigurationReference": "EBA4EAC846B548A5A0618913",
+            "buildSettings": {
+                "ALWAYS_SEARCH_USER_PATHS": "NO",
+                "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
+                "CLANG_CXX_LIBRARY": "libc++",
+                "CLANG_ENABLE_MODULES": "YES",
+                "CLANG_ENABLE_OBJC_ARC": "YES",
+                "CLANG_WARN_BOOL_CONVERSION": "YES",
+                "CLANG_WARN_CONSTANT_CONVERSION": "YES",
+                "CLANG_WARN_DIRECT_OBJC_ISA_USAGE": "YES_ERROR",
+                "CLANG_WARN_EMPTY_BODY": "YES",
+                "CLANG_WARN_ENUM_CONVERSION": "YES",
+                "CLANG_WARN_INT_CONVERSION": "YES",
+                "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
+                "CLANG_WARN_UNREACHABLE_CODE": "YES",
+                "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
+                "COPY_PHASE_STRIP": "YES",
+                "ENABLE_NS_ASSERTIONS": "NO",
+                "ENABLE_STRICT_OBJC_MSGSEND": "YES",
+                "FRAMEWORK_SEARCH_PATHS": [
+                    "$(SDKROOT)/Developer/Library/Frameworks",
+                    "$(inherited)"
+                ],
+                "GCC_C_LANGUAGE_STANDARD": "gnu99",
+                "GCC_WARN_64_TO_32_BIT_CONVERSION": "YES",
+                "GCC_WARN_ABOUT_RETURN_TYPE": "YES_ERROR",
+                "GCC_WARN_UNDECLARED_SELECTOR": "YES",
+                "GCC_WARN_UNINITIALIZED_AUTOS": "YES_AGGRESSIVE",
+                "GCC_WARN_UNUSED_FUNCTION": "YES",
+                "GCC_WARN_UNUSED_VARIABLE": "YES",
+                "INFOPLIST_FILE": "Tests/Info.plist",
+                "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
+                "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @loader_path/Frameworks",
+                "MTL_ENABLE_DEBUG_INFO": "NO",
+                "PRODUCT_NAME": "$(TARGET_NAME)",
+                "SDKROOT": "iphoneos",
+                "TEST_HOST": "$(BUILT_PRODUCTS_DIR)/Pushpin.app/Pushpin",
+                "VALIDATE_PRODUCT": "YES"
+            },
+            "isa": "XCBuildConfiguration",
+            "name": "Pinboard App Store"
+        },
+        "378BFDFB19E5E29B006B48DC": {
+            "baseConfigurationReference": "EBA4EAC846B548A5A0618913",
+            "buildSettings": {
+                "ALWAYS_SEARCH_USER_PATHS": "NO",
+                "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
+                "CLANG_CXX_LIBRARY": "libc++",
+                "CLANG_ENABLE_MODULES": "YES",
+                "CLANG_ENABLE_OBJC_ARC": "YES",
+                "CLANG_WARN_BOOL_CONVERSION": "YES",
+                "CLANG_WARN_CONSTANT_CONVERSION": "YES",
+                "CLANG_WARN_DIRECT_OBJC_ISA_USAGE": "YES_ERROR",
+                "CLANG_WARN_EMPTY_BODY": "YES",
+                "CLANG_WARN_ENUM_CONVERSION": "YES",
+                "CLANG_WARN_INT_CONVERSION": "YES",
+                "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
+                "CLANG_WARN_UNREACHABLE_CODE": "YES",
+                "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
+                "COPY_PHASE_STRIP": "YES",
+                "ENABLE_NS_ASSERTIONS": "NO",
+                "ENABLE_STRICT_OBJC_MSGSEND": "YES",
+                "FRAMEWORK_SEARCH_PATHS": [
+                    "$(SDKROOT)/Developer/Library/Frameworks",
+                    "$(inherited)"
+                ],
+                "GCC_C_LANGUAGE_STANDARD": "gnu99",
+                "GCC_WARN_64_TO_32_BIT_CONVERSION": "YES",
+                "GCC_WARN_ABOUT_RETURN_TYPE": "YES_ERROR",
+                "GCC_WARN_UNDECLARED_SELECTOR": "YES",
+                "GCC_WARN_UNINITIALIZED_AUTOS": "YES_AGGRESSIVE",
+                "GCC_WARN_UNUSED_FUNCTION": "YES",
+                "GCC_WARN_UNUSED_VARIABLE": "YES",
+                "INFOPLIST_FILE": "Tests/Info.plist",
+                "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
+                "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @loader_path/Frameworks",
+                "MTL_ENABLE_DEBUG_INFO": "NO",
+                "PRODUCT_NAME": "$(TARGET_NAME)",
+                "SDKROOT": "iphoneos",
+                "TEST_HOST": "$(BUILT_PRODUCTS_DIR)/Pushpin.app/Pushpin",
+                "VALIDATE_PRODUCT": "YES"
+            },
+            "isa": "XCBuildConfiguration",
+            "name": "Pinboard App Store Debug"
+        },
+        "378BFDFC19E5E29B006B48DC": {
+            "baseConfigurationReference": "EBA4EAC846B548A5A0618913",
+            "buildSettings": {
+                "ALWAYS_SEARCH_USER_PATHS": "NO",
+                "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
+                "CLANG_CXX_LIBRARY": "libc++",
+                "CLANG_ENABLE_MODULES": "YES",
+                "CLANG_ENABLE_OBJC_ARC": "YES",
+                "CLANG_WARN_BOOL_CONVERSION": "YES",
+                "CLANG_WARN_CONSTANT_CONVERSION": "YES",
+                "CLANG_WARN_DIRECT_OBJC_ISA_USAGE": "YES_ERROR",
+                "CLANG_WARN_EMPTY_BODY": "YES",
+                "CLANG_WARN_ENUM_CONVERSION": "YES",
+                "CLANG_WARN_INT_CONVERSION": "YES",
+                "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
+                "CLANG_WARN_UNREACHABLE_CODE": "YES",
+                "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
+                "COPY_PHASE_STRIP": "YES",
+                "ENABLE_NS_ASSERTIONS": "NO",
+                "ENABLE_STRICT_OBJC_MSGSEND": "YES",
+                "FRAMEWORK_SEARCH_PATHS": [
+                    "$(SDKROOT)/Developer/Library/Frameworks",
+                    "$(inherited)"
+                ],
+                "GCC_C_LANGUAGE_STANDARD": "gnu99",
+                "GCC_WARN_64_TO_32_BIT_CONVERSION": "YES",
+                "GCC_WARN_ABOUT_RETURN_TYPE": "YES_ERROR",
+                "GCC_WARN_UNDECLARED_SELECTOR": "YES",
+                "GCC_WARN_UNINITIALIZED_AUTOS": "YES_AGGRESSIVE",
+                "GCC_WARN_UNUSED_FUNCTION": "YES",
+                "GCC_WARN_UNUSED_VARIABLE": "YES",
+                "INFOPLIST_FILE": "Tests/Info.plist",
+                "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
+                "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @loader_path/Frameworks",
+                "MTL_ENABLE_DEBUG_INFO": "NO",
+                "PRODUCT_NAME": "$(TARGET_NAME)",
+                "SDKROOT": "iphoneos",
+                "TEST_HOST": "$(BUILT_PRODUCTS_DIR)/Pushpin.app/Pushpin",
+                "VALIDATE_PRODUCT": "YES"
+            },
+            "isa": "XCBuildConfiguration",
+            "name": "Delicious App Store"
+        },
+        "378BFDFD19E5E29B006B48DC": {
+            "baseConfigurationReference": "EBA4EAC846B548A5A0618913",
+            "buildSettings": {
+                "ALWAYS_SEARCH_USER_PATHS": "NO",
+                "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
+                "CLANG_CXX_LIBRARY": "libc++",
+                "CLANG_ENABLE_MODULES": "YES",
+                "CLANG_ENABLE_OBJC_ARC": "YES",
+                "CLANG_WARN_BOOL_CONVERSION": "YES",
+                "CLANG_WARN_CONSTANT_CONVERSION": "YES",
+                "CLANG_WARN_DIRECT_OBJC_ISA_USAGE": "YES_ERROR",
+                "CLANG_WARN_EMPTY_BODY": "YES",
+                "CLANG_WARN_ENUM_CONVERSION": "YES",
+                "CLANG_WARN_INT_CONVERSION": "YES",
+                "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
+                "CLANG_WARN_UNREACHABLE_CODE": "YES",
+                "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
+                "COPY_PHASE_STRIP": "YES",
+                "ENABLE_NS_ASSERTIONS": "NO",
+                "ENABLE_STRICT_OBJC_MSGSEND": "YES",
+                "FRAMEWORK_SEARCH_PATHS": [
+                    "$(SDKROOT)/Developer/Library/Frameworks",
+                    "$(inherited)"
+                ],
+                "GCC_C_LANGUAGE_STANDARD": "gnu99",
+                "GCC_WARN_64_TO_32_BIT_CONVERSION": "YES",
+                "GCC_WARN_ABOUT_RETURN_TYPE": "YES_ERROR",
+                "GCC_WARN_UNDECLARED_SELECTOR": "YES",
+                "GCC_WARN_UNINITIALIZED_AUTOS": "YES_AGGRESSIVE",
+                "GCC_WARN_UNUSED_FUNCTION": "YES",
+                "GCC_WARN_UNUSED_VARIABLE": "YES",
+                "INFOPLIST_FILE": "Tests/Info.plist",
+                "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
+                "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @loader_path/Frameworks",
+                "MTL_ENABLE_DEBUG_INFO": "NO",
+                "PRODUCT_NAME": "$(TARGET_NAME)",
+                "SDKROOT": "iphoneos",
+                "TEST_HOST": "$(BUILT_PRODUCTS_DIR)/Pushpin.app/Pushpin",
+                "VALIDATE_PRODUCT": "YES"
+            },
+            "isa": "XCBuildConfiguration",
+            "name": "Pinboard Beta"
+        },
+        "378BFDFE19E5E29B006B48DC": {
+            "baseConfigurationReference": "EBA4EAC846B548A5A0618913",
+            "buildSettings": {
+                "ALWAYS_SEARCH_USER_PATHS": "NO",
+                "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
+                "CLANG_CXX_LIBRARY": "libc++",
+                "CLANG_ENABLE_MODULES": "YES",
+                "CLANG_ENABLE_OBJC_ARC": "YES",
+                "CLANG_WARN_BOOL_CONVERSION": "YES",
+                "CLANG_WARN_CONSTANT_CONVERSION": "YES",
+                "CLANG_WARN_DIRECT_OBJC_ISA_USAGE": "YES_ERROR",
+                "CLANG_WARN_EMPTY_BODY": "YES",
+                "CLANG_WARN_ENUM_CONVERSION": "YES",
+                "CLANG_WARN_INT_CONVERSION": "YES",
+                "CLANG_WARN_OBJC_ROOT_CLASS": "YES_ERROR",
+                "CLANG_WARN_UNREACHABLE_CODE": "YES",
+                "CLANG_WARN__DUPLICATE_METHOD_MATCH": "YES",
+                "COPY_PHASE_STRIP": "YES",
+                "ENABLE_NS_ASSERTIONS": "NO",
+                "ENABLE_STRICT_OBJC_MSGSEND": "YES",
+                "FRAMEWORK_SEARCH_PATHS": [
+                    "$(SDKROOT)/Developer/Library/Frameworks",
+                    "$(inherited)"
+                ],
+                "GCC_C_LANGUAGE_STANDARD": "gnu99",
+                "GCC_WARN_64_TO_32_BIT_CONVERSION": "YES",
+                "GCC_WARN_ABOUT_RETURN_TYPE": "YES_ERROR",
+                "GCC_WARN_UNDECLARED_SELECTOR": "YES",
+                "GCC_WARN_UNINITIALIZED_AUTOS": "YES_AGGRESSIVE",
+                "GCC_WARN_UNUSED_FUNCTION": "YES",
+                "GCC_WARN_UNUSED_VARIABLE": "YES",
+                "INFOPLIST_FILE": "Tests/Info.plist",
+                "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
+                "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @loader_path/Frameworks",
+                "MTL_ENABLE_DEBUG_INFO": "NO",
+                "PRODUCT_NAME": "$(TARGET_NAME)",
+                "SDKROOT": "iphoneos",
+                "TEST_HOST": "$(BUILT_PRODUCTS_DIR)/Pushpin.app/Pushpin",
+                "VALIDATE_PRODUCT": "YES"
+            },
+            "isa": "XCBuildConfiguration",
+            "name": "Delicious Beta"
+        },
+        "378BFDFF19E5E29C006B48DC": {
+            "buildConfigurations": [
+                "378BFDF819E5E29B006B48DC",
+                "378BFDF919E5E29B006B48DC",
+                "378BFDFA19E5E29B006B48DC",
+                "378BFDFB19E5E29B006B48DC",
+                "378BFDFC19E5E29B006B48DC",
+                "378BFDFD19E5E29B006B48DC",
+                "378BFDFE19E5E29B006B48DC"
+            ],
+            "defaultConfigurationIsVisible": "0",
+            "isa": "XCConfigurationList"
         },
         "378DA45E1633B4B700831134": {
             "isa": "PBXFileReference",
@@ -4214,7 +4631,7 @@
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
                 "MTL_ENABLE_DEBUG_INFO": "NO",
                 "PRODUCT_NAME": "Pushpin",
-                "PROVISIONING_PROFILE": "78e5b688-de7c-4fbd-8343-fc0aec173d77",
+                "PROVISIONING_PROFILE": "66ceb745-aacb-49fd-af46-42ca9b4d5bd6",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES",
                 "VALIDATE_PRODUCT": "YES"
@@ -7691,6 +8108,7 @@
                 "37FEEBDC15748BA7003F2B77",
                 "3790424719CBD49A00409D34",
                 "3772DE541933B0D1004B348D",
+                "378BFDF119E5E29B006B48DC",
                 "37FEEB9115745488003F2B77",
                 "3740A23616863CF000F95D82",
                 "37FEEB8F15745488003F2B77",
@@ -7703,7 +8121,8 @@
                 "3772DE901933B0E0004B348D",
                 "370859F817F329D400270A9D",
                 "54B0022F87374C449F105BA0",
-                "5D046C0A53164C1681C534DD"
+                "5D046C0A53164C1681C534DD",
+                "EBA4EAC846B548A5A0618913"
             ],
             "isa": "PBXGroup",
             "sourceTree": "<group>"
@@ -7717,6 +8136,10 @@
                     "372943EB19CF53FD00ABF006": {
                         "CreatedOnToolsVersion": "6.0",
                         "DevelopmentTeam": "63553QQ62F"
+                    },
+                    "378BFDEF19E5E29A006B48DC": {
+                        "CreatedOnToolsVersion": "6.0",
+                        "TestTargetID": "37FEEB8D15745488003F2B77"
                     },
                     "3790424519CBD49A00409D34": {
                         "CreatedOnToolsVersion": "6.0",
@@ -7764,13 +8187,15 @@
             "mainGroup": "37FEEB8315745488003F2B77",
             "productRefGroup": "37FEEB8F15745488003F2B77",
             "projectDirPath": "",
+            "projectReferences": [],
             "projectRoot": "",
             "targets": [
                 "37FEEB8D15745488003F2B77",
                 "3772DE511933B0CF004B348D",
                 "3790424519CBD49A00409D34",
                 "372943EB19CF53FD00ABF006",
-                "379042B119CC646700409D34"
+                "379042B119CC646700409D34",
+                "378BFDEF19E5E29A006B48DC"
             ]
         },
         "37FEEB8815745488003F2B77": {
@@ -7813,7 +8238,8 @@
                 "376E0A80175AA9EC004CCDEE",
                 "37800E9A162D5264009FCB17",
                 "37B5F4E51773864C005687DA",
-                "3709354F1894C7DA00E3588E"
+                "3709354F1894C7DA00E3588E",
+                "320A68A8A35849EE81559441"
             ],
             "isa": "PBXFrameworksBuildPhase",
             "runOnlyForDeploymentPostprocessing": "0"
@@ -8052,7 +8478,8 @@
                 "37FEEB8E15745488003F2B77",
                 "3790424619CBD49A00409D34",
                 "379042B219CC646700409D34",
-                "372943EC19CF53FD00ABF006"
+                "372943EC19CF53FD00ABF006",
+                "378BFDF019E5E29A006B48DC"
             ],
             "isa": "PBXGroup",
             "name": "Products",
@@ -8086,7 +8513,8 @@
                 "37800E99162D5264009FCB17",
                 "37B5F4E41773864C005687DA",
                 "37FEEB9215745488003F2B77",
-                "3717966618A8857F004B2D08"
+                "3717966618A8857F004B2D08",
+                "B25462D5C303447F99AE829B"
             ],
             "isa": "PBXGroup",
             "name": "Frameworks",
@@ -8535,6 +8963,30 @@
             "path": "Pods/Pods.xcconfig",
             "sourceTree": "SOURCE_ROOT"
         },
+        "5F28B6E1D3524C49B29042CC": {
+            "buildActionMask": "2147483647",
+            "files": [],
+            "inputPaths": [],
+            "isa": "PBXShellScriptBuildPhase",
+            "name": "Copy Pods Resources",
+            "outputPaths": [],
+            "runOnlyForDeploymentPostprocessing": "0",
+            "shellPath": "/bin/sh",
+            "shellScript": "\"${SRCROOT}/Pods/Pods-Tests-resources.sh\"\n",
+            "showEnvVarsInLog": "0"
+        },
+        "6088368C3D6E4CE6B91B63D5": {
+            "buildActionMask": "2147483647",
+            "files": [],
+            "inputPaths": [],
+            "isa": "PBXShellScriptBuildPhase",
+            "name": "Check Pods Manifest.lock",
+            "outputPaths": [],
+            "runOnlyForDeploymentPostprocessing": "0",
+            "shellPath": "/bin/sh",
+            "shellScript": "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n",
+            "showEnvVarsInLog": "0"
+        },
         "6733412331344A298389F74A": {
             "buildActionMask": "2147483647",
             "files": [],
@@ -8613,6 +9065,13 @@
             "shellScript": "\"${SRCROOT}/Pods/Pods-resources.sh\"\n",
             "showEnvVarsInLog": "0"
         },
+        "B25462D5C303447F99AE829B": {
+            "explicitFileType": "archive.ar",
+            "includeInIndex": "0",
+            "isa": "PBXFileReference",
+            "path": "libPods-Tests.a",
+            "sourceTree": "BUILT_PRODUCTS_DIR"
+        },
         "CAE397B5D0234B3785CC4985": {
             "buildActionMask": "2147483647",
             "files": [],
@@ -8624,6 +9083,10 @@
             "shellPath": "/bin/sh",
             "shellScript": "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n",
             "showEnvVarsInLog": "0"
+        },
+        "CD798E3D1E064046B50977EC": {
+            "fileRef": "B25462D5C303447F99AE829B",
+            "isa": "PBXBuildFile"
         },
         "D6F38FE5215F4BDA82434A84": {
             "buildActionMask": "2147483647",
@@ -9940,6 +10403,14 @@
             ],
             "isa": "PBXGroup",
             "name": "Bookmarks",
+            "sourceTree": "<group>"
+        },
+        "EBA4EAC846B548A5A0618913": {
+            "includeInIndex": "1",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "text.xcconfig",
+            "name": "Pods-Tests.xcconfig",
+            "path": "Pods/Pods-Tests.xcconfig",
             "sourceTree": "<group>"
         }
     },

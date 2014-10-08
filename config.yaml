@@ -19,7 +19,7 @@ configs:
       code_sign_identity: "iPhone Developer: Daniel Loewenherz (32S53QJB5F)"
     pinboard_beta:
       info: "Pushpin/Beta-Info.plist"
-      profile: "aa6065fc-dc49-4703-8e1e-c98987ef1e27"
+      profile: "b0b07efc-f391-43c5-98a3-c34aa5c2cd3e"
       entitlements: "Pushpin/Beta.entitlements"
       code_sign_identity: "iPhone Distribution: Lionheart Software LLC (63553QQ62F)"
     delicious_app_store:
@@ -55,7 +55,7 @@ configs:
       code_sign_identity: "iPhone Developer: Daniel Loewenherz (32S53QJB5F)"
     pinboard_beta:
       info: "Read Later Extension/Beta-Info.plist"
-      profile: "ed7436ff-4ebe-4259-b520-475185d98442"
+      profile: "cadb8c0c-e002-4125-842f-08b58c4ba60e"
       entitlements: "Pinboard/Share-Beta.entitlements"
       code_sign_identity: "iPhone Distribution: Lionheart Software LLC (63553QQ62F)"
     delicious_app_store:
@@ -91,7 +91,7 @@ configs:
       code_sign_identity: "iPhone Developer: Daniel Loewenherz (32S53QJB5F)"
     pinboard_beta:
       info: "Pinboard/Info-Beta.plist"
-      profile: "78e5b688-de7c-4fbd-8343-fc0aec173d77"
+      profile: "66ceb745-aacb-49fd-af46-42ca9b4d5bd6"
       entitlements: "Pinboard/Share-Beta.entitlements"
       code_sign_identity: "iPhone Distribution: Lionheart Software LLC (63553QQ62F)"
     delicious_app_store:
