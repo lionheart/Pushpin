@@ -33,3 +33,7 @@ pod '1PasswordExtension', '1.0.9'
 target 'DebugPods', :exclusive => true do
   pod 'BugshotKit', '0.1.0'
 end
+
+target 'Tests', :exclusive => true do
+  pod 'KIF', '~> 3.0'
+end
