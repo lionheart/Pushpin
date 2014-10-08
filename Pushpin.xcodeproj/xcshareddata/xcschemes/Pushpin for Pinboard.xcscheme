@@ -54,7 +54,7 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Pinboard App Store Debug"
+      buildConfiguration = "Pinboard Beta"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugXPCServices = "NO"
@@ -99,7 +99,7 @@
       buildConfiguration = "Pinboard Debug">
    </AnalyzeAction>
    <ArchiveAction
-      buildConfiguration = "Pinboard App Store"
+      buildConfiguration = "Pinboard Beta"
       customArchiveName = "Pushpin"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
