@@ -1031,7 +1031,7 @@
                 ],
                 "MTL_ENABLE_DEBUG_INFO": "NO",
                 "PRODUCT_NAME": "Read Later",
-                "PROVISIONING_PROFILE": "9fbcbd7b-8937-442d-9743-693f740c99e0",
+                "PROVISIONING_PROFILE": "ed7436ff-4ebe-4259-b520-475185d98442",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES",
                 "VALIDATE_PRODUCT": "YES"
@@ -3469,7 +3469,7 @@
                     "-ObjC",
                     "-all_load"
                 ],
-                "PROVISIONING_PROFILE": "f4e91b56-e108-4bcc-8deb-eebef30e2931",
+                "PROVISIONING_PROFILE": "e133d997-68c1-45f8-9a0c-832ca8ee11f1",
                 "SDKROOT": "iphoneos",
                 "STRIP_INSTALLED_PRODUCT": "NO",
                 "TARGETED_DEVICE_FAMILY": "1,2",
@@ -3493,7 +3493,7 @@
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks",
                 "PRODUCT_NAME": "$(TARGET_NAME)",
-                "PROVISIONING_PROFILE": "f4e91b56-e108-4bcc-8deb-eebef30e2931",
+                "PROVISIONING_PROFILE": "e133d997-68c1-45f8-9a0c-832ca8ee11f1",
                 "SDKROOT": "iphoneos",
                 "STRIP_INSTALLED_PRODUCT": "NO",
                 "TARGETED_DEVICE_FAMILY": "1,2",
