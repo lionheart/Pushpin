@@ -3469,7 +3469,7 @@
                     "-ObjC",
                     "-all_load"
                 ],
-                "PROVISIONING_PROFILE": "e133d997-68c1-45f8-9a0c-832ca8ee11f1",
+                "PROVISIONING_PROFILE": "aa6065fc-dc49-4703-8e1e-c98987ef1e27",
                 "SDKROOT": "iphoneos",
                 "STRIP_INSTALLED_PRODUCT": "NO",
                 "TARGETED_DEVICE_FAMILY": "1,2",
@@ -3493,7 +3493,7 @@
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks",
                 "PRODUCT_NAME": "$(TARGET_NAME)",
-                "PROVISIONING_PROFILE": "e133d997-68c1-45f8-9a0c-832ca8ee11f1",
+                "PROVISIONING_PROFILE": "aa6065fc-dc49-4703-8e1e-c98987ef1e27",
                 "SDKROOT": "iphoneos",
                 "STRIP_INSTALLED_PRODUCT": "NO",
                 "TARGETED_DEVICE_FAMILY": "1,2",
