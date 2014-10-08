@@ -61,17 +61,17 @@ configs:
     delicious_app_store:
       info: "Pushpin/Info.plist"
       profile: "29099fb1-0606-4967-884d-96f3d84d94b2"
-      entitlements: "Pushpin.entitlements"
+      entitlements: "Pinboard/Share-AppStore.entitlements"
       code_sign_identity: "iPhone Distribution: Lionheart Software LLC (63553QQ62F)"
     delicious_dev:
       info: "Pushpin/Info.plist"
       profile: "45D6F4CF-F5A8-4BC7-92FE-4F506DCFF13A"
-      entitlements: "Beta.entitlements"
+      entitlements: "Pinboard/Share-Dev.entitlements"
       code_sign_identity: "iPhone Developer: Daniel Loewenherz (32S53QJB5F)"
     delicious_beta:
       info: "Pushpin/Info.plist"
       profile: "dd5ba893-f367-431a-895c-677065acf85d"
-      entitlements: "Dev.entitlements"
+      entitlements: "Pinboard/Share-Beta.entitlements"
       code_sign_identity: "iPhone Distribution: Lionheart Software LLC (63553QQ62F)"
   bookmark_extension:
     pinboard_app_store_debug:
@@ -97,17 +97,17 @@ configs:
     delicious_app_store:
       info: "Pushpin/Info.plist"
       profile: "29099fb1-0606-4967-884d-96f3d84d94b2"
-      entitlements: "Pushpin.entitlements"
+      entitlements: "Pinboard/Share-AppStore.entitlements"
       code_sign_identity: "iPhone Distribution: Lionheart Software LLC (63553QQ62F)"
     delicious_dev:
       info: "Pushpin/Info.plist"
       profile: "45D6F4CF-F5A8-4BC7-92FE-4F506DCFF13A"
-      entitlements: "Beta.entitlements"
+      entitlements: "Pinboard/Share-Dev.entitlements"
       code_sign_identity: "iPhone Developer: Daniel Loewenherz (32S53QJB5F)"
     delicious_beta:
       info: "Pushpin/Info.plist"
       profile: "dd5ba893-f367-431a-895c-677065acf85d"
-      entitlements: "Dev.entitlements"
+      entitlements: "Pinboard/Share-Beta.entitlements"
       code_sign_identity: "iPhone Distribution: Lionheart Software LLC (63553QQ62F)"
   framework:
     pinboard_app_store_debug:
