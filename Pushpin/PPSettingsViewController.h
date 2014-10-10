@@ -47,7 +47,7 @@ enum : NSInteger {
 @property (nonatomic, retain) UIAlertView *instapaperVerificationAlertView;
 @property (nonatomic, retain) UIAlertView *readabilityVerificationAlertView;
 @property (nonatomic, strong) UIAlertView *pocketVerificationAlertView;
-@property (nonatomic, retain) PPLoadingView *loadingIndicator;
+@property (nonatomic, retain) UIActivityIndicatorView *loadingIndicator;
 @property (nonatomic, retain) UIAlertView *instapaperAlertView;
 @property (nonatomic, retain) UIAlertView *readabilityAlertView;
 @property (nonatomic, retain) UIAlertView *logOutAlertView;
