@@ -31,6 +31,7 @@
 @property (nonatomic) BOOL bookmarksUpdated;
 
 @property (nonatomic) BOOL connectionAvailable;
+@property (nonatomic) BOOL hideURLPrompt;
 
 @property (nonatomic, strong) NSString *bookmarksUpdatedMessage;
 @property (nonatomic, strong) NSString *clipboardBookmarkTitle;

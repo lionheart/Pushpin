@@ -277,7 +277,7 @@
     BOOL isAuthenticated = settings.token != nil;
 #endif
 
-    if (!didLaunchWithURL && isAuthenticated) {
+    if (!didLaunchWithURL && isAuthenticated && !self.hideURLPrompt) {
         [self promptUserToAddBookmark];
         didLaunchWithURL = NO;
     }
@@ -563,6 +563,7 @@
 
     [self becomeFirstResponder];
     self.bookmarksUpdated = NO;
+    self.hideURLPrompt = NO;
     self.bookmarksUpdatedMessage = nil;
     self.addBookmarkAlertView = nil;
     self.updateBookmarkAlertView = nil;

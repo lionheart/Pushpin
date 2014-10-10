@@ -13,12 +13,16 @@
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
+#import "PPAppDelegate.h"
+
 static NSString *CellIdentifier = @"Cell";
 
 @interface LHSFontSelectionViewController ()
 
 @property (nonatomic, strong) NSArray *products;
+@property (nonatomic, strong) UIActivityIndicatorView *activity;
 @property (nonatomic, strong) NSDictionary *heights;
+@property (nonatomic) BOOL purchaseInProgress;
 
 - (NSAttributedString *)attributedFontNameString;
 - (void)purchasePremiumFonts:(id)sender;
@@ -50,7 +54,9 @@ static NSString *CellIdentifier = @"Cell";
     [super viewDidLoad];
 
     self.title = @"Font";
+    self.activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     self.currentFontName = [self.delegate fontNameForFontSelectionViewController:self];
+    self.purchaseInProgress = NO;
     self.heights = @{
                      @"AcademyEngravedLetPlain": @(24.85546875),
                      @"AlNile": @(28.665),
@@ -341,6 +347,11 @@ static NSString *CellIdentifier = @"Cell";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
+    delegate.hideURLPrompt = YES;
+
+    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
+
     [self setNeedsStatusBarAppearanceUpdate];
     NSArray *indexPathForCurrentlySelectedFont = [self indexPathsForFontName:self.currentFontName];
     
@@ -361,6 +372,10 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+
+    PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
+    delegate.hideURLPrompt = NO;
+
     [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
 }
 
@@ -434,6 +449,7 @@ static NSString *CellIdentifier = @"Cell";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
+    cell.accessoryView = nil;
     cell.accessoryType = UITableViewCellAccessoryNone;
     cell.textLabel.text = nil;
     cell.textLabel.numberOfLines = 1;
@@ -457,24 +473,51 @@ static NSString *CellIdentifier = @"Cell";
     
     if (!self.purchased && indexPath.section == 0) {
         if (indexPath.row == 0) {
-            cell.textLabel.attributedText = [self attributedFontNameString];
+            NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithAttributedString:[self attributedFontNameString]];
             cell.textLabel.numberOfLines = 0;
 
-            BOOL displayPriceButton = YES;
-            if (displayPriceButton) {
-                YHRoundBorderedButton *priceButton = [[YHRoundBorderedButton alloc] init];
-                priceButton.tag = indexPath.row;
-                [priceButton setTitle:@"$1.99" forState:UIControlStateNormal];
-                [priceButton addTarget:self action:@selector(purchasePremiumFonts:) forControlEvents:UIControlEventTouchUpInside];
-                [priceButton sizeToFit];
-                priceButton.translatesAutoresizingMaskIntoConstraints = NO;
-                
-                [cell.contentView addSubview:priceButton];
-                [cell.contentView lhs_addConstraints:@"[view(width)]-8-|"
-                                             metrics:@{@"width": @(CGRectGetWidth(priceButton.frame)) }
-                                               views:@{@"view": priceButton}];
-                [cell.contentView lhs_centerVerticallyForView:priceButton];
+            NSRange range = NSMakeRange(0, attributedText.length);
+
+            if (self.products.count > 0) {
+                [attributedText addAttribute:NSForegroundColorAttributeName value:[UIColor blackColor] range:range];
+
+                BOOL displayPriceButton = YES;
+                if (self.purchaseInProgress) {
+                    [attributedText addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor] range:range];
+                    cell.accessoryView = self.activity;
+                    [self.activity startAnimating];
+                }
+                else if (displayPriceButton) {
+                    YHRoundBorderedButton *priceButton = [[YHRoundBorderedButton alloc] init];
+                    priceButton.tag = indexPath.row;
+
+                    SKProduct *product = self.products[0];
+
+                    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+                    [numberFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
+                    [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
+                    [numberFormatter setLocale:product.priceLocale];
+                    NSString *formattedPrice = [numberFormatter stringFromNumber:product.price];
+
+                    [priceButton setTitle:formattedPrice forState:UIControlStateNormal];
+                    [priceButton addTarget:self action:@selector(purchasePremiumFonts:) forControlEvents:UIControlEventTouchUpInside];
+                    [priceButton sizeToFit];
+                    priceButton.translatesAutoresizingMaskIntoConstraints = NO;
+
+                    [cell.contentView addSubview:priceButton];
+                    [cell.contentView lhs_addConstraints:@"[view(width)]-8-|"
+                                                 metrics:@{@"width": @(CGRectGetWidth(priceButton.frame)) }
+                                                   views:@{@"view": priceButton}];
+                    [cell.contentView lhs_centerVerticallyForView:priceButton];
+                }
             }
+            else {
+                [attributedText addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor] range:range];
+                cell.accessoryView = self.activity;
+                [self.activity startAnimating];
+            }
+
+            cell.textLabel.attributedText = attributedText;
         }
         else {
             cell.textLabel.text = @"Restore Purchases";
@@ -482,6 +525,7 @@ static NSString *CellIdentifier = @"Cell";
         }
     }
     else {
+        cell.textLabel.textColor = [UIColor blackColor];
         cell.textLabel.text = fontDisplayName;
         cell.textLabel.font = font;
 
@@ -512,8 +556,12 @@ static NSString *CellIdentifier = @"Cell";
             [self purchasePremiumFonts:nil];
         }
         else {
-            [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
             [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
+            self.purchaseInProgress = YES;
+
+            [self.tableView beginUpdates];
+            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView endUpdates];
         }
     }
     else {
@@ -627,6 +675,21 @@ static NSString *CellIdentifier = @"Cell";
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
     self.products = response.products;
     [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
+    self.purchaseInProgress = NO;
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableView beginUpdates];
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView endUpdates];
+    });
+}
+
+- (void)requestDidFinish:(SKRequest *)request {
+
+}
+
+- (void)request:(SKRequest *)request didFailWithError:(NSError *)error {
+    self.purchaseInProgress = NO;
 }
 
 #pragma mark - SKPaymentTransactionObserver
@@ -634,10 +697,8 @@ static NSString *CellIdentifier = @"Cell";
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions {
     [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
     for (SKPaymentTransaction *transaction in transactions) {
-        switch (transaction.transactionState) {
+        switch ((NSInteger)transaction.transactionState) {
             case SKPaymentTransactionStatePurchased: {
-                [queue finishTransaction:transaction];
-                
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Success!"
                                                                 message:@"Thank you for your purchase."
                                                                delegate:nil
@@ -647,21 +708,28 @@ static NSString *CellIdentifier = @"Cell";
                 
                 [PPSettings sharedSettings].purchasedPremiumFonts = YES;
 
-                [self.tableView beginUpdates];
-                [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView endUpdates];
+                [queue finishTransaction:transaction];
+
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.tableView beginUpdates];
+                    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView endUpdates];
+                });
                 break;
             }
                 
-            case SKPaymentTransactionStateRestored:
-                [queue finishTransaction:transaction];
-
+            case SKPaymentTransactionStateRestored: {
                 [PPSettings sharedSettings].purchasedPremiumFonts = YES;
+
+                [queue finishTransaction:transaction];
                 
-                [self.tableView beginUpdates];
-                [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView endUpdates];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.tableView beginUpdates];
+                    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView endUpdates];
+                });
                 break;
+            }
                 
             case SKPaymentTransactionStateFailed: {
                 // iOS already displays an error prompt when IAPs are restricted.
@@ -690,15 +758,28 @@ static NSString *CellIdentifier = @"Cell";
                                                           otherButtonTitles:@"OK", nil];
                     [alert show];
                 }
+
+                self.purchaseInProgress = NO;
                 [queue finishTransaction:transaction];
+
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.tableView beginUpdates];
+                    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView endUpdates];
+                });
                 break;
             }
+
+            case SKPaymentTransactionStatePurchasing: SKPaymentTransactionStateDeferred:
+                break;
         }
     }
 }
 
 - (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue {
     [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
+    self.purchaseInProgress = NO;
+
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.tableView beginUpdates];
         [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
@@ -708,6 +789,8 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error {
     [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
+    self.purchaseInProgress = NO;
+
     dispatch_async(dispatch_get_main_queue(), ^{
         NSString *title = [NSString stringWithFormat:@"Store Error %ld", (long)error.code];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
@@ -730,6 +813,13 @@ static NSString *CellIdentifier = @"Cell";
         if (self.products.count > 0) {
             SKPayment *payment = [SKPayment paymentWithProduct:self.products[0]];
             [[SKPaymentQueue defaultQueue] addPayment:payment];
+            self.purchaseInProgress = YES;
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView beginUpdates];
+                [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView endUpdates];
+            });
         }
     });
 } 
