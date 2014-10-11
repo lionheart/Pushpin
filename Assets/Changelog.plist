@@ -3,6 +3,23 @@
 <plist version="1.0">
 <array>
 	<array>
+		<string>3.2.1.0.liftoff</string>
+		<array>
+			<array>
+				<string>FIX</string>
+				<string>Fix 1Password crash on iPad.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix various IAP issues with restoring and purchasing.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix crash when logging in with read later services.</string>
+			</array>
+		</array>
+	</array>
+	<array>
 		<string>3.2</string>
 		<array>
 			<array>
