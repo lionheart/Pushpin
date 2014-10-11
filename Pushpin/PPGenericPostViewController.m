@@ -46,8 +46,8 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic, strong) UIButton *multipleMarkAsReadButton;
 @property (nonatomic, strong) UIButton *multipleTagEditButton;
 @property (nonatomic, strong) UIButton *multipleDeleteButton;
-@property (nonatomic, strong) UIActionSheet *confirmDeletionActionSheet;
-@property (nonatomic, strong) UIActionSheet *confirmMultipleDeletionActionSheet;
+@property (nonatomic, strong) UIAlertController *confirmDeletionActionSheet;
+@property (nonatomic, strong) UIAlertController *confirmMultipleDeletionActionSheet;
 @property (nonatomic, strong) NSLayoutConstraint *multipleEditToolbarBottomConstraint;
 @property (nonatomic, retain) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *searchDisplayLongPressGestureRecognizer;
@@ -526,16 +526,28 @@ static NSInteger kToolbarHeight = 44;
                 }
             }
             else {
-                PPBrowserType browser = settings.browser;
-                switch (browser) {
-                    case PPBrowserSafari: {
-                        [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Safari"}];
-                        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
-                        break;
-                    }
-                        
-                    case PPBrowserChrome:
-                        if (httpRange.location != NSNotFound) {
+                if (httpRange.location == NSNotFound) {
+                    // "http" couldn't be found anywhere in the URL.
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Shucks", nil)
+                                                                                   message:NSLocalizedString(@"The URL could not be opened.", nil)
+                                                                            preferredStyle:UIAlertControllerStyleAlert];
+                    
+                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                              style:UIAlertActionStyleDefault
+                                                            handler:nil]];
+                    
+                    [self presentViewController:alert animated:YES completion:nil];
+                }
+                else {
+                    PPBrowserType browser = settings.browser;
+                    switch (browser) {
+                        case PPBrowserSafari: {
+                            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Safari"}];
+                            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
+                            break;
+                        }
+                            
+                        case PPBrowserChrome: {
                             if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome-x-callback://"]]) {
                                 NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"googlechrome-x-callback://x-callback-url/open/?url=%@&x-success=pushpin%%3A%%2F%%2F&&x-source=Pushpin", [urlString urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
                                 [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
@@ -546,68 +558,40 @@ static NSInteger kToolbarHeight = 44;
                                 [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
                                 [[UIApplication sharedApplication] openURL:url];
                             }
+                            break;
                         }
-                        else {
-                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"Google Chrome failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                            [alert show];
-                        }
-                        
-                        break;
-                        
-                    case PPBrowseriCabMobile:
-                        if (httpRange.location != NSNotFound) {
+                            
+                        case PPBrowseriCabMobile: {
                             NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"icabmobile"]];
                             [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"iCab Mobile"}];
                             [[UIApplication sharedApplication] openURL:url];
+                            break;
                         }
-                        else {
-                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                            [alert show];
-                        }
-                        
-                        break;
-                        
-                    case PPBrowserOpera:
-                        if (httpRange.location != NSNotFound) {
+                            
+                        case PPBrowserOpera: {
                             NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"ohttp"]];
                             [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Opera"}];
                             [[UIApplication sharedApplication] openURL:url];
+                            break;
                         }
-                        else {
-                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"Opera failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                            [alert show];
-                        }
-                        
-                        break;
-                        
-                    case PPBrowserDolphin:
-                        if (httpRange.location != NSNotFound) {
+                            
+                        case PPBrowserDolphin: {
                             NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"dolphin"]];
                             [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"dolphin"}];
                             [[UIApplication sharedApplication] openURL:url];
+                            break;
                         }
-                        else {
-                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"iCab Mobile failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                            [alert show];
-                        }
-                        
-                        break;
-                        
-                    case PPBrowserCyberspace:
-                        if (httpRange.location != NSNotFound) {
+                    
+                        case PPBrowserCyberspace: {
                             NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"cyber"]];
                             [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Cyberspace Browser"}];
                             [[UIApplication sharedApplication] openURL:url];
+                            break;
                         }
-                        else {
-                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Shucks", nil) message:NSLocalizedString(@"Cyberspace failed to open", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                            [alert show];
-                        }
-                        
-                        break;
-                        
-                    default:
-                        break;
+                            
+                        default:
+                            break;
+                    }
                 }
             }
         }
@@ -912,9 +896,6 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)multiEdit:(id)sender {
-    [[[UIAlertView alloc] initWithTitle:nil message:NSLocalizedString(@"Almost ready to go, but not quite functional yet.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
-    return;
-    
     NSMutableArray *bookmarksToUpdate = [NSMutableArray array];
     [[self.tableView indexPathsForSelectedRows] enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         NSIndexPath *indexPath = (NSIndexPath *)obj;
@@ -938,13 +919,20 @@ static NSInteger kToolbarHeight = 44;
 - (void)multiDelete:(id)sender {
     self.indexPathsToDelete = [self.tableView indexPathsForSelectedRows];
     
-    self.confirmMultipleDeletionActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Are you sure you want to delete these bookmarks?", nil)
-                                                                          delegate:self
-                                                                 cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-                                                            destructiveButtonTitle:NSLocalizedString(@"Delete", nil)
-                                                                 otherButtonTitles:nil];
+    self.confirmMultipleDeletionActionSheet = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Are you sure you want to delete these bookmarks?", nil)
+                                                                                  message:nil
+                                                                           preferredStyle:UIAlertControllerStyleActionSheet];
     
-    [self.confirmMultipleDeletionActionSheet showInView:self.view];
+    [self.confirmMultipleDeletionActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Delete", nil)
+                                                                                style:UIAlertActionStyleDestructive
+                                                                              handler:nil]];
+
+    [self.confirmMultipleDeletionActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                                                style:UIAlertActionStyleCancel
+                                                                              handler:nil]];
+    
+    self.confirmDeletionActionSheet.popoverPresentationController.sourceView = self.view;
+    [self presentViewController:self.confirmDeletionActionSheet animated:YES completion:nil];
 }
 
 - (void)tagSelected:(id)sender {
@@ -1016,65 +1004,152 @@ static NSInteger kToolbarHeight = 44;
         else {
             urlString = self.selectedPost[@"url"];
         }
-        
-        self.longPressActionSheet = [[UIActionSheet alloc] initWithTitle:urlString delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+
+        self.longPressActionSheet = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"OK", nil)
+                                                                        message:nil
+                                                                 preferredStyle:UIAlertControllerStyleActionSheet];
         
         id <PPDataSource> dataSource = [self currentDataSource];
         PPPostActionType actions = [dataSource actionsForPost:self.selectedPost];
         
+        if ([title isEqualToString:NSLocalizedString(@"Send to Instapaper", nil)]) {
+            [self sendToReadLater];
+        }
+        else if ([title isEqualToString:NSLocalizedString(@"Send to Readability", nil)]) {
+            [self sendToReadLater];
+        }
+        else if ([title isEqualToString:NSLocalizedString(@"Send to Pocket", nil)]) {
+            [self sendToReadLater];
+        }
+        
         if (actions & PPPostActionDelete) {
-            [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Delete Bookmark", nil)];
-            self.longPressActionSheet.destructiveButtonIndex = 0;
+            [self.longPressActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Delete Bookmark", nil)
+                                                                         style:UIAlertActionStyleDestructive
+                                                                       handler:^(UIAlertAction *action) {
+                                                                           [self showConfirmDeletionAlert];
+                                                                       }]];
         }
         
         if (actions & PPPostActionEdit) {
-            [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Edit Bookmark", nil)];
+            [self.longPressActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Edit Bookmark", nil)
+                                                                          style:UIAlertActionStyleDefault
+                                                                        handler:^(UIAlertAction *action) {
+                                                                            UIViewController *vc = [self editViewControllerForPostAtIndex:self.selectedIndexPath.row dataSource:dataSource];
+                                                                            [self presentViewControllerInFormSheetIfApplicable:vc];
+                                                                        }]];
         }
         
         if (actions & PPPostActionMarkAsRead) {
-            [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Mark as read", nil)];
+            [self.longPressActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Mark as read", nil)
+                                                                          style:UIAlertActionStyleDefault
+                                                                        handler:^(UIAlertAction *action) {
+                                                                            [self markPostAsRead];
+                                                                        }]];
         }
         
         if (actions & PPPostActionCopyToMine) {
-            [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Copy to mine", nil)];
+            [self.longPressActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Copy to mine", nil)
+                                                                          style:UIAlertActionStyleDefault
+                                                                        handler:^(UIAlertAction *action) {
+                                                                            UIViewController *vc = (UIViewController *)[dataSource addViewControllerForPostAtIndex:self.selectedIndexPath.row];
+                                                                            
+                                                                            if ([UIApplication isIPad]) {
+                                                                                vc.modalPresentationStyle = UIModalPresentationFormSheet;
+                                                                            }
+                                                                            
+                                                                            [self.navigationController presentViewController:vc animated:YES completion:nil];
+                                                                        }]];
         }
         
         if (actions & PPPostActionCopyURL) {
-            [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Copy URL", nil)];
+            [self.longPressActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Copy URL", nil)
+                                                                          style:UIAlertActionStyleDefault
+                                                                        handler:^(UIAlertAction *action) {
+                                                                            [self copyURL];
+                                                                        }]];
         }
         
         if (actions & PPPostActionShare) {
-            [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Share Bookmark", nil)];
+            [self.longPressActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Share Bookmark", nil)
+                                                                          style:UIAlertActionStyleDefault
+                                                                        handler:^(UIAlertAction *action) {
+                                                                            NSURL *url = [NSURL URLWithString:[dataSource urlForPostAtIndex:self.selectedIndexPath.row]];
+                                                                            NSString *title = [self.currentDataSource titleForPostAtIndex:self.selectedIndexPath.row].string;
+                                                                            
+                                                                            CGRect rect;
+                                                                            if (self.searchDisplayController.isActive) {
+                                                                                rect = [self.searchDisplayController.searchResultsTableView rectForRowAtIndexPath:self.selectedIndexPath];
+                                                                            }
+                                                                            else {
+                                                                                rect = [self.tableView rectForRowAtIndexPath:self.selectedIndexPath];
+                                                                            }
+                                                                            
+                                                                            NSArray *activityItems = @[title, url];
+                                                                            self.activityView = [[PPActivityViewController alloc] initWithActivityItems:activityItems];
+                                                                            
+                                                                            __weak PPGenericPostViewController *weakself = self;
+                                                                            self.activityView.completionHandler = ^(NSString *activityType, BOOL completed) {
+                                                                                [weakself setNeedsStatusBarAppearanceUpdate];
+                                                                                
+                                                                                if (weakself.popover) {
+                                                                                    [weakself.popover dismissPopoverAnimated:YES];
+                                                                                }
+                                                                            };
+                                                                            
+                                                                            if ([UIApplication isIPad]) {
+                                                                                self.popover = [[UIPopoverController alloc] initWithContentViewController:self.activityView];
+                                                                                [self.popover presentPopoverFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.tableView
+                                                                                            permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+                                                                            }
+                                                                            else {
+                                                                                [self presentViewController:self.activityView animated:YES completion:nil];
+                                                                            }
+                                                                        }]];
         }
         
         if (actions & PPPostActionReadLater) {
             PPSettings *settings = [PPSettings sharedSettings];
             PPReadLaterType readLater = settings.readLater;
             
+            NSString *readLaterTitle;
             switch (readLater) {
                 case PPReadLaterInstapaper:
-                    [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Send to Instapaper", nil)];
+                    readLaterTitle = NSLocalizedString(@"Send to Instapaper", nil);
                     break;
                     
                 case PPReadLaterReadability:
-                    [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Send to Readability", nil)];
+                    readLaterTitle = NSLocalizedString(@"Send to Readability", nil);
                     break;
                     
                 case PPReadLaterPocket:
-                    [self.longPressActionSheet addButtonWithTitle:NSLocalizedString(@"Send to Pocket", nil)];
+                    readLaterTitle = NSLocalizedString(@"Send to Pocket", nil);
                     break;
                     
                 default:
                     break;
             }
+
+            if (readLaterTitle) {
+                [self.longPressActionSheet addAction:[UIAlertAction actionWithTitle:readLaterTitle
+                                                                              style:UIAlertActionStyleDefault
+                                                                            handler:^(UIAlertAction *action) {
+                                                                                [self sendToReadLater];
+                                                                            }]];
+            }
         }
         
         // Properly set the cancel button index
-        [self.longPressActionSheet addButtonWithTitle:@"Cancel"];
-        self.longPressActionSheet.cancelButtonIndex = self.longPressActionSheet.numberOfButtons - 1;
-        
-        self.actionSheetVisible = YES;
-        [self.longPressActionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.tableView animated:YES];
+        [self.longPressActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                                      style:UIAlertActionStyleCancel
+                                                                    handler:nil]];
+
+        self.longPressActionSheet.popoverPresentationController.sourceView = self.tableView;
+        self.longPressActionSheet.popoverPresentationController.sourceRect = (CGRect){self.selectedPoint, {1, 1}};
+
+        [self presentViewController:self.longPressActionSheet animated:YES completion:^{
+            self.actionSheetVisible = YES;
+        }];
+
         self.tableView.scrollEnabled = NO;
     }
 }
@@ -1152,72 +1227,7 @@ static NSInteger kToolbarHeight = 44;
     }
     else if (actionSheet == self.longPressActionSheet) {
         if (buttonIndex >= 0) {
-            NSString *title = [self.longPressActionSheet buttonTitleAtIndex:buttonIndex];
-            id <PPDataSource> dataSource = [self currentDataSource];
-            
-            if ([title isEqualToString:NSLocalizedString(@"Delete Bookmark", nil)]) {
-                [self showConfirmDeletionAlert];
-            }
-            else if ([title isEqualToString:NSLocalizedString(@"Edit Bookmark", nil)]) {
-                UIViewController *vc = [self editViewControllerForPostAtIndex:self.selectedIndexPath.row dataSource:dataSource];
-                [self presentViewControllerInFormSheetIfApplicable:vc];
-            }
-            else if ([title isEqualToString:NSLocalizedString(@"Mark as read", nil)]) {
-                [self markPostAsRead];
-            }
-            else if ([title isEqualToString:NSLocalizedString(@"Send to Instapaper", nil)]) {
-                [self sendToReadLater];
-            }
-            else if ([title isEqualToString:NSLocalizedString(@"Send to Readability", nil)]) {
-                [self sendToReadLater];
-            }
-            else if ([title isEqualToString:NSLocalizedString(@"Send to Pocket", nil)]) {
-                [self sendToReadLater];
-            }
-            else if ([title isEqualToString:NSLocalizedString(@"Copy URL", nil)]) {
-                [self copyURL];
-            }
-            else if ([title isEqualToString:NSLocalizedString(@"Share Bookmark", nil)]) {
-                NSString *url = [NSURL URLWithString:[self.currentDataSource urlForPostAtIndex:self.selectedIndexPath.row]];
-                NSString *title = [self.currentDataSource titleForPostAtIndex:self.selectedIndexPath.row].string;
-                
-                CGRect rect;
-                if (self.searchDisplayController.isActive) {
-                    rect = [self.searchDisplayController.searchResultsTableView rectForRowAtIndexPath:self.selectedIndexPath];
-                }
-                else {
-                    rect = [self.tableView rectForRowAtIndexPath:self.selectedIndexPath];
-                }
-                
-                NSArray *activityItems = @[title, url];
-                self.activityView = [[PPActivityViewController alloc] initWithActivityItems:activityItems];
-                
-                __weak PPGenericPostViewController *weakself = self;
-                self.activityView.completionHandler = ^(NSString *activityType, BOOL completed) {
-                    [weakself setNeedsStatusBarAppearanceUpdate];
-                    
-                    if (weakself.popover) {
-                        [weakself.popover dismissPopoverAnimated:YES];
-                    }
-                };
-
-                if ([UIApplication isIPad]) {
-                    self.popover = [[UIPopoverController alloc] initWithContentViewController:self.activityView];
-                    [self.popover presentPopoverFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.tableView permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-                }
-                else {
-                    [self presentViewController:self.activityView animated:YES completion:nil];
-                }
-            }
-            else if ([title isEqualToString:NSLocalizedString(@"Copy to mine", nil)]) {
-                UIViewController *vc = (UIViewController *)[dataSource addViewControllerForPostAtIndex:self.selectedIndexPath.row];
-                
-                if ([UIApplication isIPad]) {
-                    vc.modalPresentationStyle = UIModalPresentationFormSheet;
-                }
-                
-                [self.navigationController presentViewController:vc animated:YES completion:nil];
-            }
+            kjasdlaskjd
             
             self.longPressActionSheet = nil;
         }
@@ -1310,7 +1320,7 @@ static NSInteger kToolbarHeight = 44;
 - (void)showConfirmDeletionAlert {
     NSString *message = [NSString stringWithFormat:@"%@\n\n%@", NSLocalizedString(@"Are you sure you want to delete this bookmark?", nil), self.selectedPost[@"url"]];
 
-    self.confirmDeletionAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Confirm Deletion", nil)
+    self.confirmDeletionAlertView = [[UIAlertController alloc] initWithTitle:NSLocalizedString(@"Confirm Deletion", nil)
                                                                message:message
                                                               delegate:self
                                                      cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
@@ -1327,9 +1337,9 @@ static NSInteger kToolbarHeight = 44;
     [self.confirmDeletionActionSheet showInView:self.view];
 }
 
-#pragma mark - UIAlertViewDelegate
+#pragma mark - UIAlertControllerDelegate
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+- (void)alertView:(UIAlertController *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
     if (alertView == self.confirmDeletionAlertView) {
         if ([title isEqualToString:NSLocalizedString(@"Delete", nil)]) {
@@ -1826,7 +1836,7 @@ static NSInteger kToolbarHeight = 44;
     dispatch_async(dispatch_get_main_queue(), ^{
         NSHTTPURLResponse *response = error.userInfo[ASPinboardHTTPURLResponseKey];
         if (response.statusCode == 401) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Invalid Credentials"
+            UIAlertController *alert = [[UIAlertController alloc] initWithTitle:@"Invalid Credentials"
                                                             message:@"Your Pinboard credentials are currently out-of-date. Your auth token may have been reset. Please log out and back into Pushpin to continue syncing bookmarks."
                                                            delegate:nil
                                                   cancelButtonTitle:nil
@@ -1834,7 +1844,7 @@ static NSInteger kToolbarHeight = 44;
             [alert show];
         }
         else if (response.statusCode == 401) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Rate Limit Hit"
+            UIAlertController *alert = [[UIAlertController alloc] initWithTitle:@"Rate Limit Hit"
                                                             message:@"Pushpin has currently hit the API rate limit for your account. Please wait at least 5 minutes before updating your bookmarks again."
                                                            delegate:nil
                                                   cancelButtonTitle:nil

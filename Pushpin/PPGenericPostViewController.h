@@ -45,12 +45,12 @@ typedef enum : NSInteger {
     PPSearchScopePublic,
 } PPSearchBarScopeType;
 
-@interface PPGenericPostViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate, UIActionSheetDelegate, UISearchBarDelegate, UISearchDisplayDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, PPBadgeWrapperDelegate, PPTitleButtonDelegate, PPBookmarkCellDelegate, UIDynamicAnimatorDelegate>
+@interface PPGenericPostViewController : UIViewController <UITableViewDataSource, UITableViewDelegate,   UISearchBarDelegate, UISearchDisplayDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, PPBadgeWrapperDelegate, PPTitleButtonDelegate, PPBookmarkCellDelegate, UIDynamicAnimatorDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) PPWebViewController *webViewController;
-@property (nonatomic, strong) UIActionSheet *longPressActionSheet;
-@property (nonatomic, strong) UIActionSheet *additionalTagsActionSheet;
+@property (nonatomic, strong) UIAlertController *longPressActionSheet;
+@property (nonatomic, strong) UIAlertController *additionalTagsActionSheet;
 
 @property (nonatomic, retain) id<PPDataSource> postDataSource;
 @property (nonatomic, strong) id<PPDataSource> searchPostDataSource;
@@ -60,8 +60,8 @@ typedef enum : NSInteger {
 
 @property (nonatomic, strong) UITableView *selectedTableView;
 @property (nonatomic, retain) NSIndexPath *selectedIndexPath;
-@property (nonatomic, strong) UIAlertView *confirmMultipleDeletionAlertView;
-@property (nonatomic, strong) UIAlertView *confirmDeletionAlertView;
+@property (nonatomic, strong) UIAlertController *confirmMultipleDeletionAlertView;
+@property (nonatomic, strong) UIAlertController *confirmDeletionAlertView;
 @property (nonatomic) CFAbsoluteTime latestSearchUpdateTime;
 
 @property (nonatomic, strong) IBOutlet UISearchBar *searchBar;
