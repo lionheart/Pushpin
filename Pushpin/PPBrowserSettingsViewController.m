@@ -20,6 +20,7 @@
 #import <OpenInChrome/OpenInChromeController.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSTableViewCells/LHSTableViewCellValue1.h>
+#import <LHSCategoryCollection/UIView+LHSAdditions.h>
 
 static NSString *CellIdentifier = @"Cell";
 
@@ -44,40 +45,114 @@ static NSString *CellIdentifier = @"Cell";
     [titleView setTitle:NSLocalizedString(@"Browser Settings", nil) imageName:nil];
     self.navigationItem.titleView = titleView;
     
-    self.browserActionSheet = [[UIActionSheet alloc] initWithTitle:nil
-                                                          delegate:self
-                                                 cancelButtonTitle:nil
-                                            destructiveButtonTitle:nil
-                                                 otherButtonTitles:nil];
+    self.browserActionSheet = [UIAlertController alertControllerWithTitle:nil
+                                                                      message:nil
+                                                               preferredStyle:UIAlertControllerStyleActionSheet];
     
-    [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Safari", nil)];
+    void (^BrowserAlertActionHandler)(UIAlertAction *action) = ^(UIAlertAction *action) {
+        PPSettings *settings = [PPSettings sharedSettings];
+        
+        if ([action.title isEqualToString:NSLocalizedString(@"Webview", nil)]) {
+            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Webview"];
+            settings.browser = PPBrowserWebview;
+        }
+        else if ([action.title isEqualToString:NSLocalizedString(@"Safari", nil)]) {
+            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Safari"];
+            settings.browser = PPBrowserSafari;
+        }
+        else if ([action.title isEqualToString:NSLocalizedString(@"Chrome", nil)]) {
+            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Chrome"];
+            settings.browser = PPBrowserChrome;
+        }
+        else if ([action.title isEqualToString:NSLocalizedString(@"iCab Mobile", nil)]) {
+            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"iCab Mobile"];
+            settings.browser = PPBrowseriCabMobile;
+        }
+        else if ([action.title isEqualToString:NSLocalizedString(@"Dolphin", nil)]) {
+            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Dolphin"];
+            settings.browser = PPBrowserDolphin;
+        }
+        else if ([action.title isEqualToString:NSLocalizedString(@"Cyberspace", nil)]) {
+            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Cyberpsace"];
+            settings.browser = PPBrowserCyberspace;
+        }
+        else if ([action.title isEqualToString:NSLocalizedString(@"Opera", nil)]) {
+            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Opera"];
+            settings.browser = PPBrowserOpera;
+        }
+        
+        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]]
+                              withRowAnimation:UITableViewRowAnimationAutomatic];
+        
+        self.actionSheet = nil;
+    };
+    
+    [self.browserActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Safari", nil)
+                                                                    style:UIAlertActionStyleDefault
+                                                                  handler:BrowserAlertActionHandler]];
     
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"icabmobile://"]]) {
-        [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"iCab Mobile", nil)];
+        [self.browserActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"iCab Mobile", nil)
+                                                                        style:UIAlertActionStyleDefault
+                                                                      handler:BrowserAlertActionHandler]];
     }
-
+    
     OpenInChromeController *openInChromeController = [OpenInChromeController sharedInstance];
     if ([openInChromeController isChromeInstalled]) {
-        [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Chrome", nil)];
+        [self.browserActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Chrome", nil)
+                                                                        style:UIAlertActionStyleDefault
+                                                                      handler:BrowserAlertActionHandler]];
     }
     
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"ohttp://"]]) {
-        [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Opera", nil)];
+        [self.browserActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Opera", nil)
+                                                                        style:UIAlertActionStyleDefault
+                                                                      handler:BrowserAlertActionHandler]];
     }
     
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"dolphin://"]]) {
-        [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Dolphin", nil)];
+        [self.browserActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Dolphin", nil)
+                                                                        style:UIAlertActionStyleDefault
+                                                                      handler:BrowserAlertActionHandler]];
     }
     
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"cyber://"]]) {
-        [self.browserActionSheet addButtonWithTitle:NSLocalizedString(@"Cyberspace", nil)];
+        [self.browserActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cyberspace", nil)
+                                                                        style:UIAlertActionStyleDefault
+                                                                      handler:BrowserAlertActionHandler]];
     }
     
-    [self.browserActionSheet addButtonWithTitle:@"Cancel"];
-    self.browserActionSheet.cancelButtonIndex = self.browserActionSheet.numberOfButtons - 1;
-
-    self.installChromeAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Install Chrome?", nil) message:NSLocalizedString(@"In order to open links with Google Chrome, you first have to install it.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Install", nil), nil];
-    self.installiCabMobileAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Install iCab Mobile?", nil) message:NSLocalizedString(@"In order to open links with iCab Mobile, you first have to install it.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Install", nil), nil];
+    [self.browserActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                                    style:UIAlertActionStyleCancel
+                                                                  handler:nil]];
+    
+    self.installChromeAlertView = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Install Chrome?", nil)
+                                                                            message:NSLocalizedString(@"In order to open links with Google Chrome, you first have to install it.", nil)
+                                                                     preferredStyle:UIAlertControllerStyleAlert];
+    
+    [self.installChromeAlertView addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Install", nil)
+                                                                          style:UIAlertActionStyleDefault
+                                                                        handler:^(UIAlertAction *action) {
+                                                                            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.com/app/chrome"]];
+                                                                        }]];
+    
+    [self.installChromeAlertView addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                                          style:UIAlertActionStyleCancel
+                                                                        handler:nil]];
+    
+    self.installICabMobileAlertView = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Install iCab Mobile?", nil)
+                                                                                message:NSLocalizedString(@"In order to open links with iCab Mobile, you first have to install it.", nil)
+                                                                         preferredStyle:UIAlertControllerStyleAlert];
+    
+    [self.installICabMobileAlertView addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Install", nil)
+                                                                              style:UIAlertActionStyleDefault
+                                                                            handler:^(UIAlertAction *action) {
+                                                                                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/app/icab-mobile-web-browser/id308111628"]];
+                                                                            }]];
+    
+    [self.installICabMobileAlertView addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                                              style:UIAlertActionStyleCancel
+                                                                            handler:nil]];
     
     [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
 }
@@ -181,8 +256,14 @@ static NSString *CellIdentifier = @"Cell";
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
             if (!self.actionSheet) {
-                CGRect rect = [tableView rectForRowAtIndexPath:indexPath];
-                [self.browserActionSheet showFromRect:rect inView:tableView animated:YES];
+                UIView *cell = [tableView cellForRowAtIndexPath:indexPath];
+
+                self.browserActionSheet.popoverPresentationController.sourceRect = [cell lhs_centerRect];
+                self.browserActionSheet.popoverPresentationController.sourceView = cell;
+
+                [self presentViewController:self.browserActionSheet animated:YES completion:^{
+                    self.actionSheet = self.browserActionSheet;
+                }];
             }
         }
     }
@@ -194,57 +275,6 @@ static NSString *CellIdentifier = @"Cell";
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 1 && indexPath.row == 0) {
         [self.navigationController pushViewController:[[BookmarkletInstallationViewController alloc] initWithStyle:UITableViewStyleGrouped] animated:YES];
-    }
-}
-
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (alertView == self.installChromeAlertView && buttonIndex == 1) {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.com/app/chrome"]];
-    }
-    else if (alertView == self.installiCabMobileAlertView && buttonIndex == 1) {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/app/icab-mobile-web-browser/id308111628"]];
-    }
-}
-
-- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (buttonIndex >= 0) {
-        if (actionSheet == (UIActionSheet *)self.browserActionSheet) {
-            NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
-            PPSettings *settings = [PPSettings sharedSettings];
-            if ([title isEqualToString:@"Webview"]) {
-                [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Webview"];
-                settings.browser = PPBrowserWebview;
-            }
-            else if ([title isEqualToString:@"Safari"]) {
-                [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Safari"];
-                settings.browser = PPBrowserSafari;
-            }
-            else if ([title isEqualToString:@"Chrome"]) {
-                [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Chrome"];
-                settings.browser = PPBrowserChrome;
-            }
-            else if ([title isEqualToString:@"iCab Mobile"]) {
-                [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"iCab Mobile"];
-                settings.browser = PPBrowseriCabMobile;
-            }
-            else if ([title isEqualToString:@"Dolphin"]) {
-                [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Dolphin"];
-                settings.browser = PPBrowserDolphin;
-            }
-            else if ([title isEqualToString:@"Cyberspace"]) {
-                [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Cyberpsace"];
-                settings.browser = PPBrowserCyberspace;
-            }
-            else if ([title isEqualToString:@"Opera"]) {
-                [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Opera"];
-                settings.browser = PPBrowserOpera;
-            }
-            
-            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
-        }
-    }
-    else {
-        self.actionSheet = nil;
     }
 }
 

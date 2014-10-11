@@ -8,12 +8,12 @@
 
 #import "PPTableViewController.h"
 
-@interface PPBrowserSettingsViewController : PPTableViewController <UIActionSheetDelegate, UIAlertViewDelegate>
+@interface PPBrowserSettingsViewController : PPTableViewController
 
-@property (nonatomic, retain) UIActionSheet *browserActionSheet;
-@property (nonatomic, retain) UIAlertView *installChromeAlertView;
-@property (nonatomic, retain) UIAlertView *installiCabMobileAlertView;
+@property (nonatomic, retain) UIAlertController *browserActionSheet;
+@property (nonatomic, retain) UIAlertController *installChromeAlertView;
+@property (nonatomic, retain) UIAlertController *installICabMobileAlertView;
 @property (nonatomic, retain) UISwitch *openLinksInAppSwitch;
-@property (nonatomic, strong) UIActionSheet *actionSheet;
+@property (nonatomic, strong) UIAlertController *actionSheet;
 
 @end
