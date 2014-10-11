@@ -766,9 +766,10 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
         case PPLogin1PasswordSection: {
             __weak typeof (self) weakself = self;
+            UIView *cell = [tableView cellForRowAtIndexPath:indexPath];
             [[OnePasswordExtension sharedExtension] findLoginForURLString:@"https://pinboard.in"
                                                         forViewController:self
-                                                                   sender:self
+                                                                   sender:cell
                                                                completion:^(NSDictionary *loginDict, NSError *error) {
                                                                    if (!loginDict) {
                                                                        if (error.code != AppExtensionErrorCodeCancelledByUser) {
