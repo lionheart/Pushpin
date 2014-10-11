@@ -967,7 +967,15 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
                 if (![PPAppDelegate sharedDelegate].connectionAvailable) {
-                    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:NSLocalizedString(@"You can't browse popular feeds unless you have an active Internet connection.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Uh oh.", nil)
+                                                                                             message:NSLocalizedString(@"You can't browse popular feeds unless you have an active Internet connection.", nil)
+                                                                                      preferredStyle:UIAlertControllerStyleAlert];
+                    
+                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                                        style:UIAlertActionStyleDefault
+                                                                      handler:nil]];
+                    
+                    [self presentViewController:alert animated:YES completion:nil];
                 }
                 else {
                     PPPinboardCommunityFeedType feedType = [self communityFeedForIndexPath:indexPath];
@@ -1092,11 +1100,15 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 - (void)toggleEditing:(UIBarButtonItem *)sender {
     if (![PPAppDelegate sharedDelegate].connectionAvailable) {
-        [[[UIAlertView alloc] initWithTitle:nil
-                                    message:@"Editing feeds requires an active Internet connection."
-                                   delegate:nil
-                          cancelButtonTitle:nil
-                          otherButtonTitles:@"OK", nil] show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil
+                                                                       message:NSLocalizedString(@"Editing feeds requires an active Internet connection.", nil)
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                  style:UIAlertActionStyleDefault
+                                                handler:nil]];
+        
+        [self presentViewController:alert animated:YES completion:nil];
         return;
     }
 
