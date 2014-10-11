@@ -126,34 +126,6 @@ static NSString *CellIdentifier = @"Cell";
                                                                     style:UIAlertActionStyleCancel
                                                                   handler:nil]];
     
-    self.installChromeAlertView = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Install Chrome?", nil)
-                                                                            message:NSLocalizedString(@"In order to open links with Google Chrome, you first have to install it.", nil)
-                                                                     preferredStyle:UIAlertControllerStyleAlert];
-    
-    [self.installChromeAlertView addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Install", nil)
-                                                                          style:UIAlertActionStyleDefault
-                                                                        handler:^(UIAlertAction *action) {
-                                                                            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.com/app/chrome"]];
-                                                                        }]];
-    
-    [self.installChromeAlertView addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
-                                                                          style:UIAlertActionStyleCancel
-                                                                        handler:nil]];
-    
-    self.installICabMobileAlertView = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Install iCab Mobile?", nil)
-                                                                                message:NSLocalizedString(@"In order to open links with iCab Mobile, you first have to install it.", nil)
-                                                                         preferredStyle:UIAlertControllerStyleAlert];
-    
-    [self.installICabMobileAlertView addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Install", nil)
-                                                                              style:UIAlertActionStyleDefault
-                                                                            handler:^(UIAlertAction *action) {
-                                                                                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/app/icab-mobile-web-browser/id308111628"]];
-                                                                            }]];
-    
-    [self.installICabMobileAlertView addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
-                                                                              style:UIAlertActionStyleCancel
-                                                                            handler:nil]];
-    
     [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
 }
 
