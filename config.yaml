@@ -40,7 +40,7 @@ configs:
   read_later_extension:
     pinboard_app_store_debug:
       info: "Read Later Extension/AppStore-Info.plist"
-      profile: "e025a654-80a5-4148-a99e-404a62ed0035"
+      profile: "ca571a44-4db4-4ce8-8bbf-1b2c0fa02201"
       entitlements: "Pinboard/Share-AppStore.entitlements"
       code_sign_identity: "iPhone Developer: Daniel Loewenherz (32S53QJB5F)"
     pinboard_app_store:
@@ -76,7 +76,7 @@ configs:
   bookmark_extension:
     pinboard_app_store_debug:
       info: "Pinboard/Info-AppStore.plist"
-      profile: "e4501265-682c-4424-9db8-a3cd76af8c35"
+      profile: "d9cc841f-ed81-4a78-a7c3-5afde420c4d2"
       entitlements: "Pinboard/Share-AppStore.entitlements"
       code_sign_identity: "iPhone Developer: Daniel Loewenherz (32S53QJB5F)"
     pinboard_app_store:

@@ -531,7 +531,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         if (!self.actionSheet) {
                             self.readLaterActionSheet.popoverPresentationController.sourceView = cell;
                             self.readLaterActionSheet.popoverPresentationController.sourceRect = (CGRect){cell.center, {1, 1}};
-
+                            
                             [self presentViewController:self.readLaterActionSheet
                                                animated:YES
                                              completion:nil];
@@ -667,14 +667,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                                                     [self.instapaperAlertView show];
                                                                     self.actionSheet = nil;
                                                                 }]];
-
+        
         [_readLaterActionSheet addAction:[UIAlertAction actionWithTitle:@"Readability"
                                                                   style:UIAlertActionStyleDefault
                                                                 handler:^(UIAlertAction *action) {
                                                                     [self.readabilityAlertView show];
                                                                     self.actionSheet = nil;
                                                                 }]];
-
+        
         [_readLaterActionSheet addAction:[UIAlertAction actionWithTitle:@"Pocket"
                                                                   style:UIAlertActionStyleDefault
                                                                 handler:^(UIAlertAction *action) {
