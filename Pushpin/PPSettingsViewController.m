@@ -487,23 +487,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
             }
         }
         else if (actionSheet == self.readLaterActionSheet) {
-            NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
-
-            if ([buttonTitle isEqualToString:@"Instapaper"]) {
-                [self.instapaperAlertView show];
-            }
-            else if ([buttonTitle isEqualToString:@"Readability"]) {
-                [self.readabilityAlertView show];
-            }
-            else if ([buttonTitle isEqualToString:@"Pocket"]) {
-                [[PocketAPI sharedAPI] loginWithDelegate:nil];;
-            }
-            else if ([buttonTitle isEqualToString:NSLocalizedString(@"Remove", nil)]) {
-                settings.readLater = PPReadLaterNone;
-                [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"None"];
-                [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainReadLater inSection:PPSectionMainSettings]]
-                                      withRowAnimation:UITableViewRowAnimationFade];
-            }
             
             self.readLaterActionSheet = nil;
         }
@@ -539,18 +522,27 @@ static NSString *CellIdentifier = @"CellIdentifier";
     switch ((PPSectionType)indexPath.section) {
         case PPSectionMainSettings: {
             BOOL isIPad = [UIApplication isIPad];
+            UIView *cell = [tableView cellForRowAtIndexPath:indexPath];
             CGRect rect = [tableView rectForRowAtIndexPath:indexPath];
             
             switch ((PPMainSettingsRowType)indexPath.row) {
                 case PPMainReadLater:
                     if (isIPad) {
                         if (!self.actionSheet) {
-                            [self.readLaterActionSheet showFromRect:rect inView:tableView animated:YES];
+                            self.readLaterActionSheet.popoverPresentationController.sourceView = cell;
+                            self.readLaterActionSheet.popoverPresentationController.sourceRect = (CGRect){cell.center, {1, 1}};
+
+                            [self presentViewController:self.readLaterActionSheet
+                                               animated:YES
+                                             completion:nil];
+
                             self.actionSheet = self.readLaterActionSheet;
                         }
                     }
                     else {
-                        [self.readLaterActionSheet showInView:self.navigationController.view];
+                        [self presentViewController:self.readLaterActionSheet
+                                           animated:YES
+                                         completion:nil];
                     }
                     break;
 
@@ -663,30 +655,53 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [self.tableView reloadData];
 }
 
-- (UIActionSheet *)readLaterActionSheet {
+- (UIAlertController *)readLaterActionSheet {
     if (!_readLaterActionSheet) {
-        _readLaterActionSheet = [[UIActionSheet alloc] initWithTitle:nil
-                                                                delegate:self
-                                                       cancelButtonTitle:nil
-                                                  destructiveButtonTitle:nil
-                                                       otherButtonTitles:nil];
-        [_readLaterActionSheet addButtonWithTitle:@"Instapaper"];
-        [_readLaterActionSheet addButtonWithTitle:@"Readability"];
-        [_readLaterActionSheet addButtonWithTitle:@"Pocket"];
+        _readLaterActionSheet = [UIAlertController alertControllerWithTitle:nil
+                                                                    message:nil
+                                                             preferredStyle:UIAlertControllerStyleActionSheet];
+
+        [_readLaterActionSheet addAction:[UIAlertAction actionWithTitle:@"Instapaper"
+                                                                  style:UIAlertActionStyleDefault
+                                                                handler:^(UIAlertAction *action) {
+                                                                    [self.instapaperAlertView show];
+                                                                    self.actionSheet = nil;
+                                                                }]];
+
+        [_readLaterActionSheet addAction:[UIAlertAction actionWithTitle:@"Readability"
+                                                                  style:UIAlertActionStyleDefault
+                                                                handler:^(UIAlertAction *action) {
+                                                                    [self.readabilityAlertView show];
+                                                                    self.actionSheet = nil;
+                                                                }]];
+
+        [_readLaterActionSheet addAction:[UIAlertAction actionWithTitle:@"Pocket"
+                                                                  style:UIAlertActionStyleDefault
+                                                                handler:^(UIAlertAction *action) {
+                                                                    [[PocketAPI sharedAPI] loginWithDelegate:nil];
+                                                                    self.actionSheet = nil;
+                                                                }]];
         
         // Only show the "Remove" option if the user already has a read later service chosen.
         PPSettings *settings = [PPSettings sharedSettings];
         BOOL readLaterServiceChosen = settings.readLater != PPReadLaterNone;
         if (readLaterServiceChosen) {
-            [_readLaterActionSheet addButtonWithTitle:NSLocalizedString(@"Remove", nil)];
+            [_readLaterActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Remove", nil)
+                                                                      style:UIAlertActionStyleDestructive
+                                                                    handler:^(UIAlertAction *action) {
+                                                                        settings.readLater = PPReadLaterNone;
+                                                                        [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"None"];
+                                                                        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainReadLater inSection:PPSectionMainSettings]]
+                                                                                              withRowAnimation:UITableViewRowAnimationFade];
+                                                                        self.actionSheet = nil;
+                                                                    }]];
         }
 
-        [_readLaterActionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
-        
-        if (readLaterServiceChosen) {
-            _readLaterActionSheet.destructiveButtonIndex = self.readLaterActionSheet.numberOfButtons - 2;
-        }
-        _readLaterActionSheet.cancelButtonIndex = self.readLaterActionSheet.numberOfButtons - 1;
+        [_readLaterActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                                  style:UIAlertActionStyleCancel
+                                                                handler:^(UIAlertAction *action) {
+                                                                    self.actionSheet = nil;
+                                                                }]];
     }
     return _readLaterActionSheet;
 }
