@@ -342,7 +342,7 @@ static NSInteger kToolbarHeight = 44;
         PPTitleButton *titleView = (PPTitleButton *)[self.postDataSource titleViewWithDelegate:self];
         self.navigationItem.titleView = titleView;
     }
-    
+
     if (![self.view.constraints containsObject:self.multipleEditToolbarBottomConstraint]) {
         self.multipleEditToolbarBottomConstraint = [NSLayoutConstraint constraintWithItem:self.multiToolbarView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:kToolbarHeight];
         [self.view addConstraint:self.multipleEditToolbarBottomConstraint];

@@ -53,7 +53,7 @@ enum : NSInteger {
 @property (nonatomic, retain) UIAlertView *logOutAlertView;
 
 @property (nonatomic, retain) UIActionSheet *supportActionSheet;
-@property (nonatomic, retain) UIActionSheet *readLaterActionSheet;
+@property (nonatomic, retain) UIAlertController *readLaterActionSheet;
 @property (nonatomic, strong) UIActionSheet *twitterAccountActionSheet;
 @property (nonatomic, retain) NSMutableArray *readLaterServices;
 

@@ -241,50 +241,45 @@ static NSString *CellIdentifier = @"CellIdentifier";
             self.selectedPoint = [recognizer locationInView:self.tableView];
             NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:self.selectedPoint];
             self.selectedItem = self.sections[indexPath.section][@"rows"][indexPath.row];
+            UIView *cell = [self.tableView cellForRowAtIndexPath:indexPath];
             
             NSString *title = self.sections[indexPath.section][@"title"];
             if ([@[@"Acknowledgements", @"Team"] containsObject:title] && self.selectedItem[@"username"]) {
-                self.actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+                self.actionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
 
                 NSString *screenName = self.selectedItem[@"username"];
-                [self.actionSheet addButtonWithTitle:[NSString stringWithFormat:@"Follow @%@ on Twitter", screenName]];
+                [self.actionSheet addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Follow @%@ on Twitter", screenName]
+                                                                     style:UIAlertActionStyleDefault
+                                                                   handler:^(UIAlertAction *action) {
+                                                                       [[PPTwitter sharedInstance] followScreenName:self.selectedItem[@"username"]
+                                                                                                              point:self.selectedPoint
+                                                                                                               view:self.view
+                                                                                                           callback:^{
+                                                                                                               self.selectedItem = nil;
+                                                                                                               self.selectedPoint = CGPointZero;
+                                                                                                               self.selectedIndexPath = nil;
+                                                                                                           }];
 
-                // Properly set the cancel button index
-                [self.actionSheet addButtonWithTitle:@"Cancel"];
-                self.actionSheet.cancelButtonIndex = self.actionSheet.numberOfButtons - 1;
+                                                                       self.actionSheet = nil;
+                                                                   }]];
 
-                [self.actionSheet showFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.view animated:YES];
+                [self.actionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                                     style:UIAlertActionStyleCancel
+                                                                   handler:^(UIAlertAction *action) {
+                                                                       self.actionSheet = nil;
+                                                                   }]];
+
+                self.actionSheet.popoverPresentationController.sourceRect = (CGRect){{cell.frame.size.width / 2.0, cell.frame.size.height / 2.0}, {1, 1}};
+                self.actionSheet.popoverPresentationController.sourceView = cell;
+
+                [self presentViewController:self.actionSheet animated:YES completion:nil];
             }
         }
         else {
-            [self.actionSheet dismissWithClickedButtonIndex:-1 animated:YES];
+            [self dismissViewControllerAnimated:YES completion:nil];
             self.actionSheet = nil;
         }
     }
-}
-
-#pragma mark Action Sheet Delegate
-
-- (void)actionSheetCancel:(UIActionSheet *)actionSheet {
-    self.actionSheet = nil;
-}
-
-- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (actionSheet == self.actionSheet && buttonIndex >= 0) {
-        NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
-
-        if ([buttonTitle hasPrefix:@"Follow"]) {
-            [[PPTwitter sharedInstance] followScreenName:self.selectedItem[@"username"]
-                                                   point:self.selectedPoint
-                                                    view:self.view
-                                                callback:^{
-                                                    self.selectedItem = nil;
-                                                    self.selectedPoint = CGPointZero;
-                                                    self.selectedIndexPath = nil;
-                                                }];
-        }
-    }
-    self.actionSheet = nil;
 }
 
 @end

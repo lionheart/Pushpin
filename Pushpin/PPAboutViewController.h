@@ -10,7 +10,7 @@
 #import "PPLoadingView.h"
 #import <StoreKit/StoreKit.h>
 
-@interface PPAboutViewController : PPTableViewController <UIActionSheetDelegate, SKStoreProductViewControllerDelegate>
+@interface PPAboutViewController : PPTableViewController <UIActionSheetDelegate, SKStoreProductViewControllerDelegate, UIPopoverPresentationControllerDelegate>
 
 @property (nonatomic, strong) NSArray *sections;
 @property (nonatomic, strong) NSMutableArray *heights;
@@ -20,7 +20,7 @@
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic) CGPoint selectedPoint;
 @property (nonatomic) NSDictionary *selectedItem;
-@property (nonatomic, strong) UIActionSheet *actionSheet;
+@property (nonatomic, strong) UIAlertController *actionSheet;
 
 - (void)gestureDetected:(UILongPressGestureRecognizer *)recognizer;
 
