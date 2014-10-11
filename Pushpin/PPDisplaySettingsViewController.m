@@ -23,6 +23,7 @@
 #import <LHSTableViewCells/LHSTableViewCellValue1.h>
 #import <LHSTableViewCells/LHSTableViewCellSubtitle.h>
 #import <LHSCategoryCollection/UIFont+LHSAdditions.h>
+#import <LHSCategoryCollection/UIView+LHSAdditions.h>
 
 static NSString *CellIdentifier = @"Cell";
 static NSString *ChoiceCellIdentifier = @"ChoiceCell";
@@ -33,7 +34,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 @property (nonatomic) NSUInteger TESnippetCount;
 @property (nonatomic) BOOL TEAvailable;
 
-@property (nonatomic, strong) UIAlertView *textExpanderAlertView;
+@property (nonatomic, strong) UIAlertController *textExpanderAlert;
 
 @property (nonatomic, retain) UISwitch *privateByDefaultSwitch;
 @property (nonatomic, retain) UISwitch *readByDefaultSwitch;
@@ -47,7 +48,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 @property (nonatomic, retain) UISwitch *alwaysShowAlertSwitch;
 @property (nonatomic, retain) UISwitch *textExpanderSwitch;
 
-@property (nonatomic, strong) UIActionSheet *fontSizeAdjustmentActionSheet;
+@property (nonatomic, strong) UIAlertController *fontSizeAdjustmentActionSheet;
+@property (nonatomic, strong) UIAlertController *actionSheet;
 
 - (void)privateByDefaultSwitchChangedValue:(id)sender;
 - (void)readByDefaultSwitchChangedValue:(id)sender;
@@ -77,6 +79,43 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     PPTitleButton *titleView = [PPTitleButton button];
     [titleView setTitle:NSLocalizedString(@"Advanced Settings", nil) imageName:nil];
     self.navigationItem.titleView = titleView;
+    
+    self.fontSizeAdjustmentActionSheet = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Font Adjustment", nil)
+                                                                             message:nil
+                                                                      preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    [self.fontSizeAdjustmentActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                                           style:UIAlertActionStyleDefault
+                                                                         handler:nil]];
+    
+    for (NSString *title in PPFontAdjustmentTypes()) {
+        [self.fontSizeAdjustmentActionSheet addAction:[UIAlertAction actionWithTitle:title
+                                                                               style:UIAlertActionStyleDefault
+                                                                             handler:^(UIAlertAction *action) {
+                                                                                 NSInteger index = [PPFontAdjustmentTypes() indexOfObject:action.title];
+                                                                                 if (index < [PPFontAdjustmentTypes() count]) {
+                                                                                     PPFontAdjustmentType fontAdjustment = (PPFontAdjustmentType)index;
+                                                                                     PPSettings *settings = [PPSettings sharedSettings];
+                                                                                     settings.fontAdjustment = fontAdjustment;
+                                                                                     
+                                                                                     self.fontSizeAdjustmentActionSheet = nil;
+                                                                                     
+                                                                                     [self.tableView beginUpdates];
+                                                                                     [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPBrowseFontSizeRow inSection:PPSectionBrowseSettings]]
+                                                                                                           withRowAnimation:UITableViewRowAnimationAutomatic];
+                                                                                     [self.tableView endUpdates];
+                                                                                     
+                                                                                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                                                                         [[PPPinboardMetadataCache sharedCache] reset];
+                                                                                         [[NSNotificationCenter defaultCenter] postNotificationName:PPBookmarkDisplaySettingUpdated object:nil];
+                                                                                     });
+                                                                                 }
+                                                                             }]];
+    }
+    
+    [self.fontSizeAdjustmentActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                                           style:UIAlertActionStyleCancel
+                                                                         handler:nil]];
     
     PPSettings *settings = [PPSettings sharedSettings];
     
@@ -492,29 +531,14 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                 }
 
                 case PPBrowseFontSizeRow: {
-                    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Font Adjustment", nil)
-                                                                             delegate:self
-                                                                    cancelButtonTitle:nil
-                                                               destructiveButtonTitle:nil
-                                                                    otherButtonTitles:nil];
-                    
-                    for (NSString *title in PPFontAdjustmentTypes()) {
-                        [actionSheet addButtonWithTitle:title];
-                    }
-
-                    [actionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
-                    actionSheet.cancelButtonIndex = [PPFontAdjustmentTypes() count];
-                    
-                    if ([UIApplication isIPad]) {
-                        if (!self.fontSizeAdjustmentActionSheet) {
-                            self.fontSizeAdjustmentActionSheet = actionSheet;
-                            CGRect rect = [tableView rectForRowAtIndexPath:indexPath];
-                            [self.fontSizeAdjustmentActionSheet showFromRect:rect inView:tableView animated:YES];
-                        }
-                    }
-                    else {
-                        self.fontSizeAdjustmentActionSheet = actionSheet;
-                        [self.fontSizeAdjustmentActionSheet showInView:self.navigationController.view];
+                    if (!self.actionSheet) {
+                        UIView *cell = [tableView cellForRowAtIndexPath:indexPath];
+                        self.fontSizeAdjustmentActionSheet.popoverPresentationController.sourceView = cell;
+                        self.fontSizeAdjustmentActionSheet.popoverPresentationController.sourceRect = [cell lhs_centerRect];
+                        
+                        [self presentViewController:self.fontSizeAdjustmentActionSheet animated:YES completion:^{
+                            self.actionSheet = self.fontSizeAdjustmentActionSheet;
+                        }];
                     }
                     break;
                 }
@@ -544,39 +568,34 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
         case PPSectionOtherDisplaySettings: {
             switch ((PPOtherDisplaySettingsRowType)indexPath.row) {
                 case PPOtherDisplayClearCache: {
-                    UIAlertView *loadingAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Resetting stored URL list", nil)
-                                                                               message:nil
-                                                                              delegate:nil
-                                                                     cancelButtonTitle:nil
-                                                                     otherButtonTitles:nil];
-                    [loadingAlertView show];
-                    
-                    UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-                    activity.center = CGPointMake(CGRectGetWidth(loadingAlertView.bounds)/2, CGRectGetHeight(loadingAlertView.bounds)-45);
-                    [activity startAnimating];
-                    [loadingAlertView addSubview:activity];
-                    
-                    [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
-                        [db executeUpdate:@"DELETE FROM rejected_bookmark;"];
-                    }];
-                    
-                    double delayInSeconds = 1.0;
-                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-                    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                        [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Please Wait", nil)
+                                                                                   message:NSLocalizedString(@"Resetting stored URL list", nil)
+                                                                            preferredStyle:UIAlertControllerStyleAlert];
+
+                    [self presentViewController:alert animated:YES completion:^{
+                        [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
+                            [db executeUpdate:@"DELETE FROM rejected_bookmark;"];
+                        }];
                         
-                        UIAlertView *successAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil)
-                                                                                   message:NSLocalizedString(@"The URL list was cleared.", nil)
-                                                                                  delegate:nil
-                                                                         cancelButtonTitle:nil
-                                                                         otherButtonTitles:nil];
-                        [successAlertView show];
                         double delayInSeconds = 1.0;
                         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
                         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                            [successAlertView dismissWithClickedButtonIndex:0 animated:YES];
+                            [self dismissViewControllerAnimated:YES completion:^{
+                                UIAlertController *successAlert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Success", nil)
+                                                                                                     message:NSLocalizedString(@"The URL list was cleared.", nil)
+                                                                                              preferredStyle:UIAlertControllerStyleAlert];
+
+                                [self presentViewController:successAlert animated:YES completion:^{
+                                    double delayInSeconds = 1.0;
+                                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                                    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                                        [self dismissViewControllerAnimated:YES completion:nil];
+                                    });
+                                }];
+                            }];
                         });
-                    });
+                    }];
+                    
                     break;
                 }
             }
@@ -670,12 +689,34 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     else if (sender == self.textExpanderSwitch) {
         if (self.textExpanderSwitch.on) {
             // Sync snippets.
-            self.textExpanderAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Enable TextExpander", nil)
-                                                                    message:NSLocalizedString(@"To enable TextExpander in Pushpin, you'll be redirected to the TextExpander app.", nil)
-                                                                   delegate:self
-                                                          cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-                                                          otherButtonTitles:NSLocalizedString(@"Continue", nil), nil];
-            [self.textExpanderAlertView show];
+            self.textExpanderAlert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Enable TextExpander", nil)
+                                                                         message:NSLocalizedString(@"To enable TextExpander in Pushpin, you'll be redirected to the TextExpander app.", nil)
+                                                                  preferredStyle:UIAlertControllerStyleAlert];
+            
+            [self.textExpanderAlert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Continue", nil)
+                                                                style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction *action) {
+                                                                  [self turnOnTextExpander];
+                                                                  double delayInSeconds = 2.0;
+                                                                  dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                                                                  dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                                                                      [self updateSnippetCounts];
+                                                                      
+                                                                      [self.tableView beginUpdates];
+                                                                      [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPTextExpanderRowUpdate inSection:PPSectionTextExpanderSettings]]
+                                                                                            withRowAnimation:UITableViewRowAnimationFade];
+                                                                      [self.tableView endUpdates];
+                                                                  });
+                                                              }]];
+
+            [self.textExpanderAlert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                                style:UIAlertActionStyleCancel
+                                                              handler:^(UIAlertAction *action) {
+                                                                  // Switch the switch back to the off position.
+                                                                  [self.textExpanderSwitch setOn:NO animated:YES];
+                                                              }]];
+
+            [self presentViewController:self.textExpanderAlert animated:YES completion:nil];
         }
         else {
             // Turn off TextExpander and clear all snippets
@@ -721,55 +762,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 #endif
     teDelegate.clientAppName = @"Pushpin";
     [teDelegate getSnippets];
-}
-
-#pragma mark - UIAlertViewDelegate
-
-- (void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (alertView == self.textExpanderAlertView) {
-        NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
-        if ([title isEqualToString:NSLocalizedString(@"Cancel", nil)]) {
-            // Switch the switch back to the off position.
-            [self.textExpanderSwitch setOn:NO animated:YES];
-        }
-        else {
-            [self turnOnTextExpander];
-            double delayInSeconds = 2.0;
-            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                [self updateSnippetCounts];
-
-                [self.tableView beginUpdates];
-                [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPTextExpanderRowUpdate inSection:PPSectionTextExpanderSettings]]
-                                                         withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView endUpdates];
-            });
-        }
-    }
-}
-
-#pragma mark - UIActionSheetDelegate
-
-- (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (actionSheet == self.fontSizeAdjustmentActionSheet) {
-        if (buttonIndex < [PPFontAdjustmentTypes() count]) {
-            PPFontAdjustmentType fontAdjustment = (PPFontAdjustmentType)buttonIndex;
-            PPSettings *settings = [PPSettings sharedSettings];
-            settings.fontAdjustment = fontAdjustment;
-            
-            self.fontSizeAdjustmentActionSheet = nil;
-
-            [self.tableView beginUpdates];
-            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPBrowseFontSizeRow inSection:PPSectionBrowseSettings]]
-                                  withRowAnimation:UITableViewRowAnimationAutomatic];
-            [self.tableView endUpdates];
-            
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [[PPPinboardMetadataCache sharedCache] reset];
-                [[NSNotificationCenter defaultCenter] postNotificationName:PPBookmarkDisplaySettingUpdated object:nil];
-            });
-        }
-    }
 }
 
 #pragma mark - LHSFontSelecting
