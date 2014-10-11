@@ -54,6 +54,6 @@ enum : NSInteger {
     PPRowCountOtherSettings = PPOtherDisplayClearCache + 1
 };
 
-@interface PPDisplaySettingsViewController : PPTableViewController <UIAlertViewDelegate, UIActionSheetDelegate, LHSFontSelecting>
+@interface PPDisplaySettingsViewController : PPTableViewController <LHSFontSelecting>
 
 @end
