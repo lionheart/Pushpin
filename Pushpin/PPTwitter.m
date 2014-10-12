@@ -8,16 +8,17 @@
 
 #import "PPTwitter.h"
 #import "PPAppDelegate.h"
+#import "UIAlertController+UIAlertController_LHSAdditions.h"
 
 #import <Accounts/Accounts.h>
 #import <Social/Social.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
+#import <LHSCategoryCollection/UIViewController+LHSAdditions.h>
 
 @interface PPTwitter ()
 
 @property (nonatomic, strong) NSString *username;
-@property (nonatomic, strong) UIActionSheet *actionSheet;
-@property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
+@property (nonatomic, strong) UIAlertController *actionSheet;
 
 @end
 
@@ -30,14 +31,6 @@
         twitter = [[PPTwitter alloc] init];
     });
     return twitter;
-}
-
-- (id)init {
-    self = [super init];
-    if (self) {
-        self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    }
-    return self;
 }
 
 - (void)followScreenName:(NSString *)screenName withAccountScreenName:(NSString *)accountScreenName callback:(void (^)())callback {
@@ -66,29 +59,25 @@
                 
                 NSDictionary *response = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:nil];
                 dispatch_async(dispatch_get_main_queue(), ^{
+                    UIAlertController *alert;
                     if (response[@"errors"]) {
                         NSString *code = [NSString stringWithFormat:@"Twitter Error #%@", response[@"errors"][0][@"code"]];
                         NSString *message = [NSString stringWithFormat:@"%@", response[@"errors"][0][@"message"]];
-                        [[[UIAlertView alloc] initWithTitle:code
-                                                    message:message
-                                                   delegate:nil
-                                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                          otherButtonTitles:nil] show];
+                        
+                        alert = [UIAlertController lhs_alertViewWithTitle:code message:message];
                     }
                     else {
-                        [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil)
-                                                    message:[NSString stringWithFormat:@"You are now following @%@!", screenName]
-                                                   delegate:nil
-                                          cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                          otherButtonTitles:nil] show];
+                        alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Success", nil)
+                                                                  message:[NSString stringWithFormat:@"You are now following @%@!", screenName]];
                     }
+
+                    [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil];
+                    [[UIViewController lhs_topViewController] presentViewController:alert animated:YES completion:nil];
                 });
                 
                 if (callback) {
                     callback();
                 }
-
-                self.actionSheet = nil;
             }];
         });
     }
@@ -105,35 +94,37 @@
         ACAccountStore *accountStore = [[ACAccountStore alloc] init];
         ACAccountType *twitter = [accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
         
-        void (^AccessGrantedBlock)(UIAlertView *) = ^(UIAlertView *loadingAlertView) {
+        void (^AccessGrantedBlock)(UIAlertController *) = ^(UIAlertController *loadingAlertView) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                self.actionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Select Twitter Account:", nil)
-                                                               delegate:self
-                                                      cancelButtonTitle:nil
-                                                 destructiveButtonTitle:nil
-                                                      otherButtonTitles:nil];
+                self.actionSheet = [UIAlertController lhs_actionSheetWithTitle:NSLocalizedString(@"Select Twitter Account:", nil)];
 
                 NSMutableDictionary *accounts = [NSMutableDictionary dictionary];
                 NSString *accountScreenName;
                 for (ACAccount *account in [accountStore accountsWithAccountType:twitter]) {
                     accountScreenName = account.username;
-                    [self.actionSheet addButtonWithTitle:accountScreenName];
+                    [self.actionSheet lhs_addActionWithTitle:accountScreenName
+                                                       style:UIAlertActionStyleDefault
+                                                     handler:^(UIAlertAction *action) {
+                                                         [[PPTwitter sharedInstance] followScreenName:self.username withAccountScreenName:action.title callback:nil];
+                                                     }];
+
                     [accounts setObject:account.identifier forKey:accountScreenName];
                 }
                 
-                if (loadingAlertView) {
-                    [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
+#warning Is this the right way to check if an alert controller is visible?
+                if (loadingAlertView.isFirstResponder) {
+                    [loadingAlertView.presentingViewController dismissViewControllerAnimated:YES completion:nil];
                 }
                 
-                // Properly set the cancel button index
-                [self.actionSheet addButtonWithTitle:@"Cancel"];
-                self.actionSheet.cancelButtonIndex = self.actionSheet.numberOfButtons - 1;
+                [self.actionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                   style:UIAlertActionStyleCancel
+                                                 handler:nil];
                 
                 if ([accounts count] > 1) {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        [self.actionSheet showFromRect:(CGRect){point, {1, 1}}
-                                                inView:view
-                                              animated:YES];
+                        self.actionSheet.popoverPresentationController.sourceView = view;
+                        self.actionSheet.popoverPresentationController.sourceRect = (CGRect){point, {1, 1}};
+                        [[UIViewController lhs_topViewController] presentViewController:self.actionSheet animated:YES completion:nil];
                     });
                 }
                 else if ([accounts count] == 1) {
@@ -147,16 +138,9 @@
         }
         else {
             dispatch_async(dispatch_get_main_queue(), ^{
-                UIAlertView *loadingAlertView = [[UIAlertView alloc] initWithTitle:@"Loading"
-                                                                           message:@"Requesting access to your Twitter accounts."
-                                                                          delegate:nil
-                                                                 cancelButtonTitle:nil
-                                                                 otherButtonTitles:nil];
-                [loadingAlertView show];
-                
-                self.activityIndicator.center = CGPointMake(CGRectGetWidth(loadingAlertView.bounds)/2, CGRectGetHeight(loadingAlertView.bounds)-45);
-                [self.activityIndicator startAnimating];
-                [loadingAlertView addSubview:self.activityIndicator];
+                UIAlertController *loadingAlertView = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Loading", nil)
+                                                                                        message:NSLocalizedString(@"Requesting access to your Twitter accounts.", nil)];
+                [[UIViewController lhs_topViewController] presentViewController:loadingAlertView animated:YES completion:nil];
                 
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     [accountStore requestAccessToAccountsWithType:twitter
@@ -166,33 +150,18 @@
                                                                AccessGrantedBlock(loadingAlertView);
                                                            }
                                                            else {
-                                                               [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
-                                                               [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error.", nil) message:@"There was an error connecting to Twitter." delegate:nil cancelButtonTitle:NSLocalizedString(@"OK", nil) otherButtonTitles:nil] show];
+                                                               [loadingAlertView.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+                                                               
+                                                               UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Error.", nil)
+                                                                                                                            message:NSLocalizedString(@"There was an error connecting to Twitter.", nil)];
+                                                               [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil];
+                                                               [[UIViewController lhs_topViewController] presentViewController:alert animated:YES completion:nil];
                                                            }
                                                        }];
                 });
             });
         }
     });
-}
-
-#pragma mark - UIActionSheetDelegate
-
-- (void)actionSheetCancel:(UIActionSheet *)actionSheet {
-    self.actionSheet = nil;
-}
-
-- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (actionSheet == self.actionSheet && buttonIndex >= 0) {
-        NSString *buttonTitle = [actionSheet buttonTitleAtIndex:buttonIndex];
-
-        if ([[actionSheet title] isEqualToString:NSLocalizedString(@"Select Twitter Account:", nil)]) {
-            [[PPTwitter sharedInstance] followScreenName:self.username withAccountScreenName:buttonTitle callback:^{
-                self.actionSheet = nil;
-            }];
-        }
-    }
-    self.actionSheet = nil;
 }
 
 @end
