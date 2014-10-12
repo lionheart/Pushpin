@@ -55,12 +55,10 @@ typedef enum : NSInteger {
 @property (nonatomic, retain) id<PPDataSource> postDataSource;
 @property (nonatomic, strong) id<PPDataSource> searchPostDataSource;
 
-@property (nonatomic) BOOL actionSheetVisible;
 @property (nonatomic, retain) NSDictionary *selectedPost;
 
 @property (nonatomic, strong) UITableView *selectedTableView;
 @property (nonatomic, retain) NSIndexPath *selectedIndexPath;
-@property (nonatomic, strong) UIAlertController *confirmMultipleDeletionAlertView;
 @property (nonatomic, strong) UIAlertController *confirmDeletionAlertView;
 @property (nonatomic) CFAbsoluteTime latestSearchUpdateTime;
 
