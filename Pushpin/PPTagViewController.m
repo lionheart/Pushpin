@@ -19,7 +19,7 @@
 #import "PPFeedListViewController.h"
 #import "PPDeliciousDataSource.h"
 #import "PPUtilities.h"
-#import "UIAlertController+UIAlertController_LHSAdditions.h"
+#import "UIAlertController+LHSAdditions.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>

@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 Lionheart Software. All rights reserved.
 //
 
-#import "UIAlertController+UIAlertController_LHSAdditions.h"
+#import "UIAlertController+LHSAdditions.h"
 
-@implementation UIAlertController (UIAlertController_LHSAdditions)
+@implementation UIAlertController (LHSAdditions)
 
 + (UIAlertController *)lhs_actionSheetWithTitle:(NSString *)title {
     return [UIAlertController alertControllerWithTitle:title message:nil preferredStyle:UIAlertControllerStyleActionSheet];

@@ -2738,16 +2738,16 @@
             "fileEncoding": "4",
             "isa": "PBXFileReference",
             "lastKnownFileType": "sourcecode.c.h",
-            "name": "UIAlertController+UIAlertController_LHSAdditions.h",
-            "path": "Pushpin/UIAlertController+UIAlertController_LHSAdditions.h",
+            "name": "UIAlertController+LHSAdditions.h",
+            "path": "Pushpin/UIAlertController+LHSAdditions.h",
             "sourceTree": "<group>"
         },
         "3755568719EB172700C65FF8": {
             "fileEncoding": "4",
             "isa": "PBXFileReference",
             "lastKnownFileType": "sourcecode.c.objc",
-            "name": "UIAlertController+UIAlertController_LHSAdditions.m",
-            "path": "Pushpin/UIAlertController+UIAlertController_LHSAdditions.m",
+            "name": "UIAlertController+LHSAdditions.m",
+            "path": "Pushpin/UIAlertController+LHSAdditions.m",
             "sourceTree": "<group>"
         },
         "3755568819EB172700C65FF8": {

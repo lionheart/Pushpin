@@ -11,7 +11,7 @@
 #import "PPTableViewTitleView.h"
 #import "PPBadgeWrapperView.h"
 #import "PPTheme.h"
-#import "UIAlertController+UIAlertController_LHSAdditions.h"
+#import "UIAlertController+LHSAdditions.h"
 
 #import <FMDB/FMDatabase.h>
 #import <ASPinboard/ASPinboard.h>
