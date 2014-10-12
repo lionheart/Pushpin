@@ -11,6 +11,7 @@
 #import "PPTheme.h"
 #import "PPWebViewController.h"
 #import "LHSFontSelectionViewController.h"
+#import "UIAlertController+LHSAdditions.h"
 
 #import <LHSTableViewCells/LHSTableViewCellValue1.h>
 #import <LHSCategoryCollection/UIFont+LHSAdditions.h>
@@ -78,44 +79,42 @@ static NSString *CellIdentifier = @"Cell";
 
     self.toggledIndexPaths = [NSMutableSet set];
     
-    self.textAlignmentActionSheet = [UIAlertController alertControllerWithTitle:nil
-                                                                        message:nil
-                                                                 preferredStyle:UIAlertControllerStyleActionSheet];
+    self.textAlignmentActionSheet = [UIAlertController lhs_actionSheetWithTitle:nil];
     
     for (NSString *alignment in @[@"Left", @"Center", @"Right", @"Justified", @"Natural"]) {
-        [self.textAlignmentActionSheet addAction:[UIAlertAction actionWithTitle:alignment
-                                                                          style:UIAlertActionStyleDefault
-                                                                        handler:^(UIAlertAction *action) {
-                                                                            NSDictionary *map = @{@"Left": @(NSTextAlignmentLeft),
-                                                                                                  @"Center": @(NSTextAlignmentCenter),
-                                                                                                  @"Right": @(NSTextAlignmentRight),
-                                                                                                  @"Justified": @(NSTextAlignmentJustified),
-                                                                                                  @"Natural": @(NSTextAlignmentNatural) };
-                                                                            NSNumber *result = map[action.title];
-                                                                            if (result) {
-                                                                                Mixpanel *mixpanel = [Mixpanel sharedInstanceWithToken:PPMixpanelToken];
-                                                                                [mixpanel.people set:@{@"Reader Alignment": action.title}];
-                                                                                
-                                                                                PPSettings *settings = [PPSettings sharedSettings];
-                                                                                PPReaderSettings *readerSettings = settings.readerSettings;
-                                                                                readerSettings.textAlignment = [result integerValue];
-                                                                                settings.readerSettings = readerSettings;
-                                                                                [settings.readerSettings updateCustomReaderCSSFile];
-                                                                                
-                                                                                [self.tableView beginUpdates];
-                                                                                [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPReaderSettingsMainRowTextAlignment inSection:PPReaderSettingsSectionMain]]
-                                                                                                      withRowAnimation:UITableViewRowAnimationFade];
-                                                                                [self.tableView endUpdates];
-                                                                                [self updateExampleWebView];
-                                                                                
-                                                                                self.textAlignmentActionSheet = nil;
-                                                                            }
-                                                                        }]];
+        [self.textAlignmentActionSheet lhs_addActionWithTitle:alignment
+                                                        style:UIAlertActionStyleDefault
+                                                      handler:^(UIAlertAction *action) {
+                                                          NSDictionary *map = @{@"Left": @(NSTextAlignmentLeft),
+                                                                                @"Center": @(NSTextAlignmentCenter),
+                                                                                @"Right": @(NSTextAlignmentRight),
+                                                                                @"Justified": @(NSTextAlignmentJustified),
+                                                                                @"Natural": @(NSTextAlignmentNatural) };
+                                                          NSNumber *result = map[action.title];
+                                                          if (result) {
+                                                              Mixpanel *mixpanel = [Mixpanel sharedInstanceWithToken:PPMixpanelToken];
+                                                              [mixpanel.people set:@{@"Reader Alignment": action.title}];
+                                                              
+                                                              PPSettings *settings = [PPSettings sharedSettings];
+                                                              PPReaderSettings *readerSettings = settings.readerSettings;
+                                                              readerSettings.textAlignment = [result integerValue];
+                                                              settings.readerSettings = readerSettings;
+                                                              [settings.readerSettings updateCustomReaderCSSFile];
+                                                              
+                                                              [self.tableView beginUpdates];
+                                                              [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPReaderSettingsMainRowTextAlignment inSection:PPReaderSettingsSectionMain]]
+                                                                                    withRowAnimation:UITableViewRowAnimationFade];
+                                                              [self.tableView endUpdates];
+                                                              [self updateExampleWebView];
+                                                              
+                                                              self.textAlignmentActionSheet = nil;
+                                                          }
+                                                      }];
     }
 
-    [self.textAlignmentActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                                                      style:UIAlertActionStyleDefault
-                                                                    handler:nil]];
+    [self.textAlignmentActionSheet lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
+                                                    style:UIAlertActionStyleDefault
+                                                  handler:nil];
     
 #if PPREADER_USE_SLIDERS
     self.fontSizeSlider = [[UISlider alloc] init];

@@ -15,7 +15,7 @@
 }
 
 + (UIAlertController *)lhs_alertViewWithTitle:(NSString *)title message:(NSString *)message {
-    return [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+   return [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
 }
 
 - (void)lhs_addActionWithTitle:(NSString *)title style:(UIAlertActionStyle)style handler:(void (^)(UIAlertAction *))handler {

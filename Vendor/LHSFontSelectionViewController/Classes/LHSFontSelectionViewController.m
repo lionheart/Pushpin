@@ -6,14 +6,15 @@
 //
 //
 
+#import "PPAppDelegate.h"
+#import "UIAlertController+LHSAdditions.h"
+
 #import "LHSFontSelectionViewController.h"
 #import <LHSTableViewCells/LHSTableViewCellValue1.h>
 #import <LHSCategoryCollection/UIFont+LHSAdditions.h>
 #import <YHRoundBorderedButton/YHRoundBorderedButton.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-
-#import "PPAppDelegate.h"
 
 static NSString *CellIdentifier = @"Cell";
 
@@ -699,10 +700,9 @@ static NSString *CellIdentifier = @"Cell";
     for (SKPaymentTransaction *transaction in transactions) {
         switch ((NSInteger)transaction.transactionState) {
             case SKPaymentTransactionStatePurchased: {
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Success", nil)
-                                                                                message:NSLocalizedString(@"Thank you for your purchase.", nil)
-                                                                         preferredStyle:UIAlertControllerStyleAlert];
-                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
+                UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Success", nil)
+                                                                             message:NSLocalizedString(@"Thank you for your purchase.", nil)];
+                [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil];
                 [self presentViewController:alert animated:YES completion:nil];
                 
                 [PPSettings sharedSettings].purchasedPremiumFonts = YES;
@@ -750,13 +750,10 @@ static NSString *CellIdentifier = @"Cell";
                             break;
                     }
 
-                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
-                                                                                   message:message
-                                                                            preferredStyle:UIAlertControllerStyleAlert];
-                    
-                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                    UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:title message:message];
+                    [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
                                                               style:UIAlertActionStyleDefault
-                                                            handler:nil]];
+                                                            handler:nil];
 
                     [self presentViewController:alert animated:YES completion:nil];
                 }
@@ -795,13 +792,12 @@ static NSString *CellIdentifier = @"Cell";
 
     dispatch_async(dispatch_get_main_queue(), ^{
         NSString *title = [NSString stringWithFormat:@"Store Error %ld", (long)error.code];
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
-                                                                       message:error.localizedDescription
-                                                                preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:title
+                                                                       message:error.localizedDescription];
         
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+        [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
                                                   style:UIAlertActionStyleDefault
-                                                handler:nil]];
+                                                handler:nil];
         
         [self presentViewController:alert animated:YES completion:nil];
 

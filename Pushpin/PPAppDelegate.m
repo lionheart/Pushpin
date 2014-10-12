@@ -30,6 +30,7 @@
 #import "PPStatusBar.h"
 #import "PPDeliciousDataSource.h"
 #import "PPSettings.h"
+#import "UIAlertController+LHSAdditions.h"
 
 #import <LHSDelicious/LHSDelicious.h>
 #import <ASPinboard/ASPinboard.h>
@@ -214,13 +215,12 @@
                 message = @"TextExpander snippets successfully updated.";
             }
 
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil
-                                                                           message:message
-                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:nil
+                                                                           message:message];
 
-            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+            [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
                                                       style:UIAlertActionStyleDefault
-                                                    handler:nil]];
+                                                    handler:nil];
             
             [[UIViewController lhs_topViewController] presentViewController:alert animated:YES completion:nil];
             return response;
@@ -327,11 +327,10 @@
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSString *message = [NSString stringWithFormat:@"%@\n\n%@", NSLocalizedString(@"Pushpin detected a link in your clipboard for an existing bookmark. Would you like to edit it?", nil), self.clipboardBookmarkURL];
                     
-                    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil
-                                                                                             message:message
-                                                                                      preferredStyle:UIAlertControllerStyleAlert];
+                    UIAlertController *alertController = [UIAlertController lhs_alertViewWithTitle:nil
+                                                                                             message:message];
                     
-                    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Edit", nil)
+                    [alertController lhs_addActionWithTitle:NSLocalizedString(@"Edit", nil)
                                                                         style:UIAlertActionStyleDefault
                                                                       handler:^(UIAlertAction *action) {
                                                                           PPNavigationController *addBookmarkViewController = [PPAddBookmarkViewController updateBookmarkViewControllerWithURLString:self.clipboardBookmarkURL callback:nil];
@@ -342,9 +341,9 @@
                                                                           
                                                                           [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
                                                                           [[Mixpanel sharedInstance] track:@"Decided to edit bookmark from clipboard"];
-                                                                      }]];
+                                                                      }];
                     
-                    [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                    [alertController lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                                         style:UIAlertActionStyleCancel
                                                                       handler:^(UIAlertAction *action) {
                                                                           dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -352,7 +351,7 @@
                                                                                   [db executeUpdate:@"INSERT INTO rejected_bookmark (url) VALUES(?)" withArgumentsInArray:@[self.clipboardBookmarkURL]];
                                                                               }];
                                                                           });
-                                                                      }]];
+                                                                      }];
 
                     [[UIViewController lhs_topViewController] presentViewController:alertController animated:YES completion:nil];
                 });
@@ -367,36 +366,35 @@
                                                   
                                                   NSString *message = [NSString stringWithFormat:@"%@\n\n%@", NSLocalizedString(@"We've detected a URL in your clipboard. Would you like to bookmark it?", nil), self.clipboardBookmarkURL];
                                                   
-                                                  UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil
-                                                                                                                           message:message
-                                                                                                                    preferredStyle:UIAlertControllerStyleAlert];
+                                                  UIAlertController *alertController = [UIAlertController lhs_alertViewWithTitle:nil
+                                                                                                                         message:message];
                                                   
-                                                  [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Add", nil)
-                                                                                                      style:UIAlertActionStyleDefault
-                                                                                                    handler:^(UIAlertAction *action) {
-                                                                                                        PPNavigationController *addBookmarkViewController = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:@{@"url": self.clipboardBookmarkURL, @"title": self.clipboardBookmarkTitle} update:@(NO) callback:nil];
-                                                                                                        
-                                                                                                        if ([UIApplication isIPad]) {
-                                                                                                            addBookmarkViewController.modalPresentationStyle = UIModalPresentationFormSheet;
-                                                                                                        }
-                                                                                                        
-                                                                                                        [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
-                                                                                                        [[Mixpanel sharedInstance] track:@"Decided to add bookmark from clipboard"];
-                                                                                                        
-                                                                                                        self.addOrEditPromptVisible = NO;
-                                                                                                    }]];
+                                                  [alertController lhs_addActionWithTitle:NSLocalizedString(@"Add", nil)
+                                                                                    style:UIAlertActionStyleDefault
+                                                                                  handler:^(UIAlertAction *action) {
+                                                                                      PPNavigationController *addBookmarkViewController = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:@{@"url": self.clipboardBookmarkURL, @"title": self.clipboardBookmarkTitle} update:@(NO) callback:nil];
+                                                                                      
+                                                                                      if ([UIApplication isIPad]) {
+                                                                                          addBookmarkViewController.modalPresentationStyle = UIModalPresentationFormSheet;
+                                                                                      }
+                                                                                      
+                                                                                      [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
+                                                                                      [[Mixpanel sharedInstance] track:@"Decided to add bookmark from clipboard"];
+                                                                                      
+                                                                                      self.addOrEditPromptVisible = NO;
+                                                                                  }];
                                                   
-                                                  [alertController addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
-                                                                                                      style:UIAlertActionStyleCancel
-                                                                                                    handler:^(UIAlertAction *action) {
-                                                                                                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                                                                            [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
-                                                                                                                [db executeUpdate:@"INSERT INTO rejected_bookmark (url) VALUES(?)" withArgumentsInArray:@[self.clipboardBookmarkURL]];
-                                                                                                            }];
-                                                                                                        });
-
-                                                                                                        self.addOrEditPromptVisible = NO;
-                                                                                                    }]];
+                                                  [alertController lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                                                    style:UIAlertActionStyleCancel
+                                                                                  handler:^(UIAlertAction *action) {
+                                                                                      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                                                                          [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
+                                                                                              [db executeUpdate:@"INSERT INTO rejected_bookmark (url) VALUES(?)" withArgumentsInArray:@[self.clipboardBookmarkURL]];
+                                                                                          }];
+                                                                                      });
+                                                                                      
+                                                                                      self.addOrEditPromptVisible = NO;
+                                                                                  }];
 
                                                   [[UIViewController lhs_topViewController] presentViewController:alertController animated:YES completion:^{
                                                       self.addOrEditPromptVisible = YES;

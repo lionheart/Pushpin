@@ -27,6 +27,7 @@
 #import "PPShrinkBackTransition.h"
 #import "PPNotification.h"
 #import "PPSplitViewController.h"
+#import "UIAlertController+LHSAdditions.h"
 
 #import <FMDB/FMDatabase.h>
 #import <oauthconsumer/OAuthConsumer.h>
@@ -527,13 +528,12 @@ static NSInteger kToolbarHeight = 44;
             else {
                 if (httpRange.location == NSNotFound) {
                     // "http" couldn't be found anywhere in the URL.
-                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Shucks", nil)
-                                                                                   message:NSLocalizedString(@"The URL could not be opened.", nil)
-                                                                            preferredStyle:UIAlertControllerStyleAlert];
+                    UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Shucks", nil)
+                                                                                 message:NSLocalizedString(@"The URL could not be opened.", nil)];
                     
-                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                                              style:UIAlertActionStyleDefault
-                                                            handler:nil]];
+                    [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
+                                            style:UIAlertActionStyleDefault
+                                          handler:nil];
                     
                     [self presentViewController:alert animated:YES completion:nil];
                 }
@@ -922,16 +922,16 @@ static NSInteger kToolbarHeight = 44;
                                                                                   message:nil
                                                                            preferredStyle:UIAlertControllerStyleActionSheet];
     
-    [self.confirmMultipleDeletionActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Delete", nil)
+    [self.confirmMultipleDeletionActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Delete", nil)
                                                                                 style:UIAlertActionStyleDestructive
                                                                               handler:^(UIAlertAction *action) {
                                                                                   self.tableView.scrollEnabled = YES;
 
                                                                                   [self deletePostsAtIndexPaths:self.indexPathsToDelete];
                                                                                   [self toggleEditingMode:nil];
-                                                                              }]];
+                                                                              }];
 
-    [self.confirmMultipleDeletionActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+    [self.confirmMultipleDeletionActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                                                 style:UIAlertActionStyleCancel
                                                                               handler:^(UIAlertAction *action) {
                                                                                   self.tableView.scrollEnabled = YES;
@@ -939,7 +939,7 @@ static NSInteger kToolbarHeight = 44;
                                                                                   if (self.tableView.editing) {
                                                                                       [self toggleEditingMode:nil];
                                                                                   }
-                                                                              }]];
+                                                                              }];
     
     self.confirmDeletionActionSheet.popoverPresentationController.sourceView = self.view;
     [self presentViewController:self.confirmDeletionActionSheet animated:YES completion:nil];
@@ -1023,38 +1023,38 @@ static NSInteger kToolbarHeight = 44;
         PPPostActionType actions = [dataSource actionsForPost:self.selectedPost];
         
         if (actions & PPPostActionDelete) {
-            [self.longPressActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Delete Bookmark", nil)
+            [self.longPressActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Delete Bookmark", nil)
                                                                          style:UIAlertActionStyleDestructive
                                                                        handler:^(UIAlertAction *action) {
                                                                            self.tableView.scrollEnabled = YES;
 
                                                                            [self showConfirmDeletionAlert];
-                                                                       }]];
+                                                                       }];
         }
         
         if (actions & PPPostActionEdit) {
-            [self.longPressActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Edit Bookmark", nil)
+            [self.longPressActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Edit Bookmark", nil)
                                                                           style:UIAlertActionStyleDefault
                                                                         handler:^(UIAlertAction *action) {
                                                                             self.tableView.scrollEnabled = YES;
 
                                                                             UIViewController *vc = [self editViewControllerForPostAtIndex:self.selectedIndexPath.row dataSource:dataSource];
                                                                             [self presentViewControllerInFormSheetIfApplicable:vc];
-                                                                        }]];
+                                                                        }];
         }
         
         if (actions & PPPostActionMarkAsRead) {
-            [self.longPressActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Mark as read", nil)
+            [self.longPressActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Mark as read", nil)
                                                                           style:UIAlertActionStyleDefault
                                                                         handler:^(UIAlertAction *action) {
                                                                             self.tableView.scrollEnabled = YES;
 
                                                                             [self markPostAsRead];
-                                                                        }]];
+                                                                        }];
         }
         
         if (actions & PPPostActionCopyToMine) {
-            [self.longPressActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Copy to mine", nil)
+            [self.longPressActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Copy to mine", nil)
                                                                           style:UIAlertActionStyleDefault
                                                                         handler:^(UIAlertAction *action) {
                                                                             self.tableView.scrollEnabled = YES;
@@ -1066,21 +1066,21 @@ static NSInteger kToolbarHeight = 44;
                                                                             }
                                                                             
                                                                             [self.navigationController presentViewController:vc animated:YES completion:nil];
-                                                                        }]];
+                                                                        }];
         }
         
         if (actions & PPPostActionCopyURL) {
-            [self.longPressActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Copy URL", nil)
+            [self.longPressActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Copy URL", nil)
                                                                           style:UIAlertActionStyleDefault
                                                                         handler:^(UIAlertAction *action) {
                                                                             self.tableView.scrollEnabled = YES;
 
                                                                             [self copyURL];
-                                                                        }]];
+                                                                        }];
         }
         
         if (actions & PPPostActionShare) {
-            [self.longPressActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Share Bookmark", nil)
+            [self.longPressActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Share Bookmark", nil)
                                                                           style:UIAlertActionStyleDefault
                                                                         handler:^(UIAlertAction *action) {
                                                                             self.tableView.scrollEnabled = YES;
@@ -1116,7 +1116,7 @@ static NSInteger kToolbarHeight = 44;
                                                                             else {
                                                                                 [self presentViewController:self.activityView animated:YES completion:nil];
                                                                             }
-                                                                        }]];
+                                                                        }];
         }
         
         if (actions & PPPostActionReadLater) {
@@ -1142,22 +1142,22 @@ static NSInteger kToolbarHeight = 44;
             }
 
             if (readLaterTitle) {
-                [self.longPressActionSheet addAction:[UIAlertAction actionWithTitle:readLaterTitle
+                [self.longPressActionSheet lhs_addActionWithTitle:readLaterTitle
                                                                               style:UIAlertActionStyleDefault
                                                                             handler:^(UIAlertAction *action) {
                                                                                 self.tableView.scrollEnabled = YES;
 
                                                                                 [self sendToReadLater];
-                                                                            }]];
+                                                                            }];
             }
         }
         
         // Properly set the cancel button index
-        [self.longPressActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+        [self.longPressActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                                       style:UIAlertActionStyleCancel
                                                                     handler:^(UIAlertAction *action) {
                                                                         self.tableView.scrollEnabled = YES;
-                                                                    }]];
+                                                                    }];
 
         self.longPressActionSheet.popoverPresentationController.sourceView = self.tableView;
         self.longPressActionSheet.popoverPresentationController.sourceRect = (CGRect){self.selectedPoint, {1, 1}};
@@ -1276,23 +1276,22 @@ static NSInteger kToolbarHeight = 44;
 - (void)showConfirmDeletionAlert {
     NSString *message = [NSString stringWithFormat:@"%@\n\n%@", NSLocalizedString(@"Are you sure you want to delete this bookmark?", nil), self.selectedPost[@"url"]];
     
-    self.confirmDeletionAlertView = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Confirm Deletion", nil)
-                                                                        message:message
-                                                                 preferredStyle:UIAlertControllerStyleAlert];
+    self.confirmDeletionAlertView = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Confirm Deletion", nil)
+                                                                        message:message];
     
-    [self.confirmDeletionAlertView addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Delete", nil)
+    [self.confirmDeletionAlertView lhs_addActionWithTitle:NSLocalizedString(@"Delete", nil)
                                                                       style:UIAlertActionStyleDestructive
                                                                     handler:^(UIAlertAction *action) {
                                                                         self.tableView.scrollEnabled = YES;
 
                                                                         [self deletePosts:@[self.selectedPost]];
-                                                                    }]];
+                                                                    }];
     
-    [self.confirmDeletionAlertView addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+    [self.confirmDeletionAlertView lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                                       style:UIAlertActionStyleCancel
                                                                     handler:^(UIAlertAction *action) {
                                                                         self.tableView.scrollEnabled = YES;
-                                                                    }]];
+                                                                    }];
     
     [self presentViewController:self.confirmDeletionAlertView animated:YES completion:nil];
 }
@@ -1302,7 +1301,7 @@ static NSInteger kToolbarHeight = 44;
                                                                           message:nil
                                                                    preferredStyle:UIAlertControllerStyleActionSheet];
     
-    [self.confirmDeletionActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Delete", nil)
+    [self.confirmDeletionActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Delete", nil)
                                                                         style:UIAlertActionStyleDestructive
                                                                       handler:^(UIAlertAction *action) {
                                                                           self.tableView.scrollEnabled = YES;
@@ -1313,13 +1312,13 @@ static NSInteger kToolbarHeight = 44;
                                                                           else {
                                                                               [self deletePostsAtIndexPaths:self.indexPathsToDelete];
                                                                           }
-                                                                      }]];
+                                                                      }];
     
-    [self.confirmDeletionActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+    [self.confirmDeletionActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                                         style:UIAlertActionStyleCancel
                                                                       handler:^(UIAlertAction *action) {
                                                                           self.tableView.scrollEnabled = YES;
-                                                                      }]];
+                                                                      }];
     
     self.confirmDeletionActionSheet.popoverPresentationController.sourceView = self.view;
     [self presentViewController:self.confirmDeletionActionSheet animated:YES completion:nil];
@@ -1527,43 +1526,43 @@ static NSInteger kToolbarHeight = 44;
                 self.additionalTagsActionSheet = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Additional Tags", nil)
                                                                                      message:nil
                                                                               preferredStyle:UIAlertControllerStyleActionSheet];
-
+                
                 id <PPDataSource> dataSource = [self currentDataSource];
                 if ([dataSource respondsToSelector:@selector(handleTapOnLinkWithURL:callback:)]) {
                     for (NSDictionary *badge in badges) {
                         if ([badge[@"type"] isEqualToString:@"tag"]) {
                             NSString *tappedTag = badge[@"tag"];
-                            [self.additionalTagsActionSheet addAction:[UIAlertAction actionWithTitle:tappedTag
-                                                                                               style:UIAlertActionStyleDefault
-                                                                                             handler:^(UIAlertAction *action) {
-                                                                                                 self.tableView.scrollEnabled = YES;
-
-                                                                                                 if (!self.tableView.editing) {
-                                                                                                     [dataSource handleTapOnLinkWithURL:[NSURL URLWithString:[tappedTag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]
-                                                                                                                               callback:^(UIViewController *controller) {
-                                                                                                                                   dispatch_async(dispatch_get_main_queue(), ^{
-                                                                                                                                       [self.navigationController pushViewController:controller animated:YES];
-                                                                                                                                   });
-                                                                                                                               }];
-                                                                                                 }
-                                                                                                 
-                                                                                                 self.tableView.scrollEnabled = YES;
-                                                                                             }]];
+                            [self.additionalTagsActionSheet lhs_addActionWithTitle:tappedTag
+                                                                             style:UIAlertActionStyleDefault
+                                                                           handler:^(UIAlertAction *action) {
+                                                                               self.tableView.scrollEnabled = YES;
+                                                                               
+                                                                               if (!self.tableView.editing) {
+                                                                                   [dataSource handleTapOnLinkWithURL:[NSURL URLWithString:[tappedTag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]
+                                                                                                             callback:^(UIViewController *controller) {
+                                                                                                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                                                                                                     [self.navigationController pushViewController:controller animated:YES];
+                                                                                                                 });
+                                                                                                             }];
+                                                                               }
+                                                                               
+                                                                               self.tableView.scrollEnabled = YES;
+                                                                           }];
                         }
                     }
                 }
-
-                [self.additionalTagsActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
-                                                                                   style:UIAlertActionStyleCancel
-                                                                                 handler:^(UIAlertAction *action) {
-                                                                                     self.tableView.scrollEnabled = YES;
-                                                                                 }]];
+                
+                [self.additionalTagsActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                                 style:UIAlertActionStyleCancel
+                                                               handler:^(UIAlertAction *action) {
+                                                                   self.tableView.scrollEnabled = YES;
+                                                               }];
                 
                 self.additionalTagsActionSheet.popoverPresentationController.sourceView = badgeWrapperView;
-
+                
                 CGPoint point = CGPointMake(badge.center.x - 2, badge.center.y);
                 self.additionalTagsActionSheet.popoverPresentationController.sourceRect = (CGRect){point, {1, 1}};
-
+                
                 [self presentViewController:self.additionalTagsActionSheet animated:YES completion:^{
                     self.tableView.scrollEnabled = NO;
                 }];
@@ -1828,24 +1827,22 @@ static NSInteger kToolbarHeight = 44;
     dispatch_async(dispatch_get_main_queue(), ^{
         NSHTTPURLResponse *response = error.userInfo[ASPinboardHTTPURLResponseKey];
         if (response.statusCode == 401) {
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Invalid Credentials", nil)
-                                                                           message:NSLocalizedString(@"Your Pinboard credentials are currently out-of-date. Your auth token may have been reset. Please log out and back into Pushpin to continue syncing bookmarks.", nil)
-                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Invalid Credentials", nil)
+                                                                         message:NSLocalizedString(@"Your Pinboard credentials are currently out-of-date. Your auth token may have been reset. Please log out and back into Pushpin to continue syncing bookmarks.", nil)];
             
-            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                                      style:UIAlertActionStyleDefault
-                                                    handler:nil]];
-
+            [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
+                                    style:UIAlertActionStyleDefault
+                                  handler:nil];
+            
             [self presentViewController:alert animated:YES completion:nil];
         }
         else if (response.statusCode == 401) {
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Rate Limit Hit", nil)
-                                                                           message:NSLocalizedString(@"Pushpin has currently hit the API rate limit for your account. Please wait at least 5 minutes before updating your bookmarks again.", nil)
-                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Rate Limit Hit", nil)
+                                                                         message:NSLocalizedString(@"Pushpin has currently hit the API rate limit for your account. Please wait at least 5 minutes before updating your bookmarks again.", nil)];
             
-            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                                      style:UIAlertActionStyleDefault
-                                                    handler:nil]];
+            [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
+                                    style:UIAlertActionStyleDefault
+                                  handler:nil];
             
             [self presentViewController:alert animated:YES completion:nil];
         }
