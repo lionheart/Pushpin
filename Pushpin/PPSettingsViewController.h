@@ -42,19 +42,18 @@ enum : NSInteger {
     PPRowCountOther = PPOtherLogout + 1
 };
 
-@interface PPSettingsViewController : PPTableViewController <UIAlertViewDelegate, UIActionSheetDelegate, UIWebViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate>
+@interface PPSettingsViewController : PPTableViewController <UIWebViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate>
 
-@property (nonatomic, retain) UIAlertView *instapaperVerificationAlertView;
-@property (nonatomic, retain) UIAlertView *readabilityVerificationAlertView;
-@property (nonatomic, strong) UIAlertView *pocketVerificationAlertView;
-@property (nonatomic, retain) UIActivityIndicatorView *loadingIndicator;
-@property (nonatomic, retain) UIAlertView *instapaperAlertView;
-@property (nonatomic, retain) UIAlertView *readabilityAlertView;
-@property (nonatomic, retain) UIAlertView *logOutAlertView;
+@property (nonatomic, retain) UIAlertController *instapaperVerificationAlertView;
+@property (nonatomic, retain) UIAlertController *readabilityVerificationAlertView;
+@property (nonatomic, strong) UIAlertController *pocketVerificationAlertView;
+@property (nonatomic, retain) UIAlertController *instapaperAlertView;
+@property (nonatomic, retain) UIAlertController *readabilityAlertView;
+@property (nonatomic, retain) UIAlertController *logOutAlertView;
 
-@property (nonatomic, retain) UIActionSheet *supportActionSheet;
+@property (nonatomic, retain) UIAlertController *supportActionSheet;
 @property (nonatomic, retain) UIAlertController *readLaterActionSheet;
-@property (nonatomic, strong) UIActionSheet *twitterAccountActionSheet;
+@property (nonatomic, strong) UIAlertController *twitterAccountActionSheet;
 @property (nonatomic, retain) NSMutableArray *readLaterServices;
 
 @property (nonatomic, strong) id actionSheet;
