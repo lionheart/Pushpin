@@ -21,6 +21,7 @@
 #import "PPTheme.h"
 #import "PPPlainTextViewController.h"
 #import "PPTwitter.h"
+#import "UIAlertController+LHSAdditions.h"
 
 #import "UITableView+Additions.h"
 
@@ -245,29 +246,29 @@ static NSString *CellIdentifier = @"CellIdentifier";
             
             NSString *title = self.sections[indexPath.section][@"title"];
             if ([@[@"Acknowledgements", @"Team"] containsObject:title] && self.selectedItem[@"username"]) {
-                self.actionSheet = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+                self.actionSheet = [UIAlertController lhs_actionSheetWithTitle:nil];
 
                 NSString *screenName = self.selectedItem[@"username"];
-                [self.actionSheet addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Follow @%@ on Twitter", screenName]
-                                                                     style:UIAlertActionStyleDefault
-                                                                   handler:^(UIAlertAction *action) {
-                                                                       [[PPTwitter sharedInstance] followScreenName:self.selectedItem[@"username"]
-                                                                                                              point:self.selectedPoint
-                                                                                                               view:self.view
-                                                                                                           callback:^{
-                                                                                                               self.selectedItem = nil;
-                                                                                                               self.selectedPoint = CGPointZero;
-                                                                                                               self.selectedIndexPath = nil;
-                                                                                                           }];
-
-                                                                       self.actionSheet = nil;
-                                                                   }]];
-
-                [self.actionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
-                                                                     style:UIAlertActionStyleCancel
-                                                                   handler:^(UIAlertAction *action) {
-                                                                       self.actionSheet = nil;
-                                                                   }]];
+                [self.actionSheet lhs_addActionWithTitle:[NSString stringWithFormat:@"Follow @%@ on Twitter", screenName]
+                                                   style:UIAlertActionStyleDefault
+                                                 handler:^(UIAlertAction *action) {
+                                                     [[PPTwitter sharedInstance] followScreenName:self.selectedItem[@"username"]
+                                                                                            point:self.selectedPoint
+                                                                                             view:self.view
+                                                                                         callback:^{
+                                                                                             self.selectedItem = nil;
+                                                                                             self.selectedPoint = CGPointZero;
+                                                                                             self.selectedIndexPath = nil;
+                                                                                         }];
+                                                     
+                                                     self.actionSheet = nil;
+                                                 }];
+                
+                [self.actionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                   style:UIAlertActionStyleCancel
+                                                 handler:^(UIAlertAction *action) {
+                                                     self.actionSheet = nil;
+                                                 }];
 
                 self.actionSheet.popoverPresentationController.sourceRect = (CGRect){{cell.frame.size.width / 2.0, cell.frame.size.height / 2.0}, {1, 1}};
                 self.actionSheet.popoverPresentationController.sourceView = cell;

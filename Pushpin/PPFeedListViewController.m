@@ -26,6 +26,7 @@
 #import "PPAddSavedFeedViewController.h"
 #import "PPSearchViewController.h"
 #import "PPSettings.h"
+#import "UIAlertController+LHSAdditions.h"
 
 #import <ASPinboard/ASPinboard.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -967,13 +968,12 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
                 if (![PPAppDelegate sharedDelegate].connectionAvailable) {
-                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Uh oh.", nil)
-                                                                                             message:NSLocalizedString(@"You can't browse popular feeds unless you have an active Internet connection.", nil)
-                                                                                      preferredStyle:UIAlertControllerStyleAlert];
+                    UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Uh oh.", nil)
+                                                                                 message:NSLocalizedString(@"You can't browse popular feeds unless you have an active Internet connection.", nil)];
                     
-                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                                                        style:UIAlertActionStyleDefault
-                                                                      handler:nil]];
+                    [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
+                                            style:UIAlertActionStyleDefault
+                                          handler:nil];
                     
                     [self presentViewController:alert animated:YES completion:nil];
                 }
@@ -1100,13 +1100,12 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 - (void)toggleEditing:(UIBarButtonItem *)sender {
     if (![PPAppDelegate sharedDelegate].connectionAvailable) {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil
-                                                                       message:NSLocalizedString(@"Editing feeds requires an active Internet connection.", nil)
-                                                                preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:nil
+                                                                     message:NSLocalizedString(@"Editing feeds requires an active Internet connection.", nil)];
         
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                                  style:UIAlertActionStyleDefault
-                                                handler:nil]];
+        [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
+                                style:UIAlertActionStyleDefault
+                              handler:nil];
         
         [self presentViewController:alert animated:YES completion:nil];
         return;

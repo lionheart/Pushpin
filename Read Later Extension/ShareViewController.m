@@ -9,6 +9,7 @@
 @import MobileCoreServices;
 
 #import "ShareViewController.h"
+#import "UIAlertController+LHSAdditions.h"
 #import <ASPinboard/ASPinboard.h>
 
 @interface ShareViewController ()
@@ -113,13 +114,13 @@
                                                                                             message:NSLocalizedString(@"Pushpin couldn't retrieve a title for this bookmark. Would you like to add this bookmark with the URL as the title?", nil)
                                                                                      preferredStyle:UIAlertControllerStyleAlert];
                         
-                        [controller addAction:[UIAlertAction actionWithTitle:@"Add" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                        [controller lhs_addActionWithTitle:@"Add" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                             AddBookmarkBlock(urlString, urlString);
-                        }]];
+                        }];
                         
-                        [controller addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+                        [controller lhs_addActionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
                             return;
-                        }]];
+                        }];
                         
                         [self presentViewController:controller animated:YES completion:nil];
                     }
@@ -134,9 +135,9 @@
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Invalid Token"
                                                                        message:@"Please open Pushpin to refresh your credentials."
                                                                 preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [alert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
-        }]];
+        }];
         [self presentViewController:alert animated:YES completion:nil];
     }
 }

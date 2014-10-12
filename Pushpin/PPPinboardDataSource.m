@@ -15,6 +15,7 @@
 #import "PostMetadata.h"
 #import "PPDefaultFeedViewController.h"
 #import "PPSettings.h"
+#import "UIAlertController+LHSAdditions.h"
 
 #import "NSAttributedString+Attributes.h"
 #import "NSString+LHSAdditions.h"
@@ -84,14 +85,13 @@ static BOOL kPinboardSyncInProgress = NO;
         [self.enUSPOSIXDateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
         
         self.tagsWithFrequency = [NSMutableDictionary dictionary];
-
-        self.fullTextSearchAlertView = [UIAlertController alertControllerWithTitle:nil
-                                                                           message:NSLocalizedString(@"To enable Pinboard full-text search, please log out and then log back in to Pushpin.", nil)
-                                                                    preferredStyle:UIAlertControllerStyleAlert];
         
-        [self.fullTextSearchAlertView addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                                                         style:UIAlertActionStyleDefault
-                                                                       handler:nil]];
+        self.fullTextSearchAlertView = [UIAlertController lhs_alertViewWithTitle:nil
+                                                                         message:NSLocalizedString(@"To enable Pinboard full-text search, please log out and then log back in to Pushpin.", nil)];
+        
+        [self.fullTextSearchAlertView lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
+                                                       style:UIAlertActionStyleDefault
+                                                     handler:nil];
     }
     return self;
 }

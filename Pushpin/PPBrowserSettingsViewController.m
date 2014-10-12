@@ -16,6 +16,7 @@
 #import "PPTableViewTitleView.h"
 #import "PPConstants.h"
 #import "PPSettings.h"
+#import "UIAlertController+LHSAdditions.h"
 
 #import <OpenInChrome/OpenInChromeController.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -45,9 +46,7 @@ static NSString *CellIdentifier = @"Cell";
     [titleView setTitle:NSLocalizedString(@"Browser Settings", nil) imageName:nil];
     self.navigationItem.titleView = titleView;
     
-    self.browserActionSheet = [UIAlertController alertControllerWithTitle:nil
-                                                                      message:nil
-                                                               preferredStyle:UIAlertControllerStyleActionSheet];
+    self.browserActionSheet = [UIAlertController lhs_actionSheetWithTitle:nil];
     
     void (^BrowserAlertActionHandler)(UIAlertAction *action) = ^(UIAlertAction *action) {
         PPSettings *settings = [PPSettings sharedSettings];
@@ -87,44 +86,44 @@ static NSString *CellIdentifier = @"Cell";
         self.actionSheet = nil;
     };
     
-    [self.browserActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Safari", nil)
+    [self.browserActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Safari", nil)
                                                                     style:UIAlertActionStyleDefault
-                                                                  handler:BrowserAlertActionHandler]];
+                                                                  handler:BrowserAlertActionHandler];
     
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"icabmobile://"]]) {
-        [self.browserActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"iCab Mobile", nil)
+        [self.browserActionSheet lhs_addActionWithTitle:NSLocalizedString(@"iCab Mobile", nil)
                                                                         style:UIAlertActionStyleDefault
-                                                                      handler:BrowserAlertActionHandler]];
+                                                                      handler:BrowserAlertActionHandler];
     }
     
     OpenInChromeController *openInChromeController = [OpenInChromeController sharedInstance];
     if ([openInChromeController isChromeInstalled]) {
-        [self.browserActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Chrome", nil)
+        [self.browserActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Chrome", nil)
                                                                         style:UIAlertActionStyleDefault
-                                                                      handler:BrowserAlertActionHandler]];
+                                                                      handler:BrowserAlertActionHandler];
     }
     
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"ohttp://"]]) {
-        [self.browserActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Opera", nil)
+        [self.browserActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Opera", nil)
                                                                         style:UIAlertActionStyleDefault
-                                                                      handler:BrowserAlertActionHandler]];
+                                                                      handler:BrowserAlertActionHandler];
     }
     
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"dolphin://"]]) {
-        [self.browserActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Dolphin", nil)
+        [self.browserActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Dolphin", nil)
                                                                         style:UIAlertActionStyleDefault
-                                                                      handler:BrowserAlertActionHandler]];
+                                                                      handler:BrowserAlertActionHandler];
     }
     
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"cyber://"]]) {
-        [self.browserActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cyberspace", nil)
+        [self.browserActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cyberspace", nil)
                                                                         style:UIAlertActionStyleDefault
-                                                                      handler:BrowserAlertActionHandler]];
+                                                                      handler:BrowserAlertActionHandler];
     }
     
-    [self.browserActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+    [self.browserActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                                     style:UIAlertActionStyleCancel
-                                                                  handler:nil]];
+                                                                  handler:nil];
     
     [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
 }

@@ -13,6 +13,7 @@
 #import "PPAddBookmarkViewController.h"
 #import "PPTheme.h"
 #import "PPSettings.h"
+#import "UIAlertController+LHSAdditions.h"
 
 #import <ASPinboard/ASPinboard.h>
 
@@ -42,9 +43,9 @@
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Invalid Token"
                                                                            message:@"Please open Pushpin to refresh your credentials."
                                                                     preferredStyle:UIAlertControllerStyleAlert];
-            [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            [alert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                 [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
-            }]];
+            }];
             [controller presentViewController:alert animated:YES completion:nil];
         });
     };

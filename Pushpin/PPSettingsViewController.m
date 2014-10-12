@@ -654,51 +654,49 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (UIAlertController *)readLaterActionSheet {
     if (!_readLaterActionSheet) {
-        _readLaterActionSheet = [UIAlertController alertControllerWithTitle:nil
-                                                                    message:nil
-                                                             preferredStyle:UIAlertControllerStyleActionSheet];
-
-        [_readLaterActionSheet addAction:[UIAlertAction actionWithTitle:@"Instapaper"
-                                                                  style:UIAlertActionStyleDefault
-                                                                handler:^(UIAlertAction *action) {
-                                                                    [self presentViewController:self.instapaperAlertView animated:YES completion:nil];
-                                                                    self.actionSheet = nil;
-                                                                }]];
+        _readLaterActionSheet = [UIAlertController lhs_actionSheetWithTitle:nil];
         
-        [_readLaterActionSheet addAction:[UIAlertAction actionWithTitle:@"Readability"
-                                                                  style:UIAlertActionStyleDefault
-                                                                handler:^(UIAlertAction *action) {
-                                                                    [self presentViewController:self.readabilityAlertView animated:YES completion:nil];
-                                                                    self.actionSheet = nil;
-                                                                }]];
+        [_readLaterActionSheet lhs_addActionWithTitle:@"Instapaper"
+                                                style:UIAlertActionStyleDefault
+                                              handler:^(UIAlertAction *action) {
+                                                  [self presentViewController:self.instapaperAlertView animated:YES completion:nil];
+                                                  self.actionSheet = nil;
+                                              }];
         
-        [_readLaterActionSheet addAction:[UIAlertAction actionWithTitle:@"Pocket"
-                                                                  style:UIAlertActionStyleDefault
-                                                                handler:^(UIAlertAction *action) {
-                                                                    [[PocketAPI sharedAPI] loginWithDelegate:nil];
-                                                                    self.actionSheet = nil;
-                                                                }]];
+        [_readLaterActionSheet lhs_addActionWithTitle:@"Readability"
+                                                style:UIAlertActionStyleDefault
+                                              handler:^(UIAlertAction *action) {
+                                                  [self presentViewController:self.readabilityAlertView animated:YES completion:nil];
+                                                  self.actionSheet = nil;
+                                              }];
+        
+        [_readLaterActionSheet lhs_addActionWithTitle:@"Pocket"
+                                                style:UIAlertActionStyleDefault
+                                              handler:^(UIAlertAction *action) {
+                                                  [[PocketAPI sharedAPI] loginWithDelegate:nil];
+                                                  self.actionSheet = nil;
+                                              }];
         
         // Only show the "Remove" option if the user already has a read later service chosen.
         PPSettings *settings = [PPSettings sharedSettings];
         BOOL readLaterServiceChosen = settings.readLater != PPReadLaterNone;
         if (readLaterServiceChosen) {
-            [_readLaterActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Remove", nil)
-                                                                      style:UIAlertActionStyleDestructive
-                                                                    handler:^(UIAlertAction *action) {
-                                                                        settings.readLater = PPReadLaterNone;
-                                                                        [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"None"];
-                                                                        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainReadLater inSection:PPSectionMainSettings]]
-                                                                                              withRowAnimation:UITableViewRowAnimationFade];
-                                                                        self.actionSheet = nil;
-                                                                    }]];
+            [_readLaterActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Remove", nil)
+                                                    style:UIAlertActionStyleDestructive
+                                                  handler:^(UIAlertAction *action) {
+                                                      settings.readLater = PPReadLaterNone;
+                                                      [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"None"];
+                                                      [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainReadLater inSection:PPSectionMainSettings]]
+                                                                            withRowAnimation:UITableViewRowAnimationFade];
+                                                      self.actionSheet = nil;
+                                                  }];
         }
-
-        [_readLaterActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
-                                                                  style:UIAlertActionStyleCancel
-                                                                handler:^(UIAlertAction *action) {
-                                                                    self.actionSheet = nil;
-                                                                }]];
+        
+        [_readLaterActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                style:UIAlertActionStyleCancel
+                                              handler:^(UIAlertAction *action) {
+                                                  self.actionSheet = nil;
+                                              }];
     }
     return _readLaterActionSheet;
 }

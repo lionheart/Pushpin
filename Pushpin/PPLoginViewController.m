@@ -17,6 +17,7 @@
 #import "PPTableViewTitleView.h"
 #import "PPDeliciousDataSource.h"
 #import "PPSettings.h"
+#import "UIAlertController+LHSAdditions.h"
 
 #import <uservoice-iphone-sdk/UserVoice.h>
 #import <RPSTPasswordManagementAppService/RPSTPasswordManagementAppService.h>
@@ -228,13 +229,12 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             NSString *message = NSLocalizedString(@"Please enter both a username and password to sign into Pinboard.", nil);
 #endif
 
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil
-                                                                           message:message
-                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:nil
+                                                                           message:message];
             
-            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+            [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
                                                       style:UIAlertActionStyleDefault
-                                                    handler:nil]];
+                                                    handler:nil];
             
             [self presentViewController:alert animated:YES completion:nil];
             self.loginInProgress = NO;
@@ -305,13 +305,12 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                 dispatch_async(dispatch_get_main_queue(), ^{
                     switch (error.code) {
                         case PinboardErrorInvalidCredentials: {
-                            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Authentication Error", nil)
-                                                                                           message:NSLocalizedString(@"We couldn't log you in. Please make sure you've provided valid credentials.", nil)
-                                                                                    preferredStyle:UIAlertControllerStyleAlert];
+                            UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Authentication Error", nil)
+                                                                                         message:NSLocalizedString(@"We couldn't log you in. Please make sure you've provided valid credentials.", nil)];
                             
-                            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                                                      style:UIAlertActionStyleDefault
-                                                                    handler:nil]];
+                            [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
+                                                    style:UIAlertActionStyleDefault
+                                                  handler:nil];
                             
                             [self presentViewController:alert animated:YES completion:nil];
                             
@@ -321,7 +320,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                             
                         case LHSDeliciousErrorEmptyResponse:
                             break;
-
+                            
                         case PinboardErrorTimeout: {
 #ifdef DELICIOUS
                             NSString *message = NSLocalizedString(@"Delicious is currently down. Please try logging in later.", nil);
@@ -330,17 +329,16 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 #ifdef PINBOARD
                             NSString *message = NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil);
 #endif
-
-                            UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil
-                                                                                           message:message
-                                                                                    preferredStyle:UIAlertControllerStyleAlert];
                             
-                            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                                                      style:UIAlertActionStyleDefault
-                                                                    handler:nil]];
+                            UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:nil
+                                                                                         message:message];
+                            
+                            [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
+                                                    style:UIAlertActionStyleDefault
+                                                  handler:nil];
                             
                             [self presentViewController:alert animated:YES completion:nil];
-
+                            
                             [[Mixpanel sharedInstance] track:@"Cancelled log in"];
                             break;
                         }

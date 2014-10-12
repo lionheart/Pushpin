@@ -25,6 +25,7 @@
 #import "PPPinboardDataSource.h"
 #import "PPConstants.h"
 #import "PPSettings.h"
+#import "UIAlertController+LHSAdditions.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
@@ -681,13 +682,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
         }
         
         if ([self.urlTextField.text isEqualToString:@""] || [self.titleTextField.text isEqualToString:@""]) {
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Uh oh.", nil)
-                                                                           message:NSLocalizedString(@"You can't add a bookmark without a URL or title.", nil)
-                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Uh oh.", nil)
+                                                                           message:NSLocalizedString(@"You can't add a bookmark without a URL or title.", nil)];
             
-            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+            [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
                                                       style:UIAlertActionStyleDefault
-                                                    handler:nil]];
+                                                    handler:nil];
             
             [self presentViewController:alert animated:YES completion:nil];
             
@@ -862,13 +862,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     self.navigationItem.leftBarButtonItem.enabled = YES;
                     self.navigationItem.rightBarButtonItem.enabled = YES;
 
-                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Uh oh.", nil)
-                                                                                   message:NSLocalizedString(@"There was an error adding your bookmark.", nil)
-                                                                            preferredStyle:UIAlertControllerStyleAlert];
+                    UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Uh oh.", nil)
+                                                                                   message:NSLocalizedString(@"There was an error adding your bookmark.", nil)];
                     
-                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                    [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
                                                               style:UIAlertActionStyleDefault
-                                                            handler:nil]];
+                                                            handler:nil];
                     
                     [self presentViewController:alert animated:YES completion:nil];
                 });
@@ -937,10 +936,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
     if (self.presentedFromShareSheet) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if ([self.urlTextField.text isEqualToString:@""] || [self.titleTextField.text isEqualToString:@""]) {
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Uh oh.", nil)
-                                                                               message:NSLocalizedString(@"You can't add a bookmark without a URL or title.", nil)
-                                                                        preferredStyle:UIAlertControllerStyleAlert];
-                [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+                UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Uh oh.", nil)
+                                                                               message:NSLocalizedString(@"You can't add a bookmark without a URL or title.", nil)];
+                [alert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
                 [self presentViewController:alert animated:YES completion:nil];
                 return;
             }
@@ -948,10 +946,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
             NSCharacterSet *characterSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
             NSString *url = self.urlTextField.text;
             if (!url) {
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil
-                                                                               message:NSLocalizedString(@"Unable to add bookmark without a URL.", nil)
-                                                                        preferredStyle:UIAlertControllerStyleAlert];
-                [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+                UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:nil
+                                                                               message:NSLocalizedString(@"Unable to add bookmark without a URL.", nil)];
+                [alert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
                 [self presentViewController:alert animated:YES completion:nil];
                 return;
             }
@@ -970,9 +967,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     dispatch_async(dispatch_get_main_queue(), ^{
                         UIViewController *shareViewController = self.parentViewController.presentingViewController;
                         [shareViewController dismissViewControllerAnimated:YES completion:^{
-                            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Success!", nil)
-                                                                                           message:NSLocalizedString(@"Your bookmark was added.", nil)
-                                                                                    preferredStyle:UIAlertControllerStyleAlert];
+                            UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Success!", nil)
+                                                                                           message:NSLocalizedString(@"Your bookmark was added.", nil)];
 
                             [shareViewController presentViewController:alert animated:YES completion:^{
                                 double delayInSeconds = 1;
@@ -992,10 +988,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         self.navigationItem.leftBarButtonItem.enabled = YES;
                         self.navigationItem.rightBarButtonItem.enabled = YES;
                         
-                        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Uh oh.", nil)
-                                                                                       message:NSLocalizedString(@"There was an error adding your bookmark.", nil)
-                                                                                preferredStyle:UIAlertControllerStyleAlert];
-                        [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+                        UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Uh oh.", nil)
+                                                                                     message:NSLocalizedString(@"There was an error adding your bookmark.", nil)];
+                        [alert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
                         [self presentViewController:alert animated:YES completion:nil];
                     });
                 };
