@@ -20,7 +20,7 @@
 
 @end
 
-@interface PPTagEditViewController : UIViewController <PPBadgeWrapperDelegate, UIActionSheetDelegate, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, LHSKeyboardAdjusting>
+@interface PPTagEditViewController : UIViewController <PPBadgeWrapperDelegate,  UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, LHSKeyboardAdjusting>
 
 @property (nonatomic) BOOL autocompleteInProgress;
 @property (nonatomic) BOOL loadingTags;
@@ -38,7 +38,7 @@
 @property (nonatomic, strong) NSMutableDictionary *tagCounts;
 @property (nonatomic, strong) NSMutableDictionary *tagDescriptions;
 @property (nonatomic, strong) NSString *currentlySelectedTag;
-@property (nonatomic, strong) UIActionSheet *removeTagActionSheet;
+@property (nonatomic, strong) UIAlertController *removeTagActionSheet;
 @property (nonatomic, strong) UITextField *tagTextField;
 @property (nonatomic, weak) id<PPTagEditing> tagDelegate;
 @property (nonatomic, strong) UITableView *tableView;
