@@ -918,31 +918,30 @@ static NSInteger kToolbarHeight = 44;
 - (void)multiDelete:(id)sender {
     self.indexPathsToDelete = [self.tableView indexPathsForSelectedRows];
     
-    self.confirmMultipleDeletionActionSheet = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Are you sure you want to delete these bookmarks?", nil)
-                                                                                  message:nil
-                                                                           preferredStyle:UIAlertControllerStyleActionSheet];
+    self.confirmMultipleDeletionActionSheet = [UIAlertController lhs_actionSheetWithTitle:NSLocalizedString(@"Are you sure you want to delete these bookmarks?", nil)];
     
     [self.confirmMultipleDeletionActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Delete", nil)
-                                                                                style:UIAlertActionStyleDestructive
-                                                                              handler:^(UIAlertAction *action) {
-                                                                                  self.tableView.scrollEnabled = YES;
-
-                                                                                  [self deletePostsAtIndexPaths:self.indexPathsToDelete];
-                                                                                  [self toggleEditingMode:nil];
-                                                                              }];
-
-    [self.confirmMultipleDeletionActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
-                                                                                style:UIAlertActionStyleCancel
-                                                                              handler:^(UIAlertAction *action) {
-                                                                                  self.tableView.scrollEnabled = YES;
-
-                                                                                  if (self.tableView.editing) {
-                                                                                      [self toggleEditingMode:nil];
-                                                                                  }
-                                                                              }];
+                                                              style:UIAlertActionStyleDestructive
+                                                            handler:^(UIAlertAction *action) {
+                                                                self.tableView.scrollEnabled = YES;
+                                                                
+                                                                [self deletePostsAtIndexPaths:self.indexPathsToDelete];
+                                                                [self toggleEditingMode:nil];
+                                                            }];
     
-    self.confirmDeletionActionSheet.popoverPresentationController.sourceView = self.view;
-    [self presentViewController:self.confirmDeletionActionSheet animated:YES completion:nil];
+    [self.confirmMultipleDeletionActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                              style:UIAlertActionStyleCancel
+                                                            handler:^(UIAlertAction *action) {
+                                                                self.tableView.scrollEnabled = YES;
+                                                                
+                                                                if (self.tableView.editing) {
+                                                                    [self toggleEditingMode:nil];
+                                                                }
+                                                            }];
+    
+    self.confirmMultipleDeletionActionSheet.popoverPresentationController.sourceRect = [self.view convertRect:[self.multipleDeleteButton lhs_centerRect] fromView:self.multipleDeleteButton];
+    self.confirmMultipleDeletionActionSheet.popoverPresentationController.sourceView = self.view;
+    [self presentViewController:self.confirmMultipleDeletionActionSheet animated:YES completion:nil];
 }
 
 - (void)tagSelected:(id)sender {
@@ -1015,9 +1014,7 @@ static NSInteger kToolbarHeight = 44;
             urlString = self.selectedPost[@"url"];
         }
 
-        self.longPressActionSheet = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"OK", nil)
-                                                                        message:nil
-                                                                 preferredStyle:UIAlertControllerStyleActionSheet];
+        self.longPressActionSheet = [UIAlertController lhs_actionSheetWithTitle:urlString];
         
         id <PPDataSource> dataSource = [self currentDataSource];
         PPPostActionType actions = [dataSource actionsForPost:self.selectedPost];
@@ -1297,9 +1294,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)showConfirmDeletionActionSheet {
-    self.confirmDeletionActionSheet = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Are you sure you want to delete this bookmark?", nil)
-                                                                          message:nil
-                                                                   preferredStyle:UIAlertControllerStyleActionSheet];
+    self.confirmDeletionActionSheet = [UIAlertController lhs_actionSheetWithTitle:NSLocalizedString(@"Are you sure you want to delete this bookmark?", nil)];
     
     [self.confirmDeletionActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Delete", nil)
                                                                         style:UIAlertActionStyleDestructive
@@ -1523,9 +1518,7 @@ static NSInteger kToolbarHeight = 44;
         if (![tag isEqualToString:emptyString]) {
             if ([tag isEqualToString:ellipsis] && badgeViews.count > 0) {
                 // Show more tag options
-                self.additionalTagsActionSheet = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Additional Tags", nil)
-                                                                                     message:nil
-                                                                              preferredStyle:UIAlertControllerStyleActionSheet];
+                self.additionalTagsActionSheet = [UIAlertController lhs_actionSheetWithTitle:NSLocalizedString(@"Additional Tags", nil)];
                 
                 id <PPDataSource> dataSource = [self currentDataSource];
                 if ([dataSource respondsToSelector:@selector(handleTapOnLinkWithURL:callback:)]) {

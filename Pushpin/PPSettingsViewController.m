@@ -528,8 +528,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 case PPMainReadLater:
                     if (isIPad) {
                         if (!self.actionSheet) {
-                            self.readLaterActionSheet.popoverPresentationController.sourceView = cell;
-                            self.readLaterActionSheet.popoverPresentationController.sourceRect = [cell lhs_centerRect];
+                            self.readLaterActionSheet.popoverPresentationController.sourceView = self.view;
                             
                             [self presentViewController:self.readLaterActionSheet
                                                animated:YES

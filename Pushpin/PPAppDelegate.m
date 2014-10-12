@@ -328,30 +328,30 @@
                     NSString *message = [NSString stringWithFormat:@"%@\n\n%@", NSLocalizedString(@"Pushpin detected a link in your clipboard for an existing bookmark. Would you like to edit it?", nil), self.clipboardBookmarkURL];
                     
                     UIAlertController *alertController = [UIAlertController lhs_alertViewWithTitle:nil
-                                                                                             message:message];
-                    
-                    [alertController lhs_addActionWithTitle:NSLocalizedString(@"Edit", nil)
-                                                                        style:UIAlertActionStyleDefault
-                                                                      handler:^(UIAlertAction *action) {
-                                                                          PPNavigationController *addBookmarkViewController = [PPAddBookmarkViewController updateBookmarkViewControllerWithURLString:self.clipboardBookmarkURL callback:nil];
-                                                                          
-                                                                          if ([UIApplication isIPad]) {
-                                                                              addBookmarkViewController.modalPresentationStyle = UIModalPresentationFormSheet;
-                                                                          }
-                                                                          
-                                                                          [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
-                                                                          [[Mixpanel sharedInstance] track:@"Decided to edit bookmark from clipboard"];
-                                                                      }];
+                                                                                           message:message];
                     
                     [alertController lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
-                                                                        style:UIAlertActionStyleCancel
-                                                                      handler:^(UIAlertAction *action) {
-                                                                          dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                                              [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
-                                                                                  [db executeUpdate:@"INSERT INTO rejected_bookmark (url) VALUES(?)" withArgumentsInArray:@[self.clipboardBookmarkURL]];
-                                                                              }];
-                                                                          });
-                                                                      }];
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:^(UIAlertAction *action) {
+                                                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                                            [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
+                                                                [db executeUpdate:@"INSERT INTO rejected_bookmark (url) VALUES(?)" withArgumentsInArray:@[self.clipboardBookmarkURL]];
+                                                            }];
+                                                        });
+                                                    }];
+                    
+                    [alertController lhs_addActionWithTitle:NSLocalizedString(@"Edit", nil)
+                                                      style:UIAlertActionStyleDefault
+                                                    handler:^(UIAlertAction *action) {
+                                                        PPNavigationController *addBookmarkViewController = [PPAddBookmarkViewController updateBookmarkViewControllerWithURLString:self.clipboardBookmarkURL callback:nil];
+                                                        
+                                                        if ([UIApplication isIPad]) {
+                                                            addBookmarkViewController.modalPresentationStyle = UIModalPresentationFormSheet;
+                                                        }
+                                                        
+                                                        [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
+                                                        [[Mixpanel sharedInstance] track:@"Decided to edit bookmark from clipboard"];
+                                                    }];
 
                     [[UIViewController lhs_topViewController] presentViewController:alertController animated:YES completion:nil];
                 });
@@ -369,6 +369,18 @@
                                                   UIAlertController *alertController = [UIAlertController lhs_alertViewWithTitle:nil
                                                                                                                          message:message];
                                                   
+                                                  [alertController lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                                                    style:UIAlertActionStyleCancel
+                                                                                  handler:^(UIAlertAction *action) {
+                                                                                      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                                                                          [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
+                                                                                              [db executeUpdate:@"INSERT INTO rejected_bookmark (url) VALUES(?)" withArgumentsInArray:@[self.clipboardBookmarkURL]];
+                                                                                          }];
+                                                                                      });
+                                                                                      
+                                                                                      self.addOrEditPromptVisible = NO;
+                                                                                  }];
+                                                  
                                                   [alertController lhs_addActionWithTitle:NSLocalizedString(@"Add", nil)
                                                                                     style:UIAlertActionStyleDefault
                                                                                   handler:^(UIAlertAction *action) {
@@ -380,18 +392,6 @@
                                                                                       
                                                                                       [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
                                                                                       [[Mixpanel sharedInstance] track:@"Decided to add bookmark from clipboard"];
-                                                                                      
-                                                                                      self.addOrEditPromptVisible = NO;
-                                                                                  }];
-                                                  
-                                                  [alertController lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
-                                                                                    style:UIAlertActionStyleCancel
-                                                                                  handler:^(UIAlertAction *action) {
-                                                                                      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                                                          [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
-                                                                                              [db executeUpdate:@"INSERT INTO rejected_bookmark (url) VALUES(?)" withArgumentsInArray:@[self.clipboardBookmarkURL]];
-                                                                                          }];
-                                                                                      });
                                                                                       
                                                                                       self.addOrEditPromptVisible = NO;
                                                                                   }];
