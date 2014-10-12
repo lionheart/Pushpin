@@ -11,6 +11,7 @@
 #import "PPTableViewTitleView.h"
 #import "PPBadgeWrapperView.h"
 #import "PPTheme.h"
+#import "UIAlertController+UIAlertController_LHSAdditions.h"
 
 #import <FMDB/FMDatabase.h>
 #import <ASPinboard/ASPinboard.h>
@@ -340,25 +341,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 [self.tableView endUpdates];
             });
         });
-    }
-}
-
-#pragma mark - UIActionSheetDelegate
-
-- (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (actionSheet == self.removeTagActionSheet) {
-        if (buttonIndex == 0) {
-            self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
-            
-            NSIndexPath *indexPathToReload;
-            indexPathToReload = [NSIndexPath indexPathForRow:0 inSection:0];
-            
-            [self.tableView beginUpdates];
-            [self.tableView reloadRowsAtIndexPaths:@[indexPathToReload] withRowAnimation:UITableViewRowAnimationFade];
-            [self.tableView endUpdates];
-            
-            [self deleteTagWithName:self.currentlySelectedTag];
-        }
     }
 }
 
@@ -868,12 +850,31 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)badgeWrapperView:(PPBadgeWrapperView *)badgeWrapperView didSelectBadge:(PPBadgeView *)badge {
     NSString *tag = badge.textLabel.text;
     self.currentlySelectedTag = tag;
-    
-    NSString *prompt = [NSString stringWithFormat:@"Remove '%@'", tag];
-    self.removeTagActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:prompt otherButtonTitles:nil];
 
+    self.removeTagActionSheet = [UIAlertController lhs_actionSheetWithTitle:nil];
+
+    [self.removeTagActionSheet lhs_addActionWithTitle:[NSString stringWithFormat:@"Remove '%@'", tag]
+                                                style:UIAlertActionStyleCancel
+                                              handler:^(UIAlertAction *action) {
+                                                  self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
+                                                  
+                                                  NSIndexPath *indexPathToReload;
+                                                  indexPathToReload = [NSIndexPath indexPathForRow:0 inSection:0];
+                                                  
+                                                  [self.tableView beginUpdates];
+                                                  [self.tableView reloadRowsAtIndexPaths:@[indexPathToReload] withRowAnimation:UITableViewRowAnimationFade];
+                                                  [self.tableView endUpdates];
+                                                  
+                                                  [self deleteTagWithName:self.currentlySelectedTag];
+                                              }];
+
+    [self.removeTagActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil];
+    
     CGPoint point = CGPointMake(badge.center.x - 2, badge.frame.origin.y);
-    [self.removeTagActionSheet showFromRect:(CGRect){point, {1, 1}} inView:badgeWrapperView animated:YES];
+    
+    self.removeTagActionSheet.popoverPresentationController.sourceRect = (CGRect){point, {1, 1}};
+    self.removeTagActionSheet.popoverPresentationController.sourceView = badgeWrapperView;
+    [self presentViewController:self.removeTagActionSheet animated:YES completion:nil];
 }
 
 #pragma mark - UIKeyCommand
