@@ -171,7 +171,7 @@
 }
 
 - (CGRect)lhs_centerRect {
-    return (CGRect){self.center, {1, 1}};
+    return (CGRect){{self.frame.size.width / 2., self.frame.size.height / 2.}, {1, 1}};
 }
 
 @end
