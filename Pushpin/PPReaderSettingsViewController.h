@@ -43,6 +43,6 @@ enum : NSInteger {
     PPReaderSettingsSectionCount = PPReaderSettingsMainRowMargin + 1
 };
 
-@interface PPReaderSettingsViewController : PPTableViewController <LHSFontSelecting, UIActionSheetDelegate>
+@interface PPReaderSettingsViewController : PPTableViewController <LHSFontSelecting>
 
 @end
