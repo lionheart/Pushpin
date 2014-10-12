@@ -43,7 +43,9 @@
                 "37F6D7E519A1111E004016DB",
                 "37D2351C16B8DDD0007541DC",
                 "37D2351D16B8DDD0007541DC",
-                "3794AE9F176D33D100250909"
+                "3794AE9F176D33D100250909",
+                "3755568619EB172600C65FF8",
+                "3755568719EB172700C65FF8"
             ],
             "isa": "PBXGroup",
             "name": "Vendor",
@@ -1248,8 +1250,10 @@
             "fileEncoding": "4",
             "isa": "PBXFileReference",
             "lastKnownFileType": "sourcecode.c.h",
+            "lineEnding": "0",
             "path": "PPAboutViewController.h",
-            "sourceTree": "<group>"
+            "sourceTree": "<group>",
+            "xcLanguageSpecificationIdentifier": "xcode.lang.objcpp"
         },
         "3732DF9C175957F000978A68": {
             "fileEncoding": "4",
@@ -1308,8 +1312,10 @@
             "fileEncoding": "4",
             "isa": "PBXFileReference",
             "lastKnownFileType": "sourcecode.c.h",
+            "lineEnding": "0",
             "path": "PPGenericPostViewController.h",
-            "sourceTree": "<group>"
+            "sourceTree": "<group>",
+            "xcLanguageSpecificationIdentifier": "xcode.lang.objcpp"
         },
         "3733251E16E155A2002E2AB0": {
             "fileEncoding": "4",
@@ -2728,6 +2734,30 @@
             "fileRef": "3751D18718346EED00E0A42A",
             "isa": "PBXBuildFile"
         },
+        "3755568619EB172600C65FF8": {
+            "fileEncoding": "4",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "sourcecode.c.h",
+            "name": "UIAlertController+UIAlertController_LHSAdditions.h",
+            "path": "Pushpin/UIAlertController+UIAlertController_LHSAdditions.h",
+            "sourceTree": "<group>"
+        },
+        "3755568719EB172700C65FF8": {
+            "fileEncoding": "4",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "sourcecode.c.objc",
+            "name": "UIAlertController+UIAlertController_LHSAdditions.m",
+            "path": "Pushpin/UIAlertController+UIAlertController_LHSAdditions.m",
+            "sourceTree": "<group>"
+        },
+        "3755568819EB172700C65FF8": {
+            "fileRef": "3755568619EB172600C65FF8",
+            "isa": "PBXBuildFile"
+        },
+        "3755568919EB172700C65FF8": {
+            "fileRef": "3755568719EB172700C65FF8",
+            "isa": "PBXBuildFile"
+        },
         "37561D8816ADFEC400D69CDE": {
             "fileEncoding": "4",
             "isa": "PBXFileReference",
@@ -3324,8 +3354,10 @@
             "fileEncoding": "4",
             "isa": "PBXFileReference",
             "lastKnownFileType": "sourcecode.c.h",
+            "lineEnding": "0",
             "path": "PPBrowserSettingsViewController.h",
-            "sourceTree": "<group>"
+            "sourceTree": "<group>",
+            "xcLanguageSpecificationIdentifier": "xcode.lang.objcpp"
         },
         "377E46DD174C73DD00CE3813": {
             "fileEncoding": "4",
@@ -3372,8 +3404,10 @@
             "fileEncoding": "4",
             "isa": "PBXFileReference",
             "lastKnownFileType": "sourcecode.c.h",
+            "lineEnding": "0",
             "path": "PPAddBookmarkViewController.h",
-            "sourceTree": "<group>"
+            "sourceTree": "<group>",
+            "xcLanguageSpecificationIdentifier": "xcode.lang.objcpp"
         },
         "37800E44162B389B009FCB17": {
             "fileEncoding": "4",
@@ -4687,6 +4721,7 @@
                 "379042A919CBDCDF00409D34",
                 "379042AA19CBDCDF00409D34",
                 "379042AB19CBDCDF00409D34",
+                "3755568919EB172700C65FF8",
                 "379042AC19CBDCDF00409D34"
             ],
             "isa": "PBXSourcesBuildPhase",
@@ -4703,7 +4738,8 @@
         "379042AF19CC646700409D34": {
             "buildActionMask": "2147483647",
             "files": [
-                "379042B719CC646900409D34"
+                "379042B719CC646900409D34",
+                "3755568819EB172700C65FF8"
             ],
             "isa": "PBXHeadersBuildPhase",
             "runOnlyForDeploymentPostprocessing": "0"
@@ -5936,8 +5972,10 @@
             "fileEncoding": "4",
             "isa": "PBXFileReference",
             "lastKnownFileType": "sourcecode.c.h",
+            "lineEnding": "0",
             "path": "PPDisplaySettingsViewController.h",
-            "sourceTree": "<group>"
+            "sourceTree": "<group>",
+            "xcLanguageSpecificationIdentifier": "xcode.lang.objcpp"
         },
         "37B348C8175EFAFA00929E2E": {
             "fileEncoding": "4",
@@ -7601,8 +7639,10 @@
             "fileEncoding": "4",
             "isa": "PBXFileReference",
             "lastKnownFileType": "sourcecode.c.h",
+            "lineEnding": "0",
             "path": "LHSFontSelectionViewController.h",
-            "sourceTree": "<group>"
+            "sourceTree": "<group>",
+            "xcLanguageSpecificationIdentifier": "xcode.lang.objcpp"
         },
         "37F6D7E819A1111E004016DB": {
             "fileEncoding": "4",
