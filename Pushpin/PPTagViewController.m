@@ -19,6 +19,7 @@
 #import "PPFeedListViewController.h"
 #import "PPDeliciousDataSource.h"
 #import "PPUtilities.h"
+#import "UIAlertController+UIAlertController_LHSAdditions.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
@@ -31,12 +32,12 @@ static NSString *CellIdentifier = @"TagCell";
 @property (nonatomic) BOOL searchInProgress;
 @property (nonatomic, strong) NSMutableDictionary *sectionTitles;
 @property (nonatomic, strong) NSMutableDictionary *tagCounts;
-@property (nonatomic, strong) UIActionSheet *tagActionSheet;
-@property (nonatomic, strong) UIAlertView *deleteConfirmationAlertView;
+@property (nonatomic, strong) UIAlertController *tagActionSheet;
+@property (nonatomic, strong) UIAlertController *deleteConfirmationAlertView;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, strong) NSTimer *tagUpdateTimer;
 @property (nonatomic, strong) NSMutableDictionary *duplicates;
-@property (nonatomic, strong) UIActionSheet *selectTagToDeleteActionSheet;
+@property (nonatomic, strong) UIAlertController *selectTagToDeleteActionSheet;
 @property (nonatomic, strong) NSString *tagToDelete;
 
 - (void)showSelectTagToDeleteActionSheet;
@@ -363,34 +364,6 @@ static NSString *CellIdentifier = @"TagCell";
     return [self tableView:self.tableView titleForHeaderInSection:section];
 }
 
-#pragma mark - UIAlertViewDelegate
-
-- (void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (alertView == self.deleteConfirmationAlertView) {
-        if (buttonIndex == 1) {
-            [self deleteTagWithName:self.tagToDelete];
-                                }
-    }
-}
-
-#pragma mark - UIActionSheetDelegate
-
-- (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (actionSheet == self.tagActionSheet) {
-        NSString *title = [self.tagActionSheet buttonTitleAtIndex:buttonIndex];
-        if ([title isEqualToString:@"Delete"]) {
-            [self showDeleteConfirmationAlertView];
-        }
-    }
-    else if (actionSheet == self.selectTagToDeleteActionSheet) {
-        NSString *title = [self.selectTagToDeleteActionSheet buttonTitleAtIndex:buttonIndex];
-        if (![title isEqualToString:NSLocalizedString(@"Cancel", nil)]) {
-            self.tagToDelete = title;
-            [self showDeleteConfirmationAlertView];
-        }
-    }
-}
-
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer {
     if (recognizer == self.longPressGestureRecognizer) {
         if (self.longPressGestureRecognizer.state == UIGestureRecognizerStateBegan) {
@@ -404,12 +377,21 @@ static NSString *CellIdentifier = @"TagCell";
                 [self showSelectTagToDeleteActionSheet];
             }
             else {
-                self.tagActionSheet = [[UIActionSheet alloc] initWithTitle:self.tagToDelete
-                                                              delegate:self
-                                                     cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-                                                destructiveButtonTitle:NSLocalizedString(@"Delete", nil)
-                                                     otherButtonTitles:nil];
-            [self.tagActionSheet showFromRect:rect inView:self.tableView animated:YES];
+                self.tagActionSheet = [UIAlertController lhs_actionSheetWithTitle:self.tagToDelete];
+                
+                [self.tagActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Delete", nil)
+                                                      style:UIAlertActionStyleDestructive
+                                                    handler:^(UIAlertAction *action) {
+                                                        [self showDeleteConfirmationAlertView];
+                                                    }];
+
+                [self.tagActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:nil];
+                
+                self.tagActionSheet.popoverPresentationController.sourceView = self.tableView;
+                self.tagActionSheet.popoverPresentationController.sourceRect = rect;
+                [self presentViewController:self.tagActionSheet animated:YES completion:nil];
             }
         }
     }
@@ -615,28 +597,41 @@ static NSString *CellIdentifier = @"TagCell";
 }
 
 - (void)showDeleteConfirmationAlertView {
-    self.deleteConfirmationAlertView = [[UIAlertView alloc] initWithTitle:self.tagToDelete
-                                                                  message:NSLocalizedString(@"Are you sure you want to delete this tag? There is no undo.", nil)
-                                                                 delegate:self
-                                                        cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-                                                        otherButtonTitles:NSLocalizedString(@"Delete", nil), nil];
-    [self.deleteConfirmationAlertView show];
+    self.deleteConfirmationAlertView = [UIAlertController lhs_alertViewWithTitle:self.tagToDelete
+                                                                         message:NSLocalizedString(@"Are you sure you want to delete this tag? There is no undo.", nil)];
+
+    [self.deleteConfirmationAlertView lhs_addActionWithTitle:NSLocalizedString(@"Delete", nil)
+                                                       style:UIAlertActionStyleDestructive
+                                                     handler:^(UIAlertAction *action) {
+                                                         [self deleteTagWithName:self.tagToDelete];
+                                                     }];
+    
+    [self.deleteConfirmationAlertView lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                       style:UIAlertActionStyleCancel
+                                                     handler:nil];
+    
+    [self presentViewController:self.deleteConfirmationAlertView animated:YES completion:nil];
 }
 
 - (void)showSelectTagToDeleteActionSheet {
     NSArray *duplicates = self.duplicates[self.tagToDelete];
-    self.selectTagToDeleteActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"This tag has a few versions. Select the one you'd like to delete.", nil)
-                                                                    delegate:self
-                                                           cancelButtonTitle:nil
-                                                      destructiveButtonTitle:nil
-                                                           otherButtonTitles:nil];
+    self.selectTagToDeleteActionSheet = [UIAlertController lhs_actionSheetWithTitle:NSLocalizedString(@"This tag has a few versions. Select the one you'd like to delete.", nil)];
+
     for (NSString *duplicate in duplicates) {
-        [self.selectTagToDeleteActionSheet addButtonWithTitle:duplicate];
+        [self.selectTagToDeleteActionSheet lhs_addActionWithTitle:duplicate
+                                                            style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction *action) {
+                                                              self.tagToDelete = action.title;
+                                                              [self showDeleteConfirmationAlertView];
+                                                          }];
     }
-    [self.selectTagToDeleteActionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", nil)];
     
-    self.selectTagToDeleteActionSheet.cancelButtonIndex = self.selectTagToDeleteActionSheet.numberOfButtons - 1;
-    [self.selectTagToDeleteActionSheet showInView:self.view];
+    [self.selectTagToDeleteActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                        style:UIAlertActionStyleCancel
+                                                      handler:nil];
+    
+    self.selectTagToDeleteActionSheet.popoverPresentationController.sourceView = self.view;
+    [self presentViewController:self.selectTagToDeleteActionSheet animated:YES completion:nil];
 }
 
 @end
