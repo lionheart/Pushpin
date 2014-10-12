@@ -34,4 +34,6 @@
 - (CGFloat)lhs_distanceToPoint:(CGPoint)point;
 - (void)lhs_removeSubviews;
 
+- (CGRect)lhs_centerRect;
+
 @end
