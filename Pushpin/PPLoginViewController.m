@@ -227,13 +227,16 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 #ifdef PINBOARD
             NSString *message = NSLocalizedString(@"Please enter both a username and password to sign into Pinboard.", nil);
 #endif
+
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil
+                                                                           message:message
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
             
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
-                                                            message:message
-                                                           delegate:nil
-                                                  cancelButtonTitle:nil
-                                                  otherButtonTitles:@"OK", nil];
-            [alert show];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                      style:UIAlertActionStyleDefault
+                                                    handler:nil]];
+            
+            [self presentViewController:alert animated:YES completion:nil];
             self.loginInProgress = NO;
             return;
         }
@@ -302,12 +305,16 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                 dispatch_async(dispatch_get_main_queue(), ^{
                     switch (error.code) {
                         case PinboardErrorInvalidCredentials: {
-                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Authentication Error", nil)
-                                                                            message:NSLocalizedString(@"We couldn't log you in. Please make sure you've provided valid credentials.", nil)
-                                                                           delegate:nil
-                                                                  cancelButtonTitle:nil
-                                                                  otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                            [alert show];
+                            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Authentication Error", nil)
+                                                                                           message:NSLocalizedString(@"We couldn't log you in. Please make sure you've provided valid credentials.", nil)
+                                                                                    preferredStyle:UIAlertControllerStyleAlert];
+                            
+                            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                                      style:UIAlertActionStyleDefault
+                                                                    handler:nil]];
+                            
+                            [self presentViewController:alert animated:YES completion:nil];
+                            
                             [[Mixpanel sharedInstance] track:@"Failed to log in"];
                             break;
                         }
@@ -323,15 +330,17 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 #ifdef PINBOARD
                             NSString *message = NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil);
 #endif
-                            
-                            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
-                                                                            message:message
-                                                                           delegate:nil
-                                                                  cancelButtonTitle:nil
-                                                                  otherButtonTitles:@"OK", nil];
-                            
 
-                            [alert show];
+                            UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil
+                                                                                           message:message
+                                                                                    preferredStyle:UIAlertControllerStyleAlert];
+                            
+                            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                                      style:UIAlertActionStyleDefault
+                                                                    handler:nil]];
+                            
+                            [self presentViewController:alert animated:YES completion:nil];
+
                             [[Mixpanel sharedInstance] track:@"Cancelled log in"];
                             break;
                         }
