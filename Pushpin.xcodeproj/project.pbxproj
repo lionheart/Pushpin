@@ -718,8 +718,10 @@
         "372943F119CF53FD00ABF006": {
             "isa": "PBXFileReference",
             "lastKnownFileType": "sourcecode.c.objc",
+            "lineEnding": "0",
             "path": "ShareViewController.m",
-            "sourceTree": "<group>"
+            "sourceTree": "<group>",
+            "xcLanguageSpecificationIdentifier": "xcode.lang.objc"
         },
         "372943F319CF53FD00ABF006": {
             "isa": "PBXFileReference",
@@ -2746,9 +2748,11 @@
             "fileEncoding": "4",
             "isa": "PBXFileReference",
             "lastKnownFileType": "sourcecode.c.objc",
+            "lineEnding": "0",
             "name": "UIAlertController+LHSAdditions.m",
             "path": "Pushpin/UIAlertController+LHSAdditions.m",
-            "sourceTree": "<group>"
+            "sourceTree": "<group>",
+            "xcLanguageSpecificationIdentifier": "xcode.lang.objc"
         },
         "3755568819EB172700C65FF8": {
             "fileRef": "3755568619EB172600C65FF8",
@@ -5326,8 +5330,10 @@
             "fileEncoding": "4",
             "isa": "PBXFileReference",
             "lastKnownFileType": "sourcecode.c.objc",
+            "lineEnding": "0",
             "path": "PPShareViewController.m",
-            "sourceTree": "<group>"
+            "sourceTree": "<group>",
+            "xcLanguageSpecificationIdentifier": "xcode.lang.objc"
         },
         "3790437819CC97AD00409D34": {
             "fileRef": "3790437719CC97AD00409D34",
@@ -7648,8 +7654,10 @@
             "fileEncoding": "4",
             "isa": "PBXFileReference",
             "lastKnownFileType": "sourcecode.c.objc",
+            "lineEnding": "0",
             "path": "LHSFontSelectionViewController.m",
-            "sourceTree": "<group>"
+            "sourceTree": "<group>",
+            "xcLanguageSpecificationIdentifier": "xcode.lang.objc"
         },
         "37F6D7E919A1111E004016DB": {
             "fileEncoding": "4",
