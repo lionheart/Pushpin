@@ -11,7 +11,7 @@
 #import "PPAppDelegate.h"
 #import "PPToolbar.h"
 
-@interface PPWebViewController : UIViewController <UIActionSheetDelegate, UIAlertViewDelegate, UIWebViewDelegate, MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate, NSURLConnectionDataDelegate, NSURLSessionTaskDelegate, NSURLSessionDataDelegate>
+@interface PPWebViewController : UIViewController <UIWebViewDelegate, MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate, NSURLConnectionDataDelegate, NSURLSessionTaskDelegate, NSURLSessionDataDelegate>
 
 @property (nonatomic, strong) UIView *statusBarBackgroundView;
 @property (nonatomic, strong) UIView *webViewContainer;
@@ -51,16 +51,15 @@
 @property (nonatomic) NSInteger numberOfRequestsCompleted;
 @property (nonatomic) NSInteger numberOfRequestsInProgress;
 
-@property (nonatomic, strong) NSURL *urlToOpenExternally;
 @property (nonatomic, strong) NSMutableArray *history;
 @property (nonatomic, strong) NSLayoutConstraint *topLayoutConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *toolbarConstraint;
 @property (nonatomic, strong) NSMutableArray *navigationHistory;
 @property (nonatomic, strong) NSDictionary *selectedLink;
-@property (nonatomic, strong) UIActionSheet *backActionSheet;
-@property (nonatomic, strong) UIActionSheet *actionSheet;
-@property (nonatomic, strong) UIActionSheet *selectedActionSheet;
-@property (nonatomic, strong) UIAlertView *openLinkExternallyAlertView;
+@property (nonatomic, strong) UIAlertController *backActionSheet;
+@property (nonatomic, strong) UIAlertController *actionSheet;
+@property (nonatomic, strong) UIAlertController *selectedActionSheet;
+@property (nonatomic, strong) UIAlertController *openLinkExternallyAlertView;
 @property (nonatomic, strong) UITapGestureRecognizer *singleTapGestureRecognizer;
 @property (nonatomic, strong) UIView *toolbar;
 @property (nonatomic, strong) NSTimer *webViewTimeoutTimer;

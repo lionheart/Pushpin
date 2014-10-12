@@ -23,6 +23,7 @@
 #import "PPMobilizerUtility.h"
 #import "PPSettings.h"
 #import "NSData+AES256.h"
+#import "UIAlertController+UIAlertController_LHSAdditions.h"
 
 #ifdef PINBOARD
 #import "PPPinboardDataSource.h"
@@ -388,36 +389,66 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         self.selectedLink = @{ @"url": url, @"title": title };
         
         // Show the context menu
-        self.selectedActionSheet = [[UIActionSheet alloc] initWithTitle:url
-                                                               delegate:self
-                                                      cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-                                                 destructiveButtonTitle:nil
-                                                      otherButtonTitles:NSLocalizedString(@"Add to Pinboard", nil), NSLocalizedString(@"Copy URL", nil), nil];
+        self.selectedActionSheet = [UIAlertController lhs_actionSheetWithTitle:url];
+
+        [self.selectedActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Add to Pinboard", nil)
+                                                   style:UIAlertActionStyleDefault
+                                                 handler:^(UIAlertAction *action) {
+                                                     [self setSelectedActionSheetIsVisible:NO];
+                                                     [self showAddViewController:self.selectedLink];
+                                                 }];
+        
+        [self.selectedActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Copy URL", nil)
+                                                   style:UIAlertActionStyleDefault
+                                                 handler:^(UIAlertAction *action) {
+                                                     [self setSelectedActionSheetIsVisible:NO];
+                                                     [self copyURL:[NSURL URLWithString:[self.selectedLink valueForKey:@"url"]]];
+                                                 }];
+        
+        [self.selectedActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                   style:UIAlertActionStyleCancel
+                                                 handler:nil];
+
         [self setSelectedActionSheetIsVisible:YES];
-        [(UIActionSheet *)self.selectedActionSheet showFromRect:self.actionButton.frame inView:self.toolbar animated:YES];
+
+        self.selectedActionSheet.popoverPresentationController.sourceView = self.view;
+        [self presentViewController:self.selectedActionSheet animated:YES completion:nil];
     }
     else if (recognizer == self.backButtonLongPressGestureRecognizer) {
         if (recognizer.state == UIGestureRecognizerStateBegan) {
-            self.backActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:nil];
+            self.backActionSheet = [UIAlertController lhs_actionSheetWithTitle:nil];
 
             NSRange range = NSMakeRange(MAX(0, (NSInteger)self.history.count - 5), MIN(5, self.history.count));
             NSArray *lastFiveHistoryItems = [self.history subarrayWithRange:range];
             for (NSInteger i=lastFiveHistoryItems.count - 1; i>0; i--) {
                 NSDictionary *item = lastFiveHistoryItems[i];
-                [self.backActionSheet addButtonWithTitle:[NSString stringWithFormat:@"%@", item[@"host"]]];
+                [self.backActionSheet lhs_addActionWithTitle:[NSString stringWithFormat:@"%@", item[@"host"]]
+                                                       style:UIAlertActionStyleDefault
+                                                     handler:^(UIAlertAction *action) {
+                                                         NSInteger buttonIndex = [self.backActionSheet.actions indexOfObject:action];
+                                                         NSInteger i=0;
+                                                         while (i<buttonIndex+1) {
+                                                             [self.webView goBack];
+                                                             i++;
+                                                         }
+                                                     }];
             }
+            
+            [self.backActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Close Browser", nil)
+                                                   style:UIAlertActionStyleDefault
+                                                 handler:^(UIAlertAction *action) {
+                                                     self.readerWebView.hidden = YES;
+                                                     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+                                                 }];
 
-            [self.backActionSheet addButtonWithTitle:@"Close Browser"];
-            [self.backActionSheet addButtonWithTitle:@"Cancel"];
-            self.backActionSheet.cancelButtonIndex = self.backActionSheet.numberOfButtons - 1;
-
+            [self.backActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                   style:UIAlertActionStyleDefault
+                                                 handler:nil];
             CGPoint point = [self.backButtonLongPressGestureRecognizer locationInView:self.backButton];
-            if ([UIApplication isIPad]) {
-                [self.backActionSheet showFromRect:(CGRect){point, {1, 1}} inView:self.backButton animated:YES];
-            }
-            else {
-                [self.backActionSheet showInView:self.toolbar];
-            }
+            
+            self.backActionSheet.popoverPresentationController.sourceView = self.backButton;
+            self.backActionSheet.popoverPresentationController.sourceRect = (CGRect){point, {1, 1}};
+            [self presentViewController:self.backActionSheet animated:YES completion:nil];
         }
     }
     else if (recognizer == self.bottomTapGestureRecognizer) {
@@ -554,7 +585,8 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     self.activityView = [[PPActivityViewController alloc] initWithActivityItems:activityItems];
 
     __weak PPWebViewController *weakself = self;
-    self.activityView.completionHandler = ^(NSString *activityType, BOOL completed) {
+
+    self.activityView.completionWithItemsHandler = ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
         [weakself setNeedsStatusBarAppearanceUpdate];
 
         if (weakself.popover) {
@@ -571,39 +603,6 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     }
     else {
         [self presentViewController:self.activityView animated:YES completion:nil];
-    }
-}
-
-- (void)actionSheetCancel:(UIActionSheet *)actionSheet {
-    self.actionSheet = nil;
-}
-
-- (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (actionSheet == self.selectedActionSheet) {
-        [self setSelectedActionSheetIsVisible:NO];
-        NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
-        if ([title isEqualToString:NSLocalizedString(@"Copy URL", nil)]) {
-            // Copy URL to clipboard
-            [self copyURL:[NSURL URLWithString:[self.selectedLink valueForKey:@"url"]]];
-        }
-        else if ([title isEqualToString:NSLocalizedString(@"Add to Pinboard", nil)]) {
-            // Add to bookmarks
-            [self showAddViewController:self.selectedLink];
-        }
-    }
-    else if (actionSheet == self.backActionSheet) {
-        NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
-        if (buttonIndex < actionSheet.numberOfButtons - 2) {
-            NSInteger i=0;
-            while (i<buttonIndex+1) {
-                [self.webView goBack];
-                i++;
-            }
-        }
-        else if ([title isEqualToString:@"Close Browser"]) {
-            self.readerWebView.hidden = YES;
-            [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
-        }
     }
 }
 
@@ -856,14 +855,22 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                 return YES;
             }
             else {
-                if (!self.openLinkExternallyAlertView) {
-                    self.openLinkExternallyAlertView = [[UIAlertView alloc] initWithTitle:@"Leave Pushpin?"
-                                                                                  message:@"The link is requesting to open an external application. Would you like to continue?"
-                                                                                 delegate:self
-                                                                        cancelButtonTitle:@"Cancel"
-                                                                        otherButtonTitles:@"Open", nil];
-                    [self.openLinkExternallyAlertView show];
-                    self.urlToOpenExternally = webView.request.URL;
+#warning is this right?
+                if (!self.openLinkExternallyAlertView.presentingViewController) {
+                    self.openLinkExternallyAlertView = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Leave Pushpin?", nil)
+                                                                                         message:NSLocalizedString(@"The link is requesting to open an external application. Would you like to continue?", nil)];
+                    
+                    [self.openLinkExternallyAlertView lhs_addActionWithTitle:NSLocalizedString(@"Open", nil)
+                                                                       style:UIAlertActionStyleDefault
+                                                                     handler:^(UIAlertAction *action) {
+                                                                         [[UIApplication sharedApplication] openURL:webView.request.URL];
+                                                                     }];
+
+                    [self.openLinkExternallyAlertView lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                                       style:UIAlertActionStyleCancel
+                                                                     handler:nil];
+
+                    [self presentViewController:self.openLinkExternallyAlertView animated:YES completion:nil];
                 }
                 return NO;
             }
@@ -997,23 +1004,6 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
 - (void)webViewLoadTimedOut {
     [self updateInterfaceWithComputedWebPageBackgroundColorTimedOut:YES];
-}
-
-#pragma mark - UIAlertViewDelegate
-
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (alertView == self.openLinkExternallyAlertView) {
-        NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
-        if ([title isEqualToString:@"Open"]) {
-            [[UIApplication sharedApplication] openURL:self.urlToOpenExternally];
-        }
-    }
-    
-    self.openLinkExternallyAlertView = nil;
-}
-
-- (void)alertViewCancel:(UIAlertView *)alertView {
-    self.openLinkExternallyAlertView = nil;
 }
 
 #pragma mark - Utils
