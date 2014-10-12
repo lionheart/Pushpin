@@ -33,8 +33,7 @@ typedef NS_ENUM(NSInteger, PPLoginSectionType) {
 
 static NSInteger PPLoginSectionCount = PPLogin1PasswordSection + 1;
 
-@interface PPLoginViewController : UITableViewController <UITextFieldDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate> {
-}
+@interface PPLoginViewController : UITableViewController <UITextFieldDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate>
 
 @property (nonatomic) BOOL keyboard_shown;
 @property (nonatomic) CGRect activityIndicatorFrameBottom;
