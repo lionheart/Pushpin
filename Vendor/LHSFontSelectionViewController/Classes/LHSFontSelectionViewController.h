@@ -20,7 +20,7 @@
 @property (nonatomic, strong) UISlider *slider;
 @property (nonatomic, strong) NSMutableArray *sectionIndexTitles;
 @property (nonatomic, strong) NSMutableDictionary *fontsForSectionIndex;
-@property (nonatomic, strong) UIActionSheet *sizeAdjustmentActionSheet;
+@property (nonatomic, strong) UIAlertController *sizeAdjustmentActionSheet;
 @property (nonatomic, strong) id<LHSFontSelecting> delegate;
 
 @property (nonatomic) UIStatusBarStyle preferredStatusBarStyle;

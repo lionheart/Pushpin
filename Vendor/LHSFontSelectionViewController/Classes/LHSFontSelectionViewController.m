@@ -699,12 +699,11 @@ static NSString *CellIdentifier = @"Cell";
     for (SKPaymentTransaction *transaction in transactions) {
         switch ((NSInteger)transaction.transactionState) {
             case SKPaymentTransactionStatePurchased: {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Success!"
-                                                                message:@"Thank you for your purchase."
-                                                               delegate:nil
-                                                      cancelButtonTitle:nil
-                                                      otherButtonTitles:@"OK", nil];
-                [alert show];
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Success", nil)
+                                                                                message:NSLocalizedString(@"Thank you for your purchase.", nil)
+                                                                         preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil]];
+                [self presentViewController:alert animated:YES completion:nil];
                 
                 [PPSettings sharedSettings].purchasedPremiumFonts = YES;
 
@@ -750,13 +749,16 @@ static NSString *CellIdentifier = @"Cell";
                             message = transaction.error.localizedDescription;
                             break;
                     }
+
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                                   message:message
+                                                                            preferredStyle:UIAlertControllerStyleAlert];
                     
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
-                                                                    message:message
-                                                                   delegate:nil
-                                                          cancelButtonTitle:nil
-                                                          otherButtonTitles:@"OK", nil];
-                    [alert show];
+                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                              style:UIAlertActionStyleDefault
+                                                            handler:nil]];
+
+                    [self presentViewController:alert animated:YES completion:nil];
                 }
                 
                 self.purchaseInProgress = NO;
@@ -793,12 +795,15 @@ static NSString *CellIdentifier = @"Cell";
 
     dispatch_async(dispatch_get_main_queue(), ^{
         NSString *title = [NSString stringWithFormat:@"Store Error %ld", (long)error.code];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
-                                                        message:error.localizedDescription
-                                                       delegate:nil
-                                              cancelButtonTitle:nil
-                                              otherButtonTitles:@"OK", nil];
-        [alert show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:error.localizedDescription
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                  style:UIAlertActionStyleDefault
+                                                handler:nil]];
+        
+        [self presentViewController:alert animated:YES completion:nil];
 
         [self.tableView beginUpdates];
         [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
