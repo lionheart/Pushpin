@@ -24,6 +24,7 @@
 #import "PPTwitter.h"
 #import "PPSettings.h"
 #import "PPReaderSettingsViewController.h"
+#import "UIAlertController+UIAlertController_LHSAdditions.h"
 
 #import <ASPinboard/ASPinboard.h>
 #import <uservoice-iphone-sdk/UserVoice.h>
@@ -32,6 +33,7 @@
 #import <oauthconsumer/OAuthConsumer.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
+#import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import <LHSDelicious/LHSDelicious.h>
 #import <LHSTableViewCells/LHSTableViewCellValue1.h>
 
@@ -64,50 +66,257 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                                                      action:@selector(showAboutPage)];
     self.navigationItem.rightBarButtonItem = barButtonItem;
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Settings", nil) style:UIBarButtonItemStylePlain target:nil action:nil];
-    
-    self.logOutAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Are you sure?", nil) message:NSLocalizedString(@"This will log you out and delete the local bookmark database from your device.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Log Out", nil), nil];
 
-    self.supportActionSheet = [[UIActionSheet alloc] initWithTitle:NSLocalizedString(@"Contact Support", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Request a feature", nil), NSLocalizedString(@"Report a bug", nil), @"Tweet us", NSLocalizedString(@"Email us", nil), nil];
+    self.logOutAlertView = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Are you sure?", nil)
+                                                             message:NSLocalizedString(@"This will log you out and delete the local bookmark database from your device.", nil)];
+
+    [self.logOutAlertView lhs_addActionWithTitle:NSLocalizedString(@"Log Out", nil)
+                                           style:UIAlertActionStyleDestructive
+                                         handler:^(UIAlertAction *action) {
+                                             PPSettings *settings = [PPSettings sharedSettings];
+                                             PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
+                                             settings.lastUpdated = nil;
+                                             [delegate logout];
+                                             
+#ifdef DELICIOUS
+                                             [[LHSDelicious sharedInstance] resetAuthentication];
+#endif
+                                             
+#ifdef PINBOARD
+                                             [[ASPinboard sharedInstance] resetAuthentication];
+#endif
+                                             
+                                             [delegate setLoginViewController:nil];
+                                             [delegate setNavigationController:nil];
+                                             delegate.loginViewController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+                                             
+                                             if ([UIApplication isIPad]) {
+                                                 [delegate.window setRootViewController:delegate.loginViewController];
+                                             }
+                                             else {
+                                                 [self presentViewController:delegate.loginViewController
+                                                                    animated:YES
+                                                                  completion:nil];
+                                             }
+                                             
+                                             [PPUtilities migrateDatabase];
+                                         }];
+    
+    [self.logOutAlertView lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                           style:UIAlertActionStyleCancel
+                                         handler:nil];
+
+    self.supportActionSheet = [UIAlertController lhs_actionSheetWithTitle:NSLocalizedString(@"Contact Support", nil)];
+
+    [self.supportActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Request a feature", nil)
+                                              style:UIAlertActionStyleDefault
+                                            handler:^(UIAlertAction *action) {
+                                                UVConfig *config = [UVConfig configWithSite:@"lionheartsw.uservoice.com"
+                                                                                     andKey:@"9pBeLUHkDPLj3XhBG9jQ"
+                                                                                  andSecret:@"PaXdmNmtTAynLJ1MpuOFnVUUpfD2qA5obo7NxhsxP5A"];
+                                                
+                                                [UserVoice presentUserVoiceInterfaceForParentViewController:self andConfig:config];
+                                            }];
+    
+    [self.supportActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Report a bug", nil)
+                                              style:UIAlertActionStyleDefault
+                                            handler:nil];
+    
+    [self.supportActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Tweet us", nil)
+                                              style:UIAlertActionStyleDefault
+                                            handler:nil];
+    
+    [self.supportActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Email us", nil)
+                                              style:UIAlertActionStyleDefault
+                                            handler:^(UIAlertAction *action) {
+                                                MFMailComposeViewController *emailComposer = [[MFMailComposeViewController alloc] init];
+                                                emailComposer.mailComposeDelegate = self;
+                                                [emailComposer setSubject:NSLocalizedString(@"Support Email Subject", nil)];
+                                                [emailComposer setToRecipients:@[@"support@lionheartsw.com"]];
+                                                [self presentViewController:emailComposer animated:YES completion:nil];
+                                            }];
+    
+    [self.supportActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                           style:UIAlertActionStyleCancel
+                                         handler:nil];
 
     self.readLaterServices = [NSMutableArray array];
     [self.readLaterServices addObject:@[@(PPReadLaterInstapaper)]];
     [self.readLaterServices addObject:@[@(PPReadLaterReadability)]];
     [self.readLaterServices addObject:@[@(PPReadLaterPocket)]];
 
-    self.instapaperAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Instapaper Login", nil) message:NSLocalizedString(@"Password may be blank.", nil) delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Log In", nil), nil];
-    self.instapaperAlertView.alertViewStyle = UIAlertViewStyleLoginAndPasswordInput;
-    [[self.instapaperAlertView textFieldAtIndex:0] setKeyboardType:UIKeyboardTypeEmailAddress];
-    [[self.instapaperAlertView textFieldAtIndex:0] setReturnKeyType:UIReturnKeyNext];
-    [[self.instapaperAlertView textFieldAtIndex:0] setPlaceholder:NSLocalizedString(@"Email Address", nil)];
-    [[self.instapaperAlertView textFieldAtIndex:1] setKeyboardType:UIKeyboardTypeAlphabet];
-    [[self.instapaperAlertView textFieldAtIndex:1] setReturnKeyType:UIReturnKeyGo];
-    [[self.instapaperAlertView textFieldAtIndex:1] setDelegate:self];
+    self.instapaperAlertView = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Instapaper Login", nil)
+                                                                 message:NSLocalizedString(@"Password may be blank.", nil)];
+    
+    [self.instapaperAlertView addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+        textField.keyboardType = UIKeyboardTypeEmailAddress;
+        textField.returnKeyType = UIReturnKeyNext;
+        textField.placeholder = NSLocalizedString(@"Email Address", nil);
+    }];
 
-    self.readabilityAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Readability Login", nil) message:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) otherButtonTitles:NSLocalizedString(@"Log In", nil), nil];
-    self.readabilityAlertView.alertViewStyle = UIAlertViewStyleLoginAndPasswordInput;
-    [[self.readabilityAlertView textFieldAtIndex:0] setKeyboardType:UIKeyboardTypeEmailAddress];
-    [[self.readabilityAlertView textFieldAtIndex:0] setReturnKeyType:UIReturnKeyNext];
-    [[self.readabilityAlertView textFieldAtIndex:0] setPlaceholder:NSLocalizedString(@"Email Address", nil)];
-    [[self.readabilityAlertView textFieldAtIndex:1] setKeyboardType:UIKeyboardTypeAlphabet];
-    [[self.readabilityAlertView textFieldAtIndex:1] setReturnKeyType:UIReturnKeyGo];
-    [[self.readabilityAlertView textFieldAtIndex:1] setDelegate:self];
+    [self.instapaperAlertView addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+        textField.keyboardType = UIKeyboardTypeAlphabet;
+        textField.returnKeyType = UIReturnKeyGo;
+        textField.delegate = self;
+    }];
 
-    self.instapaperVerificationAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Verifying credentials", nil)
-                                                                      message:NSLocalizedString(@"Logging into Instapaper.", nil)
-                                                                     delegate:nil
-                                                            cancelButtonTitle:nil
-                                                            otherButtonTitles:nil];
-    self.readabilityVerificationAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Verifying credentials", nil)
-                                                                       message:NSLocalizedString(@"Logging into Readability.", nil)
-                                                                      delegate:nil
-                                                             cancelButtonTitle:nil
-                                                             otherButtonTitles:nil];
-    self.pocketVerificationAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Verifying credentials", nil)
-                                                                  message:NSLocalizedString(@"Logging into Pocket.", nil)
-                                                                 delegate:nil
-                                                        cancelButtonTitle:nil
-                                                        otherButtonTitles:nil];
-    self.loadingIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    [self.instapaperAlertView lhs_addActionWithTitle:NSLocalizedString(@"Log In", nil)
+                                               style:UIAlertActionStyleDefault
+                                             handler:^(UIAlertAction *action) {
+                                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                                     [self presentViewController:self.instapaperVerificationAlertView animated:YES completion:nil];
+                                                 });
+                                                 
+                                                 NSString *username = [self.instapaperAlertView.textFields[0] text];
+                                                 NSString *password = [self.instapaperAlertView.textFields[1] text];
+                                                 NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/1.1/oauth/access_token"]];
+                                                 
+                                                 OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kInstapaperKey secret:kInstapaperSecret];
+                                                 OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:nil realm:nil signatureProvider:nil];
+                                                 [request setHTTPMethod:@"POST"];
+                                                 [request setParameters:@[
+                                                                          [OARequestParameter requestParameter:@"x_auth_mode" value:@"client_auth"],
+                                                                          [OARequestParameter requestParameter:@"x_auth_username" value:username],
+                                                                          [OARequestParameter requestParameter:@"x_auth_password" value:password]]];
+                                                 [request prepare];
+                                                 
+                                                 [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
+                                                 [NSURLConnection sendAsynchronousRequest:request
+                                                                                    queue:[NSOperationQueue mainQueue]
+                                                                        completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                                                            [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
+                                                                            NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+                                                                            [self dismissViewControllerAnimated:YES completion:nil];
+                                                                            
+                                                                            if (httpResponse.statusCode == 400 || error != nil) {
+                                                                                UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Error", nil)
+                                                                                                                                             message:NSLocalizedString(@"We couldn't log you into Instapaper with those credentials.", nil)];
+                                                                                
+                                                                                [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
+                                                                                                        style:UIAlertActionStyleDefault
+                                                                                                      handler:nil];
+                                                                                
+                                                                                [self presentViewController:alert animated:YES completion:nil];
+                                                                            }
+                                                                            else {
+                                                                                PPSettings *settings = [PPSettings sharedSettings];
+                                                                                OAToken *token = [[OAToken alloc] initWithHTTPResponseBody:[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
+                                                                                settings.instapaperToken = token;
+                                                                                settings.readLater = PPReadLaterInstapaper;
+                                                                                
+                                                                                [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Instapaper"];
+                                                                                
+                                                                                UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Success", nil)
+                                                                                                                                             message:NSLocalizedString(@"You've successfully logged in.", nil)];
+                                                                                
+                                                                                [self presentViewController:alert animated:YES completion:nil];
+
+                                                                                int64_t delayInSeconds = 1.5;
+                                                                                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+                                                                                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                                                                                    [self dismissViewControllerAnimated:YES completion:nil];
+                                                                                    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainReadLater inSection:PPSectionMainSettings]]
+                                                                                                          withRowAnimation:UITableViewRowAnimationFade];
+                                                                                });
+                                                                            }
+                                                                        }];
+                                             }];
+    
+    [self.instapaperAlertView lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                               style:UIAlertActionStyleCancel
+                                             handler:nil];
+    
+    
+    
+    self.readabilityAlertView = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Readability Login", nil)
+                                                                  message:nil];
+    
+    [self.readabilityAlertView addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+        textField.keyboardType = UIKeyboardTypeEmailAddress;
+        textField.returnKeyType = UIReturnKeyNext;
+        textField.placeholder = NSLocalizedString(@"Email Address", nil);
+    }];
+    
+    [self.readabilityAlertView addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+        textField.keyboardType = UIKeyboardTypeAlphabet;
+        textField.returnKeyType = UIReturnKeyGo;
+        textField.delegate = self;
+    }];
+    
+    [self.readabilityAlertView lhs_addActionWithTitle:NSLocalizedString(@"Log In", nil)
+                                                style:UIAlertActionStyleDefault
+                                              handler:^(UIAlertAction *action) {
+                                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                                      [self presentViewController:self.readabilityVerificationAlertView animated:YES completion:nil];
+                                                  });
+                                                  
+                                                  NSString *username = [self.readabilityAlertView.textFields[0] text];
+                                                  NSString *password = [self.readabilityAlertView.textFields[1] text];
+                                                  NSURL *endpoint = [NSURL URLWithString:@"https://www.readability.com/api/rest/v1/oauth/access_token/"];
+                                                  OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kReadabilityKey secret:kReadabilitySecret];
+                                                  OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:nil realm:nil signatureProvider:nil];
+                                                  [request setHTTPMethod:@"POST"];
+                                                  [request setParameters:@[
+                                                                           [OARequestParameter requestParameter:@"x_auth_mode" value:@"client_auth"],
+                                                                           [OARequestParameter requestParameter:@"x_auth_username" value:username],
+                                                                           [OARequestParameter requestParameter:@"x_auth_password" value:password]]];
+                                                  [request prepare];
+                                                  
+                                                  [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
+                                                  [NSURLConnection sendAsynchronousRequest:request
+                                                                                     queue:[NSOperationQueue mainQueue]
+                                                                         completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                                                                             [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
+                                                                             
+                                                                             [self dismissViewControllerAnimated:YES completion:nil];
+                                                                             if (error) {
+                                                                                 UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Uh oh.", nil)
+                                                                                                                                              message:NSLocalizedString(@"We couldn't log you into Readability with those credentials.", nil)];
+                                                                                 
+                                                                                 [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
+                                                                                                         style:UIAlertActionStyleDefault
+                                                                                                       handler:nil];
+                                                                                 
+                                                                                 [self presentViewController:alert animated:YES completion:nil];
+                                                                             }
+                                                                             else {
+                                                                                 OAToken *token = [[OAToken alloc] initWithHTTPResponseBody:[NSString stringWithUTF8String:[data bytes]]];
+                                                                                 KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"ReadabilityOAuth" accessGroup:nil];
+                                                                                 [keychain setObject:token.key forKey:(__bridge id)kSecAttrAccount];
+                                                                                 [keychain setObject:token.secret forKey:(__bridge id)kSecValueData];
+                                                                                 
+                                                                                 PPSettings *settings = [PPSettings sharedSettings];
+                                                                                 settings.readLater = PPReadLaterReadability;
+                                                                                 [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Readability"];
+                                                                                 [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainReadLater inSection:PPSectionMainSettings]]
+                                                                                                       withRowAnimation:UITableViewRowAnimationFade];
+
+                                                                                 UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Success", nil)
+                                                                                                                                              message:NSLocalizedString(@"You've successfully logged in.", nil)];
+
+                                                                                 [self presentViewController:alert animated:YES completion:nil];
+
+                                                                                 int64_t delayInSeconds = 1.5;
+                                                                                 dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+                                                                                 dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                                                                                     [self dismissViewControllerAnimated:YES completion:nil];
+                                                                                 });
+                                                                             }
+                                                                         }];
+                                              }];
+    
+    [self.readabilityAlertView lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                style:UIAlertActionStyleCancel
+                                              handler:nil];
+
+    self.instapaperVerificationAlertView = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Verifying credentials", nil)
+                                                                             message:NSLocalizedString(@"Logging into Instapaper.", nil)];
+    
+    self.readabilityVerificationAlertView = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Verifying credentials", nil)
+                                                                              message:NSLocalizedString(@"Logging into Readability.", nil)];
+    
+    self.pocketVerificationAlertView = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Verifying credentials", nil)
+                                                                         message:NSLocalizedString(@"Logging into Pocket.", nil)];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pocketStartedLogin) name:(NSString *)PocketAPILoginStartedNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pocketFinishedLogin) name:(NSString *)PocketAPILoginFinishedNotification object:nil];
@@ -116,11 +325,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    if (textField == [self.instapaperAlertView textFieldAtIndex:1]) {
-        [self.instapaperAlertView dismissWithClickedButtonIndex:0 animated:YES];
+    if (textField == self.instapaperAlertView.textFields[1]) {
+        [self dismissViewControllerAnimated:YES completion:nil];
     }
-    else if (textField == [self.readabilityAlertView textFieldAtIndex:1]) {
-        [self.readabilityAlertView dismissWithClickedButtonIndex:0 animated:YES];
+    else if (textField == self.readabilityAlertView.textFields[1]) {
+        [self dismissViewControllerAnimated:YES completion:nil];
     }
     return YES;
 }
@@ -296,220 +505,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 #pragma mark - Table view delegate
 
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (alertView == self.logOutAlertView) {
-        if (buttonIndex == 1) {
-            PPSettings *settings = [PPSettings sharedSettings];
-            PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
-            settings.lastUpdated = nil;
-            [delegate logout];
-
-#ifdef DELICIOUS
-            [[LHSDelicious sharedInstance] resetAuthentication];
-#endif
-
-#ifdef PINBOARD
-            [[ASPinboard sharedInstance] resetAuthentication];
-#endif
-
-            [delegate setLoginViewController:nil];
-            [delegate setNavigationController:nil];
-            delegate.loginViewController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-
-            if ([UIApplication isIPad]) {
-                [delegate.window setRootViewController:delegate.loginViewController];
-            }
-            else {
-                [self presentViewController:delegate.loginViewController
-                                   animated:YES
-                                 completion:nil];
-            }
-
-            [PPUtilities migrateDatabase];
-        }
-    }
-    else if (alertView == self.instapaperAlertView) {
-        // Check for cancel
-        if (buttonIndex == 0) {
-            return;
-        }
-
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.instapaperVerificationAlertView show];
-
-            if (self.instapaperVerificationAlertView != nil) {
-                self.loadingIndicator.center = CGPointMake(CGRectGetWidth(self.instapaperVerificationAlertView.bounds)/2, CGRectGetHeight(self.instapaperVerificationAlertView.bounds)-45);
-                [self.loadingIndicator startAnimating];
-                [self.instapaperVerificationAlertView addSubview:self.loadingIndicator];
-            }
-        });
-
-        NSString *username = [[alertView textFieldAtIndex:0] text];
-        NSString *password = [[alertView textFieldAtIndex:1] text];
-        NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/1.1/oauth/access_token"]];
-
-        OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kInstapaperKey secret:kInstapaperSecret];
-        OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:nil realm:nil signatureProvider:nil];
-        [request setHTTPMethod:@"POST"];
-        [request setParameters:@[
-             [OARequestParameter requestParameter:@"x_auth_mode" value:@"client_auth"],
-             [OARequestParameter requestParameter:@"x_auth_username" value:username],
-             [OARequestParameter requestParameter:@"x_auth_password" value:password]]];
-        [request prepare];
-
-        [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
-        [NSURLConnection sendAsynchronousRequest:request
-                                           queue:[NSOperationQueue mainQueue]
-                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                                                      [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
-                                   NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-                                   [self.instapaperVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
-                                   if (httpResponse.statusCode == 400 || error != nil) {
-                                       [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error", nil)
-                                                                   message:NSLocalizedString(@"We couldn't log you into Instapaper with those credentials.", nil)
-                                                                  delegate:nil
-                                                         cancelButtonTitle:nil
-                                                         otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
-                                   }
-                                   else {
-                                       PPSettings *settings = [PPSettings sharedSettings];
-                                       OAToken *token = [[OAToken alloc] initWithHTTPResponseBody:[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
-                                       settings.instapaperToken = token;
-                                       settings.readLater = PPReadLaterInstapaper;
-
-                                       [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Instapaper"];
-
-                                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil)
-                                                                                       message:NSLocalizedString(@"You've successfully logged in.", nil)
-                                                                                      delegate:nil
-                                                                             cancelButtonTitle:nil
-                                                                             otherButtonTitles:nil];
-                                       [alert show];
-                                       int64_t delayInSeconds = 1.5;
-                                       dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-                                       dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                                           [alert dismissWithClickedButtonIndex:0 animated:YES];
-                                           [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainReadLater inSection:PPSectionMainSettings]]
-                                                                 withRowAnimation:UITableViewRowAnimationFade];
-                                       });
-                                   }
-                               }];
-    }
-    else if (alertView == self.readabilityAlertView) {
-        // Check for cancel
-        if (buttonIndex == 0)
-            return;
-
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.readabilityVerificationAlertView show];
-
-            if (self.readabilityVerificationAlertView != nil) {
-                self.loadingIndicator.center = CGPointMake(CGRectGetWidth(self.readabilityVerificationAlertView.bounds)/2, CGRectGetHeight(self.readabilityVerificationAlertView.bounds)-45);
-                [self.loadingIndicator startAnimating];
-                [self.readabilityVerificationAlertView addSubview:self.loadingIndicator];
-            }
-        });
-
-        NSString *username = [[alertView textFieldAtIndex:0] text];
-        NSString *password = [[alertView textFieldAtIndex:1] text];
-        NSURL *endpoint = [NSURL URLWithString:@"https://www.readability.com/api/rest/v1/oauth/access_token/"];
-        OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kReadabilityKey secret:kReadabilitySecret];
-        OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:nil realm:nil signatureProvider:nil];
-        [request setHTTPMethod:@"POST"];
-        [request setParameters:@[
-            [OARequestParameter requestParameter:@"x_auth_mode" value:@"client_auth"],
-            [OARequestParameter requestParameter:@"x_auth_username" value:username],
-            [OARequestParameter requestParameter:@"x_auth_password" value:password]]];
-        [request prepare];
-
-        [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
-        [NSURLConnection sendAsynchronousRequest:request
-                                           queue:[NSOperationQueue mainQueue]
-                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                   [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
-
-                                   [self.readabilityVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
-                                   if (!error) {
-                                       OAToken *token = [[OAToken alloc] initWithHTTPResponseBody:[NSString stringWithUTF8String:[data bytes]]];
-                                       KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"ReadabilityOAuth" accessGroup:nil];
-                                       [keychain setObject:token.key forKey:(__bridge id)kSecAttrAccount];
-                                       [keychain setObject:token.secret forKey:(__bridge id)kSecValueData];
-
-                                       PPSettings *settings = [PPSettings sharedSettings];
-                                       settings.readLater = PPReadLaterReadability;
-                                       [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Readability"];
-                                       [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainReadLater inSection:PPSectionMainSettings]]
-                                                             withRowAnimation:UITableViewRowAnimationFade];
-
-                                       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil)
-                                                                                       message:NSLocalizedString(@"You've successfully logged in.", nil)
-                                                                                      delegate:nil
-                                                                             cancelButtonTitle:nil
-                                                                             otherButtonTitles:nil];
-                                       [alert show];
-                                       int64_t delayInSeconds = 1.5;
-                                       dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-                                       dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                                           [alert dismissWithClickedButtonIndex:0 animated:YES];
-                                       });
-                                   }
-                                   else {
-                                       [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil)
-                                                                   message:NSLocalizedString(@"We couldn't log you into Readability with those credentials.", nil)
-                                                                  delegate:nil
-                                                         cancelButtonTitle:nil
-                                                         otherButtonTitles:NSLocalizedString(@"Shucks", nil), nil] show];
-                                   }
-                               }];
-    }
-}
-
-- (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
-    PPSettings *settings = [PPSettings sharedSettings];
-
-    if (buttonIndex >= 0) {
-        if (actionSheet == self.supportActionSheet) {
-            if (buttonIndex == 3) {
-                MFMailComposeViewController *emailComposer = [[MFMailComposeViewController alloc] init];
-                emailComposer.mailComposeDelegate = self;
-                [emailComposer setSubject:NSLocalizedString(@"Support Email Subject", nil)];
-                [emailComposer setToRecipients:@[@"support@lionheartsw.com"]];
-                [self presentViewController:emailComposer animated:YES completion:nil];
-                return;
-            }
-            else if (buttonIndex == 0) {
-                UVConfig *config = [UVConfig configWithSite:@"lionheartsw.uservoice.com"
-                                                     andKey:@"9pBeLUHkDPLj3XhBG9jQ"
-                                                  andSecret:@"PaXdmNmtTAynLJ1MpuOFnVUUpfD2qA5obo7NxhsxP5A"];
-                
-                [UserVoice presentUserVoiceInterfaceForParentViewController:self andConfig:config];
-                return;
-            }
-        }
-        else if (actionSheet == self.readLaterActionSheet) {
-            
-            self.readLaterActionSheet = nil;
-        }
-
-        self.actionSheet = nil;
-    }
-    else {
-        self.actionSheet = nil;
-    }
-}
-
 - (void)pocketStartedLogin {
-    [self.pocketVerificationAlertView show];
-
-    if (self.pocketVerificationAlertView) {
-        self.loadingIndicator.center = CGPointMake(CGRectGetWidth(self.pocketVerificationAlertView.bounds)/2, CGRectGetHeight(self.pocketVerificationAlertView.bounds)-45);
-        [self.loadingIndicator startAnimating];
-        [self.pocketVerificationAlertView addSubview:self.loadingIndicator];
-    }
+    [self presentViewController:self.pocketVerificationAlertView animated:YES completion:nil];
 }
 
 - (void)pocketFinishedLogin {
-    [self.pocketVerificationAlertView dismissWithClickedButtonIndex:0 animated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
+
     PPSettings *settings = [PPSettings sharedSettings];
     settings.readLater = PPReadLaterPocket;
     [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Pocket"];
@@ -523,14 +525,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
         case PPSectionMainSettings: {
             BOOL isIPad = [UIApplication isIPad];
             UIView *cell = [tableView cellForRowAtIndexPath:indexPath];
-            CGRect rect = [tableView rectForRowAtIndexPath:indexPath];
             
             switch ((PPMainSettingsRowType)indexPath.row) {
                 case PPMainReadLater:
                     if (isIPad) {
                         if (!self.actionSheet) {
                             self.readLaterActionSheet.popoverPresentationController.sourceView = cell;
-                            self.readLaterActionSheet.popoverPresentationController.sourceRect = (CGRect){cell.center, {1, 1}};
+                            self.readLaterActionSheet.popoverPresentationController.sourceRect = [cell lhs_centerRect];
                             
                             [self presentViewController:self.readLaterActionSheet
                                                animated:YES
@@ -593,17 +594,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 }
                     
                 case PPOtherLogout:
-                    [self.logOutAlertView show];
+                    [self presentViewController:self.logOutAlertView animated:YES completion:nil];
                     [tableView deselectRowAtIndexPath:indexPath animated:YES];
                     break;
 
                 case PPOtherClearCache: {
-                    UIAlertView *loadingAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Resetting Cache", nil) message:nil delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
-                    [loadingAlertView show];
-                    
-                    self.loadingIndicator.center = CGPointMake(CGRectGetWidth(loadingAlertView.bounds)/2, CGRectGetHeight(loadingAlertView.bounds)-45);
-                    [self.loadingIndicator startAnimating];
-                    [loadingAlertView addSubview:self.loadingIndicator];
+                    UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Resetting Cache", nil) message:nil];
+                    [self presentViewController:alert animated:YES completion:nil];
                     
                     [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                         [db executeUpdate:@"DELETE FROM rejected_bookmark;"];
@@ -612,14 +609,16 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     double delayInSeconds = 1.0;
                     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
                     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                        [loadingAlertView dismissWithClickedButtonIndex:0 animated:YES];
+                        [self dismissViewControllerAnimated:YES completion:nil];
                         
-                        UIAlertView *successAlertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success", nil) message:NSLocalizedString(@"Your cache was cleared.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
-                        [successAlertView show];
+                        UIAlertController *successAlertView = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Success", nil)
+                                                                                                message:NSLocalizedString(@"Your cache was cleared.", nil)];
+                        [self presentViewController:successAlertView animated:YES completion:nil];
+
                         double delayInSeconds = 1.0;
                         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
                         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                            [successAlertView dismissWithClickedButtonIndex:0 animated:YES];
+                            [self dismissViewControllerAnimated:YES completion:nil];
                         });
                     });
                     break;
@@ -664,14 +663,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [_readLaterActionSheet addAction:[UIAlertAction actionWithTitle:@"Instapaper"
                                                                   style:UIAlertActionStyleDefault
                                                                 handler:^(UIAlertAction *action) {
-                                                                    [self.instapaperAlertView show];
+                                                                    [self presentViewController:self.instapaperAlertView animated:YES completion:nil];
                                                                     self.actionSheet = nil;
                                                                 }]];
         
         [_readLaterActionSheet addAction:[UIAlertAction actionWithTitle:@"Readability"
                                                                   style:UIAlertActionStyleDefault
                                                                 handler:^(UIAlertAction *action) {
-                                                                    [self.readabilityAlertView show];
+                                                                    [self presentViewController:self.readabilityAlertView animated:YES completion:nil];
                                                                     self.actionSheet = nil;
                                                                 }]];
         
