@@ -267,9 +267,12 @@
     NSURL *containerURL = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:APP_GROUP];
     NSURL *newDatabaseURL = [containerURL URLByAppendingPathComponent:@"shared.db"];
     NSURL *databaseURL = [NSURL fileURLWithPath:[PPUtilities databasePath]];
-    BOOL success = [[NSFileManager defaultManager] copyItemAtURL:databaseURL
-                                                           toURL:newDatabaseURL
-                                                           error:nil];
+    NSError *error;
+
+    [[NSFileManager defaultManager] removeItemAtURL:newDatabaseURL error:nil];
+    [[NSFileManager defaultManager] copyItemAtURL:databaseURL
+                                            toURL:newDatabaseURL
+                                            error:nil];
 
     PPSettings *settings = [PPSettings sharedSettings];
 #ifdef DELICIOUS
