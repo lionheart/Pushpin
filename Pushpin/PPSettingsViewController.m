@@ -24,7 +24,7 @@
 #import "PPTwitter.h"
 #import "PPSettings.h"
 #import "PPReaderSettingsViewController.h"
-#import "UIAlertController+UIAlertController_LHSAdditions.h"
+#import "UIAlertController+LHSAdditions.h"
 
 #import <ASPinboard/ASPinboard.h>
 #import <uservoice-iphone-sdk/UserVoice.h>

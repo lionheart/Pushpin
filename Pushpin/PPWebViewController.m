@@ -23,7 +23,7 @@
 #import "PPMobilizerUtility.h"
 #import "PPSettings.h"
 #import "NSData+AES256.h"
-#import "UIAlertController+UIAlertController_LHSAdditions.h"
+#import "UIAlertController+LHSAdditions.h"
 
 #ifdef PINBOARD
 #import "PPPinboardDataSource.h"

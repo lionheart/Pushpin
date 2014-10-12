@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface UIAlertController (UIAlertController_LHSAdditions)
+@interface UIAlertController (LHSAdditions)
 
 + (UIAlertController *)lhs_alertViewWithTitle:(NSString *)title message:(NSString *)message;
 + (UIAlertController *)lhs_actionSheetWithTitle:(NSString *)title;
