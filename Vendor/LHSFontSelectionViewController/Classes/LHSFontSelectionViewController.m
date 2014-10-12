@@ -351,8 +351,6 @@ static NSString *CellIdentifier = @"Cell";
     PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
     delegate.hideURLPrompt = YES;
     
-    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
-    
     [self setNeedsStatusBarAppearanceUpdate];
     NSArray *indexPathForCurrentlySelectedFont = [self indexPathsForFontName:self.currentFontName];
     
@@ -363,9 +361,13 @@ static NSString *CellIdentifier = @"Cell";
     }
 
     if (!self.purchased) {
-        SKProductsRequest *request = [[SKProductsRequest alloc] initWithProductIdentifiers:[NSSet setWithArray:@[@"com.lionheartsw.Pushpin.PremiumFonts"]]];
-        request.delegate = self;
-        [request start];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
+
+            SKProductsRequest *request = [[SKProductsRequest alloc] initWithProductIdentifiers:[NSSet setWithArray:@[@"com.lionheartsw.Pushpin.PremiumFonts"]]];
+            request.delegate = self;
+            [request start];
+        });
 
         [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];
     }
@@ -514,8 +516,11 @@ static NSString *CellIdentifier = @"Cell";
             }
             else {
                 [attributedText addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor] range:range];
-                cell.accessoryView = self.activity;
-                [self.activity startAnimating];
+
+                if (self.purchaseInProgress) {
+                    cell.accessoryView = self.activity;
+                    [self.activity startAnimating];
+                }
             }
             
             cell.textLabel.attributedText = attributedText;
@@ -675,10 +680,10 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
     self.products = response.products;
-    [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
     self.purchaseInProgress = NO;
-    
+
     dispatch_async(dispatch_get_main_queue(), ^{
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
         [self.tableView beginUpdates];
         [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView endUpdates];
@@ -691,12 +696,22 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)request:(SKRequest *)request didFailWithError:(NSError *)error {
     self.purchaseInProgress = NO;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
+        [self.tableView beginUpdates];
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView endUpdates];
+    });
 }
 
 #pragma mark - SKPaymentTransactionObserver
 
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions {
-    [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
+    });
+
     for (SKPaymentTransaction *transaction in transactions) {
         switch ((NSInteger)transaction.transactionState) {
             case SKPaymentTransactionStatePurchased: {
@@ -776,10 +791,10 @@ static NSString *CellIdentifier = @"Cell";
 }
 
 - (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue {
-    [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
     self.purchaseInProgress = NO;
 
     dispatch_async(dispatch_get_main_queue(), ^{
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
         [self.tableView beginUpdates];
         [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView endUpdates];
@@ -787,10 +802,10 @@ static NSString *CellIdentifier = @"Cell";
 }
 
 - (void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error {
-    [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
     self.purchaseInProgress = NO;
 
     dispatch_async(dispatch_get_main_queue(), ^{
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
         NSString *title = [NSString stringWithFormat:@"Store Error %ld", (long)error.code];
         UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:title
                                                                        message:error.localizedDescription];

@@ -111,9 +111,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
     self.searchTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     self.searchTextField.placeholder = NSLocalizedString(@"Search query", nil);
     
-    self.isPrivateActionSheet = [UIAlertController alertControllerWithTitle:nil
-                                                                    message:nil
-                                                             preferredStyle:UIAlertControllerStyleActionSheet];
+    self.isPrivateActionSheet = [UIAlertController lhs_actionSheetWithTitle:nil];
     
     [self.isPrivateActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Private", nil)
                                                 style:UIAlertActionStyleDefault
@@ -131,9 +129,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                                                 style:UIAlertActionStyleCancel
                                               handler:nil];
     
-    self.starredActionSheet = [UIAlertController alertControllerWithTitle:nil
-                                                                  message:nil
-                                                           preferredStyle:UIAlertControllerStyleActionSheet];
+    self.starredActionSheet = [UIAlertController lhs_actionSheetWithTitle:nil];
     
     [self.starredActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Starred", nil)
                                               style:UIAlertActionStyleDefault
@@ -151,9 +147,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                                               style:UIAlertActionStyleCancel
                                             handler:nil];
     
-    self.unreadActionSheet = [UIAlertController alertControllerWithTitle:nil
-                                                                 message:nil
-                                                          preferredStyle:UIAlertControllerStyleActionSheet];
+    self.unreadActionSheet = [UIAlertController lhs_actionSheetWithTitle:nil];
     
     [self.unreadActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Read", nil)
                                              style:UIAlertActionStyleDefault
@@ -171,9 +165,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                                              style:UIAlertActionStyleCancel
                                            handler:nil];
     
-    self.untaggedActionSheet = [UIAlertController alertControllerWithTitle:nil
-                                                                   message:nil
-                                                            preferredStyle:UIAlertControllerStyleActionSheet];
+    self.untaggedActionSheet = [UIAlertController lhs_actionSheetWithTitle:nil];
     
     [self.untaggedActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Tagged", nil)
                                                style:UIAlertActionStyleDefault
@@ -191,9 +183,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                                                style:UIAlertActionStyleCancel
                                              handler:nil];
     
-    self.searchScopeActionSheet = [UIAlertController alertControllerWithTitle:nil
-                                                                      message:nil
-                                                               preferredStyle:UIAlertControllerStyleActionSheet];
+    self.searchScopeActionSheet = [UIAlertController lhs_actionSheetWithTitle:nil];
     
     for (NSString *scope in PPSearchScopes()) {
         [self.searchScopeActionSheet lhs_addActionWithTitle:scope

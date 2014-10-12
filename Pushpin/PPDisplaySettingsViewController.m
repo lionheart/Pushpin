@@ -50,7 +50,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 @property (nonatomic, retain) UISwitch *textExpanderSwitch;
 
 @property (nonatomic, strong) UIAlertController *fontSizeAdjustmentActionSheet;
-@property (nonatomic, strong) UIAlertController *actionSheet;
 
 - (void)privateByDefaultSwitchChangedValue:(id)sender;
 - (void)readByDefaultSwitchChangedValue:(id)sender;
@@ -81,13 +80,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     [titleView setTitle:NSLocalizedString(@"Advanced Settings", nil) imageName:nil];
     self.navigationItem.titleView = titleView;
     
-    self.fontSizeAdjustmentActionSheet = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Font Adjustment", nil)
-                                                                             message:nil
-                                                                      preferredStyle:UIAlertControllerStyleActionSheet];
-    
-    [self.fontSizeAdjustmentActionSheet lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
-                                                         style:UIAlertActionStyleDefault
-                                                       handler:nil];
+    self.fontSizeAdjustmentActionSheet = [UIAlertController lhs_actionSheetWithTitle:NSLocalizedString(@"Font Adjustment", nil)];
     
     for (NSString *title in PPFontAdjustmentTypes()) {
         [self.fontSizeAdjustmentActionSheet lhs_addActionWithTitle:title
@@ -98,8 +91,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                                                                    PPFontAdjustmentType fontAdjustment = (PPFontAdjustmentType)index;
                                                                    PPSettings *settings = [PPSettings sharedSettings];
                                                                    settings.fontAdjustment = fontAdjustment;
-                                                                   
-                                                                   self.fontSizeAdjustmentActionSheet = nil;
                                                                    
                                                                    [self.tableView beginUpdates];
                                                                    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPBrowseFontSizeRow inSection:PPSectionBrowseSettings]]
@@ -532,14 +523,12 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                 }
 
                 case PPBrowseFontSizeRow: {
-                    if (!self.actionSheet) {
+                    if (!self.fontSizeAdjustmentActionSheet.presentingViewController) {
                         UIView *cell = [tableView cellForRowAtIndexPath:indexPath];
                         self.fontSizeAdjustmentActionSheet.popoverPresentationController.sourceView = cell;
                         self.fontSizeAdjustmentActionSheet.popoverPresentationController.sourceRect = [cell lhs_centerRect];
-                        
-                        [self presentViewController:self.fontSizeAdjustmentActionSheet animated:YES completion:^{
-                            self.actionSheet = self.fontSizeAdjustmentActionSheet;
-                        }];
+
+                        [self presentViewController:self.fontSizeAdjustmentActionSheet animated:YES completion:nil];
                     }
                     break;
                 }

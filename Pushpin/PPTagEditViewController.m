@@ -854,7 +854,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.removeTagActionSheet = [UIAlertController lhs_actionSheetWithTitle:nil];
 
     [self.removeTagActionSheet lhs_addActionWithTitle:[NSString stringWithFormat:@"Remove '%@'", tag]
-                                                style:UIAlertActionStyleCancel
+                                                style:UIAlertActionStyleDestructive
                                               handler:^(UIAlertAction *action) {
                                                   self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
                                                   
@@ -870,10 +870,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
     [self.removeTagActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil];
     
-    CGPoint point = CGPointMake(badge.center.x - 2, badge.frame.origin.y);
-    
-    self.removeTagActionSheet.popoverPresentationController.sourceRect = (CGRect){point, {1, 1}};
-    self.removeTagActionSheet.popoverPresentationController.sourceView = badgeWrapperView;
+    CGRect rect = [badge lhs_centerRect];
+    self.removeTagActionSheet.popoverPresentationController.sourceRect = [self.view convertRect:rect fromView:badge];
+    self.removeTagActionSheet.popoverPresentationController.sourceView = self.view;
     [self presentViewController:self.removeTagActionSheet animated:YES completion:nil];
 }
 
