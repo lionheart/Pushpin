@@ -11,6 +11,7 @@
 #import "PPTableViewTitleView.h"
 #import "PPBadgeWrapperView.h"
 #import "PPTheme.h"
+#import "PPSettings.h"
 #import "UIAlertController+LHSAdditions.h"
 
 #import <FMDB/FMDatabase.h>
@@ -146,9 +147,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.tagTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     self.tagTextField.placeholder = NSLocalizedString(@"Add new tags here.", nil);
     
-#warning Set to the user defaults
-    self.tagTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    self.tagTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+    PPSettings *settings = [PPSettings sharedSettings];
+    self.tagTextField.autocapitalizationType = settings.autoCapitalizationType;
+    self.tagTextField.autocorrectionType = settings.autoCorrectionType;
     self.tagTextField.text = @"";
     
     [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
