@@ -170,4 +170,8 @@
     }
 }
 
+- (CGRect)lhs_centerRect {
+    return (CGRect){self.center, {1, 1}};
+}
+
 @end
