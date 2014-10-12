@@ -22,7 +22,7 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
 @class FMResultSet;
 @class PostMetadata;
 
-@interface PPPinboardDataSource : NSObject <PPDataSource, NSCopying, UIAlertViewDelegate>
+@interface PPPinboardDataSource : NSObject <PPDataSource, NSCopying>
 
 @property (nonatomic) NSInteger totalNumberOfPosts;
 @property (nonatomic, strong) NSMutableDictionary *tagsWithFrequency;

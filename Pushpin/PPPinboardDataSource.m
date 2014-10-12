@@ -24,6 +24,7 @@
 #import <FMDB/FMDatabase.h>
 #import <ASPinboard/ASPinboard.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
+#import <LHSCategoryCollection/UIViewController+LHSAdditions.h>
 
 static BOOL kPinboardSyncInProgress = NO;
 
@@ -31,7 +32,7 @@ static BOOL kPinboardSyncInProgress = NO;
 
 @property (nonatomic, strong) PPPinboardMetadataCache *cache;
 @property (nonatomic) CGFloat mostRecentWidth;
-@property (nonatomic, strong) UIAlertView *fullTextSearchAlertView;
+@property (nonatomic, strong) UIAlertController *fullTextSearchAlertView;
 @property (nonatomic, strong) NSDate *latestReloadTime;
 
 - (NSDictionary *)paramsForPost:(NSDictionary *)post dateError:(BOOL)dateError;
@@ -83,6 +84,14 @@ static BOOL kPinboardSyncInProgress = NO;
         [self.enUSPOSIXDateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
         
         self.tagsWithFrequency = [NSMutableDictionary dictionary];
+
+        self.fullTextSearchAlertView = [UIAlertController alertControllerWithTitle:nil
+                                                                           message:NSLocalizedString(@"To enable Pinboard full-text search, please log out and then log back in to Pushpin.", nil)
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+        
+        [self.fullTextSearchAlertView addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                                         style:UIAlertActionStyleDefault
+                                                                       handler:nil]];
     }
     return self;
 }
@@ -1467,14 +1476,9 @@ static BOOL kPinboardSyncInProgress = NO;
                                            }];
             }
             else {
-                if (!self.fullTextSearchAlertView) {
+                if (!self.fullTextSearchAlertView.presentingViewController) {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        self.fullTextSearchAlertView = [[UIAlertView alloc] initWithTitle:nil
-                                                                                  message:@"To enable Pinboard full-text search, please log out and then log back in to Pushpin."
-                                                                                 delegate:self
-                                                                        cancelButtonTitle:nil
-                                                                        otherButtonTitles:@"OK", nil];
-                        [self.fullTextSearchAlertView show];
+                        [[UIViewController lhs_topViewController] presentViewController:self.fullTextSearchAlertView animated:YES completion:nil];
                     });
                 }
             }
@@ -1483,12 +1487,6 @@ static BOOL kPinboardSyncInProgress = NO;
             [self generateQueryAndParameters:HandleSearch];
         }
     });
-}
-
-#pragma mark - UIAlertViewDelegate
-
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    self.fullTextSearchAlertView = nil;
 }
 
 @end
