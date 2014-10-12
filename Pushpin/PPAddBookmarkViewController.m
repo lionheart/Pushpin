@@ -681,8 +681,15 @@ static NSString *CellIdentifier = @"CellIdentifier";
         }
         
         if ([self.urlTextField.text isEqualToString:@""] || [self.titleTextField.text isEqualToString:@""]) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:NSLocalizedString(@"You can't add a bookmark without a URL or title.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-            [alert show];
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Uh oh.", nil)
+                                                                           message:NSLocalizedString(@"You can't add a bookmark without a URL or title.", nil)
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                      style:UIAlertActionStyleDefault
+                                                    handler:nil]];
+
+            [self presentViewController:alert animated:YES completion:nil];
             
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 Mixpanel *mixpanel = [Mixpanel sharedInstance];
@@ -854,8 +861,16 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.navigationItem.leftBarButtonItem.enabled = YES;
                     self.navigationItem.rightBarButtonItem.enabled = YES;
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Uh oh.", nil) message:NSLocalizedString(@"There was an error adding your bookmark.", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"OK", nil), nil];
-                    [alert show];
+
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Uh oh.", nil)
+                                                                                   message:NSLocalizedString(@"There was an error adding your bookmark.", nil)
+                                                                            preferredStyle:UIAlertControllerStyleAlert];
+
+                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                              style:UIAlertActionStyleDefault
+                                                            handler:nil]];
+
+                    [self presentViewController:alert animated:YES completion:nil];
                 });
             };
             

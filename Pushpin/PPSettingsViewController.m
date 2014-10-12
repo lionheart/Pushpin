@@ -225,9 +225,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [self.instapaperAlertView lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                style:UIAlertActionStyleCancel
                                              handler:nil];
-    
-    
-    
+
     self.readabilityAlertView = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Readability Login", nil)
                                                                   message:nil];
     
