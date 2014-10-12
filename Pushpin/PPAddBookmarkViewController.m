@@ -684,11 +684,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Uh oh.", nil)
                                                                            message:NSLocalizedString(@"You can't add a bookmark without a URL or title.", nil)
                                                                     preferredStyle:UIAlertControllerStyleAlert];
-
+            
             [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
                                                       style:UIAlertActionStyleDefault
                                                     handler:nil]];
-
+            
             [self presentViewController:alert animated:YES completion:nil];
             
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -865,11 +865,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Uh oh.", nil)
                                                                                    message:NSLocalizedString(@"There was an error adding your bookmark.", nil)
                                                                             preferredStyle:UIAlertControllerStyleAlert];
-
+                    
                     [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
                                                               style:UIAlertActionStyleDefault
                                                             handler:nil]];
-
+                    
                     [self presentViewController:alert animated:YES completion:nil];
                 });
             };
