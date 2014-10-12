@@ -28,7 +28,13 @@
     }
     else if (rootViewController.presentedViewController) {
         UIViewController *presentedViewController = rootViewController.presentedViewController;
-        return [UIViewController lhs_topViewControllerWithRootViewController:presentedViewController];
+
+        if ([presentedViewController isKindOfClass:[UIAlertController class]]) {
+            return rootViewController;
+        }
+        else {
+            return [UIViewController lhs_topViewControllerWithRootViewController:presentedViewController];
+        }
     }
     else {
         return rootViewController;
