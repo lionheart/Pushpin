@@ -78,6 +78,6 @@ typedef enum : NSInteger {
     PPSearchFilterRowCount = PPSearchFilterUntagged + 1
 } PPSearchRowCounts;
 
-@interface PPSearchViewController : PPTableViewController <UITextFieldDelegate, UIActionSheetDelegate, LHSKeyboardAdjusting>
+@interface PPSearchViewController : PPTableViewController <UITextFieldDelegate,  LHSKeyboardAdjusting>
 
 @end

@@ -36,11 +36,12 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
 @property (nonatomic, strong) UITextField *searchTextField;
 
-@property (nonatomic, strong) UIActionSheet *starredActionSheet;
-@property (nonatomic, strong) UIActionSheet *isPrivateActionSheet;
-@property (nonatomic, strong) UIActionSheet *unreadActionSheet;
-@property (nonatomic, strong) UIActionSheet *untaggedActionSheet;
-@property (nonatomic, strong) UIActionSheet *searchScopeActionSheet;
+@property (nonatomic, strong) UIAlertController *starredActionSheet;
+@property (nonatomic, strong) UIAlertController *isPrivateActionSheet;
+@property (nonatomic, strong) UIAlertController *unreadActionSheet;
+@property (nonatomic, strong) UIAlertController *untaggedActionSheet;
+@property (nonatomic, strong) UIAlertController *searchScopeActionSheet;
+@property (nonatomic, strong) UIAlertController *fullTextSearchAlert;
 
 @property (nonatomic) kPushpinFilterType starred;
 @property (nonatomic) kPushpinFilterType isPrivate;
@@ -85,6 +86,14 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
     self.tagged = kPushpinFilterNone;
     self.searchScope = PPSearchScopeMine;
     
+    self.fullTextSearchAlert = [UIAlertController alertControllerWithTitle:nil
+                                                                   message:NSLocalizedString(@"To enable Pinboard full-text search, please log out and then log back in.", nil)
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+
+    [self.fullTextSearchAlert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                                 style:UIAlertActionStyleDefault
+                                                               handler:nil]];
+    
 #ifdef PINBOARD
     self.pinboardSearchScope = ASPinboardSearchScopeNone;
 #endif
@@ -102,29 +111,208 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
     self.searchTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     self.searchTextField.placeholder = NSLocalizedString(@"Search query", nil);
     
-    self.isPrivateActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Private", nil), NSLocalizedString(@"Public", nil), NSLocalizedString(@"Clear", nil), nil];
-    self.isPrivateActionSheet.destructiveButtonIndex = 2;
+    self.isPrivateActionSheet = [UIAlertController alertControllerWithTitle:nil
+                                                                    message:nil
+                                                             preferredStyle:UIAlertControllerStyleActionSheet];
 
-    self.starredActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Starred", nil), NSLocalizedString(@"Unstarred", nil), NSLocalizedString(@"Clear", nil), nil];
-    self.starredActionSheet.destructiveButtonIndex = 2;
+    [self.isPrivateActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Private", nil)
+                                                                  style:UIAlertActionStyleDefault
+                                                                handler:nil]];
 
-    self.unreadActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Read", nil), NSLocalizedString(@"Unread", nil), NSLocalizedString(@"Clear", nil), nil];
-    self.unreadActionSheet.destructiveButtonIndex = 2;
+    [self.isPrivateActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Public", nil)
+                                                                  style:UIAlertActionStyleDefault
+                                                                handler:nil]];
 
-    self.untaggedActionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil) destructiveButtonTitle:nil otherButtonTitles:NSLocalizedString(@"Tagged", nil), NSLocalizedString(@"Untagged", nil), NSLocalizedString(@"Clear", nil), nil];
-    self.untaggedActionSheet.destructiveButtonIndex = 2;
+    [self.isPrivateActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Clear", nil)
+                                                                  style:UIAlertActionStyleDestructive
+                                                                handler:nil]];
+
+    [self.isPrivateActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                                  style:UIAlertActionStyleCancel
+                                                                handler:nil]];
     
-    self.searchScopeActionSheet = [[UIActionSheet alloc] initWithTitle:nil
-                                                              delegate:self
-                                                     cancelButtonTitle:nil
-                                                destructiveButtonTitle:nil
-                                                     otherButtonTitles:nil];
+    self.starredActionSheet = [UIAlertController alertControllerWithTitle:nil
+                                                                  message:nil
+                                                           preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    [self.starredActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Starred", nil)
+                                                                style:UIAlertActionStyleDefault
+                                                              handler:nil]];
+    
+    [self.starredActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Unstarred", nil)
+                                                                style:UIAlertActionStyleDefault
+                                                              handler:nil]];
+    
+    [self.starredActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Clear", nil)
+                                                                style:UIAlertActionStyleDestructive
+                                                              handler:nil]];
+    
+    [self.starredActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                                style:UIAlertActionStyleCancel
+                                                              handler:nil]];
+    
+    self.unreadActionSheet = [UIAlertController alertControllerWithTitle:nil
+                                                                 message:nil
+                                                          preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    [self.unreadActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Read", nil)
+                                                               style:UIAlertActionStyleDefault
+                                                             handler:nil]];
+    
+    [self.unreadActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Unread", nil)
+                                                               style:UIAlertActionStyleDefault
+                                                             handler:nil]];
+    
+    [self.unreadActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Clear", nil)
+                                                               style:UIAlertActionStyleDestructive
+                                                             handler:nil]];
+    
+    [self.unreadActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                               style:UIAlertActionStyleCancel
+                                                             handler:nil]];
+    
+    self.untaggedActionSheet = [UIAlertController alertControllerWithTitle:nil
+                                                                   message:nil
+                                                            preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    [self.untaggedActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Tagged", nil)
+                                                                 style:UIAlertActionStyleDefault
+                                                               handler:nil]];
+    
+    [self.untaggedActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Untagged", nil)
+                                                                 style:UIAlertActionStyleDefault
+                                                               handler:nil]];
+    
+    [self.untaggedActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Clear", nil)
+                                                                 style:UIAlertActionStyleDestructive
+                                                               handler:nil]];
+    
+    [self.untaggedActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                                 style:UIAlertActionStyleCancel
+                                                               handler:nil]];
+    
+    self.searchScopeActionSheet = [UIAlertController alertControllerWithTitle:nil
+                                                                      message:nil
+                                                               preferredStyle:UIAlertControllerStyleActionSheet];
     
     for (NSString *scope in PPSearchScopes()) {
-        [self.searchScopeActionSheet addButtonWithTitle:scope];
+        [self.searchScopeActionSheet addAction:[UIAlertAction actionWithTitle:scope
+                                                                        style:UIAlertActionStyleCancel
+                                                                      handler:^(UIAlertAction *action) {
+                                                                          NSInteger buttonIndex = [self.searchScopeActionSheet.actions indexOfObject:action];
+                                                                          if (buttonIndex == [PPSearchScopes() count]) {
+                                                                              return;
+                                                                          }
+
+                                                                          NSString *title = action.title;
+                                                                          
+                                                                          PPSearchScopeType previousSearchScope = self.searchScope;
+                                                                          self.searchScope = (PPSearchScopeType)[PPSearchScopes() indexOfObject:title];
+                                                                          
+                                                                          if (self.searchScope == PPSearchScopePinboard) {
+                                                                              // Check if the user has no username or password set.
+                                                                              PPSettings *settings = [PPSettings sharedSettings];
+                                                                              if ([settings.username length] == 0 || [settings.password length] == 0) {
+                                                                                  self.searchScope = PPSearchScopeMine;
+                                                                                  [self presentViewController:self.fullTextSearchAlert animated:YES completion:nil];
+                                                                              }
+                                                                              else {
+                                                                                  self.pinboardSearchScope = ASPinboardSearchScopeFullText;
+                                                                              }
+                                                                          }
+                                                                          else {
+                                                                              self.pinboardSearchScope = ASPinboardSearchScopeMine;
+                                                                          }
+                                                                          
+                                                                          [self.tableView beginUpdates];
+                                                                          
+                                                                          if (self.searchScope != previousSearchScope) {
+                                                                              [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPSearchScopeRow inSection:PPSearchSectionScope]] withRowAnimation:UITableViewRowAnimationFade];
+                                                                              
+                                                                              switch (self.searchScope) {
+                                                                                  case PPSearchScopeMine:
+                                                                                      self.pinboardSearchScope = ASPinboardSearchScopeNone;
+                                                                                      
+                                                                                      switch (previousSearchScope) {
+                                                                                          case PPSearchScopeMine:
+                                                                                              break;
+                                                                                              
+                                                                                          case PPSearchScopePinboard:
+                                                                                              [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
+                                                                                              break;
+                                                                                              
+                                                                                          case PPSearchScopeEveryone:
+                                                                                              [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
+                                                                                              break;
+                                                                                              
+                                                                                          case PPSearchScopeNetwork:
+                                                                                              [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
+                                                                                              break;
+                                                                                      }
+                                                                                      break;
+                                                                                      
+                                                                                  case PPSearchScopeNetwork:
+                                                                                      self.pinboardSearchScope = ASPinboardSearchScopeNetwork;
+                                                                                      
+                                                                                      switch (previousSearchScope) {
+                                                                                          case PPSearchScopeMine:
+                                                                                              [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
+                                                                                              break;
+                                                                                              
+                                                                                          case PPSearchScopePinboard:
+                                                                                              [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
+                                                                                              break;
+                                                                                              
+                                                                                          default:
+                                                                                              break;
+                                                                                      }
+                                                                                      break;
+                                                                                      
+                                                                                  case PPSearchScopeEveryone:
+                                                                                      self.pinboardSearchScope = ASPinboardSearchScopeAll;
+                                                                                      
+                                                                                      switch (previousSearchScope) {
+                                                                                          case PPSearchScopeMine:
+                                                                                              [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
+                                                                                              break;
+                                                                                              
+                                                                                          case PPSearchScopePinboard:
+                                                                                              [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
+                                                                                              break;
+                                                                                              
+                                                                                          default:
+                                                                                              break;
+                                                                                      }
+                                                                                      break;
+                                                                                      
+                                                                                  case PPSearchScopePinboard:
+                                                                                      self.pinboardSearchScope = ASPinboardSearchScopeMine;
+                                                                                      
+                                                                                      switch (previousSearchScope) {
+                                                                                          case PPSearchScopeMine:
+                                                                                              [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
+                                                                                              break;
+                                                                                              
+                                                                                          case PPSearchScopePinboard:
+                                                                                              break;
+                                                                                              
+                                                                                          case PPSearchScopeEveryone:
+                                                                                              [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
+                                                                                              break;
+                                                                                              
+                                                                                          case PPSearchScopeNetwork:
+                                                                                              [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
+                                                                                              break;
+                                                                                      }
+                                                                              }
+                                                                          }
+                                                                          [self.tableView endUpdates];
+                                                                      }]];
     }
-    [self.searchScopeActionSheet addButtonWithTitle:@"Cancel"];
-    self.searchScopeActionSheet.cancelButtonIndex = [PPSearchScopes() count];
+    
+    [self.searchScopeActionSheet addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                                    style:UIAlertActionStyleCancel
+                                                                  handler:nil]];
     
     [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
     [self.tableView registerClass:[LHSTableViewCellSubtitle class] forCellReuseIdentifier:SubtitleCellIdentifier];
@@ -471,13 +659,10 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
             break;
             
         case PPSearchSectionScope: {
-            if ([UIApplication isIPad]) {
-                CGRect rect = [tableView rectForRowAtIndexPath:indexPath];
-                [self.searchScopeActionSheet showFromRect:rect inView:tableView animated:YES];
-            }
-            else {
-                [self.searchScopeActionSheet showInView:tableView];
-            }
+            UIView *cell = [tableView cellForRowAtIndexPath:indexPath];
+            self.searchScopeActionSheet.popoverPresentationController.sourceView = cell;
+            self.searchScopeActionSheet.popoverPresentationController.sourceRect = [cell lhs_centerRect];
+            [self presentViewController:self.searchScopeActionSheet animated:YES completion:nil];
             break;
         }
             
@@ -490,11 +675,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                             // Check if the user has no username or password set.
                             PPSettings *settings = [PPSettings sharedSettings];
                             if ([settings.username length] == 0 || [settings.password length] == 0) {
-                                [[[UIAlertView alloc] initWithTitle:nil
-                                                            message:NSLocalizedString(@"To enable Pinboard full-text search, please log out and then log back in.", nil)
-                                                           delegate:nil
-                                                  cancelButtonTitle:nil
-                                                  otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
+                                [self presentViewController:self.fullTextSearchAlert animated:YES completion:nil];
                             }
                             else {
                                 self.pinboardSearchScope = ASPinboardSearchScopeMine;
@@ -720,126 +901,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 - (void)cancelBarButtonItemTouchUpInside:(id)sender {
     [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
 }
-
-#ifdef PINBOARD
-
-- (void)actionSheet:(UIActionSheet *)actionSheet willDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (actionSheet == self.searchScopeActionSheet) {
-        if (buttonIndex == [PPSearchScopes() count]) {
-            return;
-        }
-        NSString *title = [actionSheet buttonTitleAtIndex:buttonIndex];
-        
-        PPSearchScopeType previousSearchScope = self.searchScope;
-        self.searchScope = (PPSearchScopeType)[PPSearchScopes() indexOfObject:title];
-        
-        if (self.searchScope == PPSearchScopePinboard) {
-            // Check if the user has no username or password set.
-            PPSettings *settings = [PPSettings sharedSettings];
-            if ([settings.username length] == 0 || [settings.password length] == 0) {
-                self.searchScope = PPSearchScopeMine;
-
-                [[[UIAlertView alloc] initWithTitle:nil
-                                            message:NSLocalizedString(@"To enable Pinboard full-text search, please log out and then log back in.", nil)
-                                           delegate:nil
-                                  cancelButtonTitle:nil
-                                  otherButtonTitles:NSLocalizedString(@"OK", nil), nil] show];
-            }
-            else {
-                self.pinboardSearchScope = ASPinboardSearchScopeFullText;
-            }
-        }
-        else {
-            self.pinboardSearchScope = ASPinboardSearchScopeMine;
-        }
-        
-        [self.tableView beginUpdates];
-
-        if (self.searchScope != previousSearchScope) {
-            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPSearchScopeRow inSection:PPSearchSectionScope]] withRowAnimation:UITableViewRowAnimationFade];
-
-            switch (self.searchScope) {
-                case PPSearchScopeMine:
-                    self.pinboardSearchScope = ASPinboardSearchScopeNone;
-
-                    switch (previousSearchScope) {
-                        case PPSearchScopeMine:
-                            break;
-
-                        case PPSearchScopePinboard:
-                            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
-                            break;
-                            
-                        case PPSearchScopeEveryone:
-                            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
-                            break;
-                            
-                        case PPSearchScopeNetwork:
-                            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
-                            break;
-                    }
-                    break;
-                    
-                case PPSearchScopeNetwork:
-                    self.pinboardSearchScope = ASPinboardSearchScopeNetwork;
-
-                    switch (previousSearchScope) {
-                        case PPSearchScopeMine:
-                            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
-                            break;
-
-                        case PPSearchScopePinboard:
-                            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
-                            break;
-
-                        default:
-                            break;
-                    }
-                    break;
-                    
-                case PPSearchScopeEveryone:
-                    self.pinboardSearchScope = ASPinboardSearchScopeAll;
-
-                    switch (previousSearchScope) {
-                        case PPSearchScopeMine:
-                            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
-                            break;
-                            
-                        case PPSearchScopePinboard:
-                            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
-                            break;
-                            
-                        default:
-                            break;
-                    }
-                    break;
-                    
-                case PPSearchScopePinboard:
-                    self.pinboardSearchScope = ASPinboardSearchScopeMine;
-
-                    switch (previousSearchScope) {
-                        case PPSearchScopeMine:
-                            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
-                            break;
-                            
-                        case PPSearchScopePinboard:
-                            break;
-                            
-                        case PPSearchScopeEveryone:
-                            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
-                            break;
-                            
-                        case PPSearchScopeNetwork:
-                            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
-                            break;
-                    }
-            }
-        }
-        [self.tableView endUpdates];
-    }
-    
-}
-#endif
 
 #pragma mark - UITextFieldDelegate
 
