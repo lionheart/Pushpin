@@ -14,11 +14,13 @@
 #import "PPTheme.h"
 #import "PPConstants.h"
 #import "PPTagEditViewController.h"
+#import "UIAlertController+LHSAdditions.h"
 
 #import <FMDB/FMDatabase.h>
 #import <LHSCategoryCollection/UIImage+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import <LHSTableViewCells/LHSTableViewCellValue1.h>
+#import <ASPinboard/ASPinboard.h>
 
 static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
 static NSString *CellIdentifier = @"Cell";
@@ -29,6 +31,7 @@ static NSString *CellIdentifier = @"Cell";
 @property (nonatomic, strong) PPBadgeWrapperView *badgeWrapperView;
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSLayoutConstraint *bottomConstraint;
+@property (nonatomic, strong) UIBarButtonItem *saveBarButtonItem;
 
 - (PPBadgeWrapperView *)badgeWrapperViewForCurrentTags;
 - (void)leftBarButtonTouchUpInside:(id)sender;
@@ -63,10 +66,13 @@ static NSString *CellIdentifier = @"Cell";
     
     self.title = NSLocalizedString(@"Multiple Edit", nil);
     self.automaticallyAdjustsScrollViewInsets = NO;
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Save", nil)
-                                                                              style:UIBarButtonItemStylePlain
-                                                                             target:self
-                                                                             action:@selector(rightBarButtonTouchUpInside:)];
+    
+    self.saveBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Save", nil)
+                                                              style:UIBarButtonItemStylePlain
+                                                             target:self
+                                                             action:@selector(rightBarButtonTouchUpInside:)];
+
+    self.navigationItem.rightBarButtonItem = self.saveBarButtonItem;
 
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
                                                                              style:UIBarButtonItemStylePlain
@@ -79,10 +85,12 @@ static NSString *CellIdentifier = @"Cell";
     
     self.existingTags = [NSMutableOrderedSet orderedSet];
     for (NSDictionary *bookmark in self.bookmarks) {
-        NSString *tags = bookmark[@"tags"];
+        NSString *tags = [PPUtilities stringByTrimmingWhitespace:bookmark[@"tags"]];
         NSMutableArray *tagList = [[tags componentsSeparatedByString:@" "] mutableCopy];
         for (NSString *tag in tagList) {
-            [self.existingTags addObject:tag];
+            if (![tag isEqualToString:@""]) {
+                [self.existingTags addObject:tag];
+            }
         }
     }
 
@@ -105,10 +113,11 @@ static NSString *CellIdentifier = @"Cell";
     self.tagsToAddTextField.font = font;
     self.tagsToAddTextField.delegate = self;
     self.tagsToAddTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    self.tagsToAddTextField.placeholder = NSLocalizedString(@"Tap here to add tags", nil);
+    self.tagsToAddTextField.placeholder = NSLocalizedString(@"Tap to add tags", nil);
     self.tagsToAddTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.tagsToAddTextField.autocorrectionType = UITextAutocorrectionTypeNo;
     self.tagsToAddTextField.text = @"";
+    self.tagsToAddTextField.userInteractionEnabled = NO;
     self.tagsToAddTextField.translatesAutoresizingMaskIntoConstraints = NO;
 
     self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
@@ -118,7 +127,12 @@ static NSString *CellIdentifier = @"Cell";
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return PPMultipleEditSectionCount;
+    if (self.existingTags.count > 0) {
+        return PPMultipleEditSectionCount;
+    }
+    else {
+        return PPMultipleEditSectionCount - 1;
+    }
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -142,7 +156,7 @@ static NSString *CellIdentifier = @"Cell";
     
     [cell.contentView lhs_removeSubviews];
     cell.accessoryView = nil;
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.selectionStyle = UITableViewCellSelectionStyleDefault;
     cell.textLabel.text = @"";
     cell.textLabel.font = [PPTheme textLabelFont];
     cell.imageView.image = nil;
@@ -156,12 +170,12 @@ static NSString *CellIdentifier = @"Cell";
             [cell.contentView addSubview:self.tagsToAddTextField];
             [cell.contentView addSubview:self.badgeWrapperView];
 
-            [cell.contentView lhs_addConstraints:@"H:|-14-[text]-10-|" views:views];
+            [cell.contentView lhs_addConstraints:@"H:|-10-[text]-10-|" views:views];
             [cell.contentView lhs_addConstraints:@"V:|-10-[text]" views:views];
-            [cell.contentView lhs_addConstraints:@"H:|-14-[badges]-10-|" views:views];
+            [cell.contentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:views];
             [cell.contentView lhs_addConstraints:@"V:|-12-[badges]" views:views];
             
-            if (self.existingTags.count == 0) {
+            if (self.tagsToAdd.count == 0) {
                 self.tagsToAddTextField.hidden = NO;
             }
             else {
@@ -178,25 +192,6 @@ static NSString *CellIdentifier = @"Cell";
             if ([self.tagsToRemove containsObject:tag]) {
                 attributes[NSStrikethroughStyleAttributeName] = @(NSUnderlineStyleSingle);
                 attributes[NSForegroundColorAttributeName] = [UIColor grayColor];
-            }
-            else {
-                // We set this up as an image view so that the image can be centered in a large tap area.
-                UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Delete-Button"]];
-                imageView.translatesAutoresizingMaskIntoConstraints = NO;
-                
-                UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-                button.translatesAutoresizingMaskIntoConstraints = NO;
-                [button addTarget:self action:@selector(deleteTagButtonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
-                button.clipsToBounds = YES;
-                [button addSubview:imageView];
-                
-                [button lhs_addConstraints:@"H:[imageView(23)]-15-|" views:NSDictionaryOfVariableBindings(imageView)];
-                [button lhs_centerVerticallyForView:imageView height:23];
-                self.deleteTagButtons[tag] = button;
-                
-                [cell.contentView addSubview:button];
-                [cell lhs_addConstraints:@"H:[button(70)]|" views:NSDictionaryOfVariableBindings(button)];
-                [cell lhs_addConstraints:@"V:|[button]|" views:NSDictionaryOfVariableBindings(button)];
             }
 
             cell.textLabel.attributedText = [[NSAttributedString alloc] initWithString:tag attributes:attributes];
@@ -215,7 +210,7 @@ static NSString *CellIdentifier = @"Cell";
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     switch ((PPMultipleEditSectionType)indexPath.section) {
         case PPMultipleEditSectionAddedTags: {
-            CGFloat width = self.view.frame.size.width - 24;
+            CGFloat width = self.view.frame.size.width - 20;
             return MAX(44, [self.badgeWrapperView calculateHeightForWidth:width] + 20);
         }
             
@@ -240,13 +235,29 @@ static NSString *CellIdentifier = @"Cell";
             
         case PPMultipleEditSectionExistingTags: {
             NSString *tag = self.existingTags[indexPath.row];
-            [self.tagsToRemove addObject:tag];
-            
+
+            if ([self.tagsToRemove containsObject:tag]) {
+                [self.tagsToRemove removeObject:tag];
+            }
+            else {
+                [self.tagsToRemove addObject:tag];
+            }
+
             [self.tableView beginUpdates];
             [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView endUpdates];
             break;
         }
+    }
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
+    switch ((PPMultipleEditSectionType)section) {
+        case PPMultipleEditSectionExistingTags:
+            return NSLocalizedString(@"Tap a tag to toggle it for deletion.", nil);
+            
+        default:
+            return nil;
     }
 }
 
@@ -303,7 +314,68 @@ static NSString *CellIdentifier = @"Cell";
 }
 
 - (void)rightBarButtonTouchUpInside:(id)sender {
+    UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    UIBarButtonItem *activityBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:activity];
+    self.navigationItem.rightBarButtonItem = activityBarButtonItem;
+    self.navigationItem.leftBarButtonItem.enabled = NO;
+    [activity startAnimating];
+
+    NSMutableArray *updatedBookmarks = [NSMutableArray array];
+    for (NSDictionary *bookmark in self.bookmarks) {
+        NSString *tags = [PPUtilities stringByTrimmingWhitespace:bookmark[@"tags"]];
+        NSMutableArray *tagList = [[tags componentsSeparatedByString:@" "] mutableCopy];
+        for (NSString *tag in self.tagsToRemove) {
+            [tagList removeObject:tag];
+        }
+
+        for (NSString *tag in self.tagsToAdd) {
+            [tagList addObject:tag];
+        }
+        
+        NSMutableDictionary *updatedBookmark = [bookmark mutableCopy];
+        
+        NSString *updatedTags = [PPUtilities stringByTrimmingWhitespace:[tagList componentsJoinedByString:@" "]];
+        updatedBookmark[@"tags"] = updatedTags;
+        [updatedBookmarks addObject:updatedBookmark];
+    }
+
+    ASPinboard *pinboard = [ASPinboard sharedInstance];
+
+    __block NSInteger succeeded = 0;
+    dispatch_group_t group = dispatch_group_create();
+    for (NSDictionary *bookmark in updatedBookmarks) {
+        dispatch_group_enter(group);
+        [pinboard addBookmarkWithURL:bookmark[@"url"]
+                               title:bookmark[@"title"]
+                         description:bookmark[@"description"]
+                                tags:bookmark[@"tags"]
+                              shared:![bookmark[@"private"] boolValue]
+                              unread:[bookmark[@"unread"] boolValue]
+                             success:^{
+                                 succeeded++;
+                                 dispatch_group_leave(group);
+                             }
+                             failure:^(NSError *error) {
+                                 dispatch_group_leave(group);
+                             }];
+    }
+
+    NSInteger total = updatedBookmarks.count;
+    NSInteger failed = total - succeeded;
     
+    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+        if (succeeded > 0) {
+            [self.parentViewController dismissViewControllerAnimated:YES completion:^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:PPBookmarkEventNotificationName
+                                                                    object:nil
+                                                                  userInfo:nil];
+            }];
+        }
+        else {
+            self.navigationItem.leftBarButtonItem.enabled = YES;
+            self.navigationItem.rightBarButtonItem = self.saveBarButtonItem;
+        }
+    });
 }
 
 @end
