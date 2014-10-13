@@ -9,7 +9,7 @@
 @import MobileCoreServices;
 
 #import "ShareViewController.h"
-#import "UIAlertController+LHSAdditions.h"
+#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 #import <ASPinboard/ASPinboard.h>
 
 @interface ShareViewController ()
@@ -114,16 +114,15 @@
                         AddBookmarkBlock(urlString, title);
                     }
                     else {
-                        UIAlertController *controller = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"No Title Found", nil)
-                                                                                            message:NSLocalizedString(@"Pushpin couldn't retrieve a title for this bookmark. Would you like to add this bookmark with the URL as the title?", nil)
-                                                                                     preferredStyle:UIAlertControllerStyleAlert];
+                        UIAlertController *controller = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"No Title Found", nil)
+                                                                                          message:NSLocalizedString(@"Pushpin couldn't retrieve a title for this bookmark. Would you like to add this bookmark with the URL as the title?", nil)];
                         
                         [controller lhs_addActionWithTitle:@"Add" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                             AddBookmarkBlock(urlString, urlString);
                         }];
-                        
+
                         [controller lhs_addActionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-                            return;
+                            [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
                         }];
                         
                         [self presentViewController:controller animated:YES completion:nil];
@@ -136,8 +135,8 @@
         });
     }
     else {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Invalid Token"
-                                                                       message:@"Please open Pushpin to refresh your credentials."
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Invalid Token", nil)
+                                                                       message:NSLocalizedString(@"Please open Pushpin to refresh your credentials.", nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];
         [alert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
