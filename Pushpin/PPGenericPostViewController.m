@@ -1274,21 +1274,30 @@ static NSInteger kToolbarHeight = 44;
     NSString *message = [NSString stringWithFormat:@"%@\n\n%@", NSLocalizedString(@"Are you sure you want to delete this bookmark?", nil), self.selectedPost[@"url"]];
     
     self.confirmDeletionAlertView = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Confirm Deletion", nil)
-                                                                        message:message];
+                                                                      message:message];
     
     [self.confirmDeletionAlertView lhs_addActionWithTitle:NSLocalizedString(@"Delete", nil)
-                                                                      style:UIAlertActionStyleDestructive
-                                                                    handler:^(UIAlertAction *action) {
-                                                                        self.tableView.scrollEnabled = YES;
+                                                    style:UIAlertActionStyleDestructive
+                                                  handler:^(UIAlertAction *action) {
+                                                      self.tableView.scrollEnabled = YES;
 
-                                                                        [self deletePosts:@[self.selectedPost]];
-                                                                    }];
+                                                      // http://crashes.to/s/2565a27d5df
+                                                      if (self.selectedPost) {
+                                                          [self deletePosts:@[self.selectedPost]];
+                                                      }
+                                                      else {
+                                                          UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Error", nil)
+                                                                                                                       message:NSLocalizedString(@"An error occurred and this bookmark could not be deleted. Please try again.", nil)];
+                                                          [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil];
+                                                          [self presentViewController:alert animated:YES completion:nil];
+                                                      }
+                                                  }];
     
     [self.confirmDeletionAlertView lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
-                                                                      style:UIAlertActionStyleCancel
-                                                                    handler:^(UIAlertAction *action) {
-                                                                        self.tableView.scrollEnabled = YES;
-                                                                    }];
+                                                    style:UIAlertActionStyleCancel
+                                                  handler:^(UIAlertAction *action) {
+                                                      self.tableView.scrollEnabled = YES;
+                                                  }];
     
     [self presentViewController:self.confirmDeletionAlertView animated:YES completion:nil];
 }
@@ -1643,8 +1652,9 @@ static NSInteger kToolbarHeight = 44;
 - (void)bookmarkCellDidActivateDeleteButton:(PPBookmarkCell *)cell
                                     forPost:(NSDictionary *)post {
     [self.currentTableView setContentOffset:CGPointMake(0, self.currentTableView.contentOffset.y) animated:YES];
-    self.selectedPost = post;
     NSInteger index = [self.currentDataSource indexForPost:post];
+
+    self.selectedPost = post;
     self.selectedIndexPath = [NSIndexPath indexPathForRow:index inSection:0];
     [self showConfirmDeletionAlert];
 }
