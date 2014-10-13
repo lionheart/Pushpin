@@ -1,4 +1,4 @@
-platform :ios, '7'
+platform :ios, '8'
 
 inhibit_all_warnings!
 
@@ -10,7 +10,7 @@ pod 'KeychainItemWrapper', '1.2'
 pod 'TTTAttributedLabel', '1.10.1'
 pod 'Mixpanel', '2.4.0'
 pod 'uservoice-iphone-sdk', '3.1.0'
-pod 'LHSCategoryCollection', '0.0.12'
+pod 'LHSCategoryCollection', '0.0.13'
 pod 'LHSFMDatabaseAdditions', :podspec => 'Specs/LHSFMDatabaseAdditions.podspec'
 pod 'LHSTableViewCells'
 pod 'LHSDiigo', :local => 'Vendor/LHSDiigo'
@@ -32,8 +32,4 @@ pod '1PasswordExtension', '1.0.9'
 
 target 'DebugPods', :exclusive => true do
   pod 'BugshotKit', '0.1.0'
-end
-
-target 'Tests', :exclusive => true do
-  pod 'KIF', '~> 3.0'
 end

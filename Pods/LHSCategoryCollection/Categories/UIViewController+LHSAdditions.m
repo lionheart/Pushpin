@@ -28,7 +28,6 @@
     }
     else if (rootViewController.presentedViewController) {
         UIViewController *presentedViewController = rootViewController.presentedViewController;
-
         if ([presentedViewController isKindOfClass:[UIAlertController class]]) {
             return rootViewController;
         }
