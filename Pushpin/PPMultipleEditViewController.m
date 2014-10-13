@@ -33,9 +33,14 @@ static NSString *CellIdentifier = @"Cell";
 @property (nonatomic, strong) NSLayoutConstraint *bottomConstraint;
 @property (nonatomic, strong) UIBarButtonItem *saveBarButtonItem;
 
+@property (nonatomic) kPushpinFilterType read;
+@property (nonatomic) kPushpinFilterType isPrivate;
+
 - (PPBadgeWrapperView *)badgeWrapperViewForCurrentTags;
 - (void)leftBarButtonTouchUpInside:(id)sender;
 - (void)rightBarButtonTouchUpInside:(id)sender;
+- (PPMultipleEditSectionType)sectionTypeForSection:(NSInteger)section;
+- (PPMultipleEditSectionType)sectionTypeForIndexPath:(NSIndexPath *)indexPath;
 
 @end
 
@@ -82,6 +87,8 @@ static NSString *CellIdentifier = @"Cell";
     self.tagsToAdd = [NSMutableArray array];
     self.tagsToRemove = [NSMutableOrderedSet orderedSet];
     self.deleteTagButtons = [NSMutableDictionary dictionary];
+    self.read = kPushpinFilterNone;
+    self.isPrivate = kPushpinFilterNone;
     
     self.existingTags = [NSMutableOrderedSet orderedSet];
     for (NSDictionary *bookmark in self.bookmarks) {
@@ -136,18 +143,16 @@ static NSString *CellIdentifier = @"Cell";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    switch ((PPMultipleEditSectionType)section) {
-        case PPMultipleEditSectionAddedTags:
-            return 1;
-            
+    PPMultipleEditSectionType sectionType = [self sectionTypeForSection:section];
+    switch (sectionType) {
         case PPMultipleEditSectionExistingTags:
             return self.existingTags.count;
             
-        case PPMultipleEditSectionDeletedTags:
-            return self.tagsToRemove.count;
-            
+        case PPMultipleEditSectionOtherData:
+            return 2;
+
         default:
-            return 0;
+            return 1;
     }
 }
 
@@ -156,21 +161,23 @@ static NSString *CellIdentifier = @"Cell";
     
     [cell.contentView lhs_removeSubviews];
     cell.accessoryView = nil;
+    cell.accessoryType = UITableViewCellAccessoryNone;
     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
     cell.textLabel.text = @"";
     cell.textLabel.font = [PPTheme textLabelFont];
     cell.imageView.image = nil;
     cell.detailTextLabel.text = @"";
     cell.detailTextLabel.font = [PPTheme detailLabelFont];
-
-    switch ((PPMultipleEditSectionType)indexPath.section) {
+    
+    PPMultipleEditSectionType sectionType = [self sectionTypeForIndexPath:indexPath];
+    switch (sectionType) {
         case PPMultipleEditSectionAddedTags: {
             NSDictionary *views = @{@"text": self.tagsToAddTextField,
                                     @"badges": self.badgeWrapperView };
             [cell.contentView addSubview:self.tagsToAddTextField];
             [cell.contentView addSubview:self.badgeWrapperView];
 
-            [cell.contentView lhs_addConstraints:@"H:|-10-[text]-10-|" views:views];
+            [cell.contentView lhs_addConstraints:@"H:|-12-[text]-12-|" views:views];
             [cell.contentView lhs_addConstraints:@"V:|-10-[text]" views:views];
             [cell.contentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:views];
             [cell.contentView lhs_addConstraints:@"V:|-12-[badges]" views:views];
@@ -198,17 +205,79 @@ static NSString *CellIdentifier = @"Cell";
             break;
         }
             
-        case PPMultipleEditSectionDeletedTags: {
-            NSString *tag = self.tagsToRemove[indexPath.row];
+        case PPMultipleEditSectionOtherData:
+            cell.textLabel.font = [PPTheme textLabelFont];
+            cell.detailTextLabel.font = [PPTheme detailLabelFont];
+            
+            cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+            cell.textLabel.hidden = NO;
+            cell.textLabel.textColor = [UIColor blackColor];
+            cell.detailTextLabel.text = nil;
+            
+            kPushpinFilterType filter;
+
+            NSString *imageName;
+            switch ((PPMultipleEditSectionOtherRowType)indexPath.row) {
+                case PPMultipleEditSectionOtherRowPrivate:
+                    filter = self.isPrivate;
+                    imageName = @"roundbutton-private";
+                    
+                    switch (filter) {
+                        case kPushpinFilterTrue: {
+                            cell.textLabel.text = [NSString stringWithFormat:@"%@ / %@ → %@", NSLocalizedString(@"Public", nil), NSLocalizedString(@"Private", nil), NSLocalizedString(@"Private", nil)];
+                            cell.accessoryView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:imageName] lhs_imageWithColor:HEX(0xFFAE44FF)]];
+                            break;
+                        }
+                            
+                        case kPushpinFilterFalse:
+                            cell.textLabel.text = [NSString stringWithFormat:@"%@ / %@ → %@", NSLocalizedString(@"Public", nil), NSLocalizedString(@"Private", nil), NSLocalizedString(@"Public", nil)];
+                            cell.accessoryView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:imageName] lhs_imageWithColor:HEX(0xD8DDE4FF)]];
+                            break;
+                            
+                        case kPushpinFilterNone:
+                            cell.textLabel.text = [NSString stringWithFormat:@"%@ / %@ → No Change", NSLocalizedString(@"Public", nil), NSLocalizedString(@"Private", nil)];
+                            cell.textLabel.textColor = [UIColor lightGrayColor];
+                            break;
+                    }
+                    break;
+                    
+                case PPMultipleEditSectionOtherRowRead:
+                    filter = self.read;
+                    imageName = @"roundbutton-checkmark";
+                    
+                    switch (filter) {
+                        case kPushpinFilterTrue: {
+                            cell.textLabel.text = [NSString stringWithFormat:@"%@ / %@ → %@", NSLocalizedString(@"Read", nil), NSLocalizedString(@"Unread", nil), NSLocalizedString(@"Read", nil)];
+                            cell.accessoryView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:imageName] lhs_imageWithColor:HEX(0xEF6034FF)]];
+                            break;
+                        }
+                            
+                        case kPushpinFilterFalse:
+                            cell.textLabel.text = [NSString stringWithFormat:@"%@ / %@ → %@", NSLocalizedString(@"Read", nil), NSLocalizedString(@"Unread", nil), NSLocalizedString(@"Unread", nil)];
+                            cell.accessoryView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:imageName] lhs_imageWithColor:HEX(0xD8DDE4FF)]];
+                            break;
+                            
+                        case kPushpinFilterNone:
+                            cell.textLabel.text = [NSString stringWithFormat:@"%@ / %@ → No Change", NSLocalizedString(@"Read", nil), NSLocalizedString(@"Unread", nil)];
+                            cell.textLabel.textColor = [UIColor lightGrayColor];
+                            break;
+                    }
+                    break;
+            }
+            
+            BOOL showImages = YES;
+            if (!showImages) {
+                cell.accessoryView = nil;
+            }
             break;
-        }
     }
     
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    switch ((PPMultipleEditSectionType)indexPath.section) {
+    PPMultipleEditSectionType sectionType = [self sectionTypeForIndexPath:indexPath];
+    switch (sectionType) {
         case PPMultipleEditSectionAddedTags: {
             CGFloat width = self.view.frame.size.width - 20;
             return MAX(44, [self.badgeWrapperView calculateHeightForWidth:width] + 20);
@@ -221,8 +290,8 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
-    switch ((PPMultipleEditSectionType)indexPath.section) {
+    PPMultipleEditSectionType sectionType = [self sectionTypeForIndexPath:indexPath];
+    switch (sectionType) {
         case PPMultipleEditSectionAddedTags: {
             PPTagEditViewController *tagEditViewController = [[PPTagEditViewController alloc] init];
             tagEditViewController.tagDelegate = self;
@@ -248,11 +317,55 @@ static NSString *CellIdentifier = @"Cell";
             [self.tableView endUpdates];
             break;
         }
+            
+        case PPMultipleEditSectionOtherData: {
+            switch ((PPMultipleEditSectionOtherRowType)indexPath.row) {
+                case PPMultipleEditSectionOtherRowPrivate:
+                    switch (self.isPrivate) {
+                        case kPushpinFilterTrue:
+                            self.isPrivate = kPushpinFilterFalse;
+                            break;
+                            
+                        case kPushpinFilterFalse:
+                            self.isPrivate = kPushpinFilterNone;
+                            break;
+                            
+                        case kPushpinFilterNone:
+                            self.isPrivate = kPushpinFilterTrue;
+                            break;
+                    }
+                    
+                    break;
+                    
+                case PPMultipleEditSectionOtherRowRead:
+                    switch (self.read) {
+                        case kPushpinFilterTrue:
+                            self.read = kPushpinFilterFalse;
+                            break;
+                            
+                        case kPushpinFilterFalse:
+                            self.read = kPushpinFilterNone;
+                            break;
+                            
+                        case kPushpinFilterNone:
+                            self.read = kPushpinFilterTrue;
+                            break;
+                    }
+                    
+                    break;
+            }
+            
+            [self.tableView beginUpdates];
+            [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView endUpdates];
+            break;
+        }
     }
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-    switch ((PPMultipleEditSectionType)section) {
+    PPMultipleEditSectionType sectionType = [self sectionTypeForSection:section];
+    switch (sectionType) {
         case PPMultipleEditSectionExistingTags:
             return NSLocalizedString(@"Tap a tag to toggle it for deletion.", nil);
             
@@ -262,15 +375,19 @@ static NSString *CellIdentifier = @"Cell";
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    switch ((PPMultipleEditSectionType)section) {
+    PPMultipleEditSectionType sectionType = [self sectionTypeForSection:section];
+    switch (sectionType) {
         case PPMultipleEditSectionAddedTags:
             return NSLocalizedString(@"Tags to Add", nil);
 
         case PPMultipleEditSectionExistingTags:
             return NSLocalizedString(@"Existing Tags", nil);
-
-        case PPMultipleEditSectionDeletedTags:
-            return NSLocalizedString(@"Tags to Remove", nil);
+            
+        case PPMultipleEditSectionOtherData:
+            return NSLocalizedString(@"Additional Attributes", nil);
+            
+        default:
+            return nil;
     }
 }
 
@@ -334,6 +451,26 @@ static NSString *CellIdentifier = @"Cell";
         
         NSMutableDictionary *updatedBookmark = [bookmark mutableCopy];
         
+        switch (self.isPrivate) {
+            case kPushpinFilterFalse:
+                updatedBookmark[@"private"] = @(NO);
+                break;
+                
+            case kPushpinFilterTrue:
+                updatedBookmark[@"private"] = @(YES);
+                break;
+        }
+
+        switch (self.read) {
+            case kPushpinFilterFalse:
+                updatedBookmark[@"unread"] = @(YES);
+                break;
+                
+            case kPushpinFilterTrue:
+                updatedBookmark[@"unread"] = @(NO);
+                break;
+        }
+        
         NSString *updatedTags = [PPUtilities stringByTrimmingWhitespace:[tagList componentsJoinedByString:@" "]];
         updatedBookmark[@"tags"] = updatedTags;
         [updatedBookmarks addObject:updatedBookmark];
@@ -376,6 +513,38 @@ static NSString *CellIdentifier = @"Cell";
             self.navigationItem.rightBarButtonItem = self.saveBarButtonItem;
         }
     });
+}
+
+- (PPMultipleEditSectionType)sectionTypeForSection:(NSInteger)section {
+    NSInteger numSectionsSkipped = 0;
+    NSInteger numSectionsNotSkipped = 0;
+
+    while (YES) {
+        if (numSectionsNotSkipped == section) {
+            break;
+        }
+        
+        numSectionsNotSkipped++;
+
+        if (self.existingTags.count == 0) {
+            numSectionsSkipped++;
+        }
+        else {
+            if (numSectionsNotSkipped == section) {
+                break;
+            }
+            
+            numSectionsNotSkipped++;
+        }
+
+        break;
+    }
+
+    return (PPMultipleEditSectionType)(section + numSectionsSkipped);
+}
+
+- (PPMultipleEditSectionType)sectionTypeForIndexPath:(NSIndexPath *)indexPath {
+    return [self sectionTypeForSection:indexPath.section];
 }
 
 @end
