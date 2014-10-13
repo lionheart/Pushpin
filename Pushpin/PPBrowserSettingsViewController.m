@@ -16,7 +16,7 @@
 #import "PPTableViewTitleView.h"
 #import "PPConstants.h"
 #import "PPSettings.h"
-#import "UIAlertController+LHSAdditions.h"
+#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 
 #import <OpenInChrome/OpenInChromeController.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>

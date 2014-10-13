@@ -8,7 +8,7 @@
 
 #import "PPTwitter.h"
 #import "PPAppDelegate.h"
-#import "UIAlertController+LHSAdditions.h"
+#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 
 #import <Accounts/Accounts.h>
 #import <Social/Social.h>

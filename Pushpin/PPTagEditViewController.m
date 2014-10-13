@@ -12,7 +12,7 @@
 #import "PPBadgeWrapperView.h"
 #import "PPTheme.h"
 #import "PPSettings.h"
-#import "UIAlertController+LHSAdditions.h"
+#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 
 #import <FMDB/FMDatabase.h>
 #import <ASPinboard/ASPinboard.h>

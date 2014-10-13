@@ -16,7 +16,7 @@
 #import "PPSettings.h"
 #import "PPPinboardMetadataCache.h"
 #import "LHSFontSelectionViewController.h"
-#import "UIAlertController+LHSAdditions.h"
+#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 
 #import <FMDB/FMDatabase.h>
 #import <TextExpander/SMTEDelegateController.h>

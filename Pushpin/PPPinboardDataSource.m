@@ -15,7 +15,7 @@
 #import "PostMetadata.h"
 #import "PPDefaultFeedViewController.h"
 #import "PPSettings.h"
-#import "UIAlertController+LHSAdditions.h"
+#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 
 #import "NSAttributedString+Attributes.h"
 #import "NSString+LHSAdditions.h"

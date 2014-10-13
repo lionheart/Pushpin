@@ -21,7 +21,7 @@
 #import "PPTheme.h"
 #import "PPPlainTextViewController.h"
 #import "PPTwitter.h"
-#import "UIAlertController+LHSAdditions.h"
+#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 
 #import "UITableView+Additions.h"
 
