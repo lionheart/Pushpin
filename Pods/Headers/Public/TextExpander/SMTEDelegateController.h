@@ -1,0 +1,1 @@
+../../../TextExpander/TextExpander.framework/Versions/A/Headers/SMTEDelegateController.h
