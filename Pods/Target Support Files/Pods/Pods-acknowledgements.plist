@@ -40,33 +40,6 @@ SOFTWARE.</string>
 		</dict>
 		<dict>
 			<key>FooterText</key>
-			<string>ADNActivityCollection by Brennan Stehling
-https://alpha.app.net/smallsharptools
-
-Copyright (c) 2013 SmallSharpTools LLC.
-All rights reserved.
-
-Redistribution and use in source and binary forms are permitted
-provided that the above copyright notice and this paragraph are
-duplicated in all such forms and that any documentation,
-advertising materials, and other materials related to such
-distribution and use acknowledge that the software was developed
-by the &lt;organization&gt;.  The name of the
-&lt;organization&gt; may not be used to endorse or promote products derived
-from this software without specific prior written permission.
-THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
-IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-
-
-</string>
-			<key>Title</key>
-			<string>ADNActivityCollection</string>
-			<key>Type</key>
-			<string>PSGroupSpecifier</string>
-		</dict>
-		<dict>
-			<key>FooterText</key>
 			<string>Copyright (c) 2013-2014 AFNetworking (http://afnetworking.com/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

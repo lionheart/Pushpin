@@ -1,6 +1,5 @@
 PODS:
   - 1PasswordExtension (1.0.9)
-  - ADNActivityCollection (0.0.1)
   - AFNetworking (2.2.4):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
@@ -65,7 +64,6 @@ PODS:
 
 DEPENDENCIES:
   - 1PasswordExtension (= 1.0.9)
-  - ADNActivityCollection (from `Specs/ADNActivityCollection.podspec`)
   - AFNetworking (= 2.2.0)
   - ASPinboard (from `Vendor/ASPinboard`)
   - BugshotKit (= 0.1.0)
@@ -94,8 +92,6 @@ DEPENDENCIES:
   - YHRoundBorderedButton
 
 EXTERNAL SOURCES:
-  ADNActivityCollection:
-    :podspec: Specs/ADNActivityCollection.podspec
   ASPinboard:
     :local: Vendor/ASPinboard
   HTMLParser:
@@ -113,7 +109,6 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   1PasswordExtension: 40e5bfe30487e9c11b92dc81f4cb3e47abdf5a58
-  ADNActivityCollection: f370af826e439b5f661bb5619e27d6d16fe94bd5
   AFNetworking: ab63e259fe91eef4519b371ef0a4955af0e73e64
   ASPinboard: 5e25e15c0984073d997301696865779a2b4d7953
   BugshotKit: 1c8bc57927dacc56e53c9ef628a4dc2df300887a

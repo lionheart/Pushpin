@@ -12,12 +12,6 @@
 #define COCOAPODS_VERSION_MINOR_1PasswordExtension 0
 #define COCOAPODS_VERSION_PATCH_1PasswordExtension 9
 
-// ADNActivityCollection
-#define COCOAPODS_POD_AVAILABLE_ADNActivityCollection
-#define COCOAPODS_VERSION_MAJOR_ADNActivityCollection 0
-#define COCOAPODS_VERSION_MINOR_ADNActivityCollection 0
-#define COCOAPODS_VERSION_PATCH_ADNActivityCollection 1
-
 // AFNetworking
 #define COCOAPODS_POD_AVAILABLE_AFNetworking
 #define COCOAPODS_VERSION_MAJOR_AFNetworking 2
