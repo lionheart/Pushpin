@@ -22,7 +22,6 @@ pod 'RPSTPasswordManagementAppService', :podspec => 'Specs/RPSTPasswordManagemen
 pod 'HTMLParser', :podspec => 'Specs/HTMLParser.podspec'
 pod 'TextExpander', '2.3.1'
 pod 'MWFeedParser', '1.0.1'
-pod 'ADNActivityCollection', :podspec => 'Specs/ADNActivityCollection.podspec'
 pod 'ASPinboard', :local => 'Vendor/ASPinboard'
 pod 'OpenInChrome', '0.0.1'
 pod 'CrashlyticsFramework', '2.2.4'
