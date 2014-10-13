@@ -194,7 +194,8 @@
         starredColor = HEX(0xf0b2f7ff);
     }
 
-    if (post[@"private"]) {
+    PPSettings *settings = [PPSettings sharedSettings];
+    if (post[@"private"] && !settings.hidePrivateLock) {
         if ([post[@"private"] boolValue]) {
             [badges addObject:@{ @"type": @"image", @"image": @"badge-private", @"options": @{ PPBadgeNormalBackgroundColor: privateColor } }];
         }

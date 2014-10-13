@@ -34,6 +34,7 @@
 @property (nonatomic) BOOL readByDefault;
 @property (nonatomic) BOOL onlyPromptToAddOnce;
 @property (nonatomic) BOOL alwaysShowClipboardNotification;
+@property (nonatomic) BOOL hidePrivateLock;
 @property (nonatomic, strong) NSString *defaultFeed;
 @property (nonatomic, strong) NSArray *personalFeedOrder;
 @property (nonatomic, strong) NSString *feedToken;

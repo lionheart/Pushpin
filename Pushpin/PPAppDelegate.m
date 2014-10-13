@@ -653,6 +653,7 @@
         @"io.aurora.pinboard.ReadByDefault": @(NO),
         @"io.aurora.pinboard.Browser": @(PPBrowserSafari),
         @"io.aurora.pinboard.CompressPosts": @(NO),
+        @"io.aurora.pinboard.HidePrivateLock": @(NO),
         @"io.aurora.pinboard.DimReadPosts": @(NO),
         @"io.aurora.pinboard.OpenLinksWithMobilizer": @(NO),
         @"io.aurora.pinboard.DoubleTapToEdit": @(NO),

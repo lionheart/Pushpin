@@ -32,6 +32,7 @@ typedef NS_ENUM(NSInteger, PPEditSettingsRowType) {
 typedef NS_ENUM(NSInteger, PPBrowseSettingsRowType) {
     PPBrowseCompressRow,
     PPBrowseDimReadRow,
+    PPBrowseHidePrivateLock,
     PPBrowseFontRow,
     PPBrowseFontSizeRow,
     PPBrowseDefaultFeedRow,
