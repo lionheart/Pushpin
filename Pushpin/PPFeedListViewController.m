@@ -1306,35 +1306,41 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         self.tableView.allowsMultipleSelectionDuringEditing = YES;
         [self.tableView setEditing:YES animated:YES];
         
-        [self.tableView beginUpdates];
-        
-        if ([self personalSectionIsHidden]) {
+        // http://crashes.to/s/50699750a80
+        @try {
+            [self.tableView beginUpdates];
+
+            if ([self personalSectionIsHidden]) {
 #ifdef PINBOARD
-            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionPersonal] withRowAnimation:UITableViewRowAnimationFade];
-#endif
-            
-#ifdef DELICIOUS
-            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPDeliciousSectionPersonal] withRowAnimation:UITableViewRowAnimationFade];
-#endif
-        }
-        
-#ifdef PINBOARD
-        if ([self communitySectionIsHidden]) {
-            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionCommunity] withRowAnimation:UITableViewRowAnimationFade];
-        }
-        
-        if ([self feedSectionIsHidden]) {
-            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds]
-                          withRowAnimation:UITableViewRowAnimationFade];
-        }
-        else {
-            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds - [self numberOfHiddenSections]]
-                          withRowAnimation:UITableViewRowAnimationFade];
-        }
+                [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionPersonal] withRowAnimation:UITableViewRowAnimationFade];
 #endif
 
-        [self.tableView insertRowsAtIndexPaths:[self indexPathsForHiddenFeeds] withRowAnimation:UITableViewRowAnimationFade];
-        [self.tableView endUpdates];
+#ifdef DELICIOUS
+                [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPDeliciousSectionPersonal] withRowAnimation:UITableViewRowAnimationFade];
+#endif
+            }
+
+#ifdef PINBOARD
+            if ([self communitySectionIsHidden]) {
+                [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionCommunity] withRowAnimation:UITableViewRowAnimationFade];
+            }
+
+            if ([self feedSectionIsHidden]) {
+                [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds]
+                              withRowAnimation:UITableViewRowAnimationFade];
+            }
+            else {
+                [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds - [self numberOfHiddenSections]]
+                              withRowAnimation:UITableViewRowAnimationFade];
+            }
+#endif
+            
+            [self.tableView insertRowsAtIndexPaths:[self indexPathsForHiddenFeeds] withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView endUpdates];
+        }
+        @catch (NSException *exception) {
+            [self.tableView reloadData];
+        }
 
         [UIView animateWithDuration:0.3
                          animations:^{
