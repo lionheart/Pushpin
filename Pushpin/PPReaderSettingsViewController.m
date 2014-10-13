@@ -11,7 +11,7 @@
 #import "PPTheme.h"
 #import "PPWebViewController.h"
 #import "LHSFontSelectionViewController.h"
-#import "UIAlertController+LHSAdditions.h"
+#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 
 #import <LHSTableViewCells/LHSTableViewCellValue1.h>
 #import <LHSCategoryCollection/UIFont+LHSAdditions.h>

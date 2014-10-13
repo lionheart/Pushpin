@@ -14,7 +14,7 @@
 #import "PPTheme.h"
 #import "PPConstants.h"
 #import "PPTagEditViewController.h"
-#import "UIAlertController+LHSAdditions.h"
+#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 
 #import <FMDB/FMDatabase.h>
 #import <LHSCategoryCollection/UIImage+LHSAdditions.h>

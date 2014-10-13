@@ -27,7 +27,7 @@
 #import "PPShrinkBackTransition.h"
 #import "PPNotification.h"
 #import "PPSplitViewController.h"
-#import "UIAlertController+LHSAdditions.h"
+#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 
 #import <FMDB/FMDatabase.h>
 #import <oauthconsumer/OAuthConsumer.h>

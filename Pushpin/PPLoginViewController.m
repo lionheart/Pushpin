@@ -17,7 +17,7 @@
 #import "PPTableViewTitleView.h"
 #import "PPDeliciousDataSource.h"
 #import "PPSettings.h"
-#import "UIAlertController+LHSAdditions.h"
+#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 
 #import <uservoice-iphone-sdk/UserVoice.h>
 #import <RPSTPasswordManagementAppService/RPSTPasswordManagementAppService.h>

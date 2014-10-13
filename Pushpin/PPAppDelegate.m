@@ -30,7 +30,7 @@
 #import "PPStatusBar.h"
 #import "PPDeliciousDataSource.h"
 #import "PPSettings.h"
-#import "UIAlertController+LHSAdditions.h"
+#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 
 #import <LHSDelicious/LHSDelicious.h>
 #import <ASPinboard/ASPinboard.h>
