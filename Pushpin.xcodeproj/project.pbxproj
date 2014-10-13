@@ -1475,7 +1475,10 @@
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
                 "INFOPLIST_FILE": "PushpinFramework/Info.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "7.1",
-                "OTHER_LDFLAGS": "-ObjC",
+                "OTHER_LDFLAGS": [
+                    "$(inherited)",
+                    "-ObjC"
+                ],
                 "PRODUCT_NAME": "$(TARGET_NAME)",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES",
@@ -3078,7 +3081,10 @@
                 "INFOPLIST_FILE": "PushpinFramework/Info.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "7.1",
                 "ONLY_ACTIVE_ARCH": "YES",
-                "OTHER_LDFLAGS": "-ObjC",
+                "OTHER_LDFLAGS": [
+                    "$(inherited)",
+                    "-ObjC"
+                ],
                 "PRODUCT_NAME": "$(TARGET_NAME)",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES"
@@ -3117,7 +3123,10 @@
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
                 "INFOPLIST_FILE": "PushpinFramework/Info.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "7.1",
-                "OTHER_LDFLAGS": "-ObjC",
+                "OTHER_LDFLAGS": [
+                    "$(inherited)",
+                    "-ObjC"
+                ],
                 "PRODUCT_NAME": "$(TARGET_NAME)",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES",
@@ -3157,7 +3166,10 @@
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
                 "INFOPLIST_FILE": "PushpinFramework/Info.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "7.1",
-                "OTHER_LDFLAGS": "-ObjC",
+                "OTHER_LDFLAGS": [
+                    "$(inherited)",
+                    "-ObjC"
+                ],
                 "PRODUCT_NAME": "$(TARGET_NAME)",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES",
@@ -3197,7 +3209,10 @@
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
                 "INFOPLIST_FILE": "PushpinFramework/Info.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "7.1",
-                "OTHER_LDFLAGS": "-ObjC",
+                "OTHER_LDFLAGS": [
+                    "$(inherited)",
+                    "-ObjC"
+                ],
                 "PRODUCT_NAME": "$(TARGET_NAME)",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES",
@@ -3237,7 +3252,10 @@
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
                 "INFOPLIST_FILE": "PushpinFramework/Info.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "7.1",
-                "OTHER_LDFLAGS": "-ObjC",
+                "OTHER_LDFLAGS": [
+                    "$(inherited)",
+                    "-ObjC"
+                ],
                 "PRODUCT_NAME": "$(TARGET_NAME)",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES",
@@ -3277,7 +3295,10 @@
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
                 "INFOPLIST_FILE": "PushpinFramework/Info.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "7.1",
-                "OTHER_LDFLAGS": "-ObjC",
+                "OTHER_LDFLAGS": [
+                    "$(inherited)",
+                    "-ObjC"
+                ],
                 "PRODUCT_NAME": "$(TARGET_NAME)",
                 "SDKROOT": "iphoneos",
                 "SKIP_INSTALL": "YES",
@@ -7742,6 +7763,7 @@
                 "3772DE541933B0D1004B348D",
                 "37FEEB9115745488003F2B77",
                 "3740A23616863CF000F95D82",
+                "FBD5EF4989C8B39A91E6B142",
                 "37FEEB8F15745488003F2B77",
                 "37FEEB9815745488003F2B77",
                 "3717968418A885FE004B2D08",
@@ -7751,8 +7773,7 @@
                 "378BFDF119E5E29B006B48DC",
                 "37076D41158AD0B1002566CD",
                 "3772DE901933B0E0004B348D",
-                "370859F817F329D400270A9D",
-                "FBD5EF4989C8B39A91E6B142"
+                "370859F817F329D400270A9D"
             ],
             "isa": "PBXGroup",
             "sourceTree": "<group>"
@@ -10074,20 +10095,20 @@
         },
         "FBD5EF4989C8B39A91E6B142": {
             "children": [
-                "ECD3AA7E76A5AF6C9B053517",
-                "FC57DFA7B84972D5670A93EC",
-                "4D7B02B3C4277F6ACB006575",
-                "AFF80364CC968E11C98B0720",
-                "084A666988D56C1EB53F8D70",
-                "E5C7E8CC60BD2B4D3B442364",
-                "510EC4BA5E7C7B2DEF5E862D",
-                "7B58493BA3058DE1B358C72C",
-                "5222784C1CE4C3E7210D5E79",
-                "DC1363CDE8C539E824ED2832",
-                "42E2EB714580B04057A53A59",
                 "2CE67730F85A07531FF10228",
+                "C0D4BA105B9CC5CE33687390",
+                "5222784C1CE4C3E7210D5E79",
+                "42E2EB714580B04057A53A59",
+                "DC1363CDE8C539E824ED2832",
                 "A4BD4E22DCF53E6AB2F2A51E",
-                "C0D4BA105B9CC5CE33687390"
+                "7B58493BA3058DE1B358C72C",
+                "084A666988D56C1EB53F8D70",
+                "510EC4BA5E7C7B2DEF5E862D",
+                "FC57DFA7B84972D5670A93EC",
+                "AFF80364CC968E11C98B0720",
+                "4D7B02B3C4277F6ACB006575",
+                "E5C7E8CC60BD2B4D3B442364",
+                "ECD3AA7E76A5AF6C9B053517"
             ],
             "isa": "PBXGroup",
             "name": "Pods",
