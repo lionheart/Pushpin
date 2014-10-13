@@ -88,14 +88,18 @@
                     });
                 }];
             };
-            
+
+            NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
+            BOOL readByDefault = [[sharedDefaults objectForKey:@"ReadByDefault"] boolValue];
+            BOOL privateByDefault = [[sharedDefaults objectForKey:@"PrivateByDefault"] boolValue];
+
             void (^AddBookmarkBlock)(NSString *urlString, NSString *title) = ^(NSString *urlString, NSString *title) {
                 [[ASPinboard sharedInstance] addBookmarkWithURL:urlString
                                                           title:title
                                                     description:@""
                                                            tags:@""
-                                                         shared:YES
-                                                         unread:YES
+                                                         shared:!privateByDefault
+                                                         unread:!readByDefault
                                                         success:^{
                                                             CompletionBlock(NSLocalizedString(@"Success!", nil), NSLocalizedString(@"Your bookmark was added.", nil));
                                                         }

@@ -348,13 +348,14 @@
 
 #endif
 
-
-
 - (void)setPrivateByDefault:(BOOL)privateByDefault {
     _privateByDefault = privateByDefault;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:@(privateByDefault) forKey:@"io.aurora.pinboard.PrivateByDefault"];
     [defaults synchronize];
+
+    NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
+    [sharedDefaults setObject:@(privateByDefault) forKey:@"PrivateByDefault"];
 }
 
 - (BOOL)privateByDefault {
@@ -400,6 +401,9 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:@(readByDefault) forKey:@"io.aurora.pinboard.ReadByDefault"];
     [defaults synchronize];
+
+    NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
+    [sharedDefaults setObject:@(readByDefault) forKey:@"ReadByDefault"];
 }
 
 - (BOOL)readByDefault {
