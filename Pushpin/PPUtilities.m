@@ -422,6 +422,8 @@
 }
 
 + (void)migrateDatabase {
+    PPSettings *settings = [PPSettings sharedSettings];
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         // Create the database if it does not yet exist.
         FMDatabase *db = [FMDatabase databaseWithPath:[self databasePath]];
@@ -579,7 +581,7 @@
                         [db executeUpdate:@"PRAGMA user_version=2;"];
                         
                     case 2:
-                        [[PPSettings sharedSettings] setReadLater:PPReadLaterNone];
+                        settings.readLater = PPReadLaterNone;
                         [db executeUpdate:@"CREATE TABLE rejected_bookmark(url TEXT UNIQUE CHECK(length(url) < 2000));"];
                         [db executeUpdate:@"CREATE INDEX rejected_bookmark_url_idx ON rejected_bookmark (url);"];
                         [db executeUpdate:@"CREATE INDEX tag_name_idx ON tag (name);"];
@@ -713,11 +715,18 @@
                         [db executeUpdate:@"PRAGMA user_version=9;"];
                         
                     case 9: {
-                        NSArray *communityFeedOrder = [PPSettings sharedSettings].communityFeedOrder;
-                        [[PPSettings sharedSettings] setCommunityFeedOrder:[communityFeedOrder arrayByAddingObject:@(PPPinboardCommunityFeedRecent)]];
+                        NSArray *communityFeedOrder = settings.communityFeedOrder;
+                        settings.communityFeedOrder = [communityFeedOrder arrayByAddingObject:@(PPPinboardCommunityFeedRecent)];
                         [db executeUpdate:@"PRAGMA user_version=10;"];
                     }
                         
+                    case 10: {
+                        // We set these so that these values sync to the extensions.
+                        settings.readByDefault = settings.readByDefault;
+                        settings.privateByDefault = settings.privateByDefault;
+                        [db executeUpdate:@"PRAGMA user_version=11;"];
+                    }
+
                     default:
                         break;
 #endif
