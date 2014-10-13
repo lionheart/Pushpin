@@ -13,6 +13,7 @@
 #import "PPBadgeWrapperView.h"
 #import "PPTheme.h"
 #import "PPConstants.h"
+#import "PPTagEditViewController.h"
 
 #import <FMDB/FMDatabase.h>
 #import <LHSCategoryCollection/UIImage+LHSAdditions.h>
@@ -24,59 +25,116 @@ static NSString *CellIdentifier = @"Cell";
 
 @interface PPMultipleEditViewController ()
 
+@property (nonatomic, strong) NSMutableDictionary *deleteTagButtons;
+@property (nonatomic, strong) PPBadgeWrapperView *badgeWrapperView;
+@property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) NSLayoutConstraint *bottomConstraint;
+
+- (PPBadgeWrapperView *)badgeWrapperViewForCurrentTags;
+- (void)leftBarButtonTouchUpInside:(id)sender;
+- (void)rightBarButtonTouchUpInside:(id)sender;
+
 @end
 
 @implementation PPMultipleEditViewController
 
-- (id)initWithStyle:(UITableViewStyle)style {
-    self = [super initWithStyle:UITableViewStyleGrouped];
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
+
+- (void)viewDidLayoutSubviews {
+    NSDictionary *views = @{@"view": self.tableView,
+                            @"guide": self.topLayoutGuide };
+    [self.view lhs_addConstraints:@"V:[guide][view]" views:views];
+    [self.view lhs_addConstraints:@"H:|[view]|" views:views];
+    [self.view layoutIfNeeded];
+}
+
+- (id)initWithBookmarks:(NSArray *)bookmarks {
+    self = [super init];
     if (self) {
-        self.tagsToAdd = [NSMutableArray array];
-        self.tagsToRemove = [NSMutableArray array];
-        
-        UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:16];
-        self.tagsToAddTextField = [[UITextField alloc] init];
-        self.tagsToAddTextField.font = font;
-        self.tagsToAddTextField.delegate = self;
-        self.tagsToAddTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-        self.tagsToAddTextField.placeholder = NSLocalizedString(@"Tap here to add tags", nil);
-        self.tagsToAddTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-        self.tagsToAddTextField.autocorrectionType = UITextAutocorrectionTypeNo;
-        self.tagsToAddTextField.text = @"";
-        
-        self.tagCounts = [NSMutableDictionary dictionary];
-        self.tagsToAddCompletions = [NSMutableArray array];
-        self.autocompleteInProgress = NO;
+        self.bookmarks = bookmarks;
     }
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.title = NSLocalizedString(@"Multiple Edit", nil);
+    self.automaticallyAdjustsScrollViewInsets = NO;
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Save", nil)
+                                                                              style:UIBarButtonItemStylePlain
+                                                                             target:self
+                                                                             action:@selector(rightBarButtonTouchUpInside:)];
+
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                                             style:UIBarButtonItemStylePlain
+                                                                            target:self
+                                                                            action:@selector(leftBarButtonTouchUpInside:)];
+
+    self.tagsToAdd = [NSMutableArray array];
+    self.tagsToRemove = [NSMutableOrderedSet orderedSet];
+    self.deleteTagButtons = [NSMutableDictionary dictionary];
+    
+    self.existingTags = [NSMutableOrderedSet orderedSet];
+    for (NSDictionary *bookmark in self.bookmarks) {
+        NSString *tags = bookmark[@"tags"];
+        NSMutableArray *tagList = [[tags componentsSeparatedByString:@" "] mutableCopy];
+        for (NSString *tag in tagList) {
+            [self.existingTags addObject:tag];
+        }
+    }
+
+    [self.existingTags sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        return [obj1 compare:obj2];
+    }];
+    
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+    self.tableView.dataSource = self;
+    self.tableView.delegate = self;
+    self.tableView.backgroundColor = HEX(0xF7F9FDff);
+    self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:self.tableView];
+    
+    self.bottomConstraint = [NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bottomLayoutGuide attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+    [self.view addConstraint:self.bottomConstraint];
+    
+    UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:16];
+    self.tagsToAddTextField = [[UITextField alloc] init];
+    self.tagsToAddTextField.font = font;
+    self.tagsToAddTextField.delegate = self;
+    self.tagsToAddTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    self.tagsToAddTextField.placeholder = NSLocalizedString(@"Tap here to add tags", nil);
+    self.tagsToAddTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    self.tagsToAddTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+    self.tagsToAddTextField.text = @"";
+    self.tagsToAddTextField.translatesAutoresizingMaskIntoConstraints = NO;
+
+    self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
+    self.badgeWrapperView.userInteractionEnabled = NO;
+
     [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
 }
 
-- (id)initWithTags:(NSArray *)tags {
-    _existingTags = [NSMutableArray arrayWithArray:tags];
-    return [self initWithStyle:UITableViewStyleGrouped];
-}
-
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+    return PPMultipleEditSectionCount;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == 0) {
-        if (self.existingTags.count > 0 || self.tagsToAdd.count > 0) {
-            return 2 + self.tagsToAddCompletions.count;
-        } else {
-            return 1 + self.tagsToAddCompletions.count;
-        }
-    } else if (section == 1) {
-        return 1;
+    switch ((PPMultipleEditSectionType)section) {
+        case PPMultipleEditSectionAddedTags:
+            return 1;
+            
+        case PPMultipleEditSectionExistingTags:
+            return self.existingTags.count;
+            
+        case PPMultipleEditSectionDeletedTags:
+            return self.tagsToRemove.count;
+            
+        default:
+            return 0;
     }
-    
-    return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -90,273 +148,162 @@ static NSString *CellIdentifier = @"Cell";
     cell.imageView.image = nil;
     cell.detailTextLabel.text = @"";
     cell.detailTextLabel.font = [PPTheme detailLabelFont];
-    
-    CGRect frame = cell.frame;
-    
-    // TODO: This is a bit of a hack, and could be updated to reuse the views
-    for (UIView *subview in [cell.contentView subviews]) {
-        if ([subview isKindOfClass:[PPBadgeWrapperView class]]) {
-            [subview removeFromSuperview];
-        }
-    }
-    
-    if (indexPath.section == 0) {
-        if (indexPath.row == 0) {
-            cell.imageView.image = [[UIImage imageNamed:@"navigation-tags"] lhs_imageWithColor:HEX(0x1a98fcff)];
-            self.tagsToAddTextField.frame = CGRectMake((CGRectGetWidth(frame) - 240) / 2.0, (CGRectGetHeight(frame) - 31) / 2.0, 240, 31);
+
+    switch ((PPMultipleEditSectionType)indexPath.section) {
+        case PPMultipleEditSectionAddedTags: {
+            NSDictionary *views = @{@"text": self.tagsToAddTextField,
+                                    @"badges": self.badgeWrapperView };
             [cell.contentView addSubview:self.tagsToAddTextField];
-            cell.accessoryView = nil;
-        } else if (indexPath.row == (1 + self.tagsToAddCompletions.count)) {
-            // Bottom badge view
-            NSMutableArray *badges = [NSMutableArray array];
-            [self.existingTags enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                if ([self.tagsToRemove containsObject:obj]) {
-                    [badges addObject:@{ @"type": @"tag", @"tag": obj, @"options": @{ PPBadgeNormalBackgroundColor: HEX(0xCCCCCCFF) } }];
-                } else {
-                    [badges addObject:@{ @"type": @"tag", @"tag": obj }];
-                }
-            }];
+            [cell.contentView addSubview:self.badgeWrapperView];
+
+            [cell.contentView lhs_addConstraints:@"H:|-14-[text]-10-|" views:views];
+            [cell.contentView lhs_addConstraints:@"V:|-10-[text]" views:views];
+            [cell.contentView lhs_addConstraints:@"H:|-14-[badges]-10-|" views:views];
+            [cell.contentView lhs_addConstraints:@"V:|-12-[badges]" views:views];
             
-            [self.tagsToAdd enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                if ([self.tagsToRemove containsObject:obj]) {
-                    [badges addObject:@{ @"type": @"tag", @"tag": obj, @"options": @{ PPBadgeNormalBackgroundColor: HEX(0xCCCCCCFF) } }];
-                } else {
-                    [badges addObject:@{ @"type": @"tag", @"tag": obj, @"options": @{ PPBadgeNormalBackgroundColor: HEX(0xa8db4cff) } }];
-                }
-            }];
-            
-            PPBadgeWrapperView *badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(14.0f) }];
-            badgeWrapperView.translatesAutoresizingMaskIntoConstraints = NO;
-            [cell.contentView addSubview:badgeWrapperView];
-            [cell.contentView lhs_addConstraints:@"H:|-40-[badges]-10-|" views:@{@"badges": badgeWrapperView }];
-            [cell.contentView lhs_addConstraints:@"V:|-10-[badges]-10-|" views:@{ @"badges": badgeWrapperView }];
-        } else {
-            cell.selectionStyle = UITableViewCellSelectionStyleGray;
-            NSString *tag = self.tagsToAddCompletions[indexPath.row - kMultipleEditViewControllerTagIndexOffset];
-            cell.textLabel.text = tag;
-            cell.detailTextLabel.text = self.tagCounts[tag];
+            if (self.existingTags.count == 0) {
+                self.tagsToAddTextField.hidden = NO;
+            }
+            else {
+                self.tagsToAddTextField.hidden = YES;
+            }
+            break;
         }
-    } else if (indexPath.section == 1) {
-        NSMutableArray *badges = [NSMutableArray array];
-        [self.tagsToRemove enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            [badges addObject:@{ @"type": @"tag", @"tag": obj }];
-        }];
-        PPBadgeWrapperView *badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(14.0f), PPBadgeNormalBackgroundColor: HEX(0xfc5579ff) }];
-        badgeWrapperView.translatesAutoresizingMaskIntoConstraints = NO;
-        [cell.contentView addSubview:badgeWrapperView];
-        [cell.contentView lhs_addConstraints:@"H:|-40-[badges]-10-|" views:@{@"badges": badgeWrapperView }];
-        [cell.contentView lhs_addConstraints:@"V:|-10-[badges]-10-|" views:@{ @"badges": badgeWrapperView }];
+            
+        case PPMultipleEditSectionExistingTags: {
+            NSString *tag = self.existingTags[indexPath.row];
+            NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
+            attributes[NSFontAttributeName] = [PPTheme textLabelFont];
+            
+            if ([self.tagsToRemove containsObject:tag]) {
+                attributes[NSStrikethroughStyleAttributeName] = @(NSUnderlineStyleSingle);
+                attributes[NSForegroundColorAttributeName] = [UIColor grayColor];
+            }
+            else {
+                // We set this up as an image view so that the image can be centered in a large tap area.
+                UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Delete-Button"]];
+                imageView.translatesAutoresizingMaskIntoConstraints = NO;
+                
+                UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+                button.translatesAutoresizingMaskIntoConstraints = NO;
+                [button addTarget:self action:@selector(deleteTagButtonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
+                button.clipsToBounds = YES;
+                [button addSubview:imageView];
+                
+                [button lhs_addConstraints:@"H:[imageView(23)]-15-|" views:NSDictionaryOfVariableBindings(imageView)];
+                [button lhs_centerVerticallyForView:imageView height:23];
+                self.deleteTagButtons[tag] = button;
+                
+                [cell.contentView addSubview:button];
+                [cell lhs_addConstraints:@"H:[button(70)]|" views:NSDictionaryOfVariableBindings(button)];
+                [cell lhs_addConstraints:@"V:|[button]|" views:NSDictionaryOfVariableBindings(button)];
+            }
+
+            cell.textLabel.attributedText = [[NSAttributedString alloc] initWithString:tag attributes:attributes];
+            break;
+        }
+            
+        case PPMultipleEditSectionDeletedTags: {
+            NSString *tag = self.tagsToRemove[indexPath.row];
+            break;
+        }
     }
     
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row == (1 + self.tagsToAddCompletions.count)) {
-        NSMutableArray *badges = [NSMutableArray array];
-        [self.existingTags enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            [badges addObject:@{ @"type": @"tag", @"tag": obj }];
-        }];
-        
-        PPBadgeWrapperView *badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @(14.0f) }];
-        CGFloat totalHeight = [badgeWrapperView calculateHeight] + 20.0f;
-        NSLog(@"Total height is %f", totalHeight);
-        return totalHeight;
+    switch ((PPMultipleEditSectionType)indexPath.section) {
+        case PPMultipleEditSectionAddedTags: {
+            CGFloat width = self.view.frame.size.width - 24;
+            return MAX(44, [self.badgeWrapperView calculateHeightForWidth:width] + 20);
+        }
+            
+        default:
+            return 44;
     }
-    
-    return 44.0f;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    if (indexPath.row == 0 || indexPath.row == (1 + self.tagsToAddCompletions.count)) {
-        return;
-    }
-    
-    UITextField *textField;
-    NSMutableArray *tagCompletions;
-    if (indexPath.section == 0) {
-        textField = self.tagsToAddTextField;
-        tagCompletions = self.tagsToAddCompletions;
-    }
-
-    NSInteger row = indexPath.row;
-
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSString *completion;
-        NSMutableArray *indexPathsToDelete = [NSMutableArray array];
-        
-        if (tagCompletions.count > 0) {
-            completion = tagCompletions[row - kMultipleEditViewControllerTagIndexOffset];
-            
-            for (NSInteger i=0; i<tagCompletions.count; i++) {
-                [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(i + kMultipleEditViewControllerTagIndexOffset) inSection:indexPath.section]];
-            }
-            
-            [tagCompletions removeAllObjects];
+    switch ((PPMultipleEditSectionType)indexPath.section) {
+        case PPMultipleEditSectionAddedTags: {
+            PPTagEditViewController *tagEditViewController = [[PPTagEditViewController alloc] init];
+            tagEditViewController.tagDelegate = self;
+            tagEditViewController.bookmarkData = @{};
+            tagEditViewController.existingTags = [self.tagsToAdd mutableCopy];
+            tagEditViewController.presentedFromShareSheet = NO;
+            [self.navigationController pushViewController:tagEditViewController animated:YES];
+            break;
         }
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
+            
+        case PPMultipleEditSectionExistingTags: {
+            NSString *tag = self.existingTags[indexPath.row];
+            [self.tagsToRemove addObject:tag];
+            
             [self.tableView beginUpdates];
-            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+            [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView endUpdates];
-            
-            [self.tagsToAdd addObject:completion];
-            textField.text = @"";
-            [self.tableView reloadData];
-        });
-    });
+            break;
+        }
+    }
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-    if (section == 0) {
-        if (self.tagsToRemove.count > 0 || self.tagsToAdd.count > 0) {
-            NSMutableString *footerString = [NSMutableString string];
-            if (self.tagsToRemove.count == 1) {
-                [footerString appendString:NSLocalizedString(@"1 tag will be deleted", nil)];
-            } else if (self.tagsToRemove.count >= 2) {
-                [footerString appendString:[NSString stringWithFormat:@"%lu %@", (unsigned long)self.tagsToRemove.count, NSLocalizedString(@"tags will be deleted", nil)]];
-            }
-            
-            if (self.tagsToRemove.count > 0 && self.tagsToAdd.count > 0) {
-                [footerString appendString:@", "];
-            }
-            
-            if (self.tagsToAdd.count == 1) {
-                [footerString appendString:NSLocalizedString(@"1 tag will be added", nil)];
-            } else if (self.tagsToAdd.count >= 2) {
-                [footerString appendString:[NSString stringWithFormat:@"%lu %@", (unsigned long)self.tagsToAdd.count, NSLocalizedString(@"tags will be added", nil)]];
-            }
-            
-            return footerString;
-        } else if (self.existingTags.count > 0 || self.tagsToAdd.count > 0) {
-            return NSLocalizedString(@"Tap an existing tag to remove it", nil);
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    switch ((PPMultipleEditSectionType)section) {
+        case PPMultipleEditSectionAddedTags:
+            return NSLocalizedString(@"Tags to Add", nil);
+
+        case PPMultipleEditSectionExistingTags:
+            return NSLocalizedString(@"Existing Tags", nil);
+
+        case PPMultipleEditSectionDeletedTags:
+            return NSLocalizedString(@"Tags to Remove", nil);
+    }
+}
+
+- (PPBadgeWrapperView *)badgeWrapperViewForCurrentTags {
+    NSMutableArray *badges = [NSMutableArray array];
+    for (NSString *tag in self.tagsToAdd) {
+        if (![tag isEqualToString:@""]) {
+            [badges addObject:@{ @"type": @"tag", @"tag": tag }];
         }
     }
     
-    return @"";
+    PPBadgeWrapperView *wrapper = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme staticBadgeFontSize]) }];
+    wrapper.userInteractionEnabled = NO;
+    wrapper.translatesAutoresizingMaskIntoConstraints = NO;
+    return wrapper;
 }
 
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    if (textField == self.tagsToAddTextField) {
-        if (textField.text.length > 0 && [textField.text characterAtIndex:textField.text.length-1] == ' ' && [string isEqualToString:@" "]) {
-            return NO;
-        }
-        else {
-            [self tagsToAddTextFieldUpdatedWithRange:range andString:string];
-        }
-    }
-    return YES;
+#pragma mark - PPTagEditing
+
+- (void)tagEditViewControllerDidUpdateTags:(PPTagEditViewController *)tagEditViewController {
+    self.tagsToAdd = [tagEditViewController.existingTags mutableCopy];
+    self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
+
+    [self.tableView beginUpdates];
+    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:PPMultipleEditSectionAddedTags]] withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView endUpdates];
 }
 
-- (void)tagsToAddTextFieldUpdatedWithRange:(NSRange)range andString:(NSString *)string {
-    if (!self.autocompleteInProgress) {
-        if ([string rangeOfCharacterFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]].location == NSNotFound) {
-            self.autocompleteInProgress = YES;
-            NSString *tagTextFieldText = self.tagsToAddTextField.text;
-            
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                NSMutableArray *indexPathsToRemove = [NSMutableArray array];
-                NSMutableArray *indexPathsToReload = [NSMutableArray array];
-                NSMutableArray *indexPathsToAdd = [NSMutableArray array];
-                NSMutableArray *newTagCompletions = [NSMutableArray array];
-                NSMutableArray *oldTagCompletions = [self.tagsToAddCompletions copy];
-                
-                NSString *newString = [tagTextFieldText stringByReplacingCharactersInRange:range withString:string];
-                if (string && newString.length > 0) {
-                    NSString *newTextFieldContents;
-                    if (range.length > string.length) {
-                        newTextFieldContents = [tagTextFieldText substringToIndex:tagTextFieldText.length - range.length];
-                    }
-                    else {
-                        newTextFieldContents = [NSString stringWithFormat:@"%@", tagTextFieldText];
-                    }
-                    
-                    NSString *searchString = [[[newTextFieldContents componentsSeparatedByString:@" "] lastObject] stringByAppendingFormat:@"%@*", string];
-                    NSArray *existingTags = [tagTextFieldText componentsSeparatedByString:@" "];
+- (void)deleteTagButtonTouchUpInside:(id)sender {
+    NSString *tag = [[self.deleteTagButtons allKeysForObject:sender] firstObject];
+    [self.tagsToRemove addObject:tag];
+    
+    [self.tableView beginUpdates];
+    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.existingTags indexOfObject:tag] inSection:PPMultipleEditSectionAddedTags]] withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView endUpdates];
+#warning xxx
+}
 
-                    __block NSInteger index = kMultipleEditViewControllerTagIndexOffset;
-                    __block NSInteger skipPivot = 0;
-                    __block BOOL tagFound = NO;
+- (void)leftBarButtonTouchUpInside:(id)sender {
+    [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
+}
 
-                    [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
-#warning XXX For some reason, getting double results here sometimes. Search duplication?
-                        FMResultSet *result = [db executeQuery:@"SELECT DISTINCT tag_fts.name, tag.count FROM tag_fts, tag WHERE tag_fts.name MATCH ? AND tag_fts.name = tag.name ORDER BY tag.count DESC LIMIT 6" withArgumentsInArray:@[searchString]];
-                        
-                        
-                        while ([result next]) {
-                            @autoreleasepool {
-                                tagFound = NO;
-                                NSString *tag = [result stringForColumnIndex:0];
-                                self.tagCounts[tag] = [result stringForColumnIndex:1];
-                                if (![existingTags containsObject:tag]) {
-                                    for (NSInteger i=skipPivot; i<oldTagCompletions.count; i++) {
-                                        if ([oldTagCompletions[i] isEqualToString:tag]) {
-                                            // Delete all posts that were skipped
-                                            for (NSInteger j=skipPivot; j<i; j++) {
-                                                [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:(j+kMultipleEditViewControllerTagIndexOffset) inSection:0]];
-                                            }
-                                            
-                                            tagFound = YES;
-                                            skipPivot = i+1;
-                                            break;
-                                        }
-                                    }
-                                    
-                                    if (!tagFound) {
-                                        [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
-                                    }
-                                    
-                                    index++;
-                                    [newTagCompletions addObject:tag];
-                                }
-                            }
-                        }
-                        
-                        [result close];
-                    }];
-                    
-                    for (NSInteger i=skipPivot; i<oldTagCompletions.count; i++) {
-                        [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:i+kMultipleEditViewControllerTagIndexOffset inSection:0]];
-                    }
-                    
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        self.tagsToAddCompletions = newTagCompletions;
-
-                        [self.tableView beginUpdates];
-                        [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
-                        [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                        [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
-                        [self.tableView endUpdates];
-                        self.autocompleteInProgress = NO;
-                    });
-                }
-                else {
-                    if (self.tagsToAddCompletions.count > 0) {
-                        NSMutableArray *indexPathsToRemove = [NSMutableArray array];
-                        NSMutableArray *indexPathsToAdd = [NSMutableArray array];
-
-                        for (NSInteger i=0; i<self.tagsToAddCompletions.count; i++) {
-                            [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:i+kMultipleEditViewControllerTagIndexOffset inSection:0]];
-                        }
-
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [self.tagsToAddCompletions removeAllObjects];
-                            [self.tableView beginUpdates];
-                            [self.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
-                            [self.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
-                            [self.tableView endUpdates];
-                            self.autocompleteInProgress = NO;
-                        });
-                    }
-                    else {
-                        self.autocompleteInProgress = NO;
-                    }
-                }
-            });
-        }
-    }
+- (void)rightBarButtonTouchUpInside:(id)sender {
+    
 }
 
 @end
