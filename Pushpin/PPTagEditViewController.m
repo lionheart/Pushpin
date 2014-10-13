@@ -683,10 +683,16 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     
                     self.tagCompletions = newTagCompletions;
                     
-                    [self.tableView beginUpdates];
-                    [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView endUpdates];
+                    @try {
+                        [self.tableView beginUpdates];
+                        [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                        [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                        [self.tableView endUpdates];
+                    }
+                    @catch (NSException *exception) {
+                        [self.tableView reloadData];
+                    }
+
                     self.autocompleteInProgress = NO;
                 });
             }
