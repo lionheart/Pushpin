@@ -41,6 +41,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 @property (nonatomic, retain) UISwitch *readByDefaultSwitch;
 @property (nonatomic, retain) UISwitch *dimReadPostsSwitch;
 @property (nonatomic, retain) UISwitch *compressPostsSwitch;
+@property (nonatomic, retain) UISwitch *hidePrivateLockSwitch;
 @property (nonatomic, retain) UISwitch *doubleTapToEditSwitch;
 @property (nonatomic, retain) UISwitch *markReadSwitch;
 @property (nonatomic, retain) UISwitch *autoCorrectionSwitch;
@@ -126,6 +127,10 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     self.compressPostsSwitch = [[UISwitch alloc] init];
     self.compressPostsSwitch.on = settings.compressPosts;
     [self.compressPostsSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
+
+    self.hidePrivateLockSwitch = [[UISwitch alloc] init];
+    self.hidePrivateLockSwitch.on = settings.hidePrivateLock;
+    [self.hidePrivateLockSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
 
     self.markReadSwitch = [[UISwitch alloc] init];
     self.markReadSwitch.on = settings.markReadPosts;
@@ -400,6 +405,25 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     break;
                 }
                     
+                case PPBrowseHidePrivateLock: {
+                    cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier
+                                                           forIndexPath:indexPath];
+                    cell.textLabel.font = [PPTheme textLabelFont];
+                    cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme fontName] size:13];
+                    cell.detailTextLabel.textColor = [UIColor grayColor];
+                    cell.detailTextLabel.numberOfLines = 0;
+                    cell.accessoryView = nil;
+                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
+                    cell.textLabel.text = NSLocalizedString(@"Hide Private Lock", nil);
+                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                    size = cell.frame.size;
+                    switchSize = self.hidePrivateLockSwitch.frame.size;
+                    self.hidePrivateLockSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
+                    cell.accessoryView = self.hidePrivateLockSwitch;
+                    break;
+                }
+
                 case PPBrowseDefaultFeedRow:
                     cell = [tableView dequeueReusableCellWithIdentifier:ChoiceCellIdentifier
                                                            forIndexPath:indexPath];
@@ -640,6 +664,9 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     }
     else if (sender == self.markReadSwitch) {
         [settings setMarkReadPosts:self.markReadSwitch.on];
+    }
+    else if (sender == self.hidePrivateLockSwitch) {
+        settings.hidePrivateLock = self.hidePrivateLockSwitch.on;
     }
     else if (sender == self.autoCorrectionSwitch) {
         [settings setEnableAutoCorrect:self.autoCorrectionSwitch.on];

@@ -45,6 +45,7 @@
 @synthesize readerSettings = _readerSettings;
 @synthesize purchasedPremiumFonts = _purchasedPremiumFonts;
 @synthesize fontName = _fontName;
+@synthesize hidePrivateLock = _hidePrivateLock;
 
 #ifdef PINBOARD
 @synthesize communityFeedOrder = _communityFeedOrder;
@@ -638,6 +639,21 @@
     _purchasedPremiumFonts = purchasedPremiumFonts;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setBool:purchasedPremiumFonts forKey:@"io.aurora.pinboard.PurchasedPremiumFonts"];
+    [defaults synchronize];
+}
+
+- (BOOL)hidePrivateLock {
+    if (!_hidePrivateLock) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _hidePrivateLock = [defaults boolForKey:@"io.aurora.pinboard.HidePrivateLock"];
+    }
+    return _hidePrivateLock;
+}
+
+- (void)setHidePrivateLock:(BOOL)hidePrivateLock {
+    _hidePrivateLock = hidePrivateLock;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:hidePrivateLock forKey:@"io.aurora.pinboard.HidePrivateLock"];
     [defaults synchronize];
 }
 
