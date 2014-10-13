@@ -114,18 +114,26 @@
                         AddBookmarkBlock(urlString, title);
                     }
                     else {
-                        UIAlertController *controller = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"No Title Found", nil)
-                                                                                          message:NSLocalizedString(@"Pushpin couldn't retrieve a title for this bookmark. Would you like to add this bookmark with the URL as the title?", nil)];
-                        
-                        [controller lhs_addActionWithTitle:@"Add" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                            AddBookmarkBlock(urlString, urlString);
-                        }];
+                        [PPUtilities retrievePageTitle:[NSURL URLWithString:urlString]
+                                              callback:^(NSString *title, NSString *description) {
+                                                  if (title.length > 0) {
+                                                      AddBookmarkBlock(urlString, title);
+                                                  }
+                                                  else {
+                                                      UIAlertController *controller = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"No Title Found", nil)
+                                                                                                                        message:NSLocalizedString(@"Pushpin couldn't retrieve a title for this bookmark. Would you like to add this bookmark with the URL as the title?", nil)];
 
-                        [controller lhs_addActionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-                            [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
-                        }];
-                        
-                        [self presentViewController:controller animated:YES completion:nil];
+                                                      [controller lhs_addActionWithTitle:@"Add" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                          AddBookmarkBlock(urlString, urlString);
+                                                      }];
+
+                                                      [controller lhs_addActionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+                                                          [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
+                                                      }];
+
+                                                      [self presentViewController:controller animated:YES completion:nil];
+                                                  }
+                                              }];
                     }
                 }
                 else {
