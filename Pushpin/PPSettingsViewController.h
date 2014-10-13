@@ -44,19 +44,10 @@ enum : NSInteger {
 
 @interface PPSettingsViewController : PPTableViewController <UIWebViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate>
 
-@property (nonatomic, retain) UIAlertController *instapaperVerificationAlertView;
-@property (nonatomic, retain) UIAlertController *readabilityVerificationAlertView;
-@property (nonatomic, strong) UIAlertController *pocketVerificationAlertView;
-@property (nonatomic, retain) UIAlertController *instapaperAlertView;
-@property (nonatomic, retain) UIAlertController *readabilityAlertView;
-@property (nonatomic, retain) UIAlertController *logOutAlertView;
-
 @property (nonatomic, retain) UIAlertController *supportActionSheet;
 @property (nonatomic, retain) UIAlertController *readLaterActionSheet;
 @property (nonatomic, strong) UIAlertController *twitterAccountActionSheet;
 @property (nonatomic, retain) NSMutableArray *readLaterServices;
-
-@property (nonatomic, strong) id actionSheet;
 
 - (void)showAboutPage;
 - (void)closeAboutPage;
