@@ -423,7 +423,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.accessoryView = self.hidePrivateLockSwitch;
                     break;
                 }
-
+                    
                 case PPBrowseDefaultFeedRow:
                     cell = [tableView dequeueReusableCellWithIdentifier:ChoiceCellIdentifier
                                                            forIndexPath:indexPath];
