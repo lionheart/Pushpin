@@ -187,7 +187,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
     
     for (NSString *scope in PPSearchScopes()) {
         [self.searchScopeActionSheet lhs_addActionWithTitle:scope
-                                                      style:UIAlertActionStyleCancel
+                                                      style:UIAlertActionStyleDefault
                                                     handler:^(UIAlertAction *action) {
                                                         NSInteger buttonIndex = [self.searchScopeActionSheet.actions indexOfObject:action];
                                                         if (buttonIndex == [PPSearchScopes() count]) {
