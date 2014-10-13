@@ -11,11 +11,16 @@
 typedef NS_ENUM(NSInteger, PPMultipleEditSectionType) {
     PPMultipleEditSectionAddedTags,
     PPMultipleEditSectionExistingTags,
-    PPMultipleEditSectionDeletedTags
+    PPMultipleEditSectionOtherData
+};
+
+typedef NS_ENUM(NSInteger, PPMultipleEditSectionOtherRowType) {
+    PPMultipleEditSectionOtherRowPrivate,
+    PPMultipleEditSectionOtherRowRead
 };
 
 enum : NSInteger {
-    PPMultipleEditSectionCount = PPMultipleEditSectionExistingTags + 1,
+    PPMultipleEditSectionCount = PPMultipleEditSectionOtherData + 1,
 };
 
 @interface PPMultipleEditViewController : UIViewController <UITextFieldDelegate, PPTagEditing, UITableViewDataSource, UITableViewDelegate>
