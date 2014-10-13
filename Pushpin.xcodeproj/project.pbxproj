@@ -3,6 +3,22 @@
     "classes": {},
     "objectVersion": "46",
     "objects": {
+        "084A666988D56C1EB53F8D70": {
+            "includeInIndex": "1",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "text.xcconfig",
+            "name": "Pods.delicious app store.xcconfig",
+            "path": "Pods/Target Support Files/Pods/Pods.delicious app store.xcconfig",
+            "sourceTree": "<group>"
+        },
+        "2CE67730F85A07531FF10228": {
+            "includeInIndex": "1",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "text.xcconfig",
+            "name": "Pods-DebugPods.delicious app store.xcconfig",
+            "path": "Pods/Target Support Files/Pods-DebugPods/Pods-DebugPods.delicious app store.xcconfig",
+            "sourceTree": "<group>"
+        },
         "320A68A8A35849EE81559441": {
             "fileRef": "784337BD93F74E058D4FD66B",
             "isa": "PBXBuildFile"
@@ -767,7 +783,6 @@
             "targetProxy": "372943F819CF53FD00ABF006"
         },
         "372943FA19CF53FE00ABF006": {
-            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -864,7 +879,6 @@
             "name": "Delicious Debug"
         },
         "372943FC19CF53FE00ABF006": {
-            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -910,7 +924,6 @@
             "name": "Pinboard App Store"
         },
         "372943FD19CF53FE00ABF006": {
-            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -956,7 +969,6 @@
             "name": "Pinboard App Store Debug"
         },
         "372943FE19CF53FE00ABF006": {
-            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -1002,7 +1014,6 @@
             "name": "Delicious App Store"
         },
         "372943FF19CF53FE00ABF006": {
-            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -1048,7 +1059,6 @@
             "name": "Pinboard Beta"
         },
         "3729440019CF53FE00ABF006": {
-            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -1415,7 +1425,7 @@
             "name": "Pinboard App Store Debug"
         },
         "37374CB719A259F000C4DC9A": {
-            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
+            "baseConfigurationReference": "AFF80364CC968E11C98B0720",
             "buildSettings": {
                 "ASSETCATALOG_COMPILER_APPICON_NAME": "Pinboard",
                 "ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME": "LaunchImage",
@@ -1437,7 +1447,7 @@
             "name": "Pinboard App Store Debug"
         },
         "37374CB919A259F000C4DC9A": {
-            "baseConfigurationReference": "54B0022F87374C449F105BA0",
+            "baseConfigurationReference": "42E2EB714580B04057A53A59",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -3059,7 +3069,7 @@
             "isa": "XCConfigurationList"
         },
         "3772DE6F1933B0D3004B348D": {
-            "baseConfigurationReference": "54B0022F87374C449F105BA0",
+            "baseConfigurationReference": "7B58493BA3058DE1B358C72C",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -3105,7 +3115,7 @@
             "name": "Pinboard Debug"
         },
         "3772DE701933B0D3004B348D": {
-            "baseConfigurationReference": "54B0022F87374C449F105BA0",
+            "baseConfigurationReference": "5222784C1CE4C3E7210D5E79",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -3145,7 +3155,7 @@
             "name": "Delicious Debug"
         },
         "3772DE711933B0D3004B348D": {
-            "baseConfigurationReference": "54B0022F87374C449F105BA0",
+            "baseConfigurationReference": "DC1363CDE8C539E824ED2832",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -3185,7 +3195,7 @@
             "name": "Pinboard App Store"
         },
         "3772DE721933B0D3004B348D": {
-            "baseConfigurationReference": "54B0022F87374C449F105BA0",
+            "baseConfigurationReference": "2CE67730F85A07531FF10228",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -3225,7 +3235,7 @@
             "name": "Delicious App Store"
         },
         "3772DE731933B0D3004B348D": {
-            "baseConfigurationReference": "54B0022F87374C449F105BA0",
+            "baseConfigurationReference": "A4BD4E22DCF53E6AB2F2A51E",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -3265,7 +3275,7 @@
             "name": "Pinboard Beta"
         },
         "3772DE741933B0D3004B348D": {
-            "baseConfigurationReference": "54B0022F87374C449F105BA0",
+            "baseConfigurationReference": "C0D4BA105B9CC5CE33687390",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -3503,7 +3513,7 @@
             "name": "Pinboard Beta"
         },
         "37800E9C162D576E009FCB17": {
-            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
+            "baseConfigurationReference": "E5C7E8CC60BD2B4D3B442364",
             "buildSettings": {
                 "ASSETCATALOG_COMPILER_APPICON_NAME": "PinboardBeta",
                 "ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME": "LaunchImage",
@@ -4010,7 +4020,6 @@
             "isa": "XCConfigurationList"
         },
         "3790425519CBD49A00409D34": {
-            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "YES",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -4105,7 +4114,6 @@
             "name": "Delicious Debug"
         },
         "3790425719CBD49A00409D34": {
-            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "YES",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -4152,7 +4160,6 @@
             "name": "Pinboard App Store"
         },
         "3790425819CBD49A00409D34": {
-            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "YES",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -4199,7 +4206,6 @@
             "name": "Pinboard App Store Debug"
         },
         "3790425919CBD49A00409D34": {
-            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "YES",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -4247,7 +4253,6 @@
             "name": "Delicious App Store"
         },
         "3790425A19CBD49A00409D34": {
-            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "YES",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -4294,7 +4299,6 @@
             "name": "Pinboard Beta"
         },
         "3790425B19CBD49A00409D34": {
-            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "YES",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -4859,7 +4863,6 @@
             "isa": "XCConfigurationList"
         },
         "379042C319CC646B00409D34": {
-            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -4977,7 +4980,6 @@
             "name": "Delicious Debug"
         },
         "379042C519CC646B00409D34": {
-            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -5033,7 +5035,6 @@
             "name": "Pinboard App Store"
         },
         "379042C619CC646B00409D34": {
-            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -5089,7 +5090,6 @@
             "name": "Pinboard App Store Debug"
         },
         "379042C719CC646B00409D34": {
-            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -5145,7 +5145,6 @@
             "name": "Delicious App Store"
         },
         "379042C819CC646B00409D34": {
-            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -5201,7 +5200,6 @@
             "name": "Pinboard Beta"
         },
         "379042C919CC646B00409D34": {
-            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -5522,7 +5520,7 @@
             "name": "Delicious Beta"
         },
         "379C3C1A1894B948003A02FF": {
-            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
+            "baseConfigurationReference": "510EC4BA5E7C7B2DEF5E862D",
             "buildSettings": {
                 "ASSETCATALOG_COMPILER_APPICON_NAME": "DeliciousBeta",
                 "ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME": "LaunchImage",
@@ -5614,7 +5612,7 @@
             "name": "Delicious App Store"
         },
         "379C3C1C1894B959003A02FF": {
-            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
+            "baseConfigurationReference": "084A666988D56C1EB53F8D70",
             "buildSettings": {
                 "ASSETCATALOG_COMPILER_APPICON_NAME": "Delicious",
                 "ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME": "LaunchImage",
@@ -5704,7 +5702,7 @@
             "name": "Delicious Debug"
         },
         "379C3C1E1894B9B8003A02FF": {
-            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
+            "baseConfigurationReference": "FC57DFA7B84972D5670A93EC",
             "buildSettings": {
                 "ASSETCATALOG_COMPILER_APPICON_NAME": "DeliciousDev",
                 "ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME": "LaunchImage",
@@ -7784,9 +7782,7 @@
                 "37076D41158AD0B1002566CD",
                 "3772DE901933B0E0004B348D",
                 "370859F817F329D400270A9D",
-                "54B0022F87374C449F105BA0",
-                "EBA4EAC846B548A5A0618913",
-                "5D046C0A53164C1681C534DD"
+                "FBD5EF4989C8B39A91E6B142"
             ],
             "isa": "PBXGroup",
             "sourceTree": "<group>"
@@ -7847,6 +7843,7 @@
             "mainGroup": "37FEEB8315745488003F2B77",
             "productRefGroup": "37FEEB8F15745488003F2B77",
             "projectDirPath": "",
+            "projectReferences": [],
             "projectRoot": "",
             "targets": [
                 "37FEEB8D15745488003F2B77",
@@ -8479,7 +8476,7 @@
             "isa": "XCConfigurationList"
         },
         "37FEEBA715745488003F2B77": {
-            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
+            "baseConfigurationReference": "ECD3AA7E76A5AF6C9B053517",
             "buildSettings": {
                 "ASSETCATALOG_COMPILER_APPICON_NAME": "PinboardDev",
                 "ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME": "LaunchImage",
@@ -8501,7 +8498,7 @@
             "name": "Pinboard Debug"
         },
         "37FEEBA815745488003F2B77": {
-            "baseConfigurationReference": "5D046C0A53164C1681C534DD",
+            "baseConfigurationReference": "4D7B02B3C4277F6ACB006575",
             "buildSettings": {
                 "ASSETCATALOG_COMPILER_APPICON_NAME": "Pinboard",
                 "ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME": "LaunchImage",
@@ -8604,21 +8601,37 @@
             "sourceTree": "<group>",
             "xcLanguageSpecificationIdentifier": "xcode.lang.objc"
         },
-        "54B0022F87374C449F105BA0": {
+        "42E2EB714580B04057A53A59": {
             "includeInIndex": "1",
             "isa": "PBXFileReference",
             "lastKnownFileType": "text.xcconfig",
-            "name": "Pods-DebugPods.xcconfig",
-            "path": "Pods/Pods-DebugPods.xcconfig",
+            "name": "Pods-DebugPods.pinboard app store debug.xcconfig",
+            "path": "Pods/Target Support Files/Pods-DebugPods/Pods-DebugPods.pinboard app store debug.xcconfig",
             "sourceTree": "<group>"
         },
-        "5D046C0A53164C1681C534DD": {
+        "4D7B02B3C4277F6ACB006575": {
             "includeInIndex": "1",
             "isa": "PBXFileReference",
             "lastKnownFileType": "text.xcconfig",
-            "name": "Pods.xcconfig",
-            "path": "Pods/Pods.xcconfig",
-            "sourceTree": "SOURCE_ROOT"
+            "name": "Pods.pinboard app store.xcconfig",
+            "path": "Pods/Target Support Files/Pods/Pods.pinboard app store.xcconfig",
+            "sourceTree": "<group>"
+        },
+        "510EC4BA5E7C7B2DEF5E862D": {
+            "includeInIndex": "1",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "text.xcconfig",
+            "name": "Pods.delicious beta.xcconfig",
+            "path": "Pods/Target Support Files/Pods/Pods.delicious beta.xcconfig",
+            "sourceTree": "<group>"
+        },
+        "5222784C1CE4C3E7210D5E79": {
+            "includeInIndex": "1",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "text.xcconfig",
+            "name": "Pods-DebugPods.delicious debug.xcconfig",
+            "path": "Pods/Target Support Files/Pods-DebugPods/Pods-DebugPods.delicious debug.xcconfig",
+            "sourceTree": "<group>"
         },
         "6733412331344A298389F74A": {
             "buildActionMask": "2147483647",
@@ -8686,6 +8699,22 @@
             "path": "libPods.a",
             "sourceTree": "BUILT_PRODUCTS_DIR"
         },
+        "7B58493BA3058DE1B358C72C": {
+            "includeInIndex": "1",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "text.xcconfig",
+            "name": "Pods-DebugPods.pinboard debug.xcconfig",
+            "path": "Pods/Target Support Files/Pods-DebugPods/Pods-DebugPods.pinboard debug.xcconfig",
+            "sourceTree": "<group>"
+        },
+        "A4BD4E22DCF53E6AB2F2A51E": {
+            "includeInIndex": "1",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "text.xcconfig",
+            "name": "Pods-DebugPods.pinboard beta.xcconfig",
+            "path": "Pods/Target Support Files/Pods-DebugPods/Pods-DebugPods.pinboard beta.xcconfig",
+            "sourceTree": "<group>"
+        },
         "A6F1C6EA2C074EC083104155": {
             "buildActionMask": "2147483647",
             "files": [],
@@ -8695,8 +8724,16 @@
             "outputPaths": [],
             "runOnlyForDeploymentPostprocessing": "0",
             "shellPath": "/bin/sh",
-            "shellScript": "\"${SRCROOT}/Pods/Pods-resources.sh\"\n",
+            "shellScript": "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n",
             "showEnvVarsInLog": "0"
+        },
+        "AFF80364CC968E11C98B0720": {
+            "includeInIndex": "1",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "text.xcconfig",
+            "name": "Pods.pinboard app store debug.xcconfig",
+            "path": "Pods/Target Support Files/Pods/Pods.pinboard app store debug.xcconfig",
+            "sourceTree": "<group>"
         },
         "B25462D5C303447F99AE829B": {
             "explicitFileType": "archive.ar",
@@ -8704,6 +8741,14 @@
             "isa": "PBXFileReference",
             "path": "libPods-Tests.a",
             "sourceTree": "BUILT_PRODUCTS_DIR"
+        },
+        "C0D4BA105B9CC5CE33687390": {
+            "includeInIndex": "1",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "text.xcconfig",
+            "name": "Pods-DebugPods.delicious beta.xcconfig",
+            "path": "Pods/Target Support Files/Pods-DebugPods/Pods-DebugPods.delicious beta.xcconfig",
+            "sourceTree": "<group>"
         },
         "CAE397B5D0234B3785CC4985": {
             "buildActionMask": "2147483647",
@@ -8726,8 +8771,24 @@
             "outputPaths": [],
             "runOnlyForDeploymentPostprocessing": "0",
             "shellPath": "/bin/sh",
-            "shellScript": "\"${SRCROOT}/Pods/Pods-DebugPods-resources.sh\"\n",
+            "shellScript": "\"${SRCROOT}/Pods/Target Support Files/Pods-DebugPods/Pods-DebugPods-resources.sh\"\n",
             "showEnvVarsInLog": "0"
+        },
+        "DC1363CDE8C539E824ED2832": {
+            "includeInIndex": "1",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "text.xcconfig",
+            "name": "Pods-DebugPods.pinboard app store.xcconfig",
+            "path": "Pods/Target Support Files/Pods-DebugPods/Pods-DebugPods.pinboard app store.xcconfig",
+            "sourceTree": "<group>"
+        },
+        "E5C7E8CC60BD2B4D3B442364": {
+            "includeInIndex": "1",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "text.xcconfig",
+            "name": "Pods.pinboard beta.xcconfig",
+            "path": "Pods/Target Support Files/Pods/Pods.pinboard beta.xcconfig",
+            "sourceTree": "<group>"
         },
         "E804950C180EF20800C5CA8B": {
             "fileEncoding": "4",
@@ -10034,12 +10095,41 @@
             "name": "Bookmarks",
             "sourceTree": "<group>"
         },
-        "EBA4EAC846B548A5A0618913": {
+        "ECD3AA7E76A5AF6C9B053517": {
             "includeInIndex": "1",
             "isa": "PBXFileReference",
             "lastKnownFileType": "text.xcconfig",
-            "name": "Pods-Tests.xcconfig",
-            "path": "Pods/Pods-Tests.xcconfig",
+            "name": "Pods.pinboard debug.xcconfig",
+            "path": "Pods/Target Support Files/Pods/Pods.pinboard debug.xcconfig",
+            "sourceTree": "<group>"
+        },
+        "FBD5EF4989C8B39A91E6B142": {
+            "children": [
+                "ECD3AA7E76A5AF6C9B053517",
+                "FC57DFA7B84972D5670A93EC",
+                "4D7B02B3C4277F6ACB006575",
+                "AFF80364CC968E11C98B0720",
+                "084A666988D56C1EB53F8D70",
+                "E5C7E8CC60BD2B4D3B442364",
+                "510EC4BA5E7C7B2DEF5E862D",
+                "7B58493BA3058DE1B358C72C",
+                "5222784C1CE4C3E7210D5E79",
+                "DC1363CDE8C539E824ED2832",
+                "42E2EB714580B04057A53A59",
+                "2CE67730F85A07531FF10228",
+                "A4BD4E22DCF53E6AB2F2A51E",
+                "C0D4BA105B9CC5CE33687390"
+            ],
+            "isa": "PBXGroup",
+            "name": "Pods",
+            "sourceTree": "<group>"
+        },
+        "FC57DFA7B84972D5670A93EC": {
+            "includeInIndex": "1",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "text.xcconfig",
+            "name": "Pods.delicious debug.xcconfig",
+            "path": "Pods/Target Support Files/Pods/Pods.delicious debug.xcconfig",
             "sourceTree": "<group>"
         }
     },

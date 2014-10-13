@@ -174,7 +174,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         textField.keyboardType = UIKeyboardTypeAlphabet;
         textField.returnKeyType = UIReturnKeyGo;
         textField.placeholder = NSLocalizedString(@"Password", nil);
-
+        
         __strong typeof (self) strongself = weakself;
         textField.delegate = strongself;
     }];
@@ -204,7 +204,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         textField.keyboardType = UIKeyboardTypeAlphabet;
         textField.returnKeyType = UIReturnKeyGo;
         textField.placeholder = NSLocalizedString(@"Password", nil);
-
+        
         __strong typeof (self) strongself = weakself;
         textField.delegate = strongself;
     }];
@@ -220,16 +220,16 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [self.readabilityAlertView lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                 style:UIAlertActionStyleCancel
                                               handler:nil];
-
+    
     self.instapaperLoginWith1PasswordAlertView = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Use 1Password?", nil)
                                                                                    message:NSLocalizedString(@"Would you like to use your credentials from 1Password to login to Instapaper?", nil)];
-
+    
     [self.instapaperLoginWith1PasswordAlertView lhs_addActionWithTitle:NSLocalizedString(@"Enter Manually", nil)
                                                                  style:UIAlertActionStyleCancel
                                                                handler:^(UIAlertAction *action) {
                                                                    [self presentViewController:self.instapaperAlertView animated:YES completion:nil];
                                                                }];
-
+    
     [self.instapaperLoginWith1PasswordAlertView lhs_addActionWithTitle:NSLocalizedString(@"Login with 1Password", nil)
                                                                  style:UIAlertActionStyleDefault
                                                                handler:^(UIAlertAction *action) {
@@ -243,22 +243,22 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                                                                                                               }
                                                                                                                               return;
                                                                                                                           }
-
+                                                                                                                          
                                                                                                                           NSString *username = loginDict[AppExtensionUsernameKey];
                                                                                                                           NSString *password = loginDict[AppExtensionPasswordKey];
                                                                                                                           [self loginToInstapaperWithUsername:username password:password];
                                                                                                                       }];
                                                                }];
-
+    
     self.readabilityLoginWith1PasswordAlertView = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Use 1Password?", nil)
                                                                                     message:NSLocalizedString(@"Would you like to use your credentials from 1Password to login to Readability?", nil)];
-
+    
     [self.readabilityLoginWith1PasswordAlertView lhs_addActionWithTitle:NSLocalizedString(@"Enter Manually", nil)
                                                                   style:UIAlertActionStyleCancel
                                                                 handler:^(UIAlertAction *action) {
                                                                     [self presentViewController:self.readabilityAlertView animated:YES completion:nil];
                                                                 }];
-
+    
     [self.readabilityLoginWith1PasswordAlertView lhs_addActionWithTitle:NSLocalizedString(@"Login with 1Password", nil)
                                                                   style:UIAlertActionStyleDefault
                                                                 handler:^(UIAlertAction *action) {
@@ -681,7 +681,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     });
 
     NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://www.instapaper.com/api/1.1/oauth/access_token"]];
-
+    
     OAConsumer *consumer = [[OAConsumer alloc] initWithKey:kInstapaperKey secret:kInstapaperSecret];
     OAMutableURLRequest *request = [[OAMutableURLRequest alloc] initWithURL:endpoint consumer:consumer token:nil realm:nil signatureProvider:nil];
     [request setHTTPMethod:@"POST"];
@@ -690,7 +690,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                              [OARequestParameter requestParameter:@"x_auth_username" value:username],
                              [OARequestParameter requestParameter:@"x_auth_password" value:password]]];
     [request prepare];
-
+    
     [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
@@ -698,15 +698,15 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
                                NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
                                [self dismissViewControllerAnimated:YES completion:nil];
-
+                               
                                if (httpResponse.statusCode == 400 || error != nil) {
                                    UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Error", nil)
                                                                                                 message:NSLocalizedString(@"We couldn't log you into Instapaper with those credentials.", nil)];
-
+                                   
                                    [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
                                                            style:UIAlertActionStyleDefault
                                                          handler:nil];
-
+                                   
                                    [self presentViewController:alert animated:YES completion:nil];
                                }
                                else {
@@ -714,14 +714,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                    OAToken *token = [[OAToken alloc] initWithHTTPResponseBody:[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]];
                                    settings.instapaperToken = token;
                                    settings.readLater = PPReadLaterInstapaper;
-
+                                   
                                    [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Instapaper"];
-
+                                   
                                    UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Success", nil)
                                                                                                 message:NSLocalizedString(@"You've successfully logged in.", nil)];
-
+                                   
                                    [self presentViewController:alert animated:YES completion:nil];
-
+                                   
                                    int64_t delayInSeconds = 1.5;
                                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
                                    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
@@ -747,22 +747,22 @@ static NSString *CellIdentifier = @"CellIdentifier";
                              [OARequestParameter requestParameter:@"x_auth_username" value:username],
                              [OARequestParameter requestParameter:@"x_auth_password" value:password]]];
     [request prepare];
-
+    
     [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
-
+                               
                                [self dismissViewControllerAnimated:YES completion:nil];
                                if (error) {
                                    UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Uh oh.", nil)
                                                                                                 message:NSLocalizedString(@"We couldn't log you into Readability with those credentials.", nil)];
-
+                                   
                                    [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
                                                            style:UIAlertActionStyleDefault
                                                          handler:nil];
-
+                                   
                                    [self presentViewController:alert animated:YES completion:nil];
                                }
                                else {
@@ -770,18 +770,18 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"ReadabilityOAuth" accessGroup:nil];
                                    [keychain setObject:token.key forKey:(__bridge id)kSecAttrAccount];
                                    [keychain setObject:token.secret forKey:(__bridge id)kSecValueData];
-
+                                   
                                    PPSettings *settings = [PPSettings sharedSettings];
                                    settings.readLater = PPReadLaterReadability;
                                    [[[Mixpanel sharedInstance] people] set:@"Read Later Service" to:@"Readability"];
                                    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPMainReadLater inSection:PPSectionMainSettings]]
                                                          withRowAnimation:UITableViewRowAnimationFade];
-
+                                   
                                    UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Success", nil)
                                                                                                 message:NSLocalizedString(@"You've successfully logged in.", nil)];
-
+                                   
                                    [self presentViewController:alert animated:YES completion:nil];
-
+                                   
                                    int64_t delayInSeconds = 1.5;
                                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
                                    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
