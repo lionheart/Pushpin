@@ -57,6 +57,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)handleKeyCommand:(UIKeyCommand *)keyCommand;
 - (void)openDescriptionViewController;
 - (void)openTagEditViewController;
+- (PPBadgeWrapperView *)badgeWrapperViewForCurrentTags;
+- (void)leftBarButtonTouchUpInside:(id)sender;
+- (void)rightBarButtonTouchUpInside:(id)sender;
 
 @end
 
