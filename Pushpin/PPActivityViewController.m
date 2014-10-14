@@ -14,8 +14,6 @@
 #import "PPMobilizerUtility.h"
 #import "PPSettings.h"
 
-#import <ADNActivityCollection/ADNActivityCollection.h>
-
 @interface PPActivityViewController ()
 
 @end
@@ -75,7 +73,6 @@
 
     NSMutableArray *allActivities = [readLaterActivities mutableCopy];
     [allActivities addObjectsFromArray:browserActivites];
-    [allActivities addObjectsFromArray:[ADNActivityCollection allActivities]];
 
     self = [super initWithActivityItems:activityItems applicationActivities:allActivities];
     if (self) {
