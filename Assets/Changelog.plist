@@ -3,6 +3,59 @@
 <plist version="1.0">
 <array>
 	<array>
+		<string>3.2.2</string>
+		<array>
+			<array>
+				<string>FIX</string>
+        <string>Add batch editing! Now, you can easily add or remove tags, change privacy, or update unread status for multiple bookmarks. Just tap "Edit" in the top right of the bookmark screen, select a few bookmarks, and tap the edit button on the middle of the bottom toolbar.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+        <string>Add an option to hide the "Private" lock when browsing bookmarks.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Make sure the Read Later Extension will grab a title from webpage metadata if not provided by the hosting app.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Make typing a space a shortcut for tapping the "Done" button when editing tags.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Add the ability to log into Readability and Instapaper with credentials stored in 1Password.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+        <string>Make sure that tags and settings for public/private and read/unread are synced with the Share Extension.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Make sure that tag editing respects user defaults for autocorrect and autocapitalization.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix various crashes on iPad that would occur whenever an alert or action sheet should appear.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix a crash that could occur when editing feeds.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix a crash that could occur when deleting a bookmark.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix a crash caused by the Read Later extension when no title could be found for the URL.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix a rare crash that could occur when editing tags.</string>
+			</array>
+		</array>
+	</array>
+	<array>
 		<string>3.2.1</string>
 		<array>
 			<array>
