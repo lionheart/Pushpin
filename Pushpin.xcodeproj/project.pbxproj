@@ -19,10 +19,6 @@
             "path": "Pods/Target Support Files/Pods-DebugPods/Pods-DebugPods.delicious app store.xcconfig",
             "sourceTree": "<group>"
         },
-        "320A68A8A35849EE81559441": {
-            "fileRef": "784337BD93F74E058D4FD66B",
-            "isa": "PBXBuildFile"
-        },
         "37018CE3180E3C0B00226408": {
             "fileEncoding": "4",
             "isa": "PBXFileReference",
@@ -662,8 +658,7 @@
         "372943E919CF53FD00ABF006": {
             "buildActionMask": "2147483647",
             "files": [
-                "3729440D19CF5B0200ABF006",
-                "3729440F19CF5B2600ABF006"
+                "3751D3EB19EC930900EFA119"
             ],
             "isa": "PBXFrameworksBuildPhase",
             "runOnlyForDeploymentPostprocessing": "0"
@@ -688,7 +683,9 @@
                 "372943EA19CF53FD00ABF006"
             ],
             "buildRules": [],
-            "dependencies": [],
+            "dependencies": [
+                "3751D3ED19EC930E00EFA119"
+            ],
             "isa": "PBXNativeTarget",
             "name": "Read Later Extension",
             "productName": "Read Later Extension",
@@ -781,6 +778,7 @@
             "targetProxy": "372943F819CF53FD00ABF006"
         },
         "372943FA19CF53FE00ABF006": {
+            "baseConfigurationReference": "ECD3AA7E76A5AF6C9B053517",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -817,10 +815,7 @@
                 "INFOPLIST_FILE": "Read Later Extension/Dev-Info.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
-                "LIBRARY_SEARCH_PATHS": [
-                    "$(inherited)",
-                    "$(PROJECT_DIR)/Pods/build/Debug-iphoneos"
-                ],
+                "LIBRARY_SEARCH_PATHS": "$(inherited)",
                 "MTL_ENABLE_DEBUG_INFO": "YES",
                 "ONLY_ACTIVE_ARCH": "YES",
                 "PRODUCT_NAME": "Read Later",
@@ -864,7 +859,7 @@
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
                 "LIBRARY_SEARCH_PATHS": [
                     "$(inherited)",
-                    "$(PROJECT_DIR)/Pods/build/Debug-iphoneos"
+                    "\"$(PROJECT_DIR)/Pods/build/Debug-iphoneos\""
                 ],
                 "MTL_ENABLE_DEBUG_INFO": "NO",
                 "PRODUCT_NAME": "Read Later",
@@ -877,6 +872,7 @@
             "name": "Delicious Debug"
         },
         "372943FC19CF53FE00ABF006": {
+            "baseConfigurationReference": "4D7B02B3C4277F6ACB006575",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -909,7 +905,7 @@
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
                 "LIBRARY_SEARCH_PATHS": [
                     "$(inherited)",
-                    "$(PROJECT_DIR)/Pods/build/Debug-iphoneos"
+                    "\"$(PROJECT_DIR)/Pods/build/Debug-iphoneos\""
                 ],
                 "MTL_ENABLE_DEBUG_INFO": "NO",
                 "PRODUCT_NAME": "Read Later",
@@ -954,7 +950,7 @@
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
                 "LIBRARY_SEARCH_PATHS": [
                     "$(inherited)",
-                    "$(PROJECT_DIR)/Pods/build/Debug-iphoneos"
+                    "\"$(PROJECT_DIR)/Pods/build/Debug-iphoneos\""
                 ],
                 "MTL_ENABLE_DEBUG_INFO": "NO",
                 "PRODUCT_NAME": "Read Later",
@@ -999,7 +995,7 @@
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
                 "LIBRARY_SEARCH_PATHS": [
                     "$(inherited)",
-                    "$(PROJECT_DIR)/Pods/build/Debug-iphoneos"
+                    "\"$(PROJECT_DIR)/Pods/build/Debug-iphoneos\""
                 ],
                 "MTL_ENABLE_DEBUG_INFO": "NO",
                 "PRODUCT_NAME": "Read Later",
@@ -1012,6 +1008,7 @@
             "name": "Delicious App Store"
         },
         "372943FF19CF53FE00ABF006": {
+            "baseConfigurationReference": "E5C7E8CC60BD2B4D3B442364",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -1044,7 +1041,7 @@
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
                 "LIBRARY_SEARCH_PATHS": [
                     "$(inherited)",
-                    "$(PROJECT_DIR)/Pods/build/Debug-iphoneos"
+                    "\"$(PROJECT_DIR)/Pods/build/Debug-iphoneos\""
                 ],
                 "MTL_ENABLE_DEBUG_INFO": "NO",
                 "PRODUCT_NAME": "Read Later",
@@ -1057,6 +1054,7 @@
             "name": "Pinboard Beta"
         },
         "3729440019CF53FE00ABF006": {
+            "baseConfigurationReference": "510EC4BA5E7C7B2DEF5E862D",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -1089,7 +1087,7 @@
                 "LD_RUNPATH_SEARCH_PATHS": "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks",
                 "LIBRARY_SEARCH_PATHS": [
                     "$(inherited)",
-                    "$(PROJECT_DIR)/Pods/build/Debug-iphoneos"
+                    "\"$(PROJECT_DIR)/Pods/build/Debug-iphoneos\""
                 ],
                 "MTL_ENABLE_DEBUG_INFO": "NO",
                 "PRODUCT_NAME": "Read Later",
@@ -1147,20 +1145,12 @@
             "path": "Pods/build/Debug-iphoneos/libPods-ASPinboard.a",
             "sourceTree": "<group>"
         },
-        "3729440D19CF5B0200ABF006": {
-            "fileRef": "3729440C19CF5B0200ABF006",
-            "isa": "PBXBuildFile"
-        },
         "3729440E19CF5B2600ABF006": {
             "isa": "PBXFileReference",
             "lastKnownFileType": "archive.ar",
             "name": "libPods-hpple.a",
             "path": "Pods/build/Debug-iphoneos/libPods-hpple.a",
             "sourceTree": "<group>"
-        },
-        "3729440F19CF5B2600ABF006": {
-            "fileRef": "3729440E19CF5B2600ABF006",
-            "isa": "PBXBuildFile"
         },
         "3729441019CF5E5700ABF006": {
             "fileRef": "374D91DF19CE26A700995DF1",
@@ -1398,7 +1388,10 @@
                 ],
                 "INFOPLIST_FILE": "Pushpin/PinboardAppStore.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
-                "LIBRARY_SEARCH_PATHS": "$(inherited)",
+                "LIBRARY_SEARCH_PATHS": [
+                    "$(inherited)",
+                    "\"${PODS_ROOT}/TestFlightSDK\""
+                ],
                 "ONLY_ACTIVE_ARCH": "NO",
                 "OTHER_CFLAGS": [
                     "-DNS_BLOCK_ASSERTIONS=1",
@@ -2747,6 +2740,22 @@
             "fileRef": "3751D18718346EED00E0A42A",
             "isa": "PBXBuildFile"
         },
+        "3751D3EB19EC930900EFA119": {
+            "fileRef": "379042B219CC646700409D34",
+            "isa": "PBXBuildFile"
+        },
+        "3751D3EC19EC930E00EFA119": {
+            "containerPortal": "37FEEB8515745488003F2B77",
+            "isa": "PBXContainerItemProxy",
+            "proxyType": "1",
+            "remoteGlobalIDString": "379042B119CC646700409D34",
+            "remoteInfo": "PushpinFramework"
+        },
+        "3751D3ED19EC930E00EFA119": {
+            "isa": "PBXTargetDependency",
+            "target": "379042B119CC646700409D34",
+            "targetProxy": "3751D3EC19EC930E00EFA119"
+        },
         "37561D8816ADFEC400D69CDE": {
             "fileEncoding": "4",
             "isa": "PBXFileReference",
@@ -3481,7 +3490,10 @@
                 ],
                 "INFOPLIST_FILE": "Pushpin/Beta-Info.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
-                "LIBRARY_SEARCH_PATHS": "$(inherited)",
+                "LIBRARY_SEARCH_PATHS": [
+                    "$(inherited)",
+                    "\"${PODS_ROOT}/TestFlightSDK\""
+                ],
                 "ONLY_ACTIVE_ARCH": "NO",
                 "OTHER_CFLAGS": [
                     "-DNS_BLOCK_ASSERTIONS=1",
@@ -4013,6 +4025,7 @@
             "isa": "XCConfigurationList"
         },
         "3790425519CBD49A00409D34": {
+            "baseConfigurationReference": "ECD3AA7E76A5AF6C9B053517",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "YES",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -4107,6 +4120,7 @@
             "name": "Delicious Debug"
         },
         "3790425719CBD49A00409D34": {
+            "baseConfigurationReference": "4D7B02B3C4277F6ACB006575",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "YES",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -4246,6 +4260,7 @@
             "name": "Delicious App Store"
         },
         "3790425A19CBD49A00409D34": {
+            "baseConfigurationReference": "E5C7E8CC60BD2B4D3B442364",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "YES",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -4292,6 +4307,7 @@
             "name": "Pinboard Beta"
         },
         "3790425B19CBD49A00409D34": {
+            "baseConfigurationReference": "510EC4BA5E7C7B2DEF5E862D",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "YES",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -4854,6 +4870,7 @@
             "isa": "XCConfigurationList"
         },
         "379042C319CC646B00409D34": {
+            "baseConfigurationReference": "ECD3AA7E76A5AF6C9B053517",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -4971,6 +4988,7 @@
             "name": "Delicious Debug"
         },
         "379042C519CC646B00409D34": {
+            "baseConfigurationReference": "4D7B02B3C4277F6ACB006575",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -5136,6 +5154,7 @@
             "name": "Delicious App Store"
         },
         "379042C819CC646B00409D34": {
+            "baseConfigurationReference": "E5C7E8CC60BD2B4D3B442364",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -5191,6 +5210,7 @@
             "name": "Pinboard Beta"
         },
         "379042C919CC646B00409D34": {
+            "baseConfigurationReference": "510EC4BA5E7C7B2DEF5E862D",
             "buildSettings": {
                 "ALWAYS_SEARCH_USER_PATHS": "NO",
                 "CLANG_CXX_LANGUAGE_STANDARD": "gnu++0x",
@@ -5487,7 +5507,10 @@
                 ],
                 "INFOPLIST_FILE": "Pushpin/PushpinBeta.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
-                "LIBRARY_SEARCH_PATHS": "$(inherited)",
+                "LIBRARY_SEARCH_PATHS": [
+                    "$(inherited)",
+                    "\"${PODS_ROOT}/TestFlightSDK\""
+                ],
                 "ONLY_ACTIVE_ARCH": "NO",
                 "OTHER_CFLAGS": [
                     "-DNS_BLOCK_ASSERTIONS=1",
@@ -5579,7 +5602,10 @@
                 ],
                 "INFOPLIST_FILE": "Pushpin/DeliciousAppStore.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
-                "LIBRARY_SEARCH_PATHS": "$(inherited)",
+                "LIBRARY_SEARCH_PATHS": [
+                    "$(inherited)",
+                    "\"${PODS_ROOT}/TestFlightSDK\""
+                ],
                 "ONLY_ACTIVE_ARCH": "NO",
                 "OTHER_CFLAGS": [
                     "-DNS_BLOCK_ASSERTIONS=1",
@@ -5669,7 +5695,10 @@
                 ],
                 "INFOPLIST_FILE": "Pushpin/DeliciousDebug.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
-                "LIBRARY_SEARCH_PATHS": "$(inherited)",
+                "LIBRARY_SEARCH_PATHS": [
+                    "$(inherited)",
+                    "\"${PODS_ROOT}/TestFlightSDK\""
+                ],
                 "ONLY_ACTIVE_ARCH": "YES",
                 "OTHER_CFLAGS": [
                     "-lxml2",
@@ -7872,7 +7901,7 @@
                 "371BCB0215772C0E00BDA996",
                 "37887D6A18C51F7D00A20B76",
                 "37FEEB9515745488003F2B77",
-                "320A68A8A35849EE81559441",
+                "63CD2FD7F5A0C83F830BEB4D",
                 "37E329ED1629F82D00A6BC18",
                 "372F88821673EE280073D0B6",
                 "37247FF61633407E00417E65",
@@ -8352,12 +8381,16 @@
                 "GCC_WARN_UNUSED_VARIABLE": "YES",
                 "HEADER_SEARCH_PATHS": [
                     "${SDKROOT}/usr/include/libxml2",
-                    "$(TARGET_BUILD_DIR)/usr/local/lib/include",
-                    "$(OBJROOT)/UninstalledProducts/include"
+                    "\"$(TARGET_BUILD_DIR)/usr/local/lib/include\"",
+                    "\"$(OBJROOT)/UninstalledProducts/include\"",
+                    "\"$(PROJECT_ROOT)/Pods/Headers\"/**"
                 ],
                 "INFOPLIST_FILE": "Pushpin/Dev-Info.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
-                "LIBRARY_SEARCH_PATHS": "$(inherited)",
+                "LIBRARY_SEARCH_PATHS": [
+                    "$(inherited)",
+                    "\"${PODS_ROOT}/TestFlightSDK\""
+                ],
                 "ONLY_ACTIVE_ARCH": "YES",
                 "OTHER_CFLAGS": [
                     "-lxml2",
@@ -8427,7 +8460,10 @@
                 ],
                 "INFOPLIST_FILE": "Pushpin/PinboardAppStore.plist",
                 "IPHONEOS_DEPLOYMENT_TARGET": "8.0",
-                "LIBRARY_SEARCH_PATHS": "$(inherited)",
+                "LIBRARY_SEARCH_PATHS": [
+                    "$(inherited)",
+                    "\"${PODS_ROOT}/TestFlightSDK\""
+                ],
                 "ONLY_ACTIVE_ARCH": "NO",
                 "OTHER_CFLAGS": [
                     "-DNS_BLOCK_ASSERTIONS=1",
@@ -8622,6 +8658,10 @@
             "name": "Pods-DebugPods.delicious debug.xcconfig",
             "path": "Pods/Target Support Files/Pods-DebugPods/Pods-DebugPods.delicious debug.xcconfig",
             "sourceTree": "<group>"
+        },
+        "63CD2FD7F5A0C83F830BEB4D": {
+            "fileRef": "784337BD93F74E058D4FD66B",
+            "isa": "PBXBuildFile"
         },
         "6733412331344A298389F74A": {
             "buildActionMask": "2147483647",

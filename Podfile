@@ -1,8 +1,8 @@
-platform :ios, '8'
-
-inhibit_all_warnings!
+platform :ios, '8.0'
 
 source 'https://github.com/CocoaPods/Specs.git'
+
+inhibit_all_warnings!
 
 pod 'TestFlightSDK', '3.0.2'
 pod 'Reachability', '3.0.0'
