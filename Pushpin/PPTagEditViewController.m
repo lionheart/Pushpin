@@ -353,6 +353,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         NSRange range = [string rangeOfCharacterFromSet:invalidCharacterSet];
         BOOL containsInvalidCharacters = range.location != NSNotFound;
         if (containsInvalidCharacters) {
+            [self textFieldShouldReturn:textField];
             return NO;
         }
     }
