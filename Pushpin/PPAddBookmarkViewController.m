@@ -971,7 +971,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         UIViewController *shareViewController = self.parentViewController.presentingViewController;
                         [shareViewController dismissViewControllerAnimated:YES completion:^{
                             UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Success!", nil)
-                                                                                           message:NSLocalizedString(@"Your bookmark was added.", nil)];
+                                                                                         message:NSLocalizedString(@"Your bookmark was added.", nil)];
 
                             [shareViewController presentViewController:alert animated:YES completion:^{
                                 double delayInSeconds = 1;
@@ -987,12 +987,24 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 };
                 
                 void (^BookmarkFailureBlock)(NSError *) = ^(NSError *error) {
+                    NSHTTPURLResponse *response = error.userInfo[ASPinboardHTTPURLResponseKey];
+                    NSString *title;
+                    NSString *message;
+                    if (response.statusCode == 401) {
+                        title = NSLocalizedString(@"Invalid Credentials", nil);
+                        message = NSLocalizedString(@"Your Pinboard credentials are currently out-of-date. Your auth token may have been reset. Please log out and back into Pushpin to continue syncing bookmarks.", nil);
+                    }
+                    else {
+                        title = NSLocalizedString(@"Uh oh.", nil);
+                        message = NSLocalizedString(@"There was an error adding your bookmark.", nil);
+                    }
+
                     dispatch_async(dispatch_get_main_queue(), ^{
                         self.navigationItem.leftBarButtonItem.enabled = YES;
                         self.navigationItem.rightBarButtonItem.enabled = YES;
-                        
-                        UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Uh oh.", nil)
-                                                                                     message:NSLocalizedString(@"There was an error adding your bookmark.", nil)];
+
+                        UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:title
+                                                                                     message:message];
                         [alert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
                         [self presentViewController:alert animated:YES completion:nil];
                     });
