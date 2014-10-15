@@ -65,6 +65,10 @@
          BundleIdentifier = "/Applications/MobileSafari.app">
       </IDERemoteRunnable>
       <IDERemoteRunnable
+         RemotePath = "/Applications/MobileSafari.app"
+         BundleIdentifier = "/Applications/MobileSafari.app">
+      </IDERemoteRunnable>
+      <IDERemoteRunnable
          RemotePath = "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/Applications/MobileSafari.app"
          BundleIdentifier = "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/Applications/MobileSafari.app">
       </IDERemoteRunnable>
