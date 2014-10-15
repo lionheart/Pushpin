@@ -149,6 +149,10 @@
             "fileRef": "370BBE011901ABBB004FA557",
             "isa": "PBXBuildFile"
         },
+        "370DA46D19EF080500AD6314": {
+            "fileRef": "379042B219CC646700409D34",
+            "isa": "PBXBuildFile"
+        },
         "370EE75115ED108300B262E2": {
             "isa": "PBXFileReference",
             "lastKnownFileType": "wrapper.framework",
@@ -5336,10 +5340,6 @@
             "isa": "XCBuildConfiguration",
             "name": "Delicious Beta"
         },
-        "379042D219CC65FB00409D34": {
-            "fileRef": "379042B219CC646700409D34",
-            "isa": "PBXBuildFile"
-        },
         "379042D419CC663300409D34": {
             "buildActionMask": "2147483647",
             "dstPath": "",
@@ -7956,7 +7956,7 @@
                 "372F88821673EE280073D0B6",
                 "37247FF61633407E00417E65",
                 "378DA45F1633B4B800831134",
-                "379042D219CC65FB00409D34",
+                "370DA46D19EF080500AD6314",
                 "37919F2016092198007708EF",
                 "E804951018103DC700C5CA8B",
                 "377E46DB174C3A7500CE3813",
