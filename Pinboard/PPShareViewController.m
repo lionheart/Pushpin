@@ -106,6 +106,7 @@
     
     BOOL readByDefault = [[sharedDefaults objectForKey:@"ReadByDefault"] boolValue];
     BOOL privateByDefault = [[sharedDefaults objectForKey:@"PrivateByDefault"] boolValue];
+    addBookmarkViewController.tokenOverride = token;
     [addBookmarkViewController configureWithBookmark:@{@"private": @(privateByDefault),
                                                        @"unread": @(!readByDefault) }
                                               update:@(NO)

@@ -38,6 +38,9 @@ typedef enum BookmarkSections {
 @property (nonatomic, strong) NSDictionary *bookmarkData;
 
 @property (nonatomic) BOOL isUpdate;
+
+// Putting this in since for some reason, multiple copies of ASPinboard are being instantiated.
+@property (nonatomic, strong) NSString *tokenOverride;
 @property (nonatomic, strong) NSExtensionContext *presentingViewControllersExtensionContext;
 @property (nonatomic) BOOL loadingTitle;
 @property (nonatomic, copy) void (^callback)(NSDictionary *);

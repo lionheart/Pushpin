@@ -319,6 +319,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
     // We need to set this here, since on iPad the table view's frame isn't set until this happens.
     self.descriptionTextLabel.preferredMaxLayoutWidth = self.tableView.frame.size.width - 50;
+
+    if (self.tokenOverride) {
+        [[ASPinboard sharedInstance] setToken:self.tokenOverride];
+    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
