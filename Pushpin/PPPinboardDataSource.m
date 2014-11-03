@@ -1230,9 +1230,14 @@ static BOOL kPinboardSyncInProgress = NO;
                                              toDate:nil
                                         includeMeta:YES
                                             success:^(NSArray *bookmarks, NSDictionary *parameters) {
-                                                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                    BookmarksSuccessBlock(bookmarks, parameters);
-                                                });
+                                                if ([bookmarks count] == 0) {
+                                                    completion(NO, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                                                }
+                                                else {
+                                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                                        BookmarksSuccessBlock(bookmarks, parameters);
+                                                    });
+                                                }
                                             }
                                             failure:^(NSError *error) {
                                                 completion(NO, error);
