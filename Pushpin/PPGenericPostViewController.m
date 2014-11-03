@@ -1845,6 +1845,8 @@ static NSInteger kToolbarHeight = 44;
             
             [self presentViewController:alert animated:YES completion:nil];
         }
+
+        [self.refreshControl endRefreshing];
     });
 }
 
