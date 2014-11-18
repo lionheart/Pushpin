@@ -528,6 +528,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 case PPMainBrowser:
                     [self.navigationController pushViewController:[[PPBrowserSettingsViewController alloc] init] animated:YES];
                     break;
+                    
+                case PPMainOffline:
+                    break;
             }
 
             break;

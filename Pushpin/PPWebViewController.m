@@ -24,6 +24,7 @@
 #import "PPSettings.h"
 #import "NSData+AES256.h"
 #import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
+#import "PPCachingURLProtocol.h"
 
 #ifdef PINBOARD
 #import "PPPinboardDataSource.h"
@@ -817,6 +818,25 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 #pragma mark - UIWebViewDelegate
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+//    if (request.cachePolicy == NSURLRequestUseProtocolCachePolicy) {
+//        NSURLRequestCachePolicy requestCachePolicy;
+//        if ([PPAppDelegate sharedDelegate].connectionAvailable) {
+//            requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+//        }
+//        else {
+//            requestCachePolicy = NSURLRequestReturnCacheDataDontLoad;
+//        }
+//        
+//        NSMutableURLRequest *newRequest = [request mutableCopy];
+//        newRequest.cachePolicy = requestCachePolicy;
+//
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//            [webView loadRequest:newRequest];
+//        });
+//
+//        return NO;
+//    }
+
     if (navigationType == UIWebViewNavigationTypeLinkClicked) {
         // Reset the "loaded" state on the reader view.
         [[self.readerWebView stringByEvaluatingJavaScriptFromString:@"isLoaded"] isEqualToString:@"false"];
@@ -879,7 +899,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     else {
         if (navigationType == UIWebViewNavigationTypeLinkClicked) {
             [self toggleMobilizer];
-            
+
             NSURLRequest *newRequest = [NSURLRequest requestWithURL:request.URL];
             [self.webView loadRequest:newRequest];
             return NO;
@@ -929,9 +949,11 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                     }
                 }
                 
-                [self.history addObject:@{@"url": self.url.absoluteString,
-                                          @"host": self.url.host,
-                                          @"title": [finalTitleComponents componentsJoinedByString:@" "] }];
+                if ([finalTitleComponents count] > 0) {
+                    [self.history addObject:@{@"url": self.url.absoluteString,
+                                              @"host": self.url.host,
+                                              @"title": [finalTitleComponents componentsJoinedByString:@" "] }];
+                }
             }
 
             self.mobilizeButton.enabled = [PPMobilizerUtility canMobilizeURL:self.url];
@@ -1054,26 +1076,24 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         }
     }
 
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [UIView animateWithDuration:0.3 animations:^{
-            self.statusBarBackgroundView.backgroundColor = backgroundColor;
-            self.toolbarBackgroundView.backgroundColor = backgroundColor;
-            webView.backgroundColor = backgroundColor;
-            
-            if (isDark) {
-                [self tintButtonsWithColor:[UIColor whiteColor]];
-                self.titleLabel.textColor = [UIColor whiteColor];
-                self.preferredStatusBarStyle = UIStatusBarStyleLightContent;
-            }
-            else {
-                [self tintButtonsWithColor:HEX(0x555555FF)];
-                self.titleLabel.textColor = [UIColor darkTextColor];
-                self.preferredStatusBarStyle = UIStatusBarStyleDefault;
-            }
+    [UIView animateWithDuration:0.3 animations:^{
+        self.statusBarBackgroundView.backgroundColor = backgroundColor;
+        self.toolbarBackgroundView.backgroundColor = backgroundColor;
+        webView.backgroundColor = backgroundColor;
+        
+        if (isDark) {
+            [self tintButtonsWithColor:[UIColor whiteColor]];
+            self.titleLabel.textColor = [UIColor whiteColor];
+            self.preferredStatusBarStyle = UIStatusBarStyleLightContent;
+        }
+        else {
+            [self tintButtonsWithColor:HEX(0x555555FF)];
+            self.titleLabel.textColor = [UIColor darkTextColor];
+            self.preferredStatusBarStyle = UIStatusBarStyleDefault;
+        }
 
-            [self setNeedsStatusBarAppearanceUpdate];
-        }];
-    });
+        [self setNeedsStatusBarAppearanceUpdate];
+    }];
 }
 
 - (void)tintButtonsWithColor:(UIColor *)color {

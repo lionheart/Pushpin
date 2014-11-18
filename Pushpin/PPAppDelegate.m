@@ -30,7 +30,7 @@
 #import "PPStatusBar.h"
 #import "PPDeliciousDataSource.h"
 #import "PPSettings.h"
-#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
+#import "PPCachingURLProtocol.h"
 
 #import <LHSDelicious/LHSDelicious.h>
 #import <ASPinboard/ASPinboard.h>
@@ -44,11 +44,11 @@
 #import "MFMailComposeViewController+Theme.h"
 #import <LHSDiigo/LHSDiigoClient.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
+#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 
 @interface PPAppDelegate ()
 
 @property (nonatomic, strong) PPNavigationController *feedListNavigationController;
-@property (nonatomic, strong) NSURLCache *urlCache;
 @property (nonatomic, strong) UIViewController *presentingController;
 @property (nonatomic) BOOL addOrEditPromptVisible;
 
@@ -706,10 +706,12 @@
     self.connectionAvailable = [reach isReachable];
     reach.reachableBlock = ^(Reachability *reach) {
         self.connectionAvailable = YES;
+        [NSURLProtocol unregisterClass:[PPCachingURLProtocol class]];
     };
 
     reach.unreachableBlock = ^(Reachability *reach) {
         self.connectionAvailable = NO;
+        [NSURLProtocol registerClass:[PPCachingURLProtocol class]];
     };
     [reach startNotifier];
     
