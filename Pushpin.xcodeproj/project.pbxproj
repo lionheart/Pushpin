@@ -55,6 +55,8 @@
                 "37F6D7E519A1111E004016DB",
                 "37D2351C16B8DDD0007541DC",
                 "37D2351D16B8DDD0007541DC",
+                "37EE01721A07EA0600A03F3B",
+                "37EE01731A07EA0600A03F3B",
                 "3794AE9F176D33D100250909"
             ],
             "isa": "PBXGroup",
@@ -2041,6 +2043,8 @@
                 "37F91F3D177AB1D500683D46",
                 "37CFA5FE19683ED300C67338",
                 "37CFA5FF19683ED300C67338",
+                "37EE01761A093F2B00A03F3B",
+                "37EE01771A093F2B00A03F3B",
                 "37A2B4A0199E6D8D005B7671",
                 "37A2B4A1199E6D8D005B7671",
                 "3714DB7617558A2000B23F4F",
@@ -4754,6 +4758,7 @@
                 "3790427619CBDCDF00409D34",
                 "3790427719CBDCDF00409D34",
                 "3790427819CBDCDF00409D34",
+                "37EE01751A07F34C00A03F3B",
                 "3790427919CBDCDF00409D34",
                 "3790427A19CBDCDF00409D34",
                 "3790427B19CBDCDF00409D34",
@@ -4772,6 +4777,7 @@
                 "3790428819CBDCDF00409D34",
                 "3790428919CBDCDF00409D34",
                 "3747C50419CCD88900FAD488",
+                "37EE01791A093F2B00A03F3B",
                 "3790428B19CBDCDF00409D34",
                 "3790428C19CBDCDF00409D34",
                 "3790428D19CBDCDF00409D34",
@@ -4821,6 +4827,7 @@
         "379042AF19CC646700409D34": {
             "buildActionMask": "2147483647",
             "files": [
+                "37EE01781A093F2B00A03F3B",
                 "379042B719CC646900409D34"
             ],
             "isa": "PBXHeadersBuildPhase",
@@ -7624,6 +7631,48 @@
             "lastKnownFileType": "sourcecode.c.objc",
             "path": "PPActivityViewController.m",
             "sourceTree": "<group>"
+        },
+        "37EE01721A07EA0600A03F3B": {
+            "fileEncoding": "4",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "sourcecode.c.h",
+            "name": "PPCachingURLProtocol.h",
+            "path": "Pushpin/PPCachingURLProtocol.h",
+            "sourceTree": "<group>"
+        },
+        "37EE01731A07EA0600A03F3B": {
+            "fileEncoding": "4",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "sourcecode.c.objc",
+            "name": "PPCachingURLProtocol.m",
+            "path": "Pushpin/PPCachingURLProtocol.m",
+            "sourceTree": "<group>"
+        },
+        "37EE01751A07F34C00A03F3B": {
+            "fileRef": "37EE01731A07EA0600A03F3B",
+            "isa": "PBXBuildFile"
+        },
+        "37EE01761A093F2B00A03F3B": {
+            "fileEncoding": "4",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "sourcecode.c.h",
+            "path": "PPOfflineSettingsViewController.h",
+            "sourceTree": "<group>"
+        },
+        "37EE01771A093F2B00A03F3B": {
+            "fileEncoding": "4",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "sourcecode.c.objc",
+            "path": "PPOfflineSettingsViewController.m",
+            "sourceTree": "<group>"
+        },
+        "37EE01781A093F2B00A03F3B": {
+            "fileRef": "37EE01761A093F2B00A03F3B",
+            "isa": "PBXBuildFile"
+        },
+        "37EE01791A093F2B00A03F3B": {
+            "fileRef": "37EE01771A093F2B00A03F3B",
+            "isa": "PBXBuildFile"
         },
         "37F1E1B618C617940032B22B": {
             "isa": "PBXFileReference",

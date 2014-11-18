@@ -24,6 +24,8 @@
     NSInteger secondsLeft;
 }
 
+@property (nonatomic, strong) NSURLCache *urlCache;
+
 @property (nonatomic) BOOL bookmarksLoading;
 
 @property (nonatomic, strong) UIWindow *window;

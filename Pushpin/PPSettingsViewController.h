@@ -24,7 +24,8 @@ typedef enum : NSInteger {
     PPMainReadLater,
     PPMainReader,
     PPMainAdvanced,
-    PPMainBrowser
+    PPMainBrowser,
+    PPMainOffline,
 } PPMainSettingsRowType;
 
 typedef enum : NSInteger {
