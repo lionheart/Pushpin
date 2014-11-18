@@ -638,7 +638,16 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     break;
             }
             
-            cell.detailTextLabel.text = self.bookmarkCounts[feedType];
+            static NSNumberFormatter *formatter;
+            static dispatch_once_t onceToken;
+            dispatch_once(&onceToken, ^{
+                formatter = [[NSNumberFormatter alloc] init];
+                formatter.numberStyle = NSNumberFormatterDecimalStyle;
+                formatter.groupingSeparator = [[NSLocale currentLocale] objectForKey:NSLocaleGroupingSeparator];
+            });
+
+            NSNumber *number = [formatter numberFromString:self.bookmarkCounts[feedType]];
+            cell.detailTextLabel.text = [formatter stringFromNumber:number];
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             break;
         }
