@@ -23,9 +23,9 @@ typedef enum : NSInteger {
 typedef enum : NSInteger {
     PPMainReadLater,
     PPMainReader,
-    PPMainAdvanced,
-    PPMainBrowser,
     PPMainOffline,
+    PPMainBrowser,
+    PPMainAdvanced,
 } PPMainSettingsRowType;
 
 typedef enum : NSInteger {
@@ -39,7 +39,7 @@ typedef enum : NSInteger {
 } PPOtherSettingsRowType;
 
 enum : NSInteger {
-    PPRowCountMain = PPMainBrowser + 1,
+    PPRowCountMain = PPMainAdvanced + 1,
     PPRowCountOther = PPOtherLogout + 1
 };
 

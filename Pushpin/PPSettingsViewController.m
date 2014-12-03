@@ -24,6 +24,7 @@
 #import "PPTwitter.h"
 #import "PPSettings.h"
 #import "PPReaderSettingsViewController.h"
+#import "PPOfflineSettingsViewController.h"
 #import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 
 #import <ASPinboard/ASPinboard.h>
@@ -371,10 +372,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
     PPSettings *settings = [PPSettings sharedSettings];
     switch ((PPSectionType)indexPath.section) {
         case PPSectionMainSettings: {
+            cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+
             switch ((PPMainSettingsRowType)indexPath.row) {
                 case PPMainReadLater:
                     cell.textLabel.text = NSLocalizedString(@"Read Later", nil);
-                    cell.selectionStyle = UITableViewCellSelectionStyleDefault;
 
                     PPReadLaterType readLater = settings.readLater;
                     switch (readLater) {
@@ -401,7 +403,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     
                 case PPMainReader:
                     cell.textLabel.text = NSLocalizedString(@"Reader Settings", nil);
-                    cell.selectionStyle = UITableViewCellSelectionStyleDefault;
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
 
@@ -415,11 +416,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
                 case PPMainBrowser:
                     cell.textLabel.text = NSLocalizedString(@"Browser Settings", nil);
-                    cell.selectionStyle = UITableViewCellSelectionStyleDefault;
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
-
-                default:
+                    
+                case PPMainOffline:
+                    cell.textLabel.text = NSLocalizedString(@"Offline Settings", nil);
+                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
             }
             break;
@@ -530,6 +532,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     break;
                     
                 case PPMainOffline:
+                    [self.navigationController pushViewController:[[PPOfflineSettingsViewController alloc] init] animated:YES];
                     break;
             }
 
