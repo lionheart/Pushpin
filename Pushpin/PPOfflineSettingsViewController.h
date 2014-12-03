@@ -8,6 +8,17 @@
 
 #import "PPTableViewController.h"
 
+typedef NS_ENUM(NSInteger, PPOfflineSettingsRowType) {
+    PPOfflineSettingsRowToggle,
+    PPOfflineSettingsRowCellular,
+    PPOfflineSettingsRowUsage,
+    PPOfflineSettingsRowLimit,
+};
+
+enum : NSInteger {
+    PPOfflineSettingsRowCount = PPOfflineSettingsRowLimit + 1,
+};
+
 @interface PPOfflineSettingsViewController : PPTableViewController
 
 @end

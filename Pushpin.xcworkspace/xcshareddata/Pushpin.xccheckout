@@ -6,14 +6,12 @@
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>495CE4D2-4A2E-42CF-B54A-4D44856B6E85</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Pushpin</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>130FD3C47D2A93A5E97A58123B57C5301A9BE388</key>
 		<string>github.com:lionheart/LHSDiigo</string>
-		<key>1EF599FE155265ED06F98F55F7036A8710B75688</key>
-		<string>github.com:lionheart/LHSCustomTransitionCollection.git</string>
-		<key>35FE44AA977402958F5B092E8C51FB3CE5832197</key>
-		<string>github.com:lionheart/LHSCategoryCollection.git</string>
 		<key>4E6E450F604063387457184D53D2497C56CE77E7</key>
 		<string>github.com:aurorasoftware/ASPinboard.git</string>
 		<key>9EE95AE564A8FA1EB03FB1B2D3BCDFB5090990E4</key>
@@ -23,22 +21,20 @@
 		<key>E6859DA0812311656A43A32F3151A87A21D7B5A4</key>
 		<string>github.com:lionheart/LHSDelicious</string>
 	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Pushpin.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>130FD3C47D2A93A5E97A58123B57C5301A9BE388</key>
-		<string>pushpin/Vendor/LHSDiigo/</string>
-		<key>1EF599FE155265ED06F98F55F7036A8710B75688</key>
-		<string>LHSCustomTransitionCollection/</string>
-		<key>35FE44AA977402958F5B092E8C51FB3CE5832197</key>
-		<string>LHSCategoryCollection/</string>
+		<string>..Vendor/LHSDiigo/</string>
 		<key>4E6E450F604063387457184D53D2497C56CE77E7</key>
-		<string>pushpin/Vendor/ASPinboard/</string>
+		<string>..Vendor/ASPinboard/</string>
 		<key>9EE95AE564A8FA1EB03FB1B2D3BCDFB5090990E4</key>
-		<string>pushpin/Localizations/</string>
+		<string>..Localizations/</string>
 		<key>CA1D079377A2BD66346D3AB72C980A5DB6CE1C06</key>
-		<string>pushpin/</string>
+		<string>..</string>
 		<key>E6859DA0812311656A43A32F3151A87A21D7B5A4</key>
-		<string>pushpin/Vendor/LHSDelicious/</string>
+		<string>..Vendor/LHSDelicious/</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>github.com:lionheart/Pushpin.git</string>
@@ -55,22 +51,6 @@
 			<string>4E6E450F604063387457184D53D2497C56CE77E7</string>
 			<key>IDESourceControlWCCName</key>
 			<string>ASPinboard</string>
-		</dict>
-		<dict>
-			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
-			<string>public.vcs.git</string>
-			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>35FE44AA977402958F5B092E8C51FB3CE5832197</string>
-			<key>IDESourceControlWCCName</key>
-			<string>LHSCategoryCollection</string>
-		</dict>
-		<dict>
-			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
-			<string>public.vcs.git</string>
-			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>1EF599FE155265ED06F98F55F7036A8710B75688</string>
-			<key>IDESourceControlWCCName</key>
-			<string>LHSCustomTransitionCollection</string>
 		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
@@ -102,7 +82,7 @@
 			<key>IDESourceControlWCCIdentifierKey</key>
 			<string>CA1D079377A2BD66346D3AB72C980A5DB6CE1C06</string>
 			<key>IDESourceControlWCCName</key>
-			<string>pushpin</string>
+			<string>Pushpin</string>
 		</dict>
 	</array>
 </dict>
