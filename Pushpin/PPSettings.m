@@ -46,6 +46,10 @@
 @synthesize purchasedPremiumFonts = _purchasedPremiumFonts;
 @synthesize fontName = _fontName;
 @synthesize hidePrivateLock = _hidePrivateLock;
+@synthesize offlineReadingEnabled = _offlineReadingEnabled;
+@synthesize useCellularDataForOfflineCache = _useCellularDataForOfflineCache;
+@synthesize offlineFetchCriteria = _offlineFetchCriteria;
+@synthesize offlineUsageLimit = _offlineUsageLimit;
 
 #ifdef PINBOARD
 @synthesize communityFeedOrder = _communityFeedOrder;
@@ -655,6 +659,66 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setBool:hidePrivateLock forKey:@"io.aurora.pinboard.HidePrivateLock"];
     [defaults synchronize];
+}
+
+- (BOOL)offlineReadingEnabled {
+    if (!_offlineReadingEnabled) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _offlineReadingEnabled = [defaults boolForKey:@"io.aurora.pinboard.OfflineReadingEnabled"];
+    }
+    return _offlineReadingEnabled;
+}
+
+- (void)setOfflineReadingEnabled:(BOOL)offlineReadingEnabled {
+    _offlineReadingEnabled = offlineReadingEnabled;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:offlineReadingEnabled forKey:@"io.aurora.pinboard.OfflineReadingEnabled"];
+    [defaults synchronize];
+}
+
+- (BOOL)useCellularDataForOfflineCache {
+    if (!_useCellularDataForOfflineCache) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _useCellularDataForOfflineCache = [defaults boolForKey:@"io.aurora.pinboard.UseCellularDataForOffline"];
+    }
+    return _useCellularDataForOfflineCache;
+}
+
+- (void)setUseCellularDataForOfflineCache:(BOOL)useCellularDataForOfflineCache {
+    _useCellularDataForOfflineCache = useCellularDataForOfflineCache;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:useCellularDataForOfflineCache forKey:@"io.aurora.pinboard.UseCellularDataForOffline"];
+    [defaults synchronize];
+}
+
+- (void)setOfflineFetchCriteria:(PPOfflineFetchCriteriaType)offlineFetchCriteria {
+    _offlineFetchCriteria = offlineFetchCriteria;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(offlineFetchCriteria) forKey:@"io.aurora.pinboard.OfflineFetchCriteria"];
+    [defaults synchronize];
+}
+
+- (PPOfflineFetchCriteriaType)offlineFetchCriteria {
+    if (!_offlineFetchCriteria) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _offlineFetchCriteria = [[defaults objectForKey:@"io.aurora.pinboard.OfflineFetchCriteria"] integerValue];
+    }
+    return _offlineFetchCriteria;
+}
+
+- (void)setOfflineUsageLimit:(NSInteger)offlineUsageLimit {
+    _offlineUsageLimit = offlineUsageLimit;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setInteger:offlineUsageLimit forKey:@"io.aurora.pinboard.OfflineUsageLimit"];
+    [defaults synchronize];
+}
+
+- (NSInteger)offlineUsageLimit {
+    if (!_offlineUsageLimit) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _offlineUsageLimit = [defaults integerForKey:@"io.aurora.pinboard.OfflineUsageLimit"];
+    }
+    return _offlineUsageLimit;
 }
 
 @end

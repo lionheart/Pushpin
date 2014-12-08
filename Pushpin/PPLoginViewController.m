@@ -384,6 +384,8 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             void (^SyncCompletedBlock)() = ^{
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.messageUpdateTimer invalidate];
+
+                    [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
                     
                     if ([UIApplication isIPad]) {
                         [delegate.window setRootViewController:delegate.splitViewController];

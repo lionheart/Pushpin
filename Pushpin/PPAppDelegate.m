@@ -48,9 +48,11 @@
 
 @interface PPAppDelegate ()
 
+@property (nonatomic, strong) NSURLSession *offlineSession;
 @property (nonatomic, strong) PPNavigationController *feedListNavigationController;
 @property (nonatomic, strong) UIViewController *presentingController;
 @property (nonatomic) BOOL addOrEditPromptVisible;
+@property (copy) void (^backgroundSessionCompletionHandler)();
 
 @end
 
@@ -623,12 +625,6 @@
     self.bookmarksUpdatedMessage = nil;
     self.addOrEditPromptVisible = NO;
     self.textExpander = [[SMTEDelegateController alloc] init];
-    
-    // 4 MB memory, 100 MB disk
-    self.urlCache = [[NSURLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024
-                                                  diskCapacity:100 * 1024 * 1024
-                                                      diskPath:@"urlcache"];
-    [NSURLCache setSharedURLCache:self.urlCache];
 
     [PPUtilities migrateDatabase];
 
@@ -666,6 +662,10 @@
         @"io.aurora.pinboard.AlwaysShowClipboardNotification": @(YES),
         @"io.aurora.pinboard.HiddenFeedNames": @[],
         @"io.aurora.pinboard.FontAdjustment": @(PPFontAdjustmentMedium),
+        @"io.aurora.pinboard.OfflineUsageLimit": @(100 * 1000 * 1000),
+        @"io.aurora.pinboard.OfflineFetchCriteria": @(PPOfflineFetchCriteriaUnread),
+        @"io.aurora.pinboard.UseCellularDataForOffline": @(NO),
+        @"io.aurora.pinboard.OfflineReadingEnabled": @(NO),
 #ifdef PINBOARD
         @"io.aurora.pinboard.PersonalFeedOrder": @[
                 @(PPPinboardPersonalFeedAll),
@@ -694,7 +694,13 @@
                 @(PPDeliciousPersonalFeedUntagged),
             ],
 #endif
-     }];
+        }];
+    
+    // 4 MB memory, 100 MB disk
+    self.urlCache = [[NSURLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024
+                                                  diskCapacity:[PPSettings sharedSettings].offlineUsageLimit
+                                                      diskPath:@"urlcache"];
+    [NSURLCache setSharedURLCache:self.urlCache];
     
     NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
     [sharedDefaults setObject:[[PPSettings sharedSettings] token] forKey:@"token"];
@@ -804,6 +810,8 @@
 }
 
 - (void)logout {
+    [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalNever];
+
 #ifdef DELICIOUS
     KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"DeliciousCredentials" accessGroup:nil];
 #endif
@@ -890,5 +898,130 @@
     [self.presentingController dismissViewControllerAnimated:YES completion:nil];
 }
 #endif
+
+#pragma mark - Background Fetch
+
+- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    NSMutableArray *urlsToCache = [NSMutableArray array];
+    [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
+        PPSettings *settings = [PPSettings sharedSettings];
+        
+        NSString *query;
+        
+        // Timestamp for last 30 days.
+        NSInteger timestamp = [[NSDate date] timeIntervalSince1970] - (60 * 60 * 24 * 30);
+
+        switch (settings.offlineFetchCriteria) {
+            case PPOfflineFetchCriteriaUnread:
+                query = @"SELECT * FROM bookmark WHERE unread=1";
+                break;
+                
+            case PPOfflineFetchCriteriaRecent:
+                query = [NSString stringWithFormat:@"SELECT * FROM bookmark WHERE created_at>%lu", (long)timestamp];
+                break;
+                
+            case PPOfflineFetchCriteriaUnreadAndRecent:
+                query = [NSString stringWithFormat:@"SELECT * FROM bookmark WHERE created_at>%lu OR unread=1", (long)timestamp];
+                break;
+                
+            case PPOfflineFetchCriteriaEverything:
+                query = @"SELECT * FROM bookmark";
+                break;
+        }
+        FMResultSet *results = [db executeQuery:query];
+        while ([results next]) {
+            NSString *urlString = [results stringForColumn:@"url"];
+            NSURL *url = [NSURL URLWithString:urlString];
+            
+            if (url) {
+                NSCachedURLResponse *response = [self.urlCache cachedResponseForRequest:[NSURLRequest requestWithURL:url]];
+                if (!response) {
+                    [urlsToCache addObject:url];
+                }
+            }
+        }
+        [results close];
+    }];
+
+    [NSURLProtocol registerClass:[PPCachingURLProtocol class]];
+    NSURLSessionConfiguration *sessionConfiguration = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@"io.aurora.Pushpin.OfflineFetchIdentifier"];
+    self.offlineSession = [NSURLSession sessionWithConfiguration:sessionConfiguration delegate:self delegateQueue:[NSOperationQueue mainQueue]];
+
+    for (NSURL *url in urlsToCache) {
+        NSURLSessionDownloadTask *downloadTask = [self.offlineSession downloadTaskWithRequest:[NSURLRequest requestWithURL:url]];
+        [downloadTask resume];
+    }
+    
+    if (urlsToCache.count > 0) {
+        completionHandler(UIBackgroundFetchResultNewData);
+    }
+    else {
+        completionHandler(UIBackgroundFetchResultNoData);
+    }
+}
+
+- (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)())completionHandler {
+    self.backgroundSessionCompletionHandler = completionHandler;
+}
+
+- (void)URLSessionDidFinishEventsForBackgroundURLSession:(NSURLSession *)session {
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        self.backgroundSessionCompletionHandler();
+    }];
+}
+
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location {
+    NSData *data = [NSData dataWithContentsOfURL:location];
+    if (data) {
+        BOOL isHTMLResponse = [[(NSHTTPURLResponse *)downloadTask.response allHeaderFields][@"Content-Type"] rangeOfString:@"text/html"].location != NSNotFound;
+        NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        if (string && isHTMLResponse) {
+            // Retrieve all assets and queue them for download.
+            NSMutableArray *assets = [NSMutableArray array];
+            
+            NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<img [^><]*src=['\"]([^'\"]+)['\"]" options:NSRegularExpressionCaseInsensitive error:nil];
+            NSArray *matches = [regex matchesInString:string options:0 range:NSMakeRange(0, string.length)];
+            for (NSTextCheckingResult *result in matches) {
+                if ([result numberOfRanges] > 1) {
+                    NSString *imageURLString = [string substringWithRange:[result rangeAtIndex:1]];
+                    [assets addObject:imageURLString];
+                }
+            }
+            
+            regex = [NSRegularExpression regularExpressionWithPattern:@"<link [^><]*href=['\"]([^'\"]+\\.css)['\"]" options:NSRegularExpressionCaseInsensitive error:nil];
+            matches = [regex matchesInString:string options:0 range:NSMakeRange(0, string.length)];
+            for (NSTextCheckingResult *result in matches) {
+                if ([result numberOfRanges] > 1) {
+                    NSString *cssURLString = [string substringWithRange:[result rangeAtIndex:1]];
+                    [assets addObject:cssURLString];
+                }
+            }
+            
+            NSURLSessionConfiguration *sessionConfiguration = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@"io.aurora.Pushpin.OfflineFetchIdentifier"];
+            NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfiguration delegate:self delegateQueue:[NSOperationQueue mainQueue]];
+            for (NSString *urlString in assets) {
+                NSString *finalURLString = [urlString copy];
+                if ([finalURLString hasPrefix:@"//"]) {
+                    finalURLString = [NSString stringWithFormat:@"%@%@", downloadTask.response.URL.scheme, finalURLString];
+                }
+                else if ([finalURLString hasPrefix:@"/"]) {
+                    finalURLString = [NSString stringWithFormat:@"%@://%@%@", downloadTask.response.URL.scheme, downloadTask.response.URL.host, finalURLString];
+                }
+
+                NSURL *url = [NSURL URLWithString:finalURLString];
+                NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithRequest:[NSURLRequest requestWithURL:url]];
+                [downloadTask resume];
+            }
+        }
+        
+        if (self.urlCache.currentDiskUsage < self.urlCache.diskCapacity * 0.95) {
+            // Only save if current usage is less than 95% of capacity.
+            [self.urlCache storeCachedResponse:[[NSCachedURLResponse alloc] initWithResponse:downloadTask.response data:data] forRequest:downloadTask.originalRequest];
+        }
+        else {
+            [self.offlineSession invalidateAndCancel];
+        }
+    }
+}
 
 @end

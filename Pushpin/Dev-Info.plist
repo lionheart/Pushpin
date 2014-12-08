@@ -44,7 +44,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>2087</string>
+	<string>2170</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIAppFonts</key>
@@ -54,6 +54,10 @@
 		<string>LyonTextApp-Regular.ttf</string>
 		<string>Courier Prime.ttf</string>
 		<string>Charter Regular.ttf</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
 	</array>
 	<key>UIPrerenderedIcon</key>
 	<true/>
