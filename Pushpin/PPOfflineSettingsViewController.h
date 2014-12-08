@@ -13,10 +13,20 @@ typedef NS_ENUM(NSInteger, PPOfflineSettingsRowType) {
     PPOfflineSettingsRowCellular,
     PPOfflineSettingsRowUsage,
     PPOfflineSettingsRowLimit,
+    PPOfflineSettingsRowFetchCriteria,
+};
+
+typedef NS_ENUM(NSInteger, PPOfflineSettingsDestructiveRowType) {
+    PPOfflineSettingsDestructiveRowClearCache
+};
+
+typedef NS_ENUM(NSInteger, PPOfflineSettingsSectionType) {
+    PPOfflineSettingsSectionTop,
+    PPOfflineSettingsSectionClearCache
 };
 
 enum : NSInteger {
-    PPOfflineSettingsRowCount = PPOfflineSettingsRowLimit + 1,
+    PPOfflineSettingsRowCount = PPOfflineSettingsRowFetchCriteria + 1,
 };
 
 @interface PPOfflineSettingsViewController : PPTableViewController

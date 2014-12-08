@@ -17,8 +17,10 @@
 @property (nonatomic) PPMobilizerType mobilizer;
 @property (nonatomic) PPReadLaterType readLater;
 @property (nonatomic) PPFontAdjustmentType fontAdjustment;
-
+@property (nonatomic) PPOfflineFetchCriteriaType offlineFetchCriteria;
 @property (nonatomic, strong) PPReaderSettings *readerSettings;
+
+@property (nonatomic) NSInteger offlineUsageLimit;
 
 @property (nonatomic, strong) NSArray *hiddenFeedNames;
 @property (nonatomic) BOOL bookmarksNeedUpdate;
@@ -35,6 +37,9 @@
 @property (nonatomic) BOOL onlyPromptToAddOnce;
 @property (nonatomic) BOOL alwaysShowClipboardNotification;
 @property (nonatomic) BOOL hidePrivateLock;
+@property (nonatomic) BOOL offlineReadingEnabled;
+@property (nonatomic) BOOL useCellularDataForOfflineCache;
+
 @property (nonatomic, strong) NSString *defaultFeed;
 @property (nonatomic, strong) NSArray *personalFeedOrder;
 @property (nonatomic, strong) NSString *feedToken;

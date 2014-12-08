@@ -80,6 +80,13 @@ typedef enum : NSInteger {
 static NSInteger PPProviderPinboardSections = PPPinboardSectionSavedFeeds + 1;
 #endif
 
+typedef NS_ENUM(NSInteger, PPOfflineFetchCriteriaType) {
+    PPOfflineFetchCriteriaUnread,
+    PPOfflineFetchCriteriaRecent,
+    PPOfflineFetchCriteriaUnreadAndRecent,
+    PPOfflineFetchCriteriaEverything
+};
+
 typedef enum : NSInteger {
     PPPostSourceTwitter,
     PPPostSourceTwitterFave,
@@ -164,6 +171,10 @@ static NSString *const PPBookmarkEventNotificationName = @"PPBookmarkUpdateNotif
 
 static NSArray *PPFontAdjustmentTypes() {
     return @[@"Smallest", @"Small", @"Medium", @"Big", @"Biggest"];
+}
+
+static NSArray *PPOfflineFetchCriterias() {
+    return @[@"Unread", @"Recent", @"Unread and Recent", @"Everything"];
 }
 
 #ifdef DELICIOUS

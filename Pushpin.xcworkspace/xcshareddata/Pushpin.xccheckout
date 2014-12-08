@@ -26,15 +26,15 @@
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>130FD3C47D2A93A5E97A58123B57C5301A9BE388</key>
-		<string>..Vendor/LHSDiigo/</string>
+		<string>..Vendor/LHSDiigo</string>
 		<key>4E6E450F604063387457184D53D2497C56CE77E7</key>
-		<string>..Vendor/ASPinboard/</string>
+		<string>..Vendor/ASPinboard</string>
 		<key>9EE95AE564A8FA1EB03FB1B2D3BCDFB5090990E4</key>
-		<string>..Localizations/</string>
+		<string>..Localizations</string>
 		<key>CA1D079377A2BD66346D3AB72C980A5DB6CE1C06</key>
 		<string>..</string>
 		<key>E6859DA0812311656A43A32F3151A87A21D7B5A4</key>
-		<string>..Vendor/LHSDelicious/</string>
+		<string>..Vendor/LHSDelicious</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>github.com:lionheart/Pushpin.git</string>
@@ -72,17 +72,17 @@
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>9EE95AE564A8FA1EB03FB1B2D3BCDFB5090990E4</string>
+			<string>CA1D079377A2BD66346D3AB72C980A5DB6CE1C06</string>
 			<key>IDESourceControlWCCName</key>
-			<string>Localizations</string>
+			<string>Pushpin</string>
 		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>CA1D079377A2BD66346D3AB72C980A5DB6CE1C06</string>
+			<string>9EE95AE564A8FA1EB03FB1B2D3BCDFB5090990E4</string>
 			<key>IDESourceControlWCCName</key>
-			<string>Pushpin</string>
+			<string>PushpinLocalizations</string>
 		</dict>
 	</array>
 </dict>
