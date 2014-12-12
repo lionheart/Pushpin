@@ -18,6 +18,7 @@ static NSString *PPCachingEnabledKey = @"PPCachingEnabled";
 @property (nonatomic, strong) NSURLResponse *response;
 
 - (void)reset;
+- (NSURLRequest *)canonicalRequest;
 
 @end
 
@@ -36,7 +37,7 @@ static NSString *PPCachingEnabledKey = @"PPCachingEnabled";
 }
 
 - (void)startLoading {
-    NSCachedURLResponse *cachedResponse = [[NSURLCache sharedURLCache] cachedResponseForRequest:self.request];
+    NSCachedURLResponse *cachedResponse = [[NSURLCache sharedURLCache] cachedResponseForRequest:self.canonicalRequest];
     if (cachedResponse) {
         [self.client URLProtocol:self didReceiveResponse:cachedResponse.response cacheStoragePolicy:NSURLCacheStorageNotAllowed];
         [self.client URLProtocol:self didLoadData:cachedResponse.data];
@@ -77,7 +78,7 @@ static NSString *PPCachingEnabledKey = @"PPCachingEnabled";
     [self.client URLProtocolDidFinishLoading:self];
     
     NSCachedURLResponse *cachedResponse = [[NSCachedURLResponse alloc] initWithResponse:self.response data:self.data];
-    [[NSURLCache sharedURLCache] storeCachedResponse:cachedResponse forRequest:self.request];
+    [[NSURLCache sharedURLCache] storeCachedResponse:cachedResponse forRequest:self.canonicalRequest];
     
     [self reset];
 }
@@ -88,6 +89,11 @@ static NSString *PPCachingEnabledKey = @"PPCachingEnabled";
     self.data = [NSMutableData data];
     self.connection = nil;
     self.response = nil;
+}
+
+- (NSURLRequest *)canonicalRequest {
+    NSURLRequest *request = [NSURLRequest requestWithURL:self.request.URL];
+    return request;
 }
 
 @end
