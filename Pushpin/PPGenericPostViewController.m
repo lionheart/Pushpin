@@ -1845,6 +1845,16 @@ static NSInteger kToolbarHeight = 44;
             
             [self presentViewController:alert animated:YES completion:nil];
         }
+        else if (response.statusCode == 500) {
+            UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Error", nil)
+                                                                         message:NSLocalizedString(@"The Pinboard API was unable to complete this request.", nil)];
+            
+            [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
+                                    style:UIAlertActionStyleDefault
+                                  handler:nil];
+            
+            [self presentViewController:alert animated:YES completion:nil];
+        }
         
         [self.refreshControl endRefreshing];
     });
