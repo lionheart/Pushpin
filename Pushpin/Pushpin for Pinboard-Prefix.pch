@@ -62,4 +62,4 @@ static NSString *kSavedFeedsKey = @"SavedFeeds";
 #define APP_GROUP @"group.Pushpin"
 #endif
 
-#define FORCE_OFFLINE 1
+#define FORCE_OFFLINE 0
