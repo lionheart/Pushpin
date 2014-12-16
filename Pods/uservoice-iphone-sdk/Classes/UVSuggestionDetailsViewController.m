@@ -106,14 +106,19 @@
 - (void)updateSuggestion:(UVSuggestion *)theSuggestion {
     _suggestion.subscribed = theSuggestion.subscribed;
     _suggestion.subscriberCount = theSuggestion.subscriberCount;
+    _suggestion.rank = theSuggestion.rank;
     [self updateSubscriberCount];
 }
 
 - (void)updateSubscriberCount {
-    if (_suggestion.subscriberCount == 1) {
-        _subscriberCount.text = NSLocalizedStringFromTableInBundle(@"1 person", @"UserVoice", [UserVoice bundle], nil);
+    if ([UVSession currentSession].clientConfig.displaySuggestionsByRank) {
+        _subscriberCount.text = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"Ranked %@", @"UserVoice", [UserVoice bundle], nil), _suggestion.rankString];
     } else {
-        _subscriberCount.text = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"%d people", @"UserVoice", [UserVoice bundle], nil), _suggestion.subscriberCount];
+        if (_suggestion.subscriberCount == 1) {
+            _subscriberCount.text = NSLocalizedStringFromTableInBundle(@"1 person", @"UserVoice", [UserVoice bundle], nil);
+        } else {
+            _subscriberCount.text = [NSString stringWithFormat:NSLocalizedStringFromTableInBundle(@"%d people", @"UserVoice", [UserVoice bundle], nil), _suggestion.subscriberCount];
+        }
     }
 }
 
@@ -239,7 +244,6 @@
     UVTruncatingLabel *desc = [UVTruncatingLabel new];
     desc.font = [UIFont systemFontOfSize:14];
     desc.fullText = _suggestion.text;
-    desc.numberOfLines = 0;
     desc.delegate = self;
     desc.tag = SUGGESTION_DESCRIPTION;
 
@@ -284,7 +288,6 @@
         text.font = [UIFont systemFontOfSize:13];
         text.textColor = [UIColor colorWithRed:0.41f green:0.42f blue:0.43f alpha:1.0f];
         text.fullText = _suggestion.responseText;
-        text.numberOfLines = 0;
         text.delegate = self;
         text.tag = ADMIN_RESPONSE;
 
@@ -371,7 +374,9 @@
     if (indexPath.section == 1 && indexPath.row == 0) {
         [self presentModalViewController:[[UVCommentViewController alloc] initWithSuggestion:_suggestion]];
     } else if (indexPath.section == 2 && indexPath.row == _comments.count) {
-        [self retrieveMoreComments];
+        if (!_loading) {
+            [self retrieveMoreComments];
+        }
     }
 }
 
@@ -443,10 +448,13 @@
     table.scrollIndicatorInsets = UIEdgeInsetsMake(0, 0, _footerHeight, 0);
     _tableView = table;
 
+    BOOL byRank = [UVSession currentSession].clientConfig.displaySuggestionsByRank;
+    NSArray *constraints;
+
     UIView *footer = [UIView new];
-    footer.backgroundColor = [UIColor colorWithRed:0.97 green:0.97 blue:0.97 alpha:1.0];
+    footer.backgroundColor = [UIColor colorWithRed:0.97f green:0.97f blue:0.97f alpha:1.0f];
     UIView *border = [UIView new];
-    border.backgroundColor = [UIColor colorWithRed:0.85 green:0.85 blue:0.85 alpha:1.0];
+    border.backgroundColor = [UIColor colorWithRed:0.85f green:0.85f blue:0.85f alpha:1.0f];
     if (_instantAnswers) {
         UILabel *people = [UILabel new];
         people.font = [UIFont systemFontOfSize:14];
@@ -467,13 +475,21 @@
         [want setTitleColor:want.tintColor forState:UIControlStateNormal];
         [want addTarget:self action:@selector(subscribe) forControlEvents:UIControlEventTouchUpInside];
 
-        NSArray *constraints = @[
-            @"|[border]|", @"V:|[border(==1)]",
-            @"|-[people]-4-[heart(==12)]-4-[this]", @"[want]-|",
-            @"V:|-14-[people]", @"V:|-18-[heart(==11)]", @"V:|-14-[this]", @"V:|-6-[want]"
-        ];
+        if (byRank) {
+            constraints = @[
+                @"|[border]|", @"V:|[border(==1)]",
+                @"|-[people]", @"[want]-|",
+                @"V:|-14-[people]", @"V:|-6-[want]"
+            ];
+        } else {
+            constraints = @[
+                @"|[border]|", @"V:|[border(==1)]",
+                @"|-[people]-4-[heart(==12)]-4-[this]", @"[want]-|",
+                @"V:|-14-[people]", @"V:|-18-[heart(==11)]", @"V:|-14-[this]", @"V:|-6-[want]"
+            ];
+        }
         [self configureView:footer
-                   subviews:NSDictionaryOfVariableBindings(border, want, people, heart, this)
+                   subviews:byRank ? NSDictionaryOfVariableBindings(border, people, want) : NSDictionaryOfVariableBindings(border, want, people, heart, this)
                 constraints:constraints];
     } else {
         UILabel *want = [UILabel new];
@@ -501,13 +517,21 @@
         }
         [_toggle addTarget:self action:@selector(toggleSubscribed) forControlEvents:UIControlEventValueChanged];
 
-        NSArray *constraints = @[
-            @"|[border]|", @"V:|[border(==1)]",
-            @"|-[want]", @"|-[people]-4-[heart(==12)]-4-[this]", @"[_toggle]-|",
-            @"V:|-14-[want]-2-[people]", @"V:[want]-6-[heart(==11)]", @"V:[want]-2-[this]", @"V:|-16-[_toggle]"
-        ];
+        if (byRank) {
+            constraints = @[
+                @"|[border]|", @"V:|[border(==1)]",
+                @"|-[want]", @"|-[people]", @"[_toggle]-|",
+                @"V:|-14-[want]-2-[people]", @"V:|-16-[_toggle]"
+            ];
+        } else {
+            constraints = @[
+                @"|[border]|", @"V:|[border(==1)]",
+                @"|-[want]", @"|-[people]-4-[heart(==12)]-4-[this]", @"[_toggle]-|",
+                @"V:|-14-[want]-2-[people]", @"V:[want]-6-[heart(==11)]", @"V:[want]-2-[this]", @"V:|-16-[_toggle]"
+            ];
+        }
         [self configureView:footer
-                   subviews:NSDictionaryOfVariableBindings(border, want, people, heart, this, _toggle)
+                   subviews:byRank ? NSDictionaryOfVariableBindings(border, want, people, _toggle) : NSDictionaryOfVariableBindings(border, want, people, heart, this, _toggle)
                 constraints:constraints];
     }
 
@@ -516,16 +540,38 @@
             constraints:@[@"V:|[table]|", @"V:[footer]|", @"|[table]|", @"|[footer]|"]];
     [self.view addConstraint:[NSLayoutConstraint constraintWithItem:footer attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:_footerHeight]];
     [self.view bringSubviewToFront:footer];
-    [self reloadComments];
+
+    _allCommentsRetrieved = NO;
+    _comments = [NSMutableArray arrayWithCapacity:10];
+    [self retrieveMoreComments];
+
     [self updateSubscriberCount];
 }
 
 - (void)initNavigationItem {}
 
-- (void)reloadComments {
-    _allCommentsRetrieved = NO;
-    _comments = [NSMutableArray arrayWithCapacity:10];
-    [self retrieveMoreComments];
+/*
+ * The point of this is to put a newly created comment at the top of the list
+ * without screwing things up too badly. This has to be done because the new
+ * comment won't actually appear in the list until spam filtering is done, and
+ * we don't know when that will be.
+ *
+ * Cutting the comment list down to 1 page with the new comment artificially
+ * inserted at the top seems like the best way to do this. Pagination will
+ * be slightly inaccurate if another comment was created since the first page
+ * was loaded, or if the new comment gets caught in the spam filter. However,
+ * that kind of inaccuracy is to be expected for offset-based pagination.
+ */
+- (void)commentCreated:(UVComment *)comment {
+    NSMutableArray *newComments = [NSMutableArray arrayWithCapacity:10];
+    [newComments addObject:comment];
+    for (int i=0; i < MIN(9, _comments.count); i++) {
+        [newComments addObject:[_comments objectAtIndex:i]];
+    }
+    if (_comments.count > 9)
+        _allCommentsRetrieved = NO;
+    _comments = newComments;
+    [_tableView reloadData];
 }
 
 - (void)showActivityIndicator {

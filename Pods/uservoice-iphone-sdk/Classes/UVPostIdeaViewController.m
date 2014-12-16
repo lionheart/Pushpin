@@ -37,7 +37,7 @@
     _instantAnswerManager.deflectingType = @"Suggestion";
 
     self.navigationItem.title = NSLocalizedStringFromTableInBundle(@"Post an idea", @"UserVoice", [UserVoice bundle], nil);
-    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedStringFromTableInBundle(@"Back", @"UserVoice", [UserVoice bundle], nil) style:UIBarButtonItemStylePlain target:nil action:nil];
 
     _fieldsView = [UVTextWithFieldsView new];
     _titleField = [_fieldsView addFieldWithLabel:NSLocalizedStringFromTableInBundle(@"Title", @"UserVoice", [UserVoice bundle], nil)];
@@ -45,8 +45,8 @@
         _titleField.text = _initialText;
     }
     [[NSNotificationCenter defaultCenter] addObserverForName:UITextFieldTextDidChangeNotification object:_titleField queue:nil usingBlock:^(NSNotification *note) {
-        NSString *text = [_titleField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-        _instantAnswerManager.searchText = text;
+        NSString *text = [self->_titleField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        self->_instantAnswerManager.searchText = text;
         self.navigationItem.rightBarButtonItem.enabled = (text.length > 0);
     }];
 

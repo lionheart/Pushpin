@@ -58,7 +58,7 @@ PODS:
   - TestFlightSDK (3.0.2)
   - TextExpander (2.3.1)
   - TTTAttributedLabel (1.10.1)
-  - uservoice-iphone-sdk (3.1.0)
+  - uservoice-iphone-sdk (3.2.1)
   - XMLDictionary (1.4)
   - YHRoundBorderedButton (0.1.0)
 
@@ -88,7 +88,7 @@ DEPENDENCIES:
   - TestFlightSDK (= 3.0.2)
   - TextExpander (= 2.3.1)
   - TTTAttributedLabel (= 1.10.1)
-  - uservoice-iphone-sdk (= 3.1.0)
+  - uservoice-iphone-sdk (= 3.2.1)
   - YHRoundBorderedButton
 
 EXTERNAL SOURCES:
@@ -134,8 +134,8 @@ SPEC CHECKSUMS:
   TestFlightSDK: 0c24c533748d0d84bfe7a3cb6036fa79124d84ee
   TextExpander: 52e77e37c52115ec59cad66b082800f0e54fa545
   TTTAttributedLabel: 94bb04f1e005616002dd2cee0262a0082e533627
-  uservoice-iphone-sdk: 36286c4a8de16a1e7e87110de6b2270fe9a31a36
+  uservoice-iphone-sdk: 7cbc1e76dcbbc3d5ae3b4bf009fdcf355e1e83ec
   XMLDictionary: 735e81b9a043e220b0d24e9d4f16719606f2e0fc
   YHRoundBorderedButton: 6b22ec3f6b160fe6ca9ce8c2057ab1dfe0afb283
 
-COCOAPODS: 0.34.2
+COCOAPODS: 0.34.4
