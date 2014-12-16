@@ -32,6 +32,7 @@
 #import "PPSettings.h"
 #import "PPCachingURLProtocol.h"
 
+#import "NSString+URLEncoding2.h"
 #import <LHSDelicious/LHSDelicious.h>
 #import <ASPinboard/ASPinboard.h>
 #import <Reachability/Reachability.h>
@@ -51,9 +52,11 @@
 @property (nonatomic, strong) PPNavigationController *feedListNavigationController;
 @property (nonatomic, strong) UIViewController *presentingController;
 @property (nonatomic) BOOL addOrEditPromptVisible;
-@property (copy) void (^backgroundSessionCompletionHandler)();
+
+@property (nonatomic, strong) NSMutableDictionary *backgroundURLSessionCompletionHandlers;
 
 - (NSURLSession *)offlineSession;
+- (NSURLSession *)readerViewOfflineSession;
 
 @end
 
@@ -667,6 +670,7 @@
         @"io.aurora.pinboard.OfflineFetchCriteria": @(PPOfflineFetchCriteriaUnread),
         @"io.aurora.pinboard.UseCellularDataForOffline": @(NO),
         @"io.aurora.pinboard.OfflineReadingEnabled": @(NO),
+        @"io.aurora.pinboard.DownloadFullWebpageForOffline": @(NO),
 #ifdef PINBOARD
         @"io.aurora.pinboard.PersonalFeedOrder": @[
                 @(PPPinboardPersonalFeedAll),
@@ -713,14 +717,22 @@
     self.connectionAvailable = [reach isReachable];
     reach.reachableBlock = ^(Reachability *reach) {
         self.connectionAvailable = YES;
+#if !FORCE_OFFLINE
         [NSURLProtocol unregisterClass:[PPCachingURLProtocol class]];
+#endif
     };
 
     reach.unreachableBlock = ^(Reachability *reach) {
         self.connectionAvailable = NO;
+#if !FORCE_OFFLINE
         [NSURLProtocol registerClass:[PPCachingURLProtocol class]];
+#endif
     };
     [reach startNotifier];
+    
+#if FORCE_OFFLINE
+    [NSURLProtocol registerClass:[PPCachingURLProtocol class]];
+#endif
     
 #ifdef DELICIOUS
     LHSDelicious *delicious = [LHSDelicious sharedInstance];
@@ -904,6 +916,8 @@
 
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     NSMutableArray *urlsToCache = [NSMutableArray array];
+    self.backgroundURLSessionCompletionHandlers = [NSMutableDictionary dictionary];
+
     [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
         PPSettings *settings = [PPSettings sharedSettings];
         
@@ -938,19 +952,27 @@
                 NSCachedURLResponse *response = [self.urlCache cachedResponseForRequest:[NSURLRequest requestWithURL:url]];
                 if (!response) {
                     [urlsToCache addObject:url];
-//
-//                    if (urlsToCache.count > 1) {
-//                        break;
-//                    }
+                    
+                    if (urlsToCache.count > 10) {
+                        break;
+                    }
                 }
             }
         }
         [results close];
     }];
 
+    PPSettings *settings = [PPSettings sharedSettings];
     for (NSURL *url in urlsToCache) {
-        NSURLSessionDownloadTask *downloadTask = [self.offlineSession downloadTaskWithRequest:[NSURLRequest requestWithURL:url]];
-        [downloadTask resume];
+        // https://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=
+        NSString *readerURLString = [NSString stringWithFormat:@"https://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [url.absoluteString urlEncodeUsingEncoding:NSUTF8StringEncoding]];
+        NSURLSessionDownloadTask *readerDownloadTask = [self.readerViewOfflineSession downloadTaskWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:readerURLString]]];
+        [readerDownloadTask resume];
+
+        if (settings.downloadFullWebpageForOfflineCache) {
+            NSURLSessionDownloadTask *downloadTask = [self.offlineSession downloadTaskWithRequest:[NSURLRequest requestWithURL:url]];
+            [downloadTask resume];
+        }
     }
     
     if (urlsToCache.count > 0) {
@@ -962,13 +984,30 @@
 }
 
 - (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)())completionHandler {
-    self.backgroundSessionCompletionHandler = completionHandler;
+    self.backgroundURLSessionCompletionHandlers[identifier] = completionHandler;
 }
 
 - (void)URLSessionDidFinishEventsForBackgroundURLSession:(NSURLSession *)session {
+    
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        self.backgroundSessionCompletionHandler();
+        void (^completionHandler)() = self.backgroundURLSessionCompletionHandlers[session.configuration.identifier];
+        if (completionHandler) {
+            completionHandler();
+        }
     }];
+}
+
+- (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential *))completionHandler {
+    if (challenge.previousFailureCount == 0) {
+        NSURLCredential *credential = [NSURLCredential credentialWithUser:@"pushpin"
+                                                                 password:@"9346edb36e542dab1e7861227f9222b7"
+                                                              persistence:NSURLCredentialPersistenceNone];
+
+        completionHandler(NSURLSessionAuthChallengeUseCredential, credential);
+    }
+    else {
+        completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
+    }
 }
 
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location {
@@ -976,8 +1015,9 @@
     NSData *data = [NSData dataWithContentsOfURL:location options:NSDataReadingUncached error:&error];
     if (data) {
         BOOL isHTMLResponse = [[(NSHTTPURLResponse *)downloadTask.response allHeaderFields][@"Content-Type"] rangeOfString:@"text/html"].location != NSNotFound;
+        BOOL isReaderURL = [downloadTask.response.URL.host isEqualToString:@"pushpin-readability.herokuapp.com"];
         NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        if (string && isHTMLResponse) {
+        if (string && isHTMLResponse && !isReaderURL) {
             // Retrieve all assets and queue them for download. Use a set to prevent duplicates.
             NSMutableSet *assets = [NSMutableSet set];
             
@@ -998,9 +1038,7 @@
                     [assets addObject:cssURLString];
                 }
             }
-            
-            NSURLSessionConfiguration *sessionConfiguration = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@"io.aurora.Pushpin.OfflineFetchIdentifier"];
-            NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfiguration delegate:self delegateQueue:[NSOperationQueue mainQueue]];
+
             for (NSString *urlString in assets) {
                 NSString *finalURLString = [urlString copy];
                 if ([finalURLString hasPrefix:@"//"]) {
@@ -1015,7 +1053,7 @@
                 }
 
                 NSURL *url = [NSURL URLWithString:finalURLString];
-                NSURLSessionDownloadTask *downloadTask = [session downloadTaskWithRequest:[NSURLRequest requestWithURL:url]];
+                NSURLSessionDownloadTask *downloadTask = [self.offlineSession downloadTaskWithRequest:[NSURLRequest requestWithURL:url]];
                 [downloadTask resume];
             }
         }
@@ -1041,6 +1079,23 @@
     dispatch_once(&onceToken, ^{
         NSURLSessionConfiguration *sessionConfiguration = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@"io.aurora.Pushpin.OfflineFetchIdentifier"];
         sessionConfiguration.sessionSendsLaunchEvents = YES;
+        session = [NSURLSession sessionWithConfiguration:sessionConfiguration delegate:self delegateQueue:[NSOperationQueue mainQueue]];
+    });
+    return session;
+}
+
+- (NSURLSession *)readerViewOfflineSession {
+    static NSURLSession *session;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSURLSessionConfiguration *sessionConfiguration = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@"io.aurora.Pushpin.SecondaryOfflineFetchIdentifier"];
+        sessionConfiguration.sessionSendsLaunchEvents = YES;
+
+        NSString *authorizationString = @"pushpin:9346edb36e542dab1e7861227f9222b7";
+        NSData *authorizationData = [authorizationString dataUsingEncoding:NSUTF8StringEncoding];
+        NSString *authorizationValue = [NSString stringWithFormat:@"Basic %@", [authorizationData base64EncodedStringWithOptions:NSDataBase64Encoding76CharacterLineLength]];
+        
+        [sessionConfiguration setHTTPAdditionalHeaders:@{@"Authorization": authorizationValue}];
         session = [NSURLSession sessionWithConfiguration:sessionConfiguration delegate:self delegateQueue:[NSOperationQueue mainQueue]];
     });
     return session;

@@ -1170,7 +1170,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 }
 
 + (void)mobilizedPageForURL:(NSURL *)url withCompletion:(void (^)(NSDictionary *, NSError *))completion {
-    NSURL *mobilizedURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [url.absoluteString urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
+    NSURL *mobilizedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [url.absoluteString urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
     
     NSURLProtectionSpace *protectionSpace = [[NSURLProtectionSpace alloc] initWithHost:@"pushpin-readability.herokuapp.com"
                                                                                   port:80

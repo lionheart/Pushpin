@@ -39,6 +39,7 @@
 @property (nonatomic) BOOL hidePrivateLock;
 @property (nonatomic) BOOL offlineReadingEnabled;
 @property (nonatomic) BOOL useCellularDataForOfflineCache;
+@property (nonatomic) BOOL downloadFullWebpageForOfflineCache;
 
 @property (nonatomic, strong) NSString *defaultFeed;
 @property (nonatomic, strong) NSArray *personalFeedOrder;

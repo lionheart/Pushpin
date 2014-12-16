@@ -10,7 +10,7 @@
 
 typedef NS_ENUM(NSInteger, PPOfflineSettingsRowType) {
     PPOfflineSettingsRowToggle,
-    PPOfflineSettingsRowCellular,
+    PPOfflineSettingsRowDownloadAll,
     PPOfflineSettingsRowUsage,
     PPOfflineSettingsRowLimit,
     PPOfflineSettingsRowFetchCriteria,

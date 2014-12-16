@@ -17,7 +17,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
 @interface PPOfflineSettingsViewController ()
 
 @property (nonatomic, retain) UISwitch *offlineReadingSwitch;
-@property (nonatomic, retain) UISwitch *useCellularDataForOfflineCache;
+@property (nonatomic, retain) UISwitch *downloadFullWebpageForOfflineCacheSwitch;
 
 - (void)switchChangedValue:(id)sender;
 - (void)updateUsageLimitTo:(NSInteger)limit;
@@ -37,10 +37,10 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
     self.offlineReadingSwitch = [[UISwitch alloc] init];
     self.offlineReadingSwitch.on = settings.offlineReadingEnabled;
     [self.offlineReadingSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
-    
-    self.useCellularDataForOfflineCache = [[UISwitch alloc] init];
-    self.useCellularDataForOfflineCache.on = settings.useCellularDataForOfflineCache;
-    [self.useCellularDataForOfflineCache addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
+
+    self.downloadFullWebpageForOfflineCacheSwitch = [[UISwitch alloc] init];
+    self.downloadFullWebpageForOfflineCacheSwitch.on = settings.useCellularDataForOfflineCache;
+    [self.downloadFullWebpageForOfflineCacheSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
 
     [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:DefaultCellIdentifier];
@@ -98,13 +98,13 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
                     break;
                 }
                     
-                case PPOfflineSettingsRowCellular: {
-                    cell.textLabel.text = @"Use Cellular Data";
+                case PPOfflineSettingsRowDownloadAll: {
+                    cell.textLabel.text = @"Download Full Webpage";
                     
                     size = cell.frame.size;
-                    switchSize = self.useCellularDataForOfflineCache.frame.size;
-                    self.useCellularDataForOfflineCache.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-                    cell.accessoryView = self.useCellularDataForOfflineCache;
+                    switchSize = self.downloadFullWebpageForOfflineCacheSwitch.frame.size;
+                    self.downloadFullWebpageForOfflineCacheSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
+                    cell.accessoryView = self.downloadFullWebpageForOfflineCacheSwitch;
                     break;
                 }
                     
@@ -279,6 +279,9 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
         });
+    }
+    else if (sender == self.downloadFullWebpageForOfflineCacheSwitch) {
+        [settings setDownloadFullWebpageForOfflineCache:self.downloadFullWebpageForOfflineCacheSwitch.on];
     }
 }
 
