@@ -596,6 +596,7 @@
                          "created_at DATETIME DEFAULT CURRENT_TIMESTAMP"
                          ");"];
                         [db executeUpdate:@"INSERT INTO rejected_bookmark (url) SELECT url FROM rejected_bookmark_old;"];
+                        [db executeUpdate:@"DROP TABLE rejected_bookmark_old;"];
                         
                         [db executeUpdate:@"ALTER TABLE bookmark ADD COLUMN starred BOOL DEFAULT 0;"];
                         [db executeUpdate:@"CREATE INDEX bookmark_starred_idx ON bookmark (starred);"];

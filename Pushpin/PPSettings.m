@@ -50,6 +50,7 @@
 @synthesize useCellularDataForOfflineCache = _useCellularDataForOfflineCache;
 @synthesize offlineFetchCriteria = _offlineFetchCriteria;
 @synthesize offlineUsageLimit = _offlineUsageLimit;
+@synthesize downloadFullWebpageForOfflineCache = _downloadFullWebpageForOfflineCache;
 
 #ifdef PINBOARD
 @synthesize communityFeedOrder = _communityFeedOrder;
@@ -688,6 +689,21 @@
     _useCellularDataForOfflineCache = useCellularDataForOfflineCache;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setBool:useCellularDataForOfflineCache forKey:@"io.aurora.pinboard.UseCellularDataForOffline"];
+    [defaults synchronize];
+}
+
+- (BOOL)downloadFullWebpageForOfflineCache {
+    if (!_downloadFullWebpageForOfflineCache) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _downloadFullWebpageForOfflineCache = [defaults boolForKey:@"io.aurora.pinboard.DownloadFullWebpageForOffline"];
+    }
+    return _downloadFullWebpageForOfflineCache;
+}
+
+- (void)setDownloadFullWebpageForOfflineCache:(BOOL)downloadFullWebpageForOfflineCache {
+    _downloadFullWebpageForOfflineCache = downloadFullWebpageForOfflineCache;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:downloadFullWebpageForOfflineCache forKey:@"io.aurora.pinboard.DownloadFullWebpageForOffline"];
     [defaults synchronize];
 }
 

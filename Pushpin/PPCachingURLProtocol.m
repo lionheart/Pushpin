@@ -26,6 +26,15 @@ static NSString *PPCachingEnabledKey = @"PPCachingEnabled";
 
 + (BOOL)canInitWithRequest:(NSURLRequest *)request {
     if ([NSURLProtocol propertyForKey:PPCachingEnabledKey inRequest:request] == nil) {
+        if ([request.URL.host rangeOfString:@"api.pinboard.in"].location != NSNotFound) {
+            return NO;
+        }
+        if ([request.URL.host rangeOfString:@"feeds.pinboard.in"].location != NSNotFound) {
+            return NO;
+        }
+        else if ([request allHTTPHeaderFields] == nil) {
+            return YES;
+        }
         return [[request valueForHTTPHeaderField:@"User-Agent"] containsString:@"AppleWebKit"];
     }
 
@@ -36,13 +45,36 @@ static NSString *PPCachingEnabledKey = @"PPCachingEnabled";
     return request;
 }
 
+- (NSCachedURLResponse *)cachedResponseByFollowingRedirects:(NSURLRequest *)request {
+    NSCachedURLResponse *cachedResponse = [[NSURLCache sharedURLCache] cachedResponseForRequest:request];
+    NSHTTPURLResponse *HTTPURLResponse = (NSHTTPURLResponse *)cachedResponse.response;
+    
+    if ([@[@301, @302, @303, @307, @308] containsObject:@(HTTPURLResponse.statusCode)]) {
+        NSString *redirectedURL = HTTPURLResponse.allHeaderFields[@"Location"];
+        if (redirectedURL.length > 0) {
+            NSMutableURLRequest *redirectedRequest = request.mutableCopy;
+            redirectedRequest.URL = [NSURL URLWithString:redirectedURL];
+            return [self cachedResponseByFollowingRedirects:redirectedRequest];
+        }
+        else {
+            return cachedResponse;
+        }
+    }
+    return cachedResponse;
+}
+
 - (void)startLoading {
-    NSCachedURLResponse *cachedResponse = [[NSURLCache sharedURLCache] cachedResponseForRequest:self.canonicalRequest];
+    NSCachedURLResponse *cachedResponse = [self cachedResponseByFollowingRedirects:self.canonicalRequest];
     if (cachedResponse) {
         [self.client URLProtocol:self didReceiveResponse:cachedResponse.response cacheStoragePolicy:NSURLCacheStorageNotAllowed];
         [self.client URLProtocol:self didLoadData:cachedResponse.data];
         [self.client URLProtocolDidFinishLoading:self];
     }
+#if FORCE_OFFLINE
+    else {
+        [self.client URLProtocol:self didFailWithError:[NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]];
+    }
+#else
     else {
         self.data = [NSMutableData data];
 
@@ -50,6 +82,7 @@ static NSString *PPCachingEnabledKey = @"PPCachingEnabled";
         [NSURLProtocol setProperty:@(YES) forKey:PPCachingEnabledKey inRequest:newRequest];
         self.connection = [[NSURLConnection alloc] initWithRequest:newRequest delegate:self startImmediately:YES];
     }
+#endif
 }
 
 - (void)stopLoading {
