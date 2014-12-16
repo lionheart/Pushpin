@@ -1,4 +1,4 @@
-//
+ //
 //  UVCalculatingLabel.m
 //  UserVoice
 //
@@ -7,22 +7,17 @@
 //
 
 #import "UVCalculatingLabel.h"
+#import "UVUtils.h"
 
 @implementation UVCalculatingLabel
 
-- (CGFloat)effectiveWidth {
-    return self.frame.size.width;
-}
-
-- (CGRect)rectForLetterAtIndex:(NSUInteger)index {
+- (CGRect)rectForLetterAtIndex:(NSUInteger)index lines:(NSArray *)lines width:(CGFloat)frameWidth {
     if (index > [self.text length] - 1)
         return CGRectZero;
 
-    CGFloat frameWidth = [self effectiveWidth];
     NSString *letter = [self.text substringWithRange:NSMakeRange(index, 1)];
-    CGSize letterSize = [letter sizeWithFont:self.font];
+    CGSize letterSize = [UVUtils string:letter sizeWithFont:self.font];
     
-    NSArray *lines = [self breakString];
     int targetLineNumber = 0, targetColumnNumber = 0, elapsedChars = 0;
     NSString *targetLine = nil;
     for (int i = 0; i < [lines count]; i++) {
@@ -32,17 +27,17 @@
             targetLineNumber++;
         } else {
             targetLine = line;
-            targetColumnNumber = index - elapsedChars;
+            targetColumnNumber = (int)index - elapsedChars;
             break;
         }
     }
 
-    int linesThatFit = floor(self.frame.size.height / self.font.lineHeight);
-    int totalLines = self.numberOfLines == 0 ? [lines count] : MIN([lines count], self.numberOfLines);
+    int linesThatFit = (int)floor(self.frame.size.height / self.font.lineHeight);
+    int totalLines = (int)(self.numberOfLines == 0 ? [lines count] : MIN([lines count], self.numberOfLines));
     int linesDisplayed = MIN(linesThatFit, totalLines);
-    CGFloat targetLineWidth = [targetLine sizeWithFont:self.font].width;
+    CGFloat targetLineWidth = [UVUtils string:targetLine sizeWithFont:self.font].width;
     
-    CGFloat x = [[targetLine substringWithRange:NSMakeRange(0, targetColumnNumber)] sizeWithFont:self.font].width;
+    CGFloat x = [UVUtils string:[targetLine substringWithRange:NSMakeRange(0, targetColumnNumber)] sizeWithFont:self.font].width;
     CGFloat y = self.frame.size.height/2 - (linesDisplayed*self.font.lineHeight)/2 + self.font.lineHeight*targetLineNumber;
     
     if (self.textAlignment == NSTextAlignmentCenter)
@@ -53,10 +48,9 @@
     return CGRectMake(x, y, letterSize.width, letterSize.height);
 }
 
-- (NSArray *)breakString {
+- (NSArray *)breakString:(CGFloat)frameWidth {
     NSMutableArray *lines = [NSMutableArray array];
-    CGFloat frameWidth = [self effectiveWidth];
-    int len = [self.text length];
+    int len = (int)[self.text length];
     int lineStartOffset = 0;
     int lastBreakChar = -1;
 
@@ -64,13 +58,19 @@
         int currentLineLength = i - lineStartOffset;
         NSString *currentChar = [self.text substringWithRange:NSMakeRange(i, 1)];
         NSString *currentLine = [self.text substringWithRange:NSMakeRange(lineStartOffset, currentLineLength)];
-        if ([currentChar isEqualToString:@" "] || [currentChar isEqualToString:@"-"])
+        if ([currentChar isEqualToString:@" "] || [currentChar isEqualToString:@"-"]) {
             lastBreakChar = i;
+        } else if ([currentChar isEqualToString:@"\n"] && currentLineLength > 0) {
+            currentLine = [self.text substringWithRange:NSMakeRange(lineStartOffset, currentLineLength)];
+            lineStartOffset = i;
+            lastBreakChar = -1;
+            [lines addObject:currentLine];
+            continue;
+        }
         
-        CGSize currentSize = [currentLine sizeWithFont:self.font constrainedToSize:CGSizeMake(frameWidth, 1000) lineBreakMode:self.lineBreakMode];
+        CGSize currentSize = [UVUtils string:currentLine sizeWithFont:self.font constrainedToSize:CGSizeMake(frameWidth, 1000) lineBreakMode:self.lineBreakMode];
         
-        // TODO: Add support for hard breaks (\n)
-        if (currentSize.height > self.font.lineHeight) {
+        if (currentSize.height > self.font.lineHeight || currentSize.width > frameWidth) {
             if (lastBreakChar == -1 || self.lineBreakMode == NSLineBreakByCharWrapping) {
                 currentLine = [self.text substringWithRange:NSMakeRange(lineStartOffset, currentLineLength)];
                 lineStartOffset = i;

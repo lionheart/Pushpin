@@ -18,6 +18,7 @@
 #import "UVSigninManager.h"
 #import "UVKeyboardUtils.h"
 #import "UVUtils.h"
+#import "UVTruncatingLabel.h"
 
 @implementation UVBaseViewController
 
@@ -39,10 +40,13 @@
     if (_firstController && [[UserVoice delegate] respondsToSelector:@selector(userVoiceRequestsDismissal)]) {
         [[UserVoice delegate] userVoiceRequestsDismissal];
     } else {
-        [self dismissViewControllerAnimated:YES completion:nil];
-        if (_firstController && [[UserVoice delegate] respondsToSelector:@selector(userVoiceWasDismissed)]) {
-            [[UserVoice delegate] userVoiceWasDismissed];
-        }
+        __weak UVBaseViewController *_weakSelf = self;
+        [self dismissViewControllerAnimated:YES
+                                 completion:^{
+                                     if (_weakSelf.firstController && [[UserVoice delegate] respondsToSelector:@selector(userVoiceWasDismissed)]) {
+                                         [[UserVoice delegate] userVoiceWasDismissed];
+                                     }
+                                 }];
     }
 }
 
@@ -271,6 +275,9 @@
                     [label setPreferredMaxLayoutWidth:label.frame.size.width];
                 }
                 [label setBackgroundColor:[UIColor clearColor]];
+            } else if ([view isKindOfClass:[UVTruncatingLabel class]]) {
+                UVTruncatingLabel *label = (UVTruncatingLabel *)view;
+                [label setPreferredMaxLayoutWidth:label.frame.size.width];
             }
         }
     }
@@ -301,7 +308,7 @@
 
 - (void)keyboardWillShow:(NSNotification*)notification {
     if (IPAD) {
-        CGFloat formSheetHeight = 576;
+        NSInteger formSheetHeight = 576;
         if (UIInterfaceOrientationIsLandscape(self.interfaceOrientation)) {
             _kbHeight = formSheetHeight - 352;
         } else {
@@ -309,9 +316,9 @@
         }
     } else {
         NSDictionary* info = [notification userInfo];
-        CGRect rect = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
+        CGRect rect = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue];
         // Convert from window space to view space to account for orientation
-        _kbHeight = [self.view convertRect:rect fromView:nil].size.height;
+        _kbHeight = (NSInteger)[self.view convertRect:rect fromView:nil].size.height;
     }
 }
 
@@ -338,7 +345,7 @@
     UINavigationController *navigationController = [UINavigationController new];
     [UVUtils applyStylesheetToNavigationController:navigationController];
     navigationController.viewControllers = @[viewController];
-    if (IPAD)
+    if (FORMSHEET)
         navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
     [self presentViewController:navigationController animated:YES completion:nil];
 }
@@ -426,7 +433,7 @@
     if ([self respondsToSelector:customizeCellSelector]) {
         [self performSelector:customizeCellSelector withObject:cell withObject:indexPath];
     }
-    cell.contentView.frame = CGRectMake(0, 0, [self cellWidthForStyle:_tableView.style accessoryType:cell.accessoryType], 0);
+    cell.contentView.frame = CGRectMake(0, 0, [self cellWidthForStyle:_tableView.style accessoryType:cell.accessoryType], 10000);
     [cell.contentView setNeedsLayout];
     [cell.contentView layoutIfNeeded];
 
@@ -464,7 +471,7 @@
             if (width < 400) {
                 margin = 10;
             } else {
-                margin = MAX(31, MIN(45, width*0.06));
+                margin = MAX(31, MIN(45, width*0.06f));
             }
         } else {
             margin = width - 10;
@@ -498,42 +505,6 @@
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return [UVStyleSheet instance].preferredStatusBarStyle;
-}
-
-#pragma mark ===== iPad search bar hack =====
-
-- (void)correctSearchDisplayFrames:(UISearchDisplayController *)controller {
-    CGRect superviewFrame = controller.searchBar.superview.frame;
-    superviewFrame.origin.y = 0.f;
-    controller.searchBar.superview.frame = superviewFrame;
-
-    UIView *dimmingView = nil;
-    NSMutableArray *views = [NSMutableArray array];
-    [views addObject:self.view];
-    while (dimmingView == nil && views.count > 0) {
-        UIView *subview = [views firstObject];
-        if ([NSStringFromClass(subview.class) hasSuffix:@"DimmingView"]) {
-            dimmingView = subview;
-        } else {
-            [views addObjectsFromArray:subview.subviews];
-        }
-        [views removeObjectAtIndex:0];
-    }
-    [views removeAllObjects];
-    if (dimmingView) {
-        CGRect dimmingFrame = dimmingView.superview.frame;
-        dimmingFrame.origin.y = controller.searchBar.frame.size.height;
-        dimmingFrame.size.height = self.view.frame.size.height - dimmingFrame.origin.y;
-        dimmingView.superview.frame = dimmingFrame;
-    }
-}
-
-- (void)correctFramesForSearchDisplayControllerBeginSearch:(BOOL)beginSearch searchDisplayController:(UISearchDisplayController *)controller {
-    [self.navigationController setNavigationBarHidden:beginSearch animated:YES];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self correctSearchDisplayFrames:controller];
-        [_tableView setContentOffset:CGPointMake(0, -44) animated:YES];
-    });
 }
 
 #pragma mark - UVSigninManagerDelegate

@@ -7966,6 +7966,7 @@
             "mainGroup": "37FEEB8315745488003F2B77",
             "productRefGroup": "37FEEB8F15745488003F2B77",
             "projectDirPath": "",
+            "projectReferences": [],
             "projectRoot": "",
             "targets": [
                 "37FEEB8D15745488003F2B77",
@@ -8015,7 +8016,8 @@
                 "376E0A80175AA9EC004CCDEE",
                 "37800E9A162D5264009FCB17",
                 "37B5F4E51773864C005687DA",
-                "3709354F1894C7DA00E3588E"
+                "3709354F1894C7DA00E3588E",
+                "FDFF49EA3A8BE3E27B7C4F28"
             ],
             "isa": "PBXFrameworksBuildPhase",
             "runOnlyForDeploymentPostprocessing": "0"
@@ -10261,6 +10263,10 @@
             "name": "Pods.delicious debug.xcconfig",
             "path": "Pods/Target Support Files/Pods/Pods.delicious debug.xcconfig",
             "sourceTree": "<group>"
+        },
+        "FDFF49EA3A8BE3E27B7C4F28": {
+            "fileRef": "784337BD93F74E058D4FD66B",
+            "isa": "PBXBuildFile"
         }
     },
     "rootObject": "37FEEB8515745488003F2B77"
