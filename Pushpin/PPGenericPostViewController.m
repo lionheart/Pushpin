@@ -1902,27 +1902,6 @@ static NSInteger kToolbarHeight = 44;
     }
 }
 
-- (void)bookmarkCellDidScroll:(CGPoint)offset {
-    CGFloat distanceFromMaxOffset = ABS(offset.x) - [self bookmarkCellMaxHorizontalOffset];
-    if (distanceFromMaxOffset > 0) {
-        if (offset.x > 0) {
-            self.currentTableView.contentOffset = CGPointMake(-MIN(distanceFromMaxOffset, pow(distanceFromMaxOffset, 0.75)), self.currentTableView.contentOffset.y);
-        }
-        else {
-            self.currentTableView.contentOffset = CGPointMake(MIN(distanceFromMaxOffset, pow(distanceFromMaxOffset, 0.75)), self.currentTableView.contentOffset.y);
-        }
-    }
-    else {
-        if (self.currentTableView.contentOffset.x != 0) {
-            self.currentTableView.contentOffset = CGPointMake(0, self.currentTableView.contentOffset.y);
-        }
-    }
-}
-
-- (CGFloat)bookmarkCellMaxHorizontalOffset {
-    return 60;
-}
-
 - (UITableView *)currentTableView {
     if (self.currentDataSource == self.postDataSource) {
         return self.tableView;
