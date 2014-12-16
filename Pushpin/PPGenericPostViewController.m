@@ -344,7 +344,13 @@ static NSInteger kToolbarHeight = 44;
     }
 
     if (![self.view.constraints containsObject:self.multipleEditToolbarBottomConstraint]) {
-        self.multipleEditToolbarBottomConstraint = [NSLayoutConstraint constraintWithItem:self.multiToolbarView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:kToolbarHeight];
+        self.multipleEditToolbarBottomConstraint = [NSLayoutConstraint constraintWithItem:self.multiToolbarView
+                                                                                attribute:NSLayoutAttributeBottom
+                                                                                relatedBy:NSLayoutRelationEqual
+                                                                                   toItem:self.tableView
+                                                                                attribute:NSLayoutAttributeBottom
+                                                                               multiplier:1
+                                                                                 constant:kToolbarHeight];
         [self.view addConstraint:self.multipleEditToolbarBottomConstraint];
     }
     
@@ -798,7 +804,8 @@ static NSInteger kToolbarHeight = 44;
             UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
             searchTextField.enabled = YES;
             searchTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-            
+
+            self.tableView.contentInset = UIEdgeInsetsZero;
             self.multipleEditToolbarBottomConstraint.constant = kToolbarHeight;
             [self.view layoutIfNeeded];
         }];
@@ -823,7 +830,8 @@ static NSInteger kToolbarHeight = 44;
             
             UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
             searchTextField.enabled = NO;
-            
+
+            self.tableView.contentInset = UIEdgeInsetsMake(0, 0, kToolbarHeight, 0);
             self.multipleEditToolbarBottomConstraint.constant = 0;
             [self.view layoutIfNeeded];
         }];
