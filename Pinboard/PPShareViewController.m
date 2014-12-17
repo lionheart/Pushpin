@@ -115,6 +115,7 @@
     PPNavigationController *navigation = [[PPNavigationController alloc] initWithRootViewController:addBookmarkViewController];
     navigation.modalPresentationStyle = UIModalPresentationFormSheet;
     navigation.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    [PPTheme customizeUIElements];
 
     [self presentViewController:navigation animated:YES completion:^{
         if (self.hasToken) {
