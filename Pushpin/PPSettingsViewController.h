@@ -15,32 +15,31 @@
 #import "PPTableViewController.h"
 #import "PocketAPI.h"
 
-typedef enum : NSInteger {
+typedef NS_ENUM(NSInteger, PPSectionType) {
     PPSectionMainSettings,
-    PPSectionOtherSettings
-} PPSectionType;
+    PPSectionOtherSettings,
+    PPSectionCacheSettings
+};
 
-typedef enum : NSInteger {
+typedef NS_ENUM(NSInteger, PPMainSettingsRowType) {
     PPMainReadLater,
     PPMainReader,
     PPMainOffline,
     PPMainBrowser,
     PPMainAdvanced,
-} PPMainSettingsRowType;
+};
 
-typedef enum : NSInteger {
+typedef NS_ENUM(NSInteger, PPOtherSettingsRowType) {
     PPOtherRatePushpin,
     PPOtherFollow,
     PPOtherFeedback,
     PPOtherLogout,
-
-    // Unused
-    PPOtherClearCache
-} PPOtherSettingsRowType;
+};
 
 enum : NSInteger {
     PPRowCountMain = PPMainAdvanced + 1,
-    PPRowCountOther = PPOtherLogout + 1
+    PPRowCountOther = PPOtherLogout + 1,
+    PPRowCountCache = 1,
 };
 
 @interface PPSettingsViewController : PPTableViewController <UIWebViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate>

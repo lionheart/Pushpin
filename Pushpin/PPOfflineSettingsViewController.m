@@ -138,7 +138,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
             
         case PPOfflineSettingsSectionClearCache: {
             cell = [tableView dequeueReusableCellWithIdentifier:DefaultCellIdentifier forIndexPath:indexPath];
-            cell.textLabel.text = @"Clear Cache";
+            cell.textLabel.text = @"Clear Offline Cache";
             cell.textLabel.textAlignment = NSTextAlignmentCenter;
             cell.textLabel.textColor = [UIColor redColor];
             break;

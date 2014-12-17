@@ -347,7 +347,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -357,6 +357,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
         case PPSectionOtherSettings:
             return PPRowCountOther;
+
+        case PPSectionCacheSettings:
+            return PPRowCountCache;
     }
 }
 
@@ -447,16 +450,20 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     cell.textLabel.text = NSLocalizedString(@"Log Out", nil);
                     break;
 
-                case PPOtherClearCache:
-                    cell.textLabel.text = NSLocalizedString(@"Purge Cache", nil);
-                    break;
-
                 default:
                     break;
             }
 
             break;
         }
+
+        case PPSectionCacheSettings: {
+            cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+            cell.textLabel.text = NSLocalizedString(@"Clear Cache", nil);
+            cell.textLabel.textColor = [UIColor redColor];
+            break;
+        }
+
         default:
             break;
     }
@@ -468,6 +475,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
     switch ((PPSectionType)section) {
         case PPSectionOtherSettings:
             return NSLocalizedString(@"Logging out of the application will reset the bookmark database on this device.", nil);
+
+        case PPSectionCacheSettings:
+            return NSLocalizedString(@"Clearing your cache removes all stored cookies and session information from the in-app browser.", nil);
 
         default:
             break;
@@ -571,33 +581,35 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     [self presentViewController:self.logOutAlertView animated:YES completion:nil];
                     [tableView deselectRowAtIndexPath:indexPath animated:YES];
                     break;
-
-                case PPOtherClearCache: {
-                    UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Resetting Cache", nil) message:nil];
-                    [self presentViewController:alert animated:YES completion:nil];
-                    
-                    [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
-                        [db executeUpdate:@"DELETE FROM rejected_bookmark;"];
-                    }];
-                    
-                    double delayInSeconds = 1.0;
-                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-                    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                        [self dismissViewControllerAnimated:YES completion:nil];
-                        
-                        UIAlertController *successAlertView = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Success", nil)
-                                                                                                message:NSLocalizedString(@"Your cache was cleared.", nil)];
-                        [self presentViewController:successAlertView animated:YES completion:nil];
-
-                        double delayInSeconds = 1.0;
-                        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-                        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                            [self dismissViewControllerAnimated:YES completion:nil];
-                        });
-                    });
-                    break;
-                }
             }
+            break;
+        }
+
+        case PPSectionCacheSettings: {
+            UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Resetting Cache", nil) message:nil];
+            [self presentViewController:alert animated:YES completion:nil];
+
+            NSHTTPCookie *cookie;
+            NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+            for (cookie in [storage cookies]) {
+                [storage deleteCookie:cookie];
+            }
+
+            double delayInSeconds = 1.0;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                [self dismissViewControllerAnimated:YES completion:nil];
+
+                UIAlertController *successAlertView = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Success", nil)
+                                                                                        message:NSLocalizedString(@"Your cache was cleared.", nil)];
+                [self presentViewController:successAlertView animated:YES completion:nil];
+
+                double delayInSeconds = 2.0;
+                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                    [self dismissViewControllerAnimated:YES completion:nil];
+                });
+            });
             break;
         }
     }
