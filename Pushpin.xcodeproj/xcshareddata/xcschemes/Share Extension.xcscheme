@@ -42,8 +42,8 @@
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "NO">
       <IDERemoteRunnable
-         RemotePath = "/Applications/MobileSafari.app"
-         BundleIdentifier = "/Applications/MobileSafari.app">
+         RemotePath = "/var/mobile/Containers/Bundle/Application/5ADE9ACB-8818-49C7-9E32-A822AB881958/Instapaper.app"
+         BundleIdentifier = "/var/mobile/Containers/Bundle/Application/5ADE9ACB-8818-49C7-9E32-A822AB881958/Instapaper.app">
       </IDERemoteRunnable>
       <MacroExpansion>
          <BuildableReference
@@ -56,6 +56,10 @@
       </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
+      <IDERemoteRunnable
+         RemotePath = "/Applications/MobileSafari.app"
+         BundleIdentifier = "/Applications/MobileSafari.app">
+      </IDERemoteRunnable>
       <IDERemoteRunnable
          RemotePath = "/Applications/MobileSafari.app"
          BundleIdentifier = "/Applications/MobileSafari.app">

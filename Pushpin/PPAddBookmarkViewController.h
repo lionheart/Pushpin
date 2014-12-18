@@ -10,9 +10,7 @@
 
 #import "PPAppDelegate.h"
 #import "PPBadgeWrapperView.h"
-#import "PPTagEditViewController.h"
 #import "PPEditDescriptionViewController.h"
-
 
 @class PPNavigationController;
 
@@ -29,7 +27,7 @@ typedef enum BookmarkSections {
     kBookmarkBottomSection,
 } BookmarkSectionType;
 
-@interface PPAddBookmarkViewController : UITableViewController <UITextFieldDelegate, UITextViewDelegate, PPTagEditing, PPDescriptionEditing> {
+@interface PPAddBookmarkViewController : UITableViewController <PPBadgeWrapperDelegate, UITextFieldDelegate, UITextViewDelegate, PPDescriptionEditing> {
     UIEdgeInsets _oldContentInset;
 }
 
@@ -63,7 +61,7 @@ typedef enum BookmarkSections {
 @property (nonatomic, assign) UIEdgeInsets keyboardTableInset;
 @property (nonatomic, strong) UISwipeGestureRecognizer *descriptionGestureRecognizer;
 @property (nonatomic, strong) UISwipeGestureRecognizer *leftSwipeTagGestureRecognizer;
-@property (nonatomic, strong) UISwipeGestureRecognizer *tagGestureRecognizer;
+@property (nonatomic, strong) UISwipeGestureRecognizer *rightSwipeTagGestureRecognizer;
 @property (nonatomic, strong) UISwipeGestureRecognizer *titleGestureRecognizer;
 @property (nonatomic, strong) UIViewController *editTextViewController;
 @property (nonatomic, strong) UITapGestureRecognizer *badgeTapGestureRecognizer;

@@ -357,7 +357,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
         case PPSectionOtherSettings:
             return PPRowCountOther;
-
+            
         case PPSectionCacheSettings:
             return PPRowCountCache;
     }
@@ -456,7 +456,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
             break;
         }
-
+            
         case PPSectionCacheSettings: {
             cell.selectionStyle = UITableViewCellSelectionStyleDefault;
             cell.textLabel.text = NSLocalizedString(@"Clear Cache", nil);
@@ -584,26 +584,26 @@ static NSString *CellIdentifier = @"CellIdentifier";
             }
             break;
         }
-
+            
         case PPSectionCacheSettings: {
             UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Resetting Cache", nil) message:nil];
             [self presentViewController:alert animated:YES completion:nil];
-
+            
             NSHTTPCookie *cookie;
             NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
             for (cookie in [storage cookies]) {
                 [storage deleteCookie:cookie];
             }
-
+            
             double delayInSeconds = 1.0;
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
             dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                 [self dismissViewControllerAnimated:YES completion:nil];
-
+                
                 UIAlertController *successAlertView = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Success", nil)
                                                                                         message:NSLocalizedString(@"Your cache was cleared.", nil)];
                 [self presentViewController:successAlertView animated:YES completion:nil];
-
+                
                 double delayInSeconds = 2.0;
                 dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
                 dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
