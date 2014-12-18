@@ -8004,6 +8004,7 @@
                 "371BCB0215772C0E00BDA996",
                 "37887D6A18C51F7D00A20B76",
                 "37FEEB9515745488003F2B77",
+                "FDFF49EA3A8BE3E27B7C4F28",
                 "37E329ED1629F82D00A6BC18",
                 "372F88821673EE280073D0B6",
                 "37247FF61633407E00417E65",
@@ -8015,8 +8016,7 @@
                 "376E0A80175AA9EC004CCDEE",
                 "37800E9A162D5264009FCB17",
                 "37B5F4E51773864C005687DA",
-                "3709354F1894C7DA00E3588E",
-                "FDFF49EA3A8BE3E27B7C4F28"
+                "3709354F1894C7DA00E3588E"
             ],
             "isa": "PBXFrameworksBuildPhase",
             "runOnlyForDeploymentPostprocessing": "0"
