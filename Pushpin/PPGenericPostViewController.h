@@ -45,7 +45,7 @@ typedef enum : NSInteger {
     PPSearchScopePublic,
 } PPSearchBarScopeType;
 
-@interface PPGenericPostViewController : UIViewController <UITableViewDataSource, UITableViewDelegate,   UISearchBarDelegate, UISearchDisplayDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, PPBadgeWrapperDelegate, PPTitleButtonDelegate, PPBookmarkCellDelegate, UIDynamicAnimatorDelegate>
+@interface PPGenericPostViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, PPBadgeWrapperDelegate, PPTitleButtonDelegate, PPBookmarkCellDelegate, UIDynamicAnimatorDelegate, UISearchControllerDelegate, UISearchBarDelegate, UISearchResultsUpdating>
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) PPWebViewController *webViewController;
@@ -61,9 +61,6 @@ typedef enum : NSInteger {
 @property (nonatomic, retain) NSIndexPath *selectedIndexPath;
 @property (nonatomic, strong) UIAlertController *confirmDeletionAlertView;
 @property (nonatomic) CFAbsoluteTime latestSearchUpdateTime;
-
-@property (nonatomic, strong) IBOutlet UISearchBar *searchBar;
-@property (nonatomic, strong) UISearchDisplayController *searchDisplayController;
 
 // UIKit Dynamics
 @property (nonatomic, strong) FluidTableviewFlowLayout *collectionViewLayout;

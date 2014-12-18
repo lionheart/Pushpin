@@ -27,6 +27,7 @@
 #import "PPShrinkBackTransition.h"
 #import "PPNotification.h"
 #import "PPSplitViewController.h"
+
 #import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 
 #import <FMDB/FMDatabase.h>
@@ -51,7 +52,6 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic, strong) UIAlertController *confirmMultipleDeletionActionSheet;
 @property (nonatomic, strong) NSLayoutConstraint *multipleEditToolbarBottomConstraint;
 @property (nonatomic, retain) UILongPressGestureRecognizer *longPressGestureRecognizer;
-@property (nonatomic, strong) UILongPressGestureRecognizer *searchDisplayLongPressGestureRecognizer;
 @property (nonatomic, strong) NSArray *indexPathsToDelete;
 @property (nonatomic) BOOL prefersStatusBarHidden;
 @property (nonatomic, strong) NSDate *latestSearchTime;
@@ -81,6 +81,9 @@ static NSInteger kToolbarHeight = 44;
 @property (nonatomic, strong) NSTimer *circleHideTimer;
 
 @property (nonatomic, strong) PPShrinkBackTransition *shrinkBackTransition;
+
+@property (nonatomic, strong) PPTableViewController *searchResultsController;
+@property (nonatomic, strong) UISearchController *searchController;
 
 - (void)handleKeyCommand:(UIKeyCommand *)keyCommand;
 
@@ -124,7 +127,6 @@ static NSInteger kToolbarHeight = 44;
 
 @implementation PPGenericPostViewController
 
-@synthesize searchDisplayController = __searchDisplayController;
 @synthesize itemSize = _itemSize;
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
@@ -223,37 +225,35 @@ static NSInteger kToolbarHeight = 44;
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
     
     if ([self.postDataSource respondsToSelector:@selector(searchSupported)] && [self.postDataSource searchSupported]) {
-        self.searchDisplayLongPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
+        self.searchResultsController = [[PPTableViewController alloc] initWithStyle:UITableViewStylePlain];
+        self.searchResultsController.tableView.delegate = self;
+        self.searchResultsController.tableView.dataSource = self;
+        [self.searchResultsController.tableView registerClass:[PPBookmarkCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
+
+        self.searchController = [[UISearchController alloc] initWithSearchResultsController:self.searchResultsController];
+        self.searchController.delegate = self;
+        self.searchController.searchResultsUpdater = self;
+        self.searchController.definesPresentationContext = YES;
         
-        self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, [self currentWidth], 44)];
-        self.searchBar.delegate = self;
-        self.searchBar.keyboardType = UIKeyboardTypeASCIICapable;
-        self.searchBar.searchBarStyle = UISearchBarStyleProminent;
-        self.searchBar.isAccessibilityElement = YES;
-        self.searchBar.accessibilityLabel = NSLocalizedString(@"Search Bar", nil);
+        [self.searchController.searchBar sizeToFit];
+        self.searchController.searchBar.delegate = self;
+        self.searchController.searchBar.keyboardType = UIKeyboardTypeASCIICapable;
+        self.searchController.searchBar.searchBarStyle = UISearchBarStyleProminent;
+        self.searchController.searchBar.isAccessibilityElement = YES;
+        self.searchController.searchBar.accessibilityLabel = NSLocalizedString(@"Search Bar", nil);
 #ifdef DELICIOUS
-        self.searchBar.scopeButtonTitles = @[@"All", @"Title", @"Desc.", @"Tags"];
+        self.searchController.searchBar.scopeButtonTitles = @[@"All", @"Title", @"Desc.", @"Tags"];
 #endif
         
 #ifdef PINBOARD
-        self.searchBar.scopeButtonTitles = @[@"All", @"Title", @"Desc.", @"Tags", @"Full Text"];
+        self.searchController.searchBar.scopeButtonTitles = @[@"All", @"Title", @"Desc.", @"Tags", @"Full Text"];
 #endif
-        self.searchBar.showsScopeBar = YES;
-        
-        self.tableView.tableHeaderView = self.searchBar;
         
         if ([self.searchPostDataSource respondsToSelector:@selector(searchPlaceholder)]) {
-            self.searchBar.placeholder = [self.searchPostDataSource searchPlaceholder];
+            self.searchController.searchBar.placeholder = [self.searchPostDataSource searchPlaceholder];
         }
-        
-        self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
-        self.searchDisplayController.searchResultsDataSource = self;
-        self.searchDisplayController.searchResultsDelegate = self;
-        self.searchDisplayController.delegate = self;
-        [self.searchDisplayController.searchResultsTableView addGestureRecognizer:self.searchDisplayLongPressGestureRecognizer];
-        [self.searchDisplayController.searchResultsTableView registerClass:[PPBookmarkCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
-        
-        self.tableView.contentOffset = CGPointMake(0, CGRectGetHeight(self.searchBar.frame));
+
+        self.tableView.tableHeaderView = self.searchController.searchBar;
     }
     
     // Setup the multi-edit toolbar
@@ -311,9 +311,7 @@ static NSInteger kToolbarHeight = 44;
     [self.multiToolbarView lhs_addConstraints:@"V:|[border(0.5)]" views:toolbarViews];
     
     NSDictionary *views = @{@"toolbarView": self.multiToolbarView,
-                            @"table": self.tableView,
-                            @"top": self.topLayoutGuide,
-                            @"bottom": self.bottomLayoutGuide };
+                            @"table": self.tableView};
 
     [self.tableView lhs_fillHeightOfSuperview];
     [self.tableView lhs_fillWidthOfSuperview];
@@ -619,12 +617,6 @@ static NSInteger kToolbarHeight = 44;
         self.selectedPost = [self.postDataSource postAtIndex:self.selectedIndexPath.row];
         [self openActionSheetForSelectedPost];
     }
-    else if (recognizer == self.searchDisplayLongPressGestureRecognizer) {
-        self.selectedPoint = [recognizer locationInView:self.searchDisplayController.searchResultsTableView];
-        self.selectedIndexPath = [self.searchDisplayController.searchResultsTableView indexPathForRowAtPoint:self.selectedPoint];
-        self.selectedPost = [self.searchPostDataSource postAtIndex:self.selectedIndexPath.row];
-        [self openActionSheetForSelectedPost];
-    }
     else if (recognizer == self.pinchGestureRecognizer) {
         if (recognizer.state != UIGestureRecognizerStateBegan) {
             BOOL needsReload = NO;
@@ -670,11 +662,11 @@ static NSInteger kToolbarHeight = 44;
     self.latestSearchTime = time;
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (self.searchDisplayController.isActive) {
+        if (self.searchController.isActive) {
             [self.searchPostDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (!error) {
-                        UITableView *tableView = self.searchDisplayController.searchResultsTableView;
+                        UITableView *tableView = self.searchResultsController.tableView;
                         
                         CLS_LOG(@"Table View Reload 1");
 
@@ -764,7 +756,7 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)updateSearchResultsForSearchPerformedAtTime:(NSDate *)time {
 #ifdef PINBOARD
-    if (self.searchBar.selectedScopeButtonIndex == PPSearchScopeFullText) {
+    if (self.searchController.searchBar.selectedScopeButtonIndex == PPSearchScopeFullText) {
         [(PPPinboardDataSource *)self.searchPostDataSource setSearchScope:ASPinboardSearchScopeFullText];
     }
     else {
@@ -801,7 +793,7 @@ static NSInteger kToolbarHeight = 44;
         }
         
         [UIView animateWithDuration:0.25 animations:^{
-            UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
+            UITextField *searchTextField = [self.searchController.searchBar valueForKey:@"_searchField"];
             searchTextField.enabled = YES;
             searchTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
 
@@ -828,7 +820,7 @@ static NSInteger kToolbarHeight = 44;
         
         [UIView animateWithDuration:0.25 animations:^{
             
-            UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
+            UITextField *searchTextField = [self.searchController.searchBar valueForKey:@"_searchField"];
             searchTextField.enabled = NO;
 
             self.tableView.contentInset = UIEdgeInsetsMake(0, 0, kToolbarHeight, 0);
@@ -848,7 +840,7 @@ static NSInteger kToolbarHeight = 44;
             CLS_LOG(@"Table View Reload 3");
             [self updateFromLocalDatabaseWithCallback:^{
                 [UIView animateWithDuration:0.25 animations:^{
-                    UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
+                    UITextField *searchTextField = [self.searchController.searchBar valueForKey:@"_searchField"];
                     searchTextField.enabled = YES;
                 } completion:^(BOOL finished) {
                     self.indexPathsToDelete = @[];
@@ -868,7 +860,7 @@ static NSInteger kToolbarHeight = 44;
             CLS_LOG(@"Table View Reload 4");
             
             if (dataSource == self.searchPostDataSource) {
-                [self.searchDisplayController.searchResultsTableView deselectRowAtIndexPath:indexPath animated:YES];
+                [self.searchResultsController.tableView deselectRowAtIndexPath:indexPath animated:YES];
             }
             else {
                 [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -876,7 +868,7 @@ static NSInteger kToolbarHeight = 44;
 
             [self updateFromLocalDatabaseWithCallback:^{
                 [UIView animateWithDuration:0.25 animations:^{
-                    UITextField *searchTextField = [self.searchBar valueForKey:@"_searchField"];
+                    UITextField *searchTextField = [self.searchController.searchBar valueForKey:@"_searchField"];
                     searchTextField.enabled = YES;
                 } completion:^(BOOL finished) {
                     self.selectedPost = nil;
@@ -1090,8 +1082,8 @@ static NSInteger kToolbarHeight = 44;
                                                                             NSString *title = [self.currentDataSource titleForPostAtIndex:self.selectedIndexPath.row].string;
                                                                             
                                                                             CGRect rect;
-                                                                            if (self.searchDisplayController.isActive) {
-                                                                                rect = [self.searchDisplayController.searchResultsTableView rectForRowAtIndexPath:self.selectedIndexPath];
+                                                                            if (self.searchController.isActive) {
+                                                                                rect = [self.searchResultsController.tableView rectForRowAtIndexPath:self.selectedIndexPath];
                                                                             }
                                                                             else {
                                                                                 rect = [self.tableView rectForRowAtIndexPath:self.selectedIndexPath];
@@ -1314,7 +1306,7 @@ static NSInteger kToolbarHeight = 44;
                                                                       handler:^(UIAlertAction *action) {
                                                                           self.tableView.scrollEnabled = YES;
 
-                                                                          if (self.searchDisplayController.isActive) {
+                                                                          if (self.searchController.isActive) {
                                                                               [self deletePosts:@[self.selectedPost] dataSource:self.searchPostDataSource];
                                                                           }
                                                                           else {
@@ -1334,58 +1326,10 @@ static NSInteger kToolbarHeight = 44;
 
 #pragma mark - UISearchBarDelegate
 
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    if (![searchText isEqualToString:emptyString]) {
-        switch (self.searchBar.selectedScopeButtonIndex) {
-            case PPSearchScopeTitles:
-                self.formattedSearchString = [NSString stringWithFormat:@"title:\"%@\"", searchText];
-                break;
-                
-            case PPSearchScopeDescriptions:
-                self.formattedSearchString = [NSString stringWithFormat:@"description:\"%@\"", searchText];
-                break;
-                
-            case PPSearchScopeTags:
-                self.formattedSearchString = [NSString stringWithFormat:@"tags:\"%@\"", searchText];
-                break;
-                
-            default:
-                self.formattedSearchString = searchText;
-                break;
-        }
-        
-        BOOL shouldSearchFullText = NO;
-        
-#ifdef PINBOARD
-        if ([self.searchPostDataSource respondsToSelector:@selector(shouldSearchFullText)]) {
-            shouldSearchFullText = self.searchBar.selectedScopeButtonIndex == PPSearchScopeFullText;
-        }
-#endif
-        
-        self.latestSearchTime = [NSDate date];
-        if (shouldSearchFullText) {
-            // Put this on a timer, since we don't want to kill Pinboard servers.
-            if (self.fullTextSearchTimer) {
-                [self.fullTextSearchTimer invalidate];
-            }
-            
-            self.fullTextSearchTimer = [NSTimer timerWithTimeInterval:0.4
-                                                               target:self
-                                                             selector:@selector(updateSearchResultsForSearchPerformed:)
-                                                             userInfo:@{@"time": self.latestSearchTime}
-                                                              repeats:NO];
-            [[NSRunLoop mainRunLoop] addTimer:self.fullTextSearchTimer forMode:NSRunLoopCommonModes];
-        }
-        else {
-            [self updateSearchResultsForSearchPerformedAtTime:self.latestSearchTime];
-        }
-    }
-}
-
 - (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope {
     NSString *searchText = searchBar.text;
     if (![searchText isEqualToString:emptyString]) {
-        switch (self.searchBar.selectedScopeButtonIndex) {
+        switch (self.searchController.searchBar.selectedScopeButtonIndex) {
             case PPSearchScopeTitles:
                 self.formattedSearchString = [NSString stringWithFormat:@"title:\"%@\"", searchText];
                 break;
@@ -1412,22 +1356,6 @@ static NSInteger kToolbarHeight = 44;
 }
 
 #pragma mark - UISearchDisplayControllerDelegate
-
-- (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller {
-    self.searchBar.hidden = NO;
-    self.tableView.tableHeaderView = self.searchBar;
-    
-    // Would like not to set the content offset to hide the search bar, but there seems to be a bug in UISearchDisplayController where the search bar is hidden when it's used as a header view.
-    [self.tableView setContentOffset:CGPointMake(0, CGRectGetHeight(self.searchBar.frame)) animated:NO];
-}
-
-- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption {
-    return NO;
-}
-
-- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
-    return NO;
-}
 
 - (void)removeBarButtonTouchUpside:(id)sender {
     __weak PPGenericPostViewController *weakself = self;
@@ -1474,7 +1402,7 @@ static NSInteger kToolbarHeight = 44;
 
 - (id<PPDataSource>)currentDataSource {
     id <PPDataSource> dataSource;
-    if (self.searchDisplayController.isActive) {
+    if (self.searchController.isActive) {
         dataSource = self.searchPostDataSource;
     }
     else {
@@ -1750,7 +1678,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (NSArray *)keyCommands {
-    if ([self.searchBar isFirstResponder]) {
+    if ([self.searchController.searchBar isFirstResponder]) {
         return @[self.enterKeyCommand];
     }
     else {
@@ -1760,16 +1688,16 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)handleKeyCommand:(UIKeyCommand *)keyCommand {
     if (keyCommand == self.enterKeyCommand) {
-        [self.searchBar resignFirstResponder];
+        [self.searchController.searchBar resignFirstResponder];
     }
     else if (keyCommand == self.focusSearchKeyCommand) {
-        [self.searchBar becomeFirstResponder];
+        [self.searchController.searchBar becomeFirstResponder];
     }
     else if (keyCommand == self.toggleCompressKeyCommand) {
         [self toggleCompressedPosts];
     }
     else if (keyCommand == self.escapeKeyCommand) {
-        [self.searchBar resignFirstResponder];
+        [self.searchController.searchBar resignFirstResponder];
     }
     else if (keyCommand == self.moveUpKeyCommand) {
         if (self.selectedIndexPath) {
@@ -1800,7 +1728,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (NSArray *)posts {
-    if (self.searchDisplayController.isActive) {
+    if (self.searchController.isActive) {
         return [self.searchPostDataSource posts];
     }
     else {
@@ -1809,7 +1737,7 @@ static NSInteger kToolbarHeight = 44;
 }
 
 - (void)refreshControlValueChanged:(id)sender {
-    if (!self.tableView.editing && !self.isProcessingPosts && !self.searchDisplayController.isActive) {
+    if (!self.tableView.editing && !self.isProcessingPosts && !self.searchController.isActive) {
         [self.postDataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
             if (error) {
                 [self responseFailureHandler:error];
@@ -1907,8 +1835,64 @@ static NSInteger kToolbarHeight = 44;
         return self.tableView;
     }
     else {
-        return self.searchDisplayController.searchResultsTableView;
+        return self.searchResultsController.tableView;
     }
+}
+
+#pragma mark - UISearchResultsUpdating
+
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
+    NSString *searchText = searchController.searchBar.text;
+
+    if (![searchText isEqualToString:emptyString]) {
+        switch (self.searchController.searchBar.selectedScopeButtonIndex) {
+            case PPSearchScopeTitles:
+                self.formattedSearchString = [NSString stringWithFormat:@"title:\"%@\"", searchText];
+                break;
+                
+            case PPSearchScopeDescriptions:
+                self.formattedSearchString = [NSString stringWithFormat:@"description:\"%@\"", searchText];
+                break;
+                
+            case PPSearchScopeTags:
+                self.formattedSearchString = [NSString stringWithFormat:@"tags:\"%@\"", searchText];
+                break;
+                
+            default:
+                self.formattedSearchString = searchText;
+                break;
+        }
+        
+        BOOL shouldSearchFullText = NO;
+        
+#ifdef PINBOARD
+        if ([self.searchPostDataSource respondsToSelector:@selector(shouldSearchFullText)]) {
+            shouldSearchFullText = self.searchController.searchBar.selectedScopeButtonIndex == PPSearchScopeFullText;
+        }
+#endif
+        
+        self.latestSearchTime = [NSDate date];
+        if (shouldSearchFullText) {
+            // Put this on a timer, since we don't want to kill Pinboard servers.
+            if (self.fullTextSearchTimer) {
+                [self.fullTextSearchTimer invalidate];
+            }
+            
+            self.fullTextSearchTimer = [NSTimer timerWithTimeInterval:0.4
+                                                               target:self
+                                                             selector:@selector(updateSearchResultsForSearchPerformed:)
+                                                             userInfo:@{@"time": self.latestSearchTime}
+                                                              repeats:NO];
+            [[NSRunLoop mainRunLoop] addTimer:self.fullTextSearchTimer forMode:NSRunLoopCommonModes];
+        }
+        else {
+            [self updateSearchResultsForSearchPerformedAtTime:self.latestSearchTime];
+        }
+    }
+}
+
+- (void)didDismissSearchController:(UISearchController *)searchController {
+    [self setNeedsStatusBarAppearanceUpdate];
 }
 
 @end

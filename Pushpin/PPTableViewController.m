@@ -31,6 +31,11 @@
     self = [super init];
     if (self) {
         self.style = style;
+        
+        self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:self.style];
+        self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
+        self.tableView.backgroundColor = HEX(0xF7F9FDff);
+        self.tableView.opaque = YES;
     }
     return self;
 }
@@ -38,21 +43,20 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [self.view addSubview:self.tableView];
     self.edgesForExtendedLayout = UIRectEdgeNone;
 
-    self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:self.style];
-    self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
-    self.tableView.backgroundColor = HEX(0xF7F9FDff);
-    self.tableView.delegate = self;
-    self.tableView.dataSource = self;
-    self.tableView.opaque = NO;
-    [self.view addSubview:self.tableView];
-    
     NSDictionary *views = @{@"table": self.tableView};
     [self.tableView lhs_fillWidthOfSuperview];
     [self.view lhs_addConstraints:@"V:|[table]" views:views];
-    
-    self.bottomConstraint = [NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+
+    self.bottomConstraint = [NSLayoutConstraint constraintWithItem:self.tableView
+                                                         attribute:NSLayoutAttributeBottom
+                                                         relatedBy:NSLayoutRelationEqual
+                                                            toItem:self.view
+                                                         attribute:NSLayoutAttributeBottom
+                                                        multiplier:1
+                                                          constant:0];
     [self.view addConstraint:self.bottomConstraint];
 }
 
