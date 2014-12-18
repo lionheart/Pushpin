@@ -35,14 +35,16 @@
         self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:self.style];
         self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
         self.tableView.backgroundColor = HEX(0xF7F9FDff);
-        self.tableView.opaque = YES;
+        self.tableView.opaque = NO;
+        self.tableView.delegate = self;
+        self.tableView.dataSource = self;
     }
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     [self.view addSubview:self.tableView];
     self.edgesForExtendedLayout = UIRectEdgeNone;
 
