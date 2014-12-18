@@ -7966,7 +7966,6 @@
             "mainGroup": "37FEEB8315745488003F2B77",
             "productRefGroup": "37FEEB8F15745488003F2B77",
             "projectDirPath": "",
-            "projectReferences": [],
             "projectRoot": "",
             "targets": [
                 "37FEEB8D15745488003F2B77",
