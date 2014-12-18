@@ -194,6 +194,11 @@
     if (!_enableAutoCorrect) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         _enableAutoCorrect = [[defaults objectForKey:@"io.aurora.pinboard.EnableAutoCorrect"] boolValue];
+        
+        if (!_enableAutoCorrect) {
+            NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
+            _enableAutoCorrect = [[sharedDefaults objectForKey:@"EnableAutoCorrect"] boolValue];
+        }
     }
     return _enableAutoCorrect;
 }
@@ -203,12 +208,20 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:@(enableAutoCorrect) forKey:@"io.aurora.pinboard.EnableAutoCorrect"];
     [defaults synchronize];
+    
+    NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
+    [sharedDefaults setObject:@(enableAutoCorrect) forKey:@"EnableAutoCorrect"];
 }
 
 - (BOOL)enableAutoCapitalize {
     if (!_enableAutoCapitalize) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         _enableAutoCapitalize = [[defaults objectForKey:@"io.aurora.pinboard.EnableAutoCapitalize"] boolValue];
+        
+        if (!_enableAutoCapitalize) {
+            NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
+            _enableAutoCapitalize = [[sharedDefaults objectForKey:@"EnableAutoCapitalize"] boolValue];
+        }
     }
     return _enableAutoCapitalize;
 }
@@ -218,6 +231,9 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:@(enableAutoCapitalize) forKey:@"io.aurora.pinboard.EnableAutoCapitalize"];
     [defaults synchronize];
+
+    NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
+    [sharedDefaults setObject:@(enableAutoCapitalize) forKey:@"EnableAutoCapitalize"];
 }
 
 - (void)setBrowser:(PPBrowserType)browser {

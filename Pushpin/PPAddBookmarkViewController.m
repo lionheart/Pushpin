@@ -148,6 +148,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                         NSForegroundColorAttributeName: HEX(0xc7c7cdff),
                                         NSParagraphStyleAttributeName: paragraphStyle } mutableCopy];
         
+        PPSettings *settings = [PPSettings sharedSettings];
+        
         UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:16];
         self.urlTextField = [[UITextField alloc] init];
         self.urlTextField.translatesAutoresizingMaskIntoConstraints = NO;
@@ -175,12 +177,16 @@ static NSString *CellIdentifier = @"CellIdentifier";
         self.titleTextField.returnKeyType = UIReturnKeyDone;
         self.titleTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
         self.titleTextField.delegate = self;
+        self.titleTextField.autocapitalizationType = [settings autoCapitalizationType];
+        self.titleTextField.autocorrectionType = [settings autoCorrectionType];
         self.titleTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
         self.titleTextField.placeholder = NSLocalizedString(@"Swipe right to prefill", nil);
         self.titleTextField.text = @"";
 
         self.tagTextField = [[UITextField alloc] init];
         self.tagTextField.font = font;
+        self.tagTextField.autocapitalizationType = [settings autoCapitalizationType];
+        self.tagTextField.autocorrectionType = [settings autoCorrectionType];
         self.tagTextField.placeholder = NSLocalizedString(@"Tap to add tags.", nil);
         self.tagTextField.translatesAutoresizingMaskIntoConstraints = NO;
         self.tagTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
