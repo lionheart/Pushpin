@@ -8,7 +8,7 @@
 
 @import UIKit;
 
-@interface PPTableViewController : UIViewController
+@interface PPTableViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSLayoutConstraint *bottomConstraint;
