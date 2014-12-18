@@ -100,12 +100,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.title = NSLocalizedString(@"Edit Tags", nil);
     
 #ifdef PINBOARD
-    if (self.presentedFromShareSheet) {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Suggest", nil)
-                                                                                  style:UIBarButtonItemStyleDone
-                                                                                 target:self
-                                                                                 action:@selector(rightBarButtonItemTouchUpInside:)];
-    }
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Suggest", nil)
+                                                                              style:UIBarButtonItemStyleDone
+                                                                             target:self
+                                                                             action:@selector(rightBarButtonItemTouchUpInside:)];
 #endif
 
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
@@ -540,6 +538,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                              offset:[self tagOffset]
                                            callback:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
                                                dispatch_async(dispatch_get_main_queue(), ^{
+                                                   self.tagTextField.text = @"";
+
                                                    [self.tableView beginUpdates];
                                                    
                                                    if (self.loadingTags) {
@@ -750,7 +750,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)rightBarButtonItemTouchUpInside:(id)sender {
     self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Suggest", nil);
-    
+
     if (self.filteredPopularAndRecommendedTagsVisible) {
         // Hide them if they're already showing
         NSInteger finalAmount;
