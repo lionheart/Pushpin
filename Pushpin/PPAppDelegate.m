@@ -278,7 +278,8 @@
     [[NSFileManager defaultManager] removeItemAtURL:newDatabaseURL error:nil];
     [[NSFileManager defaultManager] copyItemAtURL:databaseURL
                                             toURL:newDatabaseURL
-                                            error:nil];
+                                            error:&error];
+    
 
     PPSettings *settings = [PPSettings sharedSettings];
 #ifdef DELICIOUS
