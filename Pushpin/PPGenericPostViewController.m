@@ -333,7 +333,6 @@ static NSInteger kToolbarHeight = 44;
     
     if (!self.title && [self.postDataSource respondsToSelector:@selector(title)]) {
         self.title = [self.postDataSource title];
-        CLS_LOG(@"Post view appeared: %@", self.title);
     }
     
     if (!self.navigationItem.titleView && [self.postDataSource respondsToSelector:@selector(titleViewWithDelegate:)]) {
