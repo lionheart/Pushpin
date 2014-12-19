@@ -58,67 +58,68 @@
     if (self.hasToken) {
         [[ASPinboard sharedInstance] setToken:token];
     }
-
-    __block PPAddBookmarkViewController *addBookmarkViewController = [[PPAddBookmarkViewController alloc] init];
     
     void (^CompletionHandler)(NSString *urlString, NSString *title) = ^(NSString *urlString, NSString *title) {
-        if (urlString) {
-            // Check if the bookmark is already in the database.
-            __block NSDictionary *post;
-            __block NSInteger count;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            PPNavigationController *navigation;
             
-            NSURL *containerURL = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:APP_GROUP];
-            [[FMDatabaseQueue databaseQueueWithPath:[containerURL URLByAppendingPathComponent:@"shared.db"].path] inDatabase:^(FMDatabase *db) {
-                FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) AS count, * FROM bookmark WHERE url=?" withArgumentsInArray:@[urlString]];
-                [results next];
-                count = [results intForColumnIndex:0];
-
+            if (urlString) {
+                // Check if the bookmark is already in the database.
+                __block NSDictionary *post;
+                __block NSInteger count;
+                
+                NSURL *containerURL = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:APP_GROUP];
+                [[FMDatabaseQueue databaseQueueWithPath:[containerURL URLByAppendingPathComponent:@"shared.db"].path] inDatabase:^(FMDatabase *db) {
+                    FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) AS count, * FROM bookmark WHERE url=?" withArgumentsInArray:@[urlString]];
+                    [results next];
+                    count = [results intForColumnIndex:0];
+                    
+                    if (count > 0) {
+                        post = [PPPinboardDataSource postFromResultSet:results];
+                    }
+                    
+                    [results close];
+                }];
+                
                 if (count > 0) {
-                    post = [PPPinboardDataSource postFromResultSet:results];
+                    navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:post
+                                                                                             update:@(YES)
+                                                                                           callback:nil];
+                }
+                else {
+                    BOOL readByDefault = [[sharedDefaults objectForKey:@"ReadByDefault"] boolValue];
+                    BOOL privateByDefault = [[sharedDefaults objectForKey:@"PrivateByDefault"] boolValue];
+                    
+                    navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:@{@"title": title,
+                                                                                                      @"url": urlString,
+                                                                                                      @"private": @(privateByDefault),
+                                                                                                      @"unread": @(!readByDefault) }
+                                                                                             update:@(NO)
+                                                                                           callback:nil];
                 }
                 
-                [results close];
-            }];
-            
-            if (count > 0) {
-                [addBookmarkViewController configureWithBookmark:post
-                                                          update:@(YES)
-                                                        callback:nil];
-            }
-            else {
-                BOOL readByDefault = [[sharedDefaults objectForKey:@"ReadByDefault"] boolValue];
-                BOOL privateByDefault = [[sharedDefaults objectForKey:@"PrivateByDefault"] boolValue];
-                
-                [addBookmarkViewController configureWithBookmark:@{@"title": title,
-                                                                   @"url": urlString,
-                                                                   @"private": @(privateByDefault),
-                                                                   @"unread": @(!readByDefault) }
-                                                          update:@(NO)
-                                                        callback:nil];
+                PPAddBookmarkViewController *addBookmarkViewController = (PPAddBookmarkViewController *)navigation.topViewController;
+                addBookmarkViewController.presentingViewControllersExtensionContext = self.extensionContext;
+                addBookmarkViewController.tokenOverride = token;
+                [addBookmarkViewController prefillTitleAndForceUpdate:YES];
             }
             
-            [addBookmarkViewController prefillTitleAndForceUpdate:YES];
-        }
-        
-        addBookmarkViewController.presentingViewControllersExtensionContext = self.extensionContext;
-        addBookmarkViewController.tokenOverride = token;
-        
-        PPNavigationController *navigation = [[PPNavigationController alloc] initWithRootViewController:addBookmarkViewController];
-        navigation.modalPresentationStyle = UIModalPresentationFormSheet;
-        navigation.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-        [PPTheme customizeUIElements];
-        
-        [self presentViewController:navigation animated:YES completion:^{
-            if (self.hasToken) {
-                [[ASPinboard sharedInstance] lastUpdateWithSuccess:^(NSDate *date) {
-                } failure:^(NSError *error) {
+            navigation.modalPresentationStyle = UIModalPresentationFormSheet;
+            navigation.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+            [PPTheme customizeUIElements];
+            
+            [self presentViewController:navigation animated:YES completion:^{
+                if (self.hasToken) {
+                    [[ASPinboard sharedInstance] lastUpdateWithSuccess:^(NSDate *date) {
+                    } failure:^(NSError *error) {
+                        InvalidCredentials(navigation);
+                    }];
+                }
+                else {
                     InvalidCredentials(navigation);
-                }];
-            }
-            else {
-                InvalidCredentials(navigation);
-            }
-        }];
+                }
+            }];
+        });
     };
 
     NSExtensionItem *item = self.extensionContext.inputItems.firstObject;
