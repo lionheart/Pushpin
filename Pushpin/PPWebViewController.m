@@ -477,6 +477,8 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
+    self.yOffsetToStartShowingToolbar = self.webView.scrollView.contentOffset.y + kToolbarHeight;
 
     if (![self.loadedURLs containsObject:self.url]) {
         [self loadURL];
@@ -754,7 +756,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
     if (![UIApplication isIPad]) {
         BOOL hideToolbar = self.toolbarConstraint.constant < (kToolbarHeight / 2);
-        self.yOffsetToStartShowingToolbar = scrollView.contentOffset.y;
+        self.yOffsetToStartShowingToolbar = scrollView.contentOffset.y + kToolbarHeight;
         if (hideToolbar) {
             [self setToolbarVisible:NO animated:YES];
         }
@@ -773,7 +775,8 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         BOOL isAtBottomOfView = distanceFromBottomOfView < kToolbarHeight;
         BOOL isAtTopOfView = currentContentOffset.y < 0;
         BOOL isScrollingDown = self.previousContentOffset.y < currentContentOffset.y;
-        BOOL isToolbarVisible = self.toolbarConstraint.constant > 0;
+        BOOL isToolbarPartlyVisible = self.toolbarConstraint.constant > 0;
+        BOOL isToolbarFullyVisible = self.toolbarConstraint.constant == kToolbarHeight;
         self.previousContentOffset = currentContentOffset;
         
 #if HIDE_STATUS_BAR_WHILE_SCROLLING
@@ -784,23 +787,21 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
             }];
         }
 #endif
-        CGFloat distanceFromToolbarShowingOffset = MAX(0, ABS(currentContentOffset.y - self.yOffsetToStartShowingToolbar));
+        CGFloat distanceFromToolbarShowingOffset = MAX(0, self.yOffsetToStartShowingToolbar - currentContentOffset.y);
 
         if (!isAtBottomOfView && !isAtTopOfView) {
-            if (isToolbarVisible) {
+            if (isToolbarFullyVisible) {
                 if (isScrollingDown) {
-                    self.toolbarConstraint.constant = kToolbarHeight - MIN(kToolbarHeight, distanceFromToolbarShowingOffset);
+                    self.toolbarConstraint.constant = MIN(kToolbarHeight, distanceFromToolbarShowingOffset);
                     [self.view layoutIfNeeded];
                 }
                 else {
-                    if (self.toolbarConstraint.constant == kToolbarHeight) {
-                        self.yOffsetToStartShowingToolbar = MAX(0, currentContentOffset.y);
-                    }
-                    else {
-                        self.toolbarConstraint.constant = kToolbarHeight - MIN(kToolbarHeight, distanceFromToolbarShowingOffset);
-                        [self.view layoutIfNeeded];
-                    }
+                    self.yOffsetToStartShowingToolbar = scrollView.contentOffset.y + kToolbarHeight;
                 }
+            }
+            else if (isToolbarPartlyVisible) {
+                self.toolbarConstraint.constant = MIN(kToolbarHeight, distanceFromToolbarShowingOffset);
+                [self.view layoutIfNeeded];
             }
             else {
                 if (isScrollingDown) {
@@ -809,6 +810,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                 else {
                     self.toolbarConstraint.constant = MIN(kToolbarHeight, distanceFromToolbarShowingOffset);
                     [self.view layoutIfNeeded];
+
                 }
             }
         }
@@ -823,7 +825,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 }
 
 - (BOOL)scrollViewShouldScrollToTop:(UIScrollView *)scrollView {
-    self.yOffsetToStartShowingToolbar = scrollView.contentOffset.y;
+    self.yOffsetToStartShowingToolbar = scrollView.contentOffset.y + kToolbarHeight;
 
     if (self.toolbarConstraint.constant == kToolbarHeight) {
         return YES;
