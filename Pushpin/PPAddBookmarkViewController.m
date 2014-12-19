@@ -293,9 +293,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
         self.urlTextField.textColor = [UIColor grayColor];
     }
     else {
-        self.updateOrAddBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                                                                      target:self
-                                                                                      action:@selector(rightBarButtonTouchUpInside:)];
+        self.updateOrAddBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add", nil)
+                                                                         style:UIBarButtonItemStyleDone
+                                                                        target:self
+                                                                        action:@selector(rightBarButtonTouchUpInside:)];
 
         self.title = NSLocalizedString(@"Add Bookmark", nil);
     }
@@ -309,7 +310,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     
     if (bookmark[@"url"]) {
         self.urlTextField.text = bookmark[@"url"];
-        
+
         if (isUpdate.boolValue) {
             self.urlTextField.enabled = NO;
         }
