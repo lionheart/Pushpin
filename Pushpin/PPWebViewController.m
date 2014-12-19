@@ -785,13 +785,21 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         }
 #endif
 
-        if (!isAtBottomOfView && !isAtTopOfView && isToolbarVisible) {
-            CGFloat height = kToolbarHeight - MAX(0, MIN(kToolbarHeight, currentContentOffset.y - self.yOffsetToStartShowingToolbar));
-            self.toolbarConstraint.constant = MAX(0, height);
-            [self.view layoutIfNeeded];
+        if (!isAtBottomOfView && !isAtTopOfView) {
+            if (isToolbarVisible) {
+                CGFloat height = kToolbarHeight - MAX(0, MIN(kToolbarHeight, currentContentOffset.y - self.yOffsetToStartShowingToolbar));
+                self.toolbarConstraint.constant = MAX(0, height);
+                [self.view layoutIfNeeded];
 
-            if (!isScrollingDown && self.toolbarConstraint.constant == kToolbarHeight) {
-                self.yOffsetToStartShowingToolbar = MAX(0, scrollView.contentOffset.y);
+                if (!isScrollingDown && self.toolbarConstraint.constant == kToolbarHeight) {
+                    self.yOffsetToStartShowingToolbar = MAX(0, scrollView.contentOffset.y);
+                }
+            }
+            else {
+                if (!isScrollingDown) {
+                    self.toolbarConstraint.constant = kToolbarHeight - ABS(self.yOffsetToStartShowingToolbar - scrollView.contentOffset.y);
+                    [self.view layoutIfNeeded];
+                }
             }
         }
         else if (distanceFromBottomOfView < 0) {
