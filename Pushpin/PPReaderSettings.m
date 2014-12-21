@@ -23,9 +23,9 @@
     if (self) {
         self.headerFontName = @"Helvetica-Neue";
         self.fontName = @"Helvetica-Neue";
-        self.fontSize = 22;
+        self.fontSize = 16;
         self.displayImages = YES;
-        self.lineSpacing = 1.6;
+        self.lineSpacing = 1.5;
         self.textAlignment = NSTextAlignmentLeft;
         self.margin = 92;
         self.backgroundColor = HEX(0xfbfbfbff);

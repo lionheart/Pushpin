@@ -30,6 +30,7 @@
 #import <ASPinboard/ASPinboard.h>
 #endif
 
+static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
 static NSString *CellIdentifier = @"CellIdentifier";
 static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
@@ -228,6 +229,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                                                                             break;
                                                                             
                                                                         case PPSearchScopePinboard:
+                                                                            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPSearchSectionSave] withRowAnimation:UITableViewRowAnimationFade];
                                                                             [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
                                                                             break;
                                                                             
@@ -281,6 +283,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                                                                     switch (previousSearchScope) {
                                                                         case PPSearchScopeMine:
                                                                             [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPSearchSectionFilters] withRowAnimation:UITableViewRowAnimationFade];
+                                                                            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPSearchSectionSave] withRowAnimation:UITableViewRowAnimationFade];
                                                                             break;
                                                                             
                                                                         case PPSearchScopePinboard:
@@ -304,6 +307,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                                                   style:UIAlertActionStyleCancel
                                                 handler:nil];
     
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:DefaultCellIdentifier];
     [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
     [self.tableView registerClass:[LHSTableViewCellSubtitle class] forCellReuseIdentifier:SubtitleCellIdentifier];
 }
@@ -348,6 +352,9 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                 default:
                     return 0;
             }
+            
+        case PPSearchSectionSave:
+            return 1;
     }
 }
 
@@ -355,13 +362,13 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 #ifdef PINBOARD
     switch (self.searchScope) {
         case PPSearchScopeMine:
-            return 3;
+            return 4;
             
         case PPSearchScopeEveryone:
-            return 2;
+            return 3;
             
         case PPSearchScopeNetwork:
-            return 2;
+            return 3;
             
         case PPSearchScopePinboard:
             return 3;
@@ -390,6 +397,9 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
             
         case PPSearchSectionFilters:
             return @"Filters";
+            
+        case PPSearchSectionSave:
+            return nil;
     }
 }
 
@@ -599,11 +609,24 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                     }
                     break;
                 }
-                    
+
                 default:
                     break;
             }
             
+            break;
+        }
+            
+        case PPSearchSectionSave: {
+            cell = [tableView dequeueReusableCellWithIdentifier:DefaultCellIdentifier
+                                                   forIndexPath:indexPath];
+            cell.textLabel.text = @"Save Search";
+
+            UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+            UIColor *color = [button titleColorForState:UIControlStateNormal];
+            
+            cell.textLabel.textColor = color;
+            cell.textLabel.textAlignment = NSTextAlignmentCenter;
             break;
         }
     }
@@ -621,6 +644,9 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
             return nil;
             
         case PPSearchSectionFilters:
+            return nil;
+            
+        case PPSearchSectionSave:
             return nil;
     }
 }
@@ -766,6 +792,32 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
             [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView endUpdates];
             break;
+            
+        case PPSearchSectionSave: {
+            UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:@"Save Search"
+                                                                         message:@"Enter a name for this saved search."];
+            [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+                textField.keyboardType = UIKeyboardTypeAlphabet;
+            }];
+            
+            [alert lhs_addActionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+            [alert lhs_addActionWithTitle:@"Save" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                NSString *searchName = [(UITextField *)alert.textFields[0] text];
+                __block BOOL success;
+                [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
+                    success = [db executeUpdate:@"INSERT INTO searches (name, query, private, unread, starred, tagged) VALUES (?, ?, ?, ?, ?, ?)" withArgumentsInArray:@[searchName, self.searchTextField.text, @(self.isPrivate), @(self.read), @(self.starred), @(self.tagged)]];
+                }];
+                
+                if (success) {
+                    UIAlertController *successAlert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Success", nil)
+                                                                                        message:NSLocalizedString(@"Your saved search was added", nil)];
+                    [successAlert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+                    [self presentViewController:successAlert animated:YES completion:nil];
+                }
+            }];
+            
+            [self presentViewController:alert animated:YES completion:nil];
+        }
     }
 }
 

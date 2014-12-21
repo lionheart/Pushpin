@@ -51,6 +51,7 @@
 static float kLargeFontSize __attribute__((unused)) = 16.0f;
 static float kSmallFontSize __attribute__((unused)) = 13.0f;
 static NSString *kSavedFeedsKey = @"SavedFeeds";
+static NSString *kSavedSearchesKey = @"SavedSearches";
 
 #define TESTING (defined DEBUG || defined BETA)
 

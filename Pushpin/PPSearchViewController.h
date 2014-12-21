@@ -10,25 +10,26 @@
 #import <LHSKeyboardAdjusting/LHSKeyboardAdjusting.h>
 
 #ifdef PINBOARD
-typedef enum : NSInteger {
+typedef NS_ENUM(NSInteger, PPSearchScopeType) {
     PPSearchScopeMine,
     PPSearchScopePinboard,
     PPSearchScopeNetwork,
     PPSearchScopeEveryone,
-} PPSearchScopeType;
+};
 
-typedef enum : NSInteger {
+typedef NS_ENUM(NSInteger, PPSearchFilterRowType) {
     PPSearchFilterPrivate,
     PPSearchFilterUnread,
     PPSearchFilterStarred,
     PPSearchFilterUntagged
-} PPSearchFilterRowType;
+};
 
-typedef enum : NSInteger {
+typedef NS_ENUM(NSInteger, PPSearchSectionType) {
     PPSearchSectionQuery,
     PPSearchSectionScope,
-    PPSearchSectionFilters
-} PPSearchSectionType;
+    PPSearchSectionFilters,
+    PPSearchSectionSave
+};
 
 static NSArray *PPSearchScopes() {
     return @[@"Mine", @"Mine (Pinboard Syntax)"];
@@ -36,47 +37,46 @@ static NSArray *PPSearchScopes() {
 #endif
 
 #ifdef DELICIOUS
-typedef enum : NSInteger {
+typedef NS_ENUM(NSInteger, PPSearchScopeType) {
     PPSearchScopeMine,
     PPSearchScopeNetwork,
     PPSearchScopeEveryone,
     
     // Unused
     PPSearchScopePinboard,
-} PPSearchScopeType;
+};
 
-typedef enum : NSInteger {
+typedef NS_ENUM(NSInteger, PPSearchFilterRowType) {
     PPSearchFilterPrivate,
     PPSearchFilterUnread,
     PPSearchFilterUntagged
-} PPSearchFilterRowType;
+};
 
-typedef enum : NSInteger {
+typedef NS_ENUM(NSInteger, PPSearchSectionType) {
     PPSearchSectionQuery,
+    PPSearchSectionScope,
     PPSearchSectionFilters,
-    
-    // Unused
-    PPSearchSectionScope
-} PPSearchSectionType;
+    PPSearchSectionSave
+};
 
 static NSArray *PPSearchScopes() {
     return @[];
 }
 #endif
 
-typedef enum : NSInteger {
+typedef NS_ENUM(NSInteger, PPSearchQueryRowType) {
     PPSearchQueryRow
-} PPSearchQueryRowType;
+};
 
-typedef enum : NSInteger {
+typedef NS_ENUM(NSInteger, PPSearchScopeRowType) {
     PPSearchScopeRow
-} PPSearchScopeRowType;
+};
 
-typedef enum : NSInteger {
+typedef NS_ENUM(NSInteger, PPSearchRowCounts) {
     PPSearchQueryRowCount = PPSearchQueryRow + 1,
     PPSearchScopeRowCount = PPSearchScopeRow + 1,
     PPSearchFilterRowCount = PPSearchFilterUntagged + 1
-} PPSearchRowCounts;
+};
 
 @interface PPSearchViewController : PPTableViewController <UITextFieldDelegate,  LHSKeyboardAdjusting>
 
