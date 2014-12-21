@@ -756,7 +756,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
     if (![UIApplication isIPad]) {
         BOOL hideToolbar = self.toolbarConstraint.constant < (kToolbarHeight / 2);
-        self.yOffsetToStartShowingToolbar = scrollView.contentOffset.y + kToolbarHeight;
+        self.yOffsetToStartShowingToolbar = MAX(0, scrollView.contentOffset.y) + kToolbarHeight;
         if (hideToolbar) {
             [self setToolbarVisible:NO animated:YES];
         }
@@ -773,7 +773,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         // Only change if the offset is less than the content size minus the height of the toolbar.
         CGFloat distanceFromBottomOfView = scrollView.contentSize.height - currentContentOffset.y - CGRectGetHeight(scrollView.frame);
         BOOL isAtBottomOfView = distanceFromBottomOfView < kToolbarHeight;
-        BOOL isAtTopOfView = currentContentOffset.y < 0;
+        BOOL isAtTopOfView = currentContentOffset.y <= 0;
         BOOL isScrollingDown = self.previousContentOffset.y < currentContentOffset.y;
         BOOL isToolbarPartlyVisible = self.toolbarConstraint.constant > 0;
         BOOL isToolbarFullyVisible = self.toolbarConstraint.constant == kToolbarHeight;
@@ -819,7 +819,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
             self.yOffsetToStartShowingToolbar = MAX(0, scrollView.contentOffset.y);
         }
         else {
-            self.yOffsetToStartShowingToolbar = MAX(0, scrollView.contentOffset.y);
+            self.yOffsetToStartShowingToolbar = MAX(0, scrollView.contentOffset.y) + kToolbarHeight;
         }
     }
 }
