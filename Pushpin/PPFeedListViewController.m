@@ -40,6 +40,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 @interface PPFeedListViewController ()
 
 @property (nonatomic, strong) NSMutableArray *feeds;
+@property (nonatomic, strong) NSMutableArray *searches;
 @property (nonatomic, strong) PPToolbar *toolbar;
 @property (nonatomic, strong) NSLayoutConstraint *toolbarBottomConstraint;
 @property (nonatomic, strong) NSArray *rightOrientationConstraints;
@@ -142,6 +143,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     }
     
     self.feeds = [NSMutableArray array];
+    self.searches = [NSMutableArray array];
+
     self.navigationController.navigationBar.tintColor = HEX(0xFFFFFFFF);
 
     UIImage *settingsImage = [[UIImage imageNamed:@"navigation-settings"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
@@ -166,12 +169,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     editBarButtonItem.possibleTitles = [NSSet setWithObjects:NSLocalizedString(@"Edit", nil), NSLocalizedString(@"Done", nil), nil];
 
     UIButton *tagButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [tagButton addTarget:self action:@selector(openTags) forControlEvents:UIControlEventTouchUpInside];
-    tagButton.frame = CGRectMake(0, 0, 24, 24);
-    UIBarButtonItem *tagBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Tags", nil)
-                                                                         style:UIBarButtonItemStyleDone
-                                                                        target:self
-                                                                        action:@selector(openTags)];
 
     self.navigationItem.rightBarButtonItem = editBarButtonItem;
     self.navigationItem.leftBarButtonItem = settingsBarButtonItem;
@@ -449,6 +446,9 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
             case PPPinboardSectionSavedFeeds:
                 return self.feeds.count + 1;
+                
+            case PPPinboardSectionSearches:
+                return self.searches.count;
         }
     }
     else {
@@ -466,6 +466,9 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 
             case PPPinboardSectionSavedFeeds:
                 return self.feeds.count;
+                
+            case PPPinboardSectionSearches:
+                return self.searches.count;
         }
     }
 #endif
@@ -483,6 +486,9 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             
         case PPPinboardSectionSavedFeeds:
             return NSLocalizedString(@"Feeds", nil);
+
+        case PPPinboardSectionSearches:
+            return NSLocalizedString(@"Searches", nil);
     }
 #endif
     
@@ -504,6 +510,9 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         if (sectionType == PPPinboardSectionSavedFeeds) {
             return NO;
         }
+        else if (sectionType == PPPinboardSectionSearches) {
+            return NO;
+        }
     }
     else {
         switch (sectionType) {
@@ -514,6 +523,9 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 return NO;
                 
             case PPPinboardSectionSavedFeeds:
+                return YES;
+                
+            case PPPinboardSectionSearches:
                 return YES;
         }
     }
@@ -526,26 +538,70 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSDictionary *feed = self.feeds[indexPath.row];
-    PPPinboardFeedDataSource *dataSource = [[PPPinboardFeedDataSource alloc] initWithComponents:feed[@"components"]];
-    [dataSource removeDataSource:^{
-        [self.feeds removeObjectAtIndex:indexPath.row];
-
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [tableView beginUpdates];
-            
-            if (self.feeds.count == 0) {
-                [tableView deleteSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds]
-                         withRowAnimation:UITableViewRowAnimationFade];
-            }
-            else {
-                [tableView deleteRowsAtIndexPaths:@[indexPath]
+    PPPinboardSectionType sectionType = [self sectionTypeForSection:indexPath.section];
+    switch (sectionType) {
+        case PPPinboardSectionSavedFeeds: {
+            NSDictionary *feed = self.feeds[indexPath.row];
+            PPPinboardFeedDataSource *dataSource = [[PPPinboardFeedDataSource alloc] initWithComponents:feed[@"components"]];
+            [dataSource removeDataSource:^{
+                [self.feeds removeObjectAtIndex:indexPath.row];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [tableView beginUpdates];
+                    
+                    if (self.feeds.count == 0) {
+                        [tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section]
                                  withRowAnimation:UITableViewRowAnimationFade];
+                    }
+                    else {
+                        [tableView deleteRowsAtIndexPaths:@[indexPath]
+                                         withRowAnimation:UITableViewRowAnimationFade];
+                    }
+                    
+                    [tableView endUpdates];
+                });
+            }];
+            break;
+        }
+            
+        case PPPinboardSectionSearches: {
+            NSString *name = self.searches[indexPath.row][@"name"];
+            [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
+                [db executeUpdate:@"DELETE FROM searches WHERE name=?" withArgumentsInArray:@[name]];
+            }];
+            
+            NSUbiquitousKeyValueStore *store = [NSUbiquitousKeyValueStore defaultStore];
+            [store synchronize];
+            
+            NSMutableArray *iCloudSearches = [NSMutableArray arrayWithArray:[store arrayForKey:kSavedSearchesKey]];
+            for (NSInteger i=0; i<iCloudSearches.count; i++) {
+                if ([iCloudSearches[i][@"name"] isEqualToString:name]) {
+                    [iCloudSearches removeObjectAtIndex:i];
+                    break;
+                }
             }
 
-            [tableView endUpdates];
-        });
-    }];
+            [store setArray:iCloudSearches forKey:kSavedSearchesKey];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.searches removeObjectAtIndex:indexPath.row];
+
+                [tableView beginUpdates];
+                
+                if (self.searches.count == 0) {
+                    [tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section]
+                             withRowAnimation:UITableViewRowAnimationFade];
+                }
+                else {
+                    [tableView deleteRowsAtIndexPaths:@[indexPath]
+                                     withRowAnimation:UITableViewRowAnimationFade];
+                }
+                
+                [tableView endUpdates];
+            });
+            break;
+        }
+    }
 }
 #endif
 
@@ -714,6 +770,18 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 cell.imageView.image = [UIImage imageNamed:@"browse-saved"];
                 cell.accessoryType = UITableViewCellAccessoryNone;
             }
+            
+            break;
+        }
+            
+        case PPPinboardSectionSearches: {
+            cell.selectionStyle = UITableViewCellSelectionStyleGray;
+            cell.textLabel.adjustsFontSizeToFitWidth = YES;
+            cell.textLabel.font = [PPTheme textLabelFont];
+            cell.textLabel.text = self.searches[indexPath.row][@"name"];
+            cell.imageView.image = [UIImage imageNamed:@"browse-search"];
+            cell.accessoryType = UITableViewCellAccessoryNone;
+            break;
         }
     }
 #endif
@@ -971,6 +1039,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 viewControllerToPush = postViewController;
                 break;
             }
+
             case PPPinboardSectionCommunity: {
                 PPPinboardFeedDataSource *feedDataSource = [[PPPinboardFeedDataSource alloc] init];
                 postViewController.postDataSource = feedDataSource;
@@ -1035,6 +1104,36 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             case PPPinboardSectionSavedFeeds: {
                 viewControllerToPush = [PPPinboardFeedDataSource postViewControllerWithComponents:self.feeds[indexPath.row][@"components"]];
                 break;
+            }
+                
+            case PPPinboardSectionSearches: {
+                PPGenericPostViewController *postViewController = [[PPGenericPostViewController alloc] init];
+                PPPinboardDataSource *dataSource = [[PPPinboardDataSource alloc] init];
+                dataSource.limit = 100;
+                
+                NSDictionary *search = self.searches[indexPath.row];
+                dataSource.searchQuery = search[@"query"];
+                dataSource.unread = [search[@"unread"] integerValue];
+                dataSource.isPrivate = [search[@"private"] integerValue];
+                dataSource.starred = [search[@"starred"] integerValue];
+                
+                kPushpinFilterType tagged = [search[@"tagged"] integerValue];
+                switch (tagged) {
+                    case kPushpinFilterTrue:
+                        dataSource.untagged = kPushpinFilterFalse;
+                        break;
+                        
+                    case kPushpinFilterFalse:
+                        dataSource.untagged = kPushpinFilterTrue;
+                        break;
+                        
+                    case kPushpinFilterNone:
+                        dataSource.untagged = kPushpinFilterNone;
+                        break;
+                }
+                
+                postViewController.postDataSource = dataSource;
+                [self.navigationController pushViewController:postViewController animated:YES];
             }
         }
 #endif
@@ -1220,6 +1319,10 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     case PPPinboardSectionSavedFeeds:
                         numberOfRows = 0;
                         break;
+                        
+                    case PPPinboardSectionSearches:
+                        numberOfRows = 0;
+                        break;
                 }
 
                 for (NSInteger row=0; row<numberOfRows; row++) {
@@ -1283,7 +1386,20 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                           withRowAnimation:UITableViewRowAnimationFade];
         }
         else {
-            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds]
+            NSInteger hiddenSections = [self numberOfHiddenSections];
+            if ([self searchSectionIsHidden]) {
+                hiddenSections--;
+            }
+            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds - hiddenSections]
+                          withRowAnimation:UITableViewRowAnimationFade];
+        }
+        
+        if ([self searchSectionIsHidden]) {
+            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSearches]
+                          withRowAnimation:UITableViewRowAnimationFade];
+        }
+        else {
+            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSearches - [self numberOfHiddenSections]]
                           withRowAnimation:UITableViewRowAnimationFade];
         }
 #endif
@@ -1339,7 +1455,20 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                               withRowAnimation:UITableViewRowAnimationFade];
             }
             else {
-                [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds - [self numberOfHiddenSections]]
+                NSInteger hiddenSections = [self numberOfHiddenSections];
+                if ([self searchSectionIsHidden]) {
+                    hiddenSections--;
+                }
+                [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds - hiddenSections]
+                              withRowAnimation:UITableViewRowAnimationFade];
+            }
+
+            if ([self searchSectionIsHidden]) {
+                [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSearches]
+                              withRowAnimation:UITableViewRowAnimationFade];
+            }
+            else {
+                [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSearches - [self numberOfHiddenSections]]
                               withRowAnimation:UITableViewRowAnimationFade];
             }
 #endif
@@ -1445,6 +1574,10 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     if ([self feedSectionIsHidden]) {
         numSectionsToHide++;
     }
+    
+    if ([self searchSectionIsHidden]) {
+        numSectionsToHide++;
+    }
 #endif
     
     return numSectionsToHide;
@@ -1515,6 +1648,10 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     return self.feeds.count == 0;
 }
 
+- (BOOL)searchSectionIsHidden {
+    return self.searches.count == 0;
+}
+
 - (BOOL)communitySectionIsHidden {
     if ([PPAppDelegate sharedDelegate].connectionAvailable) {
         PPSettings *settings = [PPSettings sharedSettings];
@@ -1545,6 +1682,17 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             }
             
             if ([self communitySectionIsHidden]) {
+                numSectionsSkipped++;
+            }
+            else {
+                if (numSectionsNotSkipped == section) {
+                    break;
+                }
+                
+                numSectionsNotSkipped++;
+            }
+            
+            if ([self feedSectionIsHidden]) {
                 numSectionsSkipped++;
             }
             else {
@@ -1628,24 +1776,35 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     NSUbiquitousKeyValueStore *store = [NSUbiquitousKeyValueStore defaultStore];
     [store synchronize];
     NSMutableArray *iCloudFeeds = [NSMutableArray arrayWithArray:[store arrayForKey:kSavedFeedsKey]];
+    NSMutableArray *iCloudSearches = [NSMutableArray arrayWithArray:[store arrayForKey:kSavedSearchesKey]];
     
     [db beginTransaction];
     for (NSString *components in iCloudFeeds) {
         [db executeUpdate:@"INSERT OR IGNORE INTO feeds (components) VALUES (?)" withArgumentsInArray:@[components]];
     }
+    
+    for (NSDictionary *search in iCloudSearches) {
+        [db executeUpdate:@"INSERT OR IGNORE INTO searches (name, query, private, unread, starred, tagged) VALUES (:name, :query, :private, :unread, :starred, :tagged)" withParameterDictionary:search];
+    }
     [db commit];
 
     NSMutableArray *previousFeedTitles = [NSMutableArray array];
+    NSMutableArray *previousSearchNames = [NSMutableArray array];
     NSMutableArray *updatedFeedTitles = [NSMutableArray array];
     NSMutableArray *updatedFeeds = [NSMutableArray array];
-    
+    NSMutableArray *updatedSearches = [NSMutableArray array];
+    NSMutableArray *updatedSearchNames = [NSMutableArray array];
+
     for (NSDictionary *feed in self.feeds) {
         [previousFeedTitles addObject:feed[@"title"]];
     }
+    
+    for (NSDictionary *search in self.searches) {
+        [previousSearchNames addObject:search[@"name"]];
+    }
 
     FMResultSet *result = [db executeQuery:@"SELECT components FROM feeds ORDER BY components ASC"];
-    
-    NSInteger index = 0;
+
     while ([result next]) {
         NSString *componentString = [result stringForColumnIndex:0];
         NSArray *components = [componentString componentsSeparatedByString:@" "];
@@ -1654,19 +1813,44 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         [iCloudFeeds addObject:componentString];
         [updatedFeedTitles addObject:title];
         [updatedFeeds addObject:@{@"components": components, @"title": title}];
-        index++;
+    }
+    
+    FMResultSet *searchResults = [db executeQuery:@"SELECT * FROM searches ORDER BY created_at ASC"];
+    while ([searchResults next]) {
+        NSString *name = [searchResults stringForColumn:@"name"];
+        NSString *query = [searchResults stringForColumn:@"query"];
+        kPushpinFilterType private = [searchResults intForColumn:@"private"];
+        kPushpinFilterType unread = [searchResults intForColumn:@"unread"];
+        kPushpinFilterType starred = [searchResults intForColumn:@"starred"];
+        kPushpinFilterType tagged = [searchResults intForColumn:@"tagged"];
+        
+#warning XXX Super inefficient.
+        BOOL existsOnICloud = NO;
+        for (NSDictionary *search in iCloudSearches) {
+            if ([search[@"name"] isEqualToString:name]) {
+                existsOnICloud = YES;
+            }
+        }
+        
+        NSDictionary *search = @{@"name": name,
+                                 @"query": query,
+                                 @"private": @(private),
+                                 @"unread": @(unread),
+                                 @"starred": @(starred),
+                                 @"tagged": @(tagged) };
+
+        if (!existsOnICloud) {
+            [iCloudSearches addObject:search];
+        }
+
+        [updatedSearchNames addObject:name];
+        [updatedSearches addObject:search];
     }
     
     [result close];
     
-    NSSet *A = [NSSet setWithArray:previousFeedTitles];
-    NSSet *B = [NSSet setWithArray:updatedFeedTitles];
-    
-    NSMutableSet *deletedFeedTitles = [NSMutableSet setWithSet:A];
-    [deletedFeedTitles minusSet:B];
-    
     NSInteger offset;
-    NSInteger section;
+    __block NSInteger section;
     if (self.tableView.editing) {
         // If the table is in editing mode, the first row is "Add feed", so we shift all of the other rows down 1.
         offset = 1;
@@ -1685,70 +1869,137 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             section--;
         }
     }
+    
+    [PPUtilities generateDiffForPrevious:previousFeedTitles
+                                 updated:updatedFeedTitles
+                                    hash:^NSString *(NSString *title) {
+                                        return title;
+                                    }
+                              completion:^(NSSet *inserted, NSSet *deleted) {
+                                  NSMutableArray *indexPathsToDelete = [NSMutableArray array];
+                                  NSMutableArray *indexPathsToInsert = [NSMutableArray array];
+                                  NSInteger row = 0;
 
-    NSMutableArray *indexPathsToDelete = [NSMutableArray array];
-    NSInteger row = 0;
-    for (NSString *feedTitle in deletedFeedTitles) {
-        row = [previousFeedTitles indexOfObject:feedTitle];
-        [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:row + offset
-                                                         inSection:section]];
-    }
+                                  for (NSString *feedTitle in deleted) {
+                                      row = [previousFeedTitles indexOfObject:feedTitle];
+                                      [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:row + offset
+                                                                                       inSection:section]];
+                                  }
+                                  
+                                  for (NSString *feedTitle in inserted) {
+                                      row = [updatedFeedTitles indexOfObject:feedTitle];
+                                      [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:row + offset
+                                                                                       inSection:section]];
+                                  }
+                                  
+                                  // Remove duplicates from the array
+                                  NSArray *iCloudFeedsWithoutDuplicates = [[NSSet setWithArray:iCloudFeeds] allObjects];
+                                  
+                                  // Sync the new saved feed list with iCloud
+                                  [store setArray:iCloudFeedsWithoutDuplicates forKey:kSavedFeedsKey];
+                                  
+                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                      self.feeds = [updatedFeeds mutableCopy];
+                                      
+                                      [self.tableView beginUpdates];
+                                      if (self.tableView.editing) {
+                                          [self.tableView insertRowsAtIndexPaths:indexPathsToInsert
+                                                                withRowAnimation:UITableViewRowAnimationFade];
+                                          [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete
+                                                                withRowAnimation:UITableViewRowAnimationFade];
+                                      }
+                                      else {
+                                          if (previousFeedTitles.count == 0) {
+                                              if (updatedFeedTitles.count > 0) {
+                                                  [self.tableView insertSections:[NSIndexSet indexSetWithIndex:section]
+                                                                withRowAnimation:UITableViewRowAnimationFade];
+                                              }
+                                          }
+                                          else {
+                                              if (updatedFeedTitles.count == 0) {
+                                                  [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:section]
+                                                                withRowAnimation:UITableViewRowAnimationFade];
+                                              }
+                                              else {
+                                                  [self.tableView insertRowsAtIndexPaths:indexPathsToInsert
+                                                                        withRowAnimation:UITableViewRowAnimationFade];
+                                                  [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete
+                                                                        withRowAnimation:UITableViewRowAnimationFade];
+                                              }
+                                          }
+                                      }
+                                      [self.tableView endUpdates];
+                                  });
+                              }];
     
-    NSMutableArray *indexPathsToInsert = [NSMutableArray array];
-    NSMutableSet *insertedFeedTitles = [NSMutableSet setWithSet:B];
-    [insertedFeedTitles minusSet:A];
+    [PPUtilities generateDiffForPrevious:previousSearchNames
+                                 updated:updatedSearchNames
+                                    hash:^NSString *(NSString *title) {
+                                        return title;
+                                    }
+                              completion:^(NSSet *inserted, NSSet *deleted) {
+                                  NSMutableArray *indexPathsToDelete = [NSMutableArray array];
+                                  NSMutableArray *indexPathsToInsert = [NSMutableArray array];
+                                  NSInteger row = 0;
 
-    for (NSString *feedTitle in insertedFeedTitles) {
-        row = [updatedFeedTitles indexOfObject:feedTitle];
-        [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:row + offset
-                                                         inSection:section]];
-    }
-    
-    // Remove duplicates from the array
-    NSArray *iCloudFeedsWithoutDuplicates = [[NSSet setWithArray:iCloudFeeds] allObjects];
-    
-    // Sync the new saved feed list with iCloud
-    [store setArray:iCloudFeedsWithoutDuplicates forKey:kSavedFeedsKey];
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self.feeds = [updatedFeeds mutableCopy];
+                                  NSInteger searchSection = section;
+                                  if (updatedFeedTitles.count > 0) {
+                                      searchSection++;
+                                  }
+                                  
+                                  for (NSString *searchName in deleted) {
+                                      row = [previousSearchNames indexOfObject:searchName];
+                                      [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:row
+                                                                                       inSection:searchSection]];
+                                  }
+                                  
+                                  for (NSString *searchName in inserted) {
+                                      row = [updatedSearchNames indexOfObject:searchName];
+                                      [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:row
+                                                                                       inSection:searchSection]];
+                                  }
+                                  
+                                  // Sync the new saved feed list with iCloud
+                                  [store setArray:iCloudSearches forKey:kSavedSearchesKey];
 
-        [self.tableView beginUpdates];
-        if (self.tableView.editing) {
-            [self.tableView insertRowsAtIndexPaths:indexPathsToInsert
-                                  withRowAnimation:UITableViewRowAnimationFade];
-            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete
-                                  withRowAnimation:UITableViewRowAnimationFade];
-        }
-        else {
-            if (previousFeedTitles.count == 0) {
-                if (updatedFeedTitles.count > 0) {
-                    [self.tableView insertSections:[NSIndexSet indexSetWithIndex:section]
-                                  withRowAnimation:UITableViewRowAnimationFade];
-                }
-            }
-            else {
-                if (updatedFeedTitles.count == 0) {
-                    [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:section]
-                                  withRowAnimation:UITableViewRowAnimationFade];
-                }
-                else {
-                    [self.tableView insertRowsAtIndexPaths:indexPathsToInsert
-                                          withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete
-                                          withRowAnimation:UITableViewRowAnimationFade];
-                }
-            }
-        }
-        [self.tableView endUpdates];
-    });
+                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                      self.searches = [updatedSearches mutableCopy];
+                                      
+                                      [self.tableView beginUpdates];
+                                      if (self.tableView.editing) {
+                                          [self.tableView insertRowsAtIndexPaths:indexPathsToInsert
+                                                                withRowAnimation:UITableViewRowAnimationFade];
+                                          [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete
+                                                                withRowAnimation:UITableViewRowAnimationFade];
+                                      }
+                                      else {
+                                          if (previousSearchNames.count == 0) {
+                                              if (updatedSearchNames.count > 0) {
+                                                  [self.tableView insertSections:[NSIndexSet indexSetWithIndex:searchSection]
+                                                                withRowAnimation:UITableViewRowAnimationFade];
+                                              }
+                                          }
+                                          else {
+                                              if (updatedSearchNames.count == 0) {
+                                                  [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:searchSection]
+                                                                withRowAnimation:UITableViewRowAnimationFade];
+                                              }
+                                              else {
+                                                  [self.tableView insertRowsAtIndexPaths:indexPathsToInsert
+                                                                        withRowAnimation:UITableViewRowAnimationFade];
+                                                  [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete
+                                                                        withRowAnimation:UITableViewRowAnimationFade];
+                                              }
+                                          }
+                                      }
+                                      [self.tableView endUpdates];
+                                  });
+                              }];
 }
 
 #endif
 
 - (void)updateFeedCounts {
-    PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
-
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSMutableArray *indexPathsToReload = [NSMutableArray array];
         [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {

@@ -69,7 +69,8 @@ typedef enum : NSInteger {
 typedef enum : NSInteger {
     PPPinboardSectionPersonal,
     PPPinboardSectionCommunity,
-    PPPinboardSectionSavedFeeds
+    PPPinboardSectionSavedFeeds,
+    PPPinboardSectionSearches
 } PPPinboardSectionType;
 
 typedef enum : NSInteger {
@@ -77,7 +78,7 @@ typedef enum : NSInteger {
     PPPinboardCommunityRows = PPPinboardCommunityFeedRecent + 1
 } PPPinboardRowCounts;
 
-static NSInteger PPProviderPinboardSections = PPPinboardSectionSavedFeeds + 1;
+static NSInteger PPProviderPinboardSections = PPPinboardSectionSearches + 1;
 #endif
 
 typedef NS_ENUM(NSInteger, PPOfflineFetchCriteriaType) {

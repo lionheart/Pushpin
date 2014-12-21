@@ -727,6 +727,21 @@
                         settings.privateByDefault = settings.privateByDefault;
                         [db executeUpdate:@"PRAGMA user_version=11;"];
                     }
+                        
+                    case 11: {
+                        [db executeUpdate:
+                         @"CREATE TABLE searches("
+                         "name TEXT UNIQUE,"
+                         "query TEXT UNIQUE,"
+                         "private INTEGER,"
+                         "unread INTEGER,"
+                         "starred INTEGER,"
+                         "tagged INTEGER,"
+                         "created_at DATETIME DEFAULT CURRENT_TIMESTAMP"
+                         ");" ];
+
+                        [db executeUpdate:@"PRAGMA user_version=12;"];
+                    }
 
                     default:
                         break;
