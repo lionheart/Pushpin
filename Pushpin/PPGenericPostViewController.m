@@ -489,6 +489,10 @@ static NSInteger kToolbarHeight = 44;
     id <PPDataSource> dataSource = [self dataSourceForTableView:self.selectedTableView];
     PPSettings *settings = [PPSettings sharedSettings];
     
+    if (self.searchController.active) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
+    
     if (self.selectedTableView.editing) {
         NSUInteger selectedRowCount = [self.selectedTableView.indexPathsForSelectedRows count];
         [self setMultipleEditButtonsEnabled:(selectedRowCount > 0)];
@@ -1432,6 +1436,10 @@ static NSInteger kToolbarHeight = 44;
 #pragma mark - PPBadgeWrapperDelegate
 
 - (void)badgeWrapperView:(PPBadgeWrapperView *)badgeWrapperView didSelectBadge:(PPBadgeView *)badge {
+    if (self.searchController.active) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
+
     if (self.tableView.editing) {
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:badgeWrapperView.tag inSection:0];
         if ([self.tableView.indexPathsForSelectedRows containsObject:indexPath]) {
