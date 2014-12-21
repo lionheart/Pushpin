@@ -40,6 +40,9 @@ static NSString *CellIdentifier = @"TagCell";
 @property (nonatomic, strong) UIAlertController *selectTagToDeleteActionSheet;
 @property (nonatomic, strong) NSString *tagToDelete;
 
+@property (nonatomic, strong) UISearchController *searchController;
+@property (nonatomic, strong) PPTableViewController *searchResultsController;
+
 - (void)showSelectTagToDeleteActionSheet;
 - (void)showDeleteConfirmationAlertView;
 - (void)updateTagsAndCounts;
@@ -53,9 +56,6 @@ static NSString *CellIdentifier = @"TagCell";
 @end
 
 @implementation PPTagViewController
-
-@synthesize searchDisplayController = __searchDisplayController;
-@synthesize searchBar = _searchBar;
 
 - (id)initWithStyle:(UITableViewStyle)style {
     return [super initWithStyle:UITableViewStyleGrouped];
@@ -82,7 +82,7 @@ static NSString *CellIdentifier = @"TagCell";
     
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     
-    self.tableView.opaque = NO;
+    self.tableView.opaque = YES;
     self.tableView.backgroundColor = HEX(0xF7F9FDff);
     self.tableView.sectionIndexBackgroundColor = [UIColor whiteColor];
     self.tableView.sectionIndexTrackingBackgroundColor = HEX(0xDDDDDDFF);
@@ -97,18 +97,27 @@ static NSString *CellIdentifier = @"TagCell";
 
     self.filteredTags = [NSMutableArray array];
 
-    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.view.frame), 44)];
-    self.searchBar.delegate = self;
-    self.searchBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    self.searchResultsController = [[PPTableViewController alloc] initWithStyle:UITableViewStylePlain];
+    self.searchResultsController.tableView.delegate = self;
+    self.searchResultsController.tableView.dataSource = self;
 
-    self.searchDisplayController = [[UISearchDisplayController alloc] initWithSearchBar:self.searchBar contentsController:self];
-    self.searchDisplayController.searchResultsDataSource = self;
-    self.searchDisplayController.searchResultsDelegate = self;
-    self.searchDisplayController.delegate = self;
-    self.tableView.tableHeaderView = self.searchBar;
+    self.searchController = [[UISearchController alloc] initWithSearchResultsController:self.searchResultsController];
+    self.searchController.delegate = self;
+    self.searchController.searchResultsUpdater = self;
+    self.searchController.definesPresentationContext = YES;
     
+    [self.searchController.searchBar sizeToFit];
+    self.searchController.searchBar.delegate = self;
+    self.searchController.searchBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    self.searchController.searchBar.isAccessibilityElement = YES;
+    self.searchController.searchBar.accessibilityLabel = NSLocalizedString(@"Search Bar", nil);
+    self.searchController.searchBar.searchBarStyle = UISearchBarStyleProminent;
+    self.searchController.searchBar.keyboardType = UIKeyboardTypeASCIICapable;
+
+    self.tableView.tableHeaderView = self.searchController.searchBar;
+
     [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
-    [self.searchDisplayController.searchResultsTableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
+    [self.searchResultsController.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -143,6 +152,10 @@ static NSString *CellIdentifier = @"TagCell";
     }
 }
 
+- (NSString *)titleForSectionIndex:(NSInteger)section {
+    return [self tableView:self.tableView titleForHeaderInSection:section];
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     if (tableView == self.tableView) {
         return [self.sectionTitles count];
@@ -153,7 +166,7 @@ static NSString *CellIdentifier = @"TagCell";
 }
 
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {
-    if ([self.searchDisplayController isActive]) {
+    if (self.searchController.active) {
         return nil;
     }
     else {
@@ -164,7 +177,7 @@ static NSString *CellIdentifier = @"TagCell";
 - (NSInteger)tableView:(UITableView *)tableView sectionForSectionIndexTitle:(NSString *)title atIndex:(NSInteger)index {
     if (tableView == self.tableView) {
         if (title == UITableViewIndexSearch) {
-            [tableView scrollRectToVisible:CGRectMake(0, 0, CGRectGetWidth(self.searchBar.frame), CGRectGetHeight(self.searchBar.frame)) animated:YES];
+            [tableView scrollRectToVisible:CGRectMake(0, 0, CGRectGetWidth(self.searchController.searchBar.frame), CGRectGetHeight(self.searchController.searchBar.frame)) animated:YES];
             return -1;
         }
         return index;
@@ -173,7 +186,7 @@ static NSString *CellIdentifier = @"TagCell";
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    if (tableView == self.tableView && !self.searchDisplayController.active) {
+    if (tableView == self.tableView && !self.searchController.active) {
         return [self sortedSectionTitles:self.sectionTitles][section];
     }
     return nil;
@@ -183,7 +196,7 @@ static NSString *CellIdentifier = @"TagCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
 
     NSString *tag;
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
+    if (tableView == self.searchResultsController.tableView) {
         tag = self.filteredTags[indexPath.row];
         cell.textLabel.text = tag;
         cell.textLabel.font = [PPTheme textLabelFont];
@@ -214,16 +227,6 @@ static NSString *CellIdentifier = @"TagCell";
     return cell;
 }
 
-#pragma mark - UISearchDisplayController
-
-- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption {
-    return NO;
-}
-
-- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
-    return NO;
-}
-
 #pragma mark - UISearchBar
 
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
@@ -231,7 +234,16 @@ static NSString *CellIdentifier = @"TagCell";
     return YES;
 }
 
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+#pragma mark - UISearchController
+
+- (void)didDismissSearchController:(UISearchController *)searchController {
+    [self setNeedsStatusBarAppearanceUpdate];
+}
+
+#pragma mark - UISearchResultsUpdating
+
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
+    NSString *searchText = searchController.searchBar.text;
     if (!self.searchInProgress) {
         self.searchInProgress = YES;
 
@@ -276,11 +288,11 @@ static NSString *CellIdentifier = @"TagCell";
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.filteredTags = newTagNames;
-                [self.searchDisplayController.searchResultsTableView beginUpdates];
-                [self.searchDisplayController.searchResultsTableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
-                [self.searchDisplayController.searchResultsTableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
-                [self.searchDisplayController.searchResultsTableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                [self.searchDisplayController.searchResultsTableView endUpdates];
+                [self.searchResultsController.tableView beginUpdates];
+                [self.searchResultsController.tableView insertRowsAtIndexPaths:indexPathsToAdd withRowAnimation:UITableViewRowAnimationFade];
+                [self.searchResultsController.tableView deleteRowsAtIndexPaths:indexPathsToRemove withRowAnimation:UITableViewRowAnimationFade];
+                [self.searchResultsController.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                [self.searchResultsController.tableView endUpdates];
                 self.searchInProgress = NO;
             });
         });
@@ -314,7 +326,7 @@ static NSString *CellIdentifier = @"TagCell";
         tag = [self tagForIndexPath:indexPath];
     }
     else {
-        [self.searchDisplayController.searchResultsTableView deselectRowAtIndexPath:indexPath animated:YES];
+        [self.searchResultsController.tableView deselectRowAtIndexPath:indexPath animated:YES];
         tag = self.filteredTags[indexPath.row];
     }
     
@@ -333,6 +345,10 @@ static NSString *CellIdentifier = @"TagCell";
     pinboardDataSource.tags = @[tag];
     postViewController.postDataSource = pinboardDataSource;
 #endif
+    
+    if (self.searchController.active) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 
     // We need to switch this based on whether the user is on an iPad, due to the split view controller.
     if ([UIApplication isIPad]) {
@@ -354,14 +370,6 @@ static NSString *CellIdentifier = @"TagCell";
     else {
         [self.navigationController pushViewController:postViewController animated:YES];
     }
-}
-
-- (void)popViewController {
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
-- (NSString *)titleForSectionIndex:(NSInteger)section {
-    return [self tableView:self.tableView titleForHeaderInSection:section];
 }
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer {
@@ -408,7 +416,7 @@ static NSString *CellIdentifier = @"TagCell";
         serialQueue = dispatch_queue_create("com.lionheartsw.TagUpdateQueue", DISPATCH_QUEUE_SERIAL);
     });
     
-    if (!self.searchDisplayController.isActive) {
+    if (!self.searchController.active) {
         dispatch_async(serialQueue, ^{
             NSArray *letters = [[UILocalizedIndexedCollation currentCollation] sectionTitles];
 
