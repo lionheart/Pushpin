@@ -39,7 +39,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
     [self.offlineReadingSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
 
     self.downloadFullWebpageForOfflineCacheSwitch = [[UISwitch alloc] init];
-    self.downloadFullWebpageForOfflineCacheSwitch.on = settings.useCellularDataForOfflineCache;
+    self.downloadFullWebpageForOfflineCacheSwitch.on = settings.downloadFullWebpageForOfflineCache;
     [self.downloadFullWebpageForOfflineCacheSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
 
     [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
