@@ -513,7 +513,7 @@
         
         // Determine our default feed
         NSString *feedDetails;
-        if ([[settings.defaultFeed substringToIndex:8] isEqualToString:@"personal"]) {
+        if ([settings.defaultFeed hasPrefix:@"personal-"]) {
             feedDetails = [settings.defaultFeed substringFromIndex:9];
             
             PPPinboardPersonalFeedType feedType = [PPPersonalFeeds() indexOfObject:feedDetails];
@@ -545,7 +545,7 @@
 
             pinboardViewController.postDataSource = pinboardDataSource;
         }
-        else if ([[[PPSettings sharedSettings].defaultFeed substringToIndex:9] isEqualToString:@"community"]) {
+        else if ([[PPSettings sharedSettings].defaultFeed hasPrefix:@"community-"]) {
             feedDetails = [settings.defaultFeed substringFromIndex:10];
             PPPinboardFeedDataSource *feedDataSource = [[PPPinboardFeedDataSource alloc] init];
             pinboardViewController.postDataSource = feedDataSource;
@@ -581,11 +581,62 @@
                     break;
             }
         }
-        else if ([[settings.defaultFeed substringToIndex:5] isEqualToString:@"saved"]) {
+        else if ([settings.defaultFeed hasPrefix:@"saved-"]) {
             feedDetails = [settings.defaultFeed substringFromIndex:6];
             NSArray *components = [feedDetails componentsSeparatedByString:@"+"];
             PPPinboardFeedDataSource *feedDataSource = [[PPPinboardFeedDataSource alloc] initWithComponents:components];
             pinboardViewController.postDataSource = feedDataSource;
+        }
+        else if ([settings.defaultFeed hasPrefix:@"search-"]) {
+            feedDetails = [settings.defaultFeed substringFromIndex:7];
+
+            __block NSDictionary *search;
+            [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
+                FMResultSet *result = [db executeQuery:@"SELECT * FROM searches WHERE name=?" withArgumentsInArray:@[feedDetails]];
+                while ([result next]) {
+                    NSString *name = [result stringForColumn:@"name"];
+                    NSString *query = [result stringForColumn:@"query"];
+                    kPushpinFilterType private = [result intForColumn:@"private"];
+                    kPushpinFilterType unread = [result intForColumn:@"unread"];
+                    kPushpinFilterType starred = [result intForColumn:@"starred"];
+                    kPushpinFilterType tagged = [result intForColumn:@"tagged"];
+
+                    search = @{@"name": name,
+                               @"query": query,
+                               @"private": @(private),
+                               @"unread": @(unread),
+                               @"starred": @(starred),
+                               @"tagged": @(tagged) };
+                }
+            }];
+
+            PPPinboardDataSource *dataSource = [[PPPinboardDataSource alloc] init];
+            dataSource.limit = 100;
+            NSString *searchQuery = search[@"query"];
+            if (searchQuery && ![searchQuery isEqualToString:@""]) {
+                dataSource.searchQuery = search[@"query"];
+            }
+
+            dataSource.unread = [search[@"unread"] integerValue];
+            dataSource.isPrivate = [search[@"private"] integerValue];
+            dataSource.starred = [search[@"starred"] integerValue];
+
+            kPushpinFilterType tagged = [search[@"tagged"] integerValue];
+            switch (tagged) {
+                case kPushpinFilterTrue:
+                    dataSource.untagged = kPushpinFilterFalse;
+                    break;
+
+                case kPushpinFilterFalse:
+                    dataSource.untagged = kPushpinFilterTrue;
+                    break;
+
+                case kPushpinFilterNone:
+                    dataSource.untagged = kPushpinFilterNone;
+                    break;
+            }
+
+            pinboardViewController.postDataSource = dataSource;
         }
 
         if ([UIApplication isIPad]) {

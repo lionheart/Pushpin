@@ -577,18 +577,21 @@
     // Build a descriptive string for the default feed
     NSString *feedDescription = [NSString stringWithFormat:@"%@ : %@", NSLocalizedString(@"Personal", nil), @"All"];
     if (self.defaultFeed) {
-        if ([[self.defaultFeed substringToIndex:8] isEqualToString:@"personal"]) {
+        if ([self.defaultFeed hasPrefix:@"personal-"]) {
             feedDescription = [NSString stringWithFormat:@"%@ : %@", NSLocalizedString(@"Personal", nil), [[self.defaultFeed substringFromIndex:9] capitalizedString]];
         }
-        else if ([[self.defaultFeed substringToIndex:9] isEqualToString:@"community"]) {
+        else if ([self.defaultFeed hasPrefix:@"community-"]) {
             NSString *communityDescription = [self.defaultFeed substringFromIndex:10];
             if ([communityDescription isEqualToString:@"japanese"]) {
                 communityDescription = @"日本語";
             }
             feedDescription = [NSString stringWithFormat:@"%@ : %@", NSLocalizedString(@"Community", nil), [communityDescription capitalizedString]];
         }
-        else if ([[self.defaultFeed substringToIndex:5] isEqualToString:@"saved"]) {
+        else if ([self.defaultFeed hasPrefix:@"saved-"]) {
             feedDescription = [NSString stringWithFormat:@"%@ : %@", NSLocalizedString(@"Saved Feed", nil), [self.defaultFeed substringFromIndex:6]];
+        }
+        else if ([self.defaultFeed hasPrefix:@"search-"]) {
+            feedDescription = [NSString stringWithFormat:@"%@ : %@", NSLocalizedString(@"Search", nil), [self.defaultFeed substringFromIndex:7]];
         }
     }
     return feedDescription;
