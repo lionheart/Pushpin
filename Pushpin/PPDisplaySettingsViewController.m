@@ -464,8 +464,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 
             switch ((PPOtherDisplaySettingsRowType)indexPath.row) {
                 case PPOtherTurnOffPrompt:
-                    cell.textLabel.text = NSLocalizedString(@"Turn off all bookmark prompts", nil);
-                    cell.detailTextLabel.text = NSLocalizedString(@"The future is here. Be one with the share extension. Never see a bookmark prompt again. Ever.", nil);
+                    cell.textLabel.text = NSLocalizedString(@"Turn it off!", nil);
+                    cell.detailTextLabel.text = NSLocalizedString(@"The future is here. Be one with the extensions. Never see a bookmark prompt again. Ever.", nil);
                     
                     size = cell.frame.size;
                     switchSize = self.turnOffBookmarkPromptSwitch.frame.size;
