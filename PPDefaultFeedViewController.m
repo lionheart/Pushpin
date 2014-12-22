@@ -15,22 +15,19 @@
 #import "PPSettings.h"
 
 #import <FMDB/FMDatabase.h>
+#import <LHSTableViewCells/LHSTableViewCellSubtitle.h>
 
 static NSString *CellIdentifier = @"Cell";
 
 @interface PPDefaultFeedViewController ()
 
+@property (nonatomic, retain) NSIndexPath *defaultIndexPath;
+@property (nonatomic, retain) NSMutableArray *savedFeeds;
+@property (nonatomic, retain) NSMutableArray *searches;
+
 @end
 
 @implementation PPDefaultFeedViewController
-
-- (id)initWithStyle:(UITableViewStyle)style {
-    return [super initWithStyle:UITableViewStyleGrouped];
-}
-
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleLightContent;
-}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -40,6 +37,7 @@ static NSString *CellIdentifier = @"Cell";
     self.navigationItem.titleView = titleView;
 
     self.savedFeeds = [NSMutableArray array];
+    self.searches = [NSMutableArray array];
     
     // Setup the currently selected index path
     self.defaultIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
@@ -58,7 +56,7 @@ static NSString *CellIdentifier = @"Cell";
     }
     
     self.defaultIndexPath = [NSIndexPath indexPathForRow:row inSection:section];
-    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
+    [self.tableView registerClass:[LHSTableViewCellSubtitle class] forCellReuseIdentifier:CellIdentifier];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -67,29 +65,69 @@ static NSString *CellIdentifier = @"Cell";
 #ifdef PINBOARD
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
-            FMResultSet *result = [db executeQuery:@"SELECT components FROM feeds ORDER BY components ASC"];
             [self.savedFeeds removeAllObjects];
+            [self.searches removeAllObjects];
 
             // See if we need to update our selected index path
-            BOOL updateDefaultIndex = NO;
+            BOOL savedFeedIsDefaultFeed = NO;
+            BOOL searchIsDefaultFeed = NO;
             NSString *feedDetails;
-            if ([[[PPSettings sharedSettings].defaultFeed substringToIndex:5] isEqualToString:@"saved"]) {
+
+            if ([[PPSettings sharedSettings].defaultFeed hasPrefix:@"saved-"]) {
                 feedDetails = [[PPSettings sharedSettings].defaultFeed substringFromIndex:6];
-                updateDefaultIndex = YES;
+                savedFeedIsDefaultFeed = YES;
+            }
+            else if ([[PPSettings sharedSettings].defaultFeed hasPrefix:@"search-"]) {
+                feedDetails = [[PPSettings sharedSettings].defaultFeed substringFromIndex:7];
+                searchIsDefaultFeed = YES;
             }
             
+            NSInteger section = 2;
             NSUInteger currentRow = 0;
+            FMResultSet *result = [db executeQuery:@"SELECT components FROM feeds ORDER BY components ASC"];
             while ([result next]) {
                 NSArray *components = [[result stringForColumnIndex:0] componentsSeparatedByString:@" "];
                 [self.savedFeeds addObject:@{@"components": components, @"title": [components componentsJoinedByString:@"+"]}];
-                if (updateDefaultIndex) {
+
+                if (savedFeedIsDefaultFeed) {
                     if ([[components componentsJoinedByString:@"+"] isEqualToString:feedDetails]) {
-                        self.defaultIndexPath = [NSIndexPath indexPathForRow:currentRow inSection:2];
+                        self.defaultIndexPath = [NSIndexPath indexPathForRow:currentRow inSection:section];
                     }
                 }
                 currentRow++;
             }
             
+            if (self.savedFeeds.count > 0) {
+                section++;
+            }
+
+            currentRow = 0;
+            result = [db executeQuery:@"SELECT * FROM searches ORDER BY created_at ASC"];
+            while ([result next]) {
+                NSString *name = [result stringForColumn:@"name"];
+                NSString *query = [result stringForColumn:@"query"];
+                kPushpinFilterType private = [result intForColumn:@"private"];
+                kPushpinFilterType unread = [result intForColumn:@"unread"];
+                kPushpinFilterType starred = [result intForColumn:@"starred"];
+                kPushpinFilterType tagged = [result intForColumn:@"tagged"];
+
+                NSDictionary *search = @{@"name": name,
+                                         @"query": query,
+                                         @"private": @(private),
+                                         @"unread": @(unread),
+                                         @"starred": @(starred),
+                                         @"tagged": @(tagged) };
+
+                [self.searches addObject:search];
+
+                if (searchIsDefaultFeed) {
+                    if ([name isEqualToString:feedDetails]) {
+                        self.defaultIndexPath = [NSIndexPath indexPathForRow:currentRow inSection:section];
+                    }
+                }
+                currentRow++;
+            }
+
             [result close];
         }];
         
@@ -107,11 +145,16 @@ static NSString *CellIdentifier = @"Cell";
 #endif
     
 #ifdef PINBOARD
-    if (self.savedFeeds.count > 0) {
-        return PPProviderPinboardSections + 1;
+    NSInteger sections = PPProviderPinboardSections;
+    if (self.savedFeeds.count == 0) {
+        sections--;
     }
     
-    return PPProviderPinboardSections;
+    if (self.searches.count == 0) {
+        sections--;
+    }
+
+    return sections;
 #endif
 }
 
@@ -135,10 +178,10 @@ static NSString *CellIdentifier = @"Cell";
             return PPPinboardCommunityRows;
             
         case PPPinboardSectionSavedFeeds:
-            return [self.savedFeeds count];
+            return self.savedFeeds.count;
             
-        default:
-            return 0;
+        case PPPinboardSectionSearches:
+            return self.searches.count;
     }
 #endif
 }
@@ -164,6 +207,9 @@ static NSString *CellIdentifier = @"Cell";
 
         case PPPinboardSectionSavedFeeds:
             return [PPTableViewTitleView heightWithText:NSLocalizedString(@"Saved Feeds", nil)];
+
+        case PPPinboardSectionSearches:
+            return [PPTableViewTitleView heightWithText:NSLocalizedString(@"Searches", nil)];
     }
     return 0;
 #endif
@@ -191,8 +237,8 @@ static NSString *CellIdentifier = @"Cell";
         case PPPinboardSectionSavedFeeds:
             return NSLocalizedString(@"Saved Feeds", nil);
 
-        default:
-            return nil;
+        case PPPinboardSectionSearches:
+            return NSLocalizedString(@"Searches", nil);
     }
 #endif
 }
@@ -296,6 +342,56 @@ static NSString *CellIdentifier = @"Cell";
         case PPPinboardSectionSavedFeeds:
             cell.textLabel.text = self.savedFeeds[indexPath.row][@"title"];
             break;
+
+        case PPPinboardSectionSearches: {
+            NSDictionary *search = self.searches[indexPath.row];
+            cell.textLabel.text = search[@"name"];
+
+            NSString *query = search[@"query"];
+            NSMutableArray *components = [NSMutableArray array];
+            if (query && ![query isEqualToString:@""]) {
+                [components addObject:[NSString stringWithFormat:@"query: %@", query]];
+            }
+
+            kPushpinFilterType isPrivate = [search[@"private"] integerValue];
+            switch (isPrivate) {
+                case kPushpinFilterFalse:
+                    [components addObject:@"public"];
+
+                case kPushpinFilterTrue:
+                    [components addObject:@"private"];
+            }
+
+            kPushpinFilterType unread = [search[@"unread"] integerValue];
+            switch (unread) {
+                case kPushpinFilterFalse:
+                    [components addObject:@"read"];
+
+                case kPushpinFilterTrue:
+                    [components addObject:@"unread"];
+            }
+
+            kPushpinFilterType starred = [search[@"starred"] integerValue];
+            switch (starred) {
+                case kPushpinFilterFalse:
+                    [components addObject:@"unstarred"];
+
+                case kPushpinFilterTrue:
+                    [components addObject:@"starred"];
+            }
+
+            kPushpinFilterType tagged = [search[@"tagged"] integerValue];
+            switch (tagged) {
+                case kPushpinFilterFalse:
+                    [components addObject:@"untagged"];
+
+                case kPushpinFilterTrue:
+                    [components addObject:@"tagged"];
+            }
+
+            cell.detailTextLabel.text = [components componentsJoinedByString:@", "];
+            break;
+        }
     }
 #endif
     
@@ -415,13 +511,18 @@ static NSString *CellIdentifier = @"Cell";
                         defaultFeed = @"community-recent";
                         break;
                 }
+                break;
+
+            case PPPinboardSectionSavedFeeds:
+                defaultFeed = [NSString stringWithFormat:@"saved-%@", self.savedFeeds[indexPath.row][@"title"]];
+                break;
+
+            case PPPinboardSectionSearches:
+                defaultFeed = [NSString stringWithFormat:@"search-%@", self.searches[indexPath.row][@"name"]];
+                break;
                 
             default:
                 break;
-        }
-
-        if (indexPath.section == 2) {
-            defaultFeed = [NSString stringWithFormat:@"saved-%@", self.savedFeeds[indexPath.row][@"title"]];
         }
 #endif
         
