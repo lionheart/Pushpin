@@ -34,7 +34,9 @@
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import <Reachability/Reachability.h>
 #import <LHSTableViewCells/LHSTableViewCellValue1.h>
+#import <LHSTableViewCells/LHSTableViewCellSubtitle.h>
 
+static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 @interface PPFeedListViewController ()
@@ -352,6 +354,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
     // Register for Dynamic Type notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(preferredContentSizeChanged:) name:UIContentSizeCategoryDidChangeNotification object:nil];
+
+    [self.tableView registerClass:[LHSTableViewCellSubtitle class] forCellReuseIdentifier:SubtitleCellIdentifier];
     [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:FeedListCellIdentifier];
 }
 
@@ -610,7 +614,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:FeedListCellIdentifier forIndexPath:indexPath];
+    UITableViewCell *cell;
     
     cell.textLabel.font = [PPTheme boldTextLabelFont];
     cell.detailTextLabel.text = nil;
@@ -618,6 +622,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     cell.clipsToBounds = YES;
     
 #ifdef DELICIOUS
+    cell = [tableView dequeueReusableCellWithIdentifier:FeedListCellIdentifier forIndexPath:indexPath];
     switch ((PPDeliciousSectionType)indexPath.section) {
         case PPDeliciousSectionPersonal: {
             PPDeliciousPersonalFeedType feedType = [self personalFeedForIndexPath:indexPath];
@@ -660,6 +665,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     PPPinboardSectionType sectionType = [self sectionTypeForSection:indexPath.section];
     switch (sectionType) {
         case PPPinboardSectionPersonal: {
+            cell = [tableView dequeueReusableCellWithIdentifier:FeedListCellIdentifier forIndexPath:indexPath];
             PPPinboardPersonalFeedType feedType = [self personalFeedForIndexPath:indexPath];
 
             switch (feedType) {
@@ -709,6 +715,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         }
 
         case PPPinboardSectionCommunity: {
+            cell = [tableView dequeueReusableCellWithIdentifier:FeedListCellIdentifier forIndexPath:indexPath];
             cell.imageView.image = nil;
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             PPPinboardCommunityFeedType feedType = [self communityFeedForIndexPath:indexPath];
@@ -749,6 +756,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         }
             
         case PPPinboardSectionSavedFeeds: {
+            cell = [tableView dequeueReusableCellWithIdentifier:FeedListCellIdentifier forIndexPath:indexPath];
             cell.selectionStyle = UITableViewCellSelectionStyleGray;
             cell.textLabel.adjustsFontSizeToFitWidth = YES;
             cell.textLabel.font = [PPTheme textLabelFont];
@@ -775,12 +783,58 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         }
             
         case PPPinboardSectionSearches: {
+            cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier forIndexPath:indexPath];
+            NSDictionary *search = self.searches[indexPath.row];
             cell.selectionStyle = UITableViewCellSelectionStyleGray;
             cell.textLabel.adjustsFontSizeToFitWidth = YES;
             cell.textLabel.font = [PPTheme textLabelFont];
-            cell.textLabel.text = self.searches[indexPath.row][@"name"];
+            cell.textLabel.text = search[@"name"];
             cell.imageView.image = [UIImage imageNamed:@"browse-search"];
             cell.accessoryType = UITableViewCellAccessoryNone;
+        
+            NSString *query = search[@"query"];
+            NSMutableArray *components = [NSMutableArray array];
+            if (query && ![query isEqualToString:@""]) {
+                [components addObject:[NSString stringWithFormat:@"query: %@", query]];
+            }
+            
+            kPushpinFilterType isPrivate = [search[@"private"] integerValue];
+            switch (isPrivate) {
+                case kPushpinFilterFalse:
+                    [components addObject:@"public"];
+                    
+                case kPushpinFilterTrue:
+                    [components addObject:@"private"];
+            }
+
+            kPushpinFilterType unread = [search[@"unread"] integerValue];
+            switch (unread) {
+                case kPushpinFilterFalse:
+                    [components addObject:@"read"];
+                    
+                case kPushpinFilterTrue:
+                    [components addObject:@"unread"];
+            }
+
+            kPushpinFilterType starred = [search[@"starred"] integerValue];
+            switch (starred) {
+                case kPushpinFilterFalse:
+                    [components addObject:@"unstarred"];
+                    
+                case kPushpinFilterTrue:
+                    [components addObject:@"starred"];
+            }
+
+            kPushpinFilterType tagged = [search[@"tagged"] integerValue];
+            switch (tagged) {
+                case kPushpinFilterFalse:
+                    [components addObject:@"untagged"];
+                    
+                case kPushpinFilterTrue:
+                    [components addObject:@"tagged"];
+            }
+
+            cell.detailTextLabel.text = [components componentsJoinedByString:@", "];
             break;
         }
     }
@@ -1112,7 +1166,12 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 dataSource.limit = 100;
                 
                 NSDictionary *search = self.searches[indexPath.row];
-                dataSource.searchQuery = search[@"query"];
+                
+                NSString *searchQuery = search[@"query"];
+                if (searchQuery && ![searchQuery isEqualToString:@""]) {
+                    dataSource.searchQuery = search[@"query"];
+                }
+
                 dataSource.unread = [search[@"unread"] integerValue];
                 dataSource.isPrivate = [search[@"private"] integerValue];
                 dataSource.starred = [search[@"starred"] integerValue];
@@ -1386,11 +1445,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                           withRowAnimation:UITableViewRowAnimationFade];
         }
         else {
-            NSInteger hiddenSections = [self numberOfHiddenSections];
-            if ([self searchSectionIsHidden]) {
-                hiddenSections--;
-            }
-            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds - hiddenSections]
+            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds]
                           withRowAnimation:UITableViewRowAnimationFade];
         }
         
@@ -1399,25 +1454,25 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                           withRowAnimation:UITableViewRowAnimationFade];
         }
         else {
-            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSearches - [self numberOfHiddenSections]]
+            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSearches]
                           withRowAnimation:UITableViewRowAnimationFade];
         }
 #endif
 
         [CATransaction setCompletionBlock:^{
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            NSMutableArray *allIndexPaths = [NSMutableArray array];
-            for (NSInteger section=0; section<[self numberOfSectionsInTableView:self.tableView]; section++) {
-                for (NSInteger row=0; row<[self.tableView numberOfRowsInSection:section]; row++) {
-                    [allIndexPaths addObject:[NSIndexPath indexPathForRow:row inSection:section]];
+                NSMutableArray *allIndexPaths = [NSMutableArray array];
+                for (NSInteger section=0; section<[self numberOfSectionsInTableView:self.tableView]; section++) {
+                    for (NSInteger row=0; row<[self.tableView numberOfRowsInSection:section]; row++) {
+                        [allIndexPaths addObject:[NSIndexPath indexPathForRow:row inSection:section]];
+                    }
                 }
-            }
 
-            if (allIndexPaths.count <= PPPersonalFeeds().count + PPCommunityFeeds().count) {
-                [self.tableView beginUpdates];
-                [self.tableView reloadRowsAtIndexPaths:allIndexPaths withRowAnimation:UITableViewRowAnimationNone];
-                [self.tableView endUpdates];
-            }
+                if (allIndexPaths.count <= PPPersonalFeeds().count + PPCommunityFeeds().count) {
+                    [self.tableView beginUpdates];
+                    [self.tableView reloadRowsAtIndexPaths:allIndexPaths withRowAnimation:UITableViewRowAnimationNone];
+                    [self.tableView endUpdates];
+                }
             });
         }];
 
