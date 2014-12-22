@@ -39,6 +39,7 @@ typedef NS_ENUM(NSInteger, PPBrowseSettingsRowType) {
 };
 
 typedef NS_ENUM(NSInteger, PPOtherDisplaySettingsRowType) {
+    PPOtherTurnOffPrompt,
     PPOtherOnlyPromptToAddBookmarksOnce,
     PPOtherAlwaysShowAlert,
     PPOtherDisplayClearCache
