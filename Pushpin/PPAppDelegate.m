@@ -1018,7 +1018,7 @@
     PPSettings *settings = [PPSettings sharedSettings];
     for (NSURL *url in urlsToCache) {
         // https://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=
-        NSString *readerURLString = [NSString stringWithFormat:@"https://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [url.absoluteString urlEncodeUsingEncoding:NSUTF8StringEncoding]];
+        NSString *readerURLString = [NSString stringWithFormat:@"http://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [url.absoluteString urlEncodeUsingEncoding:NSUTF8StringEncoding]];
         NSURLSessionDownloadTask *readerDownloadTask = [self.readerViewOfflineSession downloadTaskWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:readerURLString]]];
         [readerDownloadTask resume];
 

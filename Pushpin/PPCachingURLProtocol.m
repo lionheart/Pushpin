@@ -35,7 +35,8 @@ static NSString *PPCachingEnabledKey = @"PPCachingEnabled";
         else if ([request allHTTPHeaderFields] == nil) {
             return YES;
         }
-        return [[request valueForHTTPHeaderField:@"User-Agent"] containsString:@"AppleWebKit"];
+        BOOL isWebViewRequest = [[request valueForHTTPHeaderField:@"User-Agent"] containsString:@"AppleWebKit"];
+        return isWebViewRequest;
     }
 
     return NO;
