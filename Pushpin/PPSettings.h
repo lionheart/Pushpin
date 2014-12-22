@@ -35,6 +35,7 @@
 @property (nonatomic) BOOL privateByDefault;
 @property (nonatomic) BOOL readByDefault;
 @property (nonatomic) BOOL onlyPromptToAddOnce;
+@property (nonatomic) BOOL turnOffBookmarkPrompt;
 @property (nonatomic) BOOL alwaysShowClipboardNotification;
 @property (nonatomic) BOOL hidePrivateLock;
 @property (nonatomic) BOOL offlineReadingEnabled;

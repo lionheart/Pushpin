@@ -49,6 +49,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 @property (nonatomic, retain) UISwitch *onlyPromptToAddOnceSwitch;
 @property (nonatomic, retain) UISwitch *alwaysShowAlertSwitch;
 @property (nonatomic, retain) UISwitch *textExpanderSwitch;
+@property (nonatomic, retain) UISwitch *turnOffBookmarkPromptSwitch;
 
 @property (nonatomic, strong) UIAlertController *fontSizeAdjustmentActionSheet;
 
@@ -111,6 +112,9 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                                                        handler:nil];
     
     PPSettings *settings = [PPSettings sharedSettings];
+    self.turnOffBookmarkPromptSwitch = [[UISwitch alloc] init];
+    self.turnOffBookmarkPromptSwitch.on = settings.turnOffBookmarkPrompt;
+    [self.turnOffBookmarkPromptSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
     
     self.privateByDefaultSwitch = [[UISwitch alloc] init];
     self.privateByDefaultSwitch.on = settings.privateByDefault;
@@ -205,11 +209,16 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             return PPRowCountBrowse;
             
         case PPSectionOtherDisplaySettings:
-            if (!self.onlyPromptToAddOnceSwitch.on) {
-                return PPRowCountOtherSettings;
+            if (self.turnOffBookmarkPromptSwitch.on) {
+                return 1;
             }
             else {
-                return PPRowCountOtherSettings - 2;
+                if (!self.onlyPromptToAddOnceSwitch.on) {
+                    return PPRowCountOtherSettings;
+                }
+                else {
+                    return PPRowCountOtherSettings - 2;
+                }
             }
 
         case PPSectionTextExpanderSettings: {
@@ -250,6 +259,9 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             
         case PPSectionOtherDisplaySettings:
             switch ((PPOtherDisplaySettingsRowType)indexPath.row) {
+                case PPOtherTurnOffPrompt:
+                    return 92;
+
                 case PPOtherOnlyPromptToAddBookmarksOnce:
                     return 92;
                     
@@ -446,11 +458,21 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme fontName] size:13];
             cell.detailTextLabel.textColor = [UIColor grayColor];
             cell.detailTextLabel.text = nil;
-            cell.accessoryView = nil;
             cell.detailTextLabel.numberOfLines = 0;
+            cell.accessoryView = nil;
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
             switch ((PPOtherDisplaySettingsRowType)indexPath.row) {
+                case PPOtherTurnOffPrompt:
+                    cell.textLabel.text = NSLocalizedString(@"Make it stop!", nil);
+                    cell.detailTextLabel.text = NSLocalizedString(@"Never want to see a bookmark prompt again. Ever. Share extensions FTW!", nil);
+                    
+                    size = cell.frame.size;
+                    switchSize = self.turnOffBookmarkPromptSwitch.frame.size;
+                    self.turnOffBookmarkPromptSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
+                    cell.accessoryView = self.turnOffBookmarkPromptSwitch;
+                    break;
+
                 case PPOtherOnlyPromptToAddBookmarksOnce:
                     cell.textLabel.text = NSLocalizedString(@"Always show add prompt", nil);
                     cell.detailTextLabel.text = NSLocalizedString(@"Always show the add bookmark prompt, even for URLs that Pushpin has seen before.", nil);
@@ -676,6 +698,38 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     }
     else if (sender == self.alwaysShowAlertSwitch) {
         [settings setAlwaysShowClipboardNotification:self.alwaysShowAlertSwitch.on];
+    }
+    else if (sender == self.turnOffBookmarkPromptSwitch) {
+        [settings setTurnOffBookmarkPrompt:self.turnOffBookmarkPromptSwitch.on];
+
+        [self.tableView beginUpdates];
+        
+        NSMutableArray *indexPathsToDelete = [NSMutableArray array];
+        NSMutableArray *indexPathsToInsert = [NSMutableArray array];
+        if (self.turnOffBookmarkPromptSwitch.on) {
+            if (self.onlyPromptToAddOnceSwitch.on) {
+                [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:PPOtherOnlyPromptToAddBookmarksOnce inSection:PPSectionOtherDisplaySettings]];
+            }
+            else {
+                [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:PPOtherOnlyPromptToAddBookmarksOnce inSection:PPSectionOtherDisplaySettings]];
+                [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:PPOtherAlwaysShowAlert inSection:PPSectionOtherDisplaySettings]];
+                [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:PPOtherDisplayClearCache inSection:PPSectionOtherDisplaySettings]];
+            }
+            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+        }
+        else {
+            if (self.onlyPromptToAddOnceSwitch.on) {
+                [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:PPOtherOnlyPromptToAddBookmarksOnce inSection:PPSectionOtherDisplaySettings]];
+            }
+            else {
+                [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:PPOtherOnlyPromptToAddBookmarksOnce inSection:PPSectionOtherDisplaySettings]];
+                [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:PPOtherAlwaysShowAlert inSection:PPSectionOtherDisplaySettings]];
+                [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:PPOtherDisplayClearCache inSection:PPSectionOtherDisplaySettings]];
+            }
+            [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+        }
+        
+        [self.tableView endUpdates];
     }
     else if (sender == self.onlyPromptToAddOnceSwitch) {
         [settings setOnlyPromptToAddOnce:!self.onlyPromptToAddOnceSwitch.on];

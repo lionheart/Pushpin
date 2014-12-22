@@ -290,7 +290,7 @@
     BOOL isAuthenticated = settings.token != nil;
 #endif
 
-    if (!didLaunchWithURL && isAuthenticated && !self.hideURLPrompt) {
+    if (!didLaunchWithURL && isAuthenticated && !self.hideURLPrompt && !settings.turnOffBookmarkPrompt) {
         [self promptUserToAddBookmark];
         didLaunchWithURL = NO;
     }
@@ -600,7 +600,7 @@
                     kPushpinFilterType unread = [result intForColumn:@"unread"];
                     kPushpinFilterType starred = [result intForColumn:@"starred"];
                     kPushpinFilterType tagged = [result intForColumn:@"tagged"];
-
+                    
                     search = @{@"name": name,
                                @"query": query,
                                @"private": @(private),
@@ -609,28 +609,28 @@
                                @"tagged": @(tagged) };
                 }
             }];
-
+            
             PPPinboardDataSource *dataSource = [[PPPinboardDataSource alloc] init];
             dataSource.limit = 100;
             NSString *searchQuery = search[@"query"];
             if (searchQuery && ![searchQuery isEqualToString:@""]) {
                 dataSource.searchQuery = search[@"query"];
             }
-
+            
             dataSource.unread = [search[@"unread"] integerValue];
             dataSource.isPrivate = [search[@"private"] integerValue];
             dataSource.starred = [search[@"starred"] integerValue];
-
+            
             kPushpinFilterType tagged = [search[@"tagged"] integerValue];
             switch (tagged) {
                 case kPushpinFilterTrue:
                     dataSource.untagged = kPushpinFilterFalse;
                     break;
-
+                    
                 case kPushpinFilterFalse:
                     dataSource.untagged = kPushpinFilterTrue;
                     break;
-
+                    
                 case kPushpinFilterNone:
                     dataSource.untagged = kPushpinFilterNone;
                     break;
@@ -715,6 +715,7 @@
         
         // If a user decides not to add a bookmark when it's on the clipboard, don't ask again.
         @"io.aurora.pinboard.OnlyPromptToAddOnce": @(YES),
+        @"io.aurora.pinboard.TurnOffBookmarkPrompt": @(NO),
         @"io.aurora.pinboard.AlwaysShowClipboardNotification": @(YES),
         @"io.aurora.pinboard.HiddenFeedNames": @[],
         @"io.aurora.pinboard.FontAdjustment": @(PPFontAdjustmentMedium),

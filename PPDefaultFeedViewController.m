@@ -100,7 +100,7 @@ static NSString *CellIdentifier = @"Cell";
             if (self.savedFeeds.count > 0) {
                 section++;
             }
-
+            
             currentRow = 0;
             result = [db executeQuery:@"SELECT * FROM searches ORDER BY created_at ASC"];
             while ([result next]) {
@@ -110,16 +110,16 @@ static NSString *CellIdentifier = @"Cell";
                 kPushpinFilterType unread = [result intForColumn:@"unread"];
                 kPushpinFilterType starred = [result intForColumn:@"starred"];
                 kPushpinFilterType tagged = [result intForColumn:@"tagged"];
-
+                
                 NSDictionary *search = @{@"name": name,
                                          @"query": query,
                                          @"private": @(private),
                                          @"unread": @(unread),
                                          @"starred": @(starred),
                                          @"tagged": @(tagged) };
-
+                
                 [self.searches addObject:search];
-
+                
                 if (searchIsDefaultFeed) {
                     if ([name isEqualToString:feedDetails]) {
                         self.defaultIndexPath = [NSIndexPath indexPathForRow:currentRow inSection:section];
@@ -153,7 +153,7 @@ static NSString *CellIdentifier = @"Cell";
     if (self.searches.count == 0) {
         sections--;
     }
-
+    
     return sections;
 #endif
 }
@@ -207,7 +207,7 @@ static NSString *CellIdentifier = @"Cell";
 
         case PPPinboardSectionSavedFeeds:
             return [PPTableViewTitleView heightWithText:NSLocalizedString(@"Saved Feeds", nil)];
-
+            
         case PPPinboardSectionSearches:
             return [PPTableViewTitleView heightWithText:NSLocalizedString(@"Searches", nil)];
     }
@@ -236,7 +236,7 @@ static NSString *CellIdentifier = @"Cell";
             
         case PPPinboardSectionSavedFeeds:
             return NSLocalizedString(@"Saved Feeds", nil);
-
+            
         case PPPinboardSectionSearches:
             return NSLocalizedString(@"Searches", nil);
     }
@@ -342,11 +342,11 @@ static NSString *CellIdentifier = @"Cell";
         case PPPinboardSectionSavedFeeds:
             cell.textLabel.text = self.savedFeeds[indexPath.row][@"title"];
             break;
-
+            
         case PPPinboardSectionSearches: {
             NSDictionary *search = self.searches[indexPath.row];
             cell.textLabel.text = search[@"name"];
-
+            
             NSString *query = search[@"query"];
             NSMutableArray *components = [NSMutableArray array];
             if (query && ![query isEqualToString:@""]) {
@@ -357,38 +357,38 @@ static NSString *CellIdentifier = @"Cell";
             switch (isPrivate) {
                 case kPushpinFilterFalse:
                     [components addObject:@"public"];
-
+                    
                 case kPushpinFilterTrue:
                     [components addObject:@"private"];
             }
-
+            
             kPushpinFilterType unread = [search[@"unread"] integerValue];
             switch (unread) {
                 case kPushpinFilterFalse:
                     [components addObject:@"read"];
-
+                    
                 case kPushpinFilterTrue:
                     [components addObject:@"unread"];
             }
-
+            
             kPushpinFilterType starred = [search[@"starred"] integerValue];
             switch (starred) {
                 case kPushpinFilterFalse:
                     [components addObject:@"unstarred"];
-
+                    
                 case kPushpinFilterTrue:
                     [components addObject:@"starred"];
             }
-
+            
             kPushpinFilterType tagged = [search[@"tagged"] integerValue];
             switch (tagged) {
                 case kPushpinFilterFalse:
                     [components addObject:@"untagged"];
-
+                    
                 case kPushpinFilterTrue:
                     [components addObject:@"tagged"];
             }
-
+            
             cell.detailTextLabel.text = [components componentsJoinedByString:@", "];
             break;
         }
@@ -512,11 +512,11 @@ static NSString *CellIdentifier = @"Cell";
                         break;
                 }
                 break;
-
+                
             case PPPinboardSectionSavedFeeds:
                 defaultFeed = [NSString stringWithFormat:@"saved-%@", self.savedFeeds[indexPath.row][@"title"]];
                 break;
-
+                
             case PPPinboardSectionSearches:
                 defaultFeed = [NSString stringWithFormat:@"search-%@", self.searches[indexPath.row][@"name"]];
                 break;

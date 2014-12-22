@@ -51,6 +51,7 @@
 @synthesize offlineFetchCriteria = _offlineFetchCriteria;
 @synthesize offlineUsageLimit = _offlineUsageLimit;
 @synthesize downloadFullWebpageForOfflineCache = _downloadFullWebpageForOfflineCache;
+@synthesize turnOffBookmarkPrompt = _turnOffBookmarkPrompt;
 
 #ifdef PINBOARD
 @synthesize communityFeedOrder = _communityFeedOrder;
@@ -157,6 +158,21 @@
     _markReadPosts = markReadPosts;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:@(markReadPosts) forKey:@"io.aurora.pinboard.MarkReadPosts"];
+    [defaults synchronize];
+}
+
+- (BOOL)turnOffBookmarkPrompt {
+    if (!_turnOffBookmarkPrompt) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _turnOffBookmarkPrompt = [[defaults objectForKey:@"io.aurora.pinboard.TurnOffBookmarkPrompt"] boolValue];
+    }
+    return _turnOffBookmarkPrompt;
+}
+
+- (void)setTurnOffBookmarkPrompt:(BOOL)turnOffBookmarkPrompt {
+    _turnOffBookmarkPrompt = turnOffBookmarkPrompt;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(turnOffBookmarkPrompt) forKey:@"io.aurora.pinboard.TurnOffBookmarkPrompt"];
     [defaults synchronize];
 }
 
