@@ -92,7 +92,7 @@
     }
 
     NSString *description = [post[@"description"] stringByTrimmingCharactersInSet:whitespace];
-    NSString *date = [NSString stringWithFormat:@"%@", post[@"date"]];
+    NSString *date = [NSString stringWithFormat:@"%@", post[@"created_at"]];
     NSString *tags = post[@"tags"];
     
     NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
@@ -103,10 +103,12 @@
     if ([linkHost hasPrefix:@"www."]) {
         linkHost = [linkHost stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:@""];
     }
+    
+    linkHost = [NSString stringWithFormat:@"%@ . %@", linkHost, date];
 
     NSRange linkRange = NSMakeRange(titleRange.location + titleRange.length + 1, linkHost.length);
     [content appendString:[NSString stringWithFormat:@"\n%@", linkHost]];
-    
+
     NSRange descriptionRange;
     if ([description isEqualToString:emptyString]) {
         descriptionRange = NSMakeRange(NSNotFound, 0);
@@ -115,9 +117,6 @@
         descriptionRange = NSMakeRange(linkRange.location + linkRange.length + 1, description.length);
         [content appendString:[NSString stringWithFormat:@"\n%@", description]];
     }
-    
-    NSRange dateRange = NSMakeRange(descriptionRange.location + descriptionRange.length + 1, date.length);
-    [content appendString:[NSString stringWithFormat:@"\n%@", date]];
 
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.paragraphSpacing = 0;
@@ -139,21 +138,16 @@
 
     NSMutableDictionary *descriptionAttributes = [@{NSFontAttributeName: [PPTheme descriptionFont],
                                                     NSParagraphStyleAttributeName: defaultParagraphStyle} mutableCopy];
-    
-    NSMutableDictionary *dateAttributes = [@{NSFontAttributeName: [PPTheme descriptionFont],
-                                             NSParagraphStyleAttributeName: defaultParagraphStyle} mutableCopy];
 
     if (dimmed) {
         titleAttributes[NSForegroundColorAttributeName] = HEX(0xb3b3b3ff);
         linkAttributes[NSForegroundColorAttributeName] = HEX(0xcdcdcdff);
         descriptionAttributes[NSForegroundColorAttributeName] = HEX(0x96989Dff);
-        dateAttributes[NSForegroundColorAttributeName] = HEX(0x96989Dff);
     }
     else {
         titleAttributes[NSForegroundColorAttributeName] = HEX(0x000000ff);
         linkAttributes[NSForegroundColorAttributeName] = HEX(0xb4b6b9ff);
         descriptionAttributes[NSForegroundColorAttributeName] = HEX(0x585858ff);
-        dateAttributes[NSForegroundColorAttributeName] = HEX(0x585858ff);
     }
     
     if (!title) {
@@ -167,20 +161,16 @@
     if (!description) {
         description = @"";
     }
-    
-    if (!date) {
-        date = @"";
-    }
 
     NSAttributedString *titleString = [[NSAttributedString alloc] initWithString:title attributes:titleAttributes];
-    NSAttributedString *linkString = [[NSAttributedString alloc] initWithString:linkHost attributes:linkAttributes];
+    NSMutableAttributedString *linkString = [[NSMutableAttributedString alloc] initWithString:linkHost attributes:linkAttributes];
+    [linkString addAttribute:NSFontAttributeName value:[PPTheme descriptionFont] range:NSMakeRange(linkRange.length - date.length, date.length - 1)];
+
     NSAttributedString *descriptionString = [[NSAttributedString alloc] initWithString:description attributes:descriptionAttributes];
-    NSAttributedString *dateString = [[NSAttributedString alloc] initWithString:date attributes:dateAttributes];
     
     CGSize titleSize;
     CGSize linkSize;
     CGSize descriptionSize;
-    CGSize dateSize;
     CGSize constraintSize = CGSizeMake(width - 20, CGFLOAT_MAX);
 
     // Calculate our shorter strings if we're compressed
@@ -195,7 +185,6 @@
         descriptionSize = [TTTAttributedLabel sizeThatFitsAttributedString:descriptionString
                                                            withConstraints:constraintSize
                                                     limitedToNumberOfLines:2];
-        dateSize = CGSizeZero;
     }
     else {
         titleSize = [TTTAttributedLabel sizeThatFitsAttributedString:titleString
@@ -207,9 +196,6 @@
         descriptionSize = [TTTAttributedLabel sizeThatFitsAttributedString:descriptionString
                                                            withConstraints:constraintSize
                                                     limitedToNumberOfLines:0];
-        dateSize = [TTTAttributedLabel sizeThatFitsAttributedString:dateString
-                                                    withConstraints:constraintSize
-                                             limitedToNumberOfLines:0];
     }
 
     NSMutableArray *badges = [NSMutableArray array];
@@ -291,11 +277,10 @@
     metadata.descriptionHeight = descriptionSize.height;
     metadata.badgeHeight = badgeHeight;
     metadata.linkHeight = linkSize.height;
-    metadata.height = @(titleSize.height + linkSize.height + descriptionSize.height + dateSize.height + badgeHeight + 17);
+    metadata.height = @(titleSize.height + linkSize.height + descriptionSize.height + badgeHeight + 17);
     metadata.titleString = titleString;
     metadata.descriptionString = descriptionString;
     metadata.linkString = linkString;
-    metadata.dateString = dateString;
     metadata.badges = badges;
 
     if (cache) {
