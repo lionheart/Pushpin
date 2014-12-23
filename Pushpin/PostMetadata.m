@@ -44,6 +44,7 @@
         NSLocale *locale = [NSLocale currentLocale];
         formatter = [[NSDateFormatter alloc] init];
         formatter.locale = locale;
+        formatter.dateStyle = NSDateFormatterShortStyle;
     });
     return formatter;
 }
@@ -92,10 +93,17 @@
     }
 
     NSString *description = [post[@"description"] stringByTrimmingCharactersInSet:whitespace];
-    NSString *date = [NSString stringWithFormat:@"%@", post[@"created_at"]];
+
+    NSString *date = [[self dateFormatter] stringFromDate:post[@"created_at"]];
+    if ([description isEqualToString:emptyString]) {
+        description = date;
+    }
+    else {
+        description = [NSString stringWithFormat:@"%@ · %@", date, description];
+    }
+
     NSString *tags = post[@"tags"];
-    
-    NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
+
     NSRange titleRange = NSMakeRange(0, title.length);
     
     NSURL *linkUrl = [NSURL URLWithString:post[@"url"]];
@@ -103,11 +111,8 @@
     if ([linkHost hasPrefix:@"www."]) {
         linkHost = [linkHost stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:@""];
     }
-    
-    linkHost = [NSString stringWithFormat:@"%@ . %@", linkHost, date];
 
     NSRange linkRange = NSMakeRange(titleRange.location + titleRange.length + 1, linkHost.length);
-    [content appendString:[NSString stringWithFormat:@"\n%@", linkHost]];
 
     NSRange descriptionRange;
     if ([description isEqualToString:emptyString]) {
@@ -115,7 +120,6 @@
     }
     else {
         descriptionRange = NSMakeRange(linkRange.location + linkRange.length + 1, description.length);
-        [content appendString:[NSString stringWithFormat:@"\n%@", description]];
     }
 
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
@@ -164,8 +168,6 @@
 
     NSAttributedString *titleString = [[NSAttributedString alloc] initWithString:title attributes:titleAttributes];
     NSMutableAttributedString *linkString = [[NSMutableAttributedString alloc] initWithString:linkHost attributes:linkAttributes];
-    [linkString addAttribute:NSFontAttributeName value:[PPTheme descriptionFont] range:NSMakeRange(linkRange.length - date.length, date.length - 1)];
-
     NSAttributedString *descriptionString = [[NSAttributedString alloc] initWithString:description attributes:descriptionAttributes];
     
     CGSize titleSize;
