@@ -20,6 +20,7 @@
 
 @interface PostMetadata ()
 
++ (NSDateFormatter *)dateFormatter;
 + (NSMutableDictionary *)layoutObjectCache;
 + (NSAttributedString *)stringByTrimmingTrailingPunctuationFromAttributedString:(NSAttributedString *)string offset:(NSInteger *)offset;
 
@@ -34,6 +35,17 @@
         objectCache = [NSMutableDictionary dictionary];
     });
     return objectCache;
+}
+
++ (NSDateFormatter *)dateFormatter {
+    static NSDateFormatter *formatter;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSLocale *locale = [NSLocale currentLocale];
+        formatter = [[NSDateFormatter alloc] init];
+        formatter.locale = locale;
+    });
+    return formatter;
 }
 
 + (PostMetadata *)metadataForPost:(NSDictionary *)post
@@ -80,6 +92,7 @@
     }
 
     NSString *description = [post[@"description"] stringByTrimmingCharactersInSet:whitespace];
+    NSString *date = [NSString stringWithFormat:@"%@", post[@"date"]];
     NSString *tags = post[@"tags"];
     
     NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
@@ -102,6 +115,9 @@
         descriptionRange = NSMakeRange(linkRange.location + linkRange.length + 1, description.length);
         [content appendString:[NSString stringWithFormat:@"\n%@", description]];
     }
+    
+    NSRange dateRange = NSMakeRange(descriptionRange.location + descriptionRange.length + 1, date.length);
+    [content appendString:[NSString stringWithFormat:@"\n%@", date]];
 
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.paragraphSpacing = 0;
@@ -123,16 +139,21 @@
 
     NSMutableDictionary *descriptionAttributes = [@{NSFontAttributeName: [PPTheme descriptionFont],
                                                     NSParagraphStyleAttributeName: defaultParagraphStyle} mutableCopy];
+    
+    NSMutableDictionary *dateAttributes = [@{NSFontAttributeName: [PPTheme descriptionFont],
+                                             NSParagraphStyleAttributeName: defaultParagraphStyle} mutableCopy];
 
     if (dimmed) {
         titleAttributes[NSForegroundColorAttributeName] = HEX(0xb3b3b3ff);
         linkAttributes[NSForegroundColorAttributeName] = HEX(0xcdcdcdff);
         descriptionAttributes[NSForegroundColorAttributeName] = HEX(0x96989Dff);
+        dateAttributes[NSForegroundColorAttributeName] = HEX(0x96989Dff);
     }
     else {
         titleAttributes[NSForegroundColorAttributeName] = HEX(0x000000ff);
         linkAttributes[NSForegroundColorAttributeName] = HEX(0xb4b6b9ff);
         descriptionAttributes[NSForegroundColorAttributeName] = HEX(0x585858ff);
+        dateAttributes[NSForegroundColorAttributeName] = HEX(0x585858ff);
     }
     
     if (!title) {
@@ -146,14 +167,20 @@
     if (!description) {
         description = @"";
     }
+    
+    if (!date) {
+        date = @"";
+    }
 
     NSAttributedString *titleString = [[NSAttributedString alloc] initWithString:title attributes:titleAttributes];
     NSAttributedString *linkString = [[NSAttributedString alloc] initWithString:linkHost attributes:linkAttributes];
     NSAttributedString *descriptionString = [[NSAttributedString alloc] initWithString:description attributes:descriptionAttributes];
+    NSAttributedString *dateString = [[NSAttributedString alloc] initWithString:date attributes:dateAttributes];
     
     CGSize titleSize;
     CGSize linkSize;
     CGSize descriptionSize;
+    CGSize dateSize;
     CGSize constraintSize = CGSizeMake(width - 20, CGFLOAT_MAX);
 
     // Calculate our shorter strings if we're compressed
@@ -168,6 +195,7 @@
         descriptionSize = [TTTAttributedLabel sizeThatFitsAttributedString:descriptionString
                                                            withConstraints:constraintSize
                                                     limitedToNumberOfLines:2];
+        dateSize = CGSizeZero;
     }
     else {
         titleSize = [TTTAttributedLabel sizeThatFitsAttributedString:titleString
@@ -179,6 +207,9 @@
         descriptionSize = [TTTAttributedLabel sizeThatFitsAttributedString:descriptionString
                                                            withConstraints:constraintSize
                                                     limitedToNumberOfLines:0];
+        dateSize = [TTTAttributedLabel sizeThatFitsAttributedString:dateString
+                                                    withConstraints:constraintSize
+                                             limitedToNumberOfLines:0];
     }
 
     NSMutableArray *badges = [NSMutableArray array];
@@ -260,10 +291,11 @@
     metadata.descriptionHeight = descriptionSize.height;
     metadata.badgeHeight = badgeHeight;
     metadata.linkHeight = linkSize.height;
-    metadata.height = @(titleSize.height + linkSize.height + descriptionSize.height + badgeHeight + 17);
+    metadata.height = @(titleSize.height + linkSize.height + descriptionSize.height + dateSize.height + badgeHeight + 17);
     metadata.titleString = titleString;
     metadata.descriptionString = descriptionString;
     metadata.linkString = linkString;
+    metadata.dateString = dateString;
     metadata.badges = badges;
 
     if (cache) {

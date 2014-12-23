@@ -15,12 +15,14 @@
 @property (nonatomic, strong) NSAttributedString *titleString;
 @property (nonatomic, strong) NSAttributedString *descriptionString;
 @property (nonatomic, strong) NSAttributedString *linkString;
+@property (nonatomic, strong) NSAttributedString *dateString;
 @property (nonatomic, strong) NSNumber *height;
 @property (nonatomic, strong) NSArray *badges;
 @property (nonatomic) CGFloat titleHeight;
 @property (nonatomic) CGFloat badgeHeight;
 @property (nonatomic) CGFloat descriptionHeight;
 @property (nonatomic) CGFloat linkHeight;
+@property (nonatomic) CGFloat dateHeight;
 
 @property (nonatomic, strong) PPBadgeWrapperView *badgeWrapperView;
 
