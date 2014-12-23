@@ -20,6 +20,7 @@
 
 @interface PostMetadata ()
 
++ (NSDateFormatter *)dateFormatter;
 + (NSMutableDictionary *)layoutObjectCache;
 + (NSAttributedString *)stringByTrimmingTrailingPunctuationFromAttributedString:(NSAttributedString *)string offset:(NSInteger *)offset;
 
@@ -34,6 +35,18 @@
         objectCache = [NSMutableDictionary dictionary];
     });
     return objectCache;
+}
+
++ (NSDateFormatter *)dateFormatter {
+    static NSDateFormatter *formatter;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSLocale *locale = [NSLocale currentLocale];
+        formatter = [[NSDateFormatter alloc] init];
+        formatter.locale = locale;
+        formatter.dateStyle = NSDateFormatterShortStyle;
+    });
+    return formatter;
 }
 
 + (PostMetadata *)metadataForPost:(NSDictionary *)post
@@ -80,9 +93,17 @@
     }
 
     NSString *description = [post[@"description"] stringByTrimmingCharactersInSet:whitespace];
+
+    NSString *date = [[self dateFormatter] stringFromDate:post[@"created_at"]];
+    if ([description isEqualToString:emptyString]) {
+        description = date;
+    }
+    else {
+        description = [NSString stringWithFormat:@"%@ · %@", date, description];
+    }
+
     NSString *tags = post[@"tags"];
-    
-    NSMutableString *content = [NSMutableString stringWithFormat:@"%@", title];
+
     NSRange titleRange = NSMakeRange(0, title.length);
     
     NSURL *linkUrl = [NSURL URLWithString:post[@"url"]];
@@ -92,15 +113,13 @@
     }
 
     NSRange linkRange = NSMakeRange(titleRange.location + titleRange.length + 1, linkHost.length);
-    [content appendString:[NSString stringWithFormat:@"\n%@", linkHost]];
-    
+
     NSRange descriptionRange;
     if ([description isEqualToString:emptyString]) {
         descriptionRange = NSMakeRange(NSNotFound, 0);
     }
     else {
         descriptionRange = NSMakeRange(linkRange.location + linkRange.length + 1, description.length);
-        [content appendString:[NSString stringWithFormat:@"\n%@", description]];
     }
 
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
@@ -148,7 +167,7 @@
     }
 
     NSAttributedString *titleString = [[NSAttributedString alloc] initWithString:title attributes:titleAttributes];
-    NSAttributedString *linkString = [[NSAttributedString alloc] initWithString:linkHost attributes:linkAttributes];
+    NSMutableAttributedString *linkString = [[NSMutableAttributedString alloc] initWithString:linkHost attributes:linkAttributes];
     NSAttributedString *descriptionString = [[NSAttributedString alloc] initWithString:description attributes:descriptionAttributes];
     
     CGSize titleSize;
