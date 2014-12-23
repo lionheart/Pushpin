@@ -1057,11 +1057,7 @@ static NSInteger kToolbarHeight = 44;
 
                                                                             UIViewController *vc = (UIViewController *)[dataSource addViewControllerForPostAtIndex:self.selectedIndexPath.row];
                                                                             
-                                                                            if ([UIApplication isIPad]) {
-                                                                                vc.modalPresentationStyle = UIModalPresentationFormSheet;
-                                                                            }
-                                                                            
-                                                                            [self.navigationController presentViewController:vc animated:YES completion:nil];
+                                                                            [self presentViewControllerInFormSheetIfApplicable:vc];
                                                                         }];
         }
         
@@ -1831,9 +1827,17 @@ static NSInteger kToolbarHeight = 44;
     if ([UIApplication isIPad]) {
         vc.modalPresentationStyle = UIModalPresentationFormSheet;
     }
-    
+
     if ([self.navigationController topViewController] == self) {
-        [self.navigationController presentViewController:vc animated:YES completion:nil];
+        UIViewController *presentingViewController;
+        if (self.searchController.active) {
+            presentingViewController = self.searchController;
+        }
+        else {
+            presentingViewController = self.navigationController;
+        }
+
+        [presentingViewController presentViewController:vc animated:YES completion:nil];
     }
 }
 
