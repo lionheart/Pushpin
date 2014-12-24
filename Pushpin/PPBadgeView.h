@@ -30,6 +30,8 @@
 @property (nonatomic, strong) UIColor *selectedColor;
 @property (nonatomic, strong) UIColor *disabledColor;
 
+@property (nonatomic, strong) NSString *text;
+
 @property (nonatomic) BOOL enabled;
 @property (nonatomic) BOOL selected;
 

@@ -1457,8 +1457,8 @@ static NSInteger kToolbarHeight = 44;
         if (badges.count > 5) {
             [badges removeObjectsInRange:NSMakeRange(5, badges.count - 5)];
         }
-        
-        NSString *tag = badge.textLabel.text;
+
+        NSString *tag = badge.text;
         if (![tag isEqualToString:emptyString]) {
             if ([tag isEqualToString:ellipsis] && badgeViews.count > 0) {
                 // Show more tag options
