@@ -52,6 +52,7 @@
 @property (nonatomic, strong) PPNavigationController *feedListNavigationController;
 @property (nonatomic, strong) UIViewController *presentingController;
 @property (nonatomic) BOOL addOrEditPromptVisible;
+@property (nonatomic) BOOL isBackgroundSessionInvalidated;
 
 @property (nonatomic, strong) NSMutableDictionary *backgroundURLSessionCompletionHandlers;
 
@@ -1005,16 +1006,13 @@
                 NSCachedURLResponse *response = [self.urlCache cachedResponseForRequest:[NSURLRequest requestWithURL:url]];
                 if (!response) {
                     [urlsToCache addObject:url];
-                    
-                    if (urlsToCache.count > 10) {
-                        break;
-                    }
                 }
             }
         }
         [results close];
     }];
 
+    self.isBackgroundSessionInvalidated = NO;
     PPSettings *settings = [PPSettings sharedSettings];
     for (NSURL *url in urlsToCache) {
         // https://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=
@@ -1070,6 +1068,7 @@
         BOOL isHTMLResponse = [[(NSHTTPURLResponse *)downloadTask.response allHeaderFields][@"Content-Type"] rangeOfString:@"text/html"].location != NSNotFound;
         BOOL isReaderURL = [downloadTask.response.URL.host isEqualToString:@"pushpin-readability.herokuapp.com"];
         NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        NSURLCache *cache = [NSURLCache sharedURLCache];
         if (string && isHTMLResponse && !isReaderURL) {
             // Retrieve all assets and queue them for download. Use a set to prevent duplicates.
             NSMutableSet *assets = [NSMutableSet set];
@@ -1092,27 +1091,34 @@
                 }
             }
 
+            NSURL *responseURL = downloadTask.response.URL;
             for (NSString *urlString in assets) {
                 NSString *finalURLString = [urlString copy];
-                if ([finalURLString hasPrefix:@"//"]) {
-                    finalURLString = [NSString stringWithFormat:@"%@:%@", downloadTask.response.URL.scheme, finalURLString];
-                }
-                else if ([finalURLString hasPrefix:@"/"]) {
-                    finalURLString = [NSString stringWithFormat:@"%@://%@%@", downloadTask.response.URL.scheme, downloadTask.response.URL.host, finalURLString];
-                }
-                else if (![finalURLString hasPrefix:downloadTask.response.URL.scheme]) {
-                    // This is a relative URL
-                    finalURLString = [NSString stringWithFormat:@"%@%@", downloadTask.response.URL.absoluteString, finalURLString];
-                }
+                if (responseURL.scheme) {
+                    if ([finalURLString hasPrefix:@"//"]) {
+                        finalURLString = [NSString stringWithFormat:@"%@:%@", responseURL.scheme, finalURLString];
+                    }
+                    else if ([finalURLString hasPrefix:@"/"]) {
+                        finalURLString = [NSString stringWithFormat:@"%@://%@%@", responseURL.scheme, responseURL.host, finalURLString];
+                    }
+                    else if (![finalURLString hasPrefix:responseURL.scheme]) {
+                        // This is a relative URL
+                        finalURLString = [NSString stringWithFormat:@"%@://%@%@%@", responseURL.scheme, responseURL.host, responseURL.path, finalURLString];
+                    }
 
-                NSURL *url = [NSURL URLWithString:finalURLString];
-                NSURLSessionDownloadTask *downloadTask = [self.offlineSession downloadTaskWithRequest:[NSURLRequest requestWithURL:url]];
-                [downloadTask resume];
+                    NSURL *url = [NSURL URLWithString:finalURLString];
+                    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+
+                    if (![cache cachedResponseForRequest:request] && !self.isBackgroundSessionInvalidated) {
+                        NSURLSessionDownloadTask *downloadTask = [self.offlineSession downloadTaskWithRequest:request];
+                        [downloadTask resume];
+                    }
+                }
             }
         }
         
-        NSURLCache *cache = [NSURLCache sharedURLCache];
-        if (cache.currentDiskUsage < cache.diskCapacity * 0.95) {
+        BOOL hasAvailableSpace = cache.currentDiskUsage < cache.diskCapacity * 0.99;
+        if (hasAvailableSpace && downloadTask.response) {
             // Only save if current usage is less than 95% of capacity.
             NSURLRequest *request = [NSURLRequest requestWithURL:downloadTask.originalRequest.URL];
             NSURLRequest *finalRequest = [NSURLRequest requestWithURL:downloadTask.currentRequest.URL];
@@ -1121,7 +1127,9 @@
             [cache storeCachedResponse:[[NSCachedURLResponse alloc] initWithResponse:downloadTask.response data:data] forRequest:request];
         }
         else {
+            self.isBackgroundSessionInvalidated = YES;
             [self.offlineSession invalidateAndCancel];
+            [self.readerViewOfflineSession invalidateAndCancel];
         }
     }
 }
