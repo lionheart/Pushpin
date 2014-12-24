@@ -1956,34 +1956,40 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                                   dispatch_async(dispatch_get_main_queue(), ^{
                                       self.feeds = [updatedFeeds mutableCopy];
                                       
-                                      [self.tableView beginUpdates];
-                                      if (self.tableView.editing) {
-                                          [self.tableView insertRowsAtIndexPaths:indexPathsToInsert
-                                                                withRowAnimation:UITableViewRowAnimationFade];
-                                          [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete
-                                                                withRowAnimation:UITableViewRowAnimationFade];
-                                      }
-                                      else {
-                                          if (previousFeedTitles.count == 0) {
-                                              if (updatedFeedTitles.count > 0) {
-                                                  [self.tableView insertSections:[NSIndexSet indexSetWithIndex:section]
-                                                                withRowAnimation:UITableViewRowAnimationFade];
-                                              }
+                                      @try {
+                                          // The number of sections contained in the table view after the update (3) must be equal to the number of sections contained in the table view before the update (3), plus or minus the number of sections inserted or deleted (1 inserted, 0 deleted).
+                                          [self.tableView beginUpdates];
+                                          if (self.tableView.editing) {
+                                              [self.tableView insertRowsAtIndexPaths:indexPathsToInsert
+                                                                    withRowAnimation:UITableViewRowAnimationFade];
+                                              [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete
+                                                                    withRowAnimation:UITableViewRowAnimationFade];
                                           }
                                           else {
-                                              if (updatedFeedTitles.count == 0) {
-                                                  [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:section]
-                                                                withRowAnimation:UITableViewRowAnimationFade];
+                                              if (previousFeedTitles.count == 0) {
+                                                  if (updatedFeedTitles.count > 0) {
+                                                      [self.tableView insertSections:[NSIndexSet indexSetWithIndex:section]
+                                                                    withRowAnimation:UITableViewRowAnimationFade];
+                                                  }
                                               }
                                               else {
-                                                  [self.tableView insertRowsAtIndexPaths:indexPathsToInsert
-                                                                        withRowAnimation:UITableViewRowAnimationFade];
-                                                  [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete
-                                                                        withRowAnimation:UITableViewRowAnimationFade];
+                                                  if (updatedFeedTitles.count == 0) {
+                                                      [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:section]
+                                                                    withRowAnimation:UITableViewRowAnimationFade];
+                                                  }
+                                                  else {
+                                                      [self.tableView insertRowsAtIndexPaths:indexPathsToInsert
+                                                                            withRowAnimation:UITableViewRowAnimationFade];
+                                                      [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete
+                                                                            withRowAnimation:UITableViewRowAnimationFade];
+                                                  }
                                               }
                                           }
+                                          [self.tableView endUpdates];
                                       }
-                                      [self.tableView endUpdates];
+                                      @catch (NSException *exception) {
+                                          [self.tableView reloadData];
+                                      }
                                   });
                               }];
     
