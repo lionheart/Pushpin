@@ -22,6 +22,7 @@
 #import "PPPinboardMetadataCache.h"
 #import "PPUtilities.h"
 
+#import <MWFeedParser/NSString+HTML.h>
 #import <FMDB/FMDatabase.h>
 #import <ASPinboard/ASPinboard.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
@@ -524,10 +525,7 @@ static BOOL kPinboardSyncInProgress = NO;
             dispatch_async(dispatch_get_main_queue(), ^{
                 PPGenericPostViewController *postViewController = [[PPGenericPostViewController alloc] init];
                 postViewController.postDataSource = pinboardDataSource;
-                PPTitleButton *button = [PPTitleButton buttonWithDelegate:postViewController];
-                [button setTitle:[pinboardDataSource.tags componentsJoinedByString:@"+"] imageName:nil];
-
-                postViewController.navigationItem.titleView = button;
+                postViewController.navigationItem.titleView = [pinboardDataSource titleViewWithDelegate:postViewController];
                 callback(postViewController);
             });
         }
@@ -597,14 +595,6 @@ static BOOL kPinboardSyncInProgress = NO;
         @"hash": hash,
         @"meta": [resultSet stringForColumn:@"meta"],
     };
-}
-
-- (NSArray *)quotedTags {
-    NSMutableArray *quotedTagComponents = [NSMutableArray array];
-    for (NSString *tag in self.tags) {
-        [quotedTagComponents addObject:[NSString stringWithFormat:@"\"%@\"", tag]];
-    }
-    return quotedTagComponents;
 }
 
 - (void)generateQueryAndParameters:(void (^)(NSString *, NSArray *))callback {
@@ -701,13 +691,11 @@ static BOOL kPinboardSyncInProgress = NO;
             break;
 
         case kPushpinFilterNone:
-            // Only search within tag filters if there is no search query and untagged is not used (they could conflict).
-            if (!self.searchQuery) {
-                for (NSString *tag in self.tags) {
-                    // Lowercase the database tag name and the parameter string so that searches for Programming and programming return the same results. We do this in order to act more similarly to the Pinboard website.
-                    [whereComponents addObject:@"bookmark.hash IN (SELECT bookmark_hash FROM tagging WHERE tag_name = ? COLLATE NOCASE)"];
-                    [parameters addObject:tag];
-                }
+            // Only search within tag filters if untagged is not used (they could conflict).
+            for (NSString *tag in self.tags) {
+                // Lowercase the database tag name and the parameter string so that searches for Programming and programming return the same results. We do this in order to act more similarly to the Pinboard website.
+                [whereComponents addObject:@"bookmark.hash IN (SELECT bookmark_hash FROM tagging WHERE tag_name = ? COLLATE NOCASE)"];
+                [parameters addObject:tag];
             }
             break;
     }
@@ -947,7 +935,11 @@ static BOOL kPinboardSyncInProgress = NO;
     }
     else {
         if (self.tags.count > 0) {
-            [titleButton setTitle:[self.tags componentsJoinedByString:@"+"] imageName:nil];
+            NSMutableArray *htmlDecodedTags = [NSMutableArray array];
+            for (NSString *tag in self.tags) {
+                [htmlDecodedTags addObject:[tag stringByDecodingHTMLEntities]];
+            }
+            [titleButton setTitle:[htmlDecodedTags componentsJoinedByString:@"+"] imageName:nil];
         }
         else {
             [titleButton setTitle:NSLocalizedString(@"All Bookmarks", nil) imageName:@"navigation-all"];
@@ -1111,7 +1103,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                                   tagDeleteCount++;
                                                   
                                                   for (NSString *tagName in [postTags componentsSeparatedByString:@" "]) {
-                                                      NSString *cleanedTagName = [PPUtilities stringByTrimmingWhitespace:tagName];
+                                                      NSString *cleanedTagName = [PPUtilities stringByTrimmingWhitespace:[tagName stringByDecodingHTMLEntities]];
                                                       if (![cleanedTagName isEqualToString:@""]) {
                                                           [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
                                                           [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];

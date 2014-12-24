@@ -13,6 +13,7 @@
 #import "PPTheme.h"
 #import "PPConstants.h"
 
+#import <MWFeedParser/NSString+HTML.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 
 @implementation PPBadgeView
@@ -77,7 +78,6 @@ static const CGFloat PADDING_Y = 2;
                                          PPBadgeFontColor: [UIColor whiteColor]
                                          } mutableCopy];
         [badgeOptions addEntriesFromDictionary:options];
-        
         self.normalColor = badgeOptions[PPBadgeNormalBackgroundColor];
         self.selectedColor = badgeOptions[PPBadgeActiveBackgroundColor];
         self.disabledColor = badgeOptions[PPBadgeDisabledBackgroundColor];
@@ -85,11 +85,13 @@ static const CGFloat PADDING_Y = 2;
         self.backgroundColor = self.normalColor;
 
         self.textLabel = [[UILabel alloc] init];
-        self.textLabel.text = text;
+        self.textLabel.text = [text stringByDecodingHTMLEntities];
         self.textLabel.font = [UIFont fontWithName:[PPTheme fontName] size:[badgeOptions[PPBadgeFontSize] floatValue]];
         self.textLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         self.textLabel.backgroundColor = self.normalColor;
         self.textLabel.textColor = badgeOptions[PPBadgeFontColor];
+
+        self.text = text;
 
         [self addSubview:self.textLabel];
         
