@@ -981,19 +981,19 @@
 
         switch (settings.offlineFetchCriteria) {
             case PPOfflineFetchCriteriaUnread:
-                query = @"SELECT * FROM bookmark WHERE unread=1";
+                query = @"SELECT url FROM bookmark WHERE unread=1";
                 break;
                 
             case PPOfflineFetchCriteriaRecent:
-                query = [NSString stringWithFormat:@"SELECT * FROM bookmark WHERE created_at>%lu", (long)timestamp];
+                query = [NSString stringWithFormat:@"SELECT url FROM bookmark WHERE created_at>%lu", (long)timestamp];
                 break;
                 
             case PPOfflineFetchCriteriaUnreadAndRecent:
-                query = [NSString stringWithFormat:@"SELECT * FROM bookmark WHERE created_at>%lu OR unread=1", (long)timestamp];
+                query = [NSString stringWithFormat:@"SELECT url FROM bookmark WHERE created_at>%lu OR unread=1", (long)timestamp];
                 break;
                 
             case PPOfflineFetchCriteriaEverything:
-                query = @"SELECT * FROM bookmark";
+                query = @"SELECT url FROM bookmark";
                 break;
         }
         FMResultSet *results = [db executeQuery:query];
