@@ -1017,15 +1017,19 @@
 
     self.isBackgroundSessionInvalidated = NO;
     PPSettings *settings = [PPSettings sharedSettings];
-    for (NSURL *url in urlsToCache) {
-        // https://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=
-        NSString *readerURLString = [NSString stringWithFormat:@"http://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [url.absoluteString urlEncodeUsingEncoding:NSUTF8StringEncoding]];
-        NSURLSessionDownloadTask *readerDownloadTask = [self.readerViewOfflineSession downloadTaskWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:readerURLString]]];
-        [readerDownloadTask resume];
+    NSURLCache *cache = self.urlCache;
+    BOOL hasAvailableSpace = cache.currentDiskUsage < cache.diskCapacity * 0.99;
+    if (hasAvailableSpace) {
+        for (NSURL *url in urlsToCache) {
+            // https://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=
+            NSString *readerURLString = [NSString stringWithFormat:@"http://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [url.absoluteString urlEncodeUsingEncoding:NSUTF8StringEncoding]];
+            NSURLSessionDownloadTask *readerDownloadTask = [self.readerViewOfflineSession downloadTaskWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:readerURLString]]];
+            [readerDownloadTask resume];
 
-        if (settings.downloadFullWebpageForOfflineCache) {
-            NSURLSessionDownloadTask *downloadTask = [self.offlineSession downloadTaskWithRequest:[NSURLRequest requestWithURL:url]];
-            [downloadTask resume];
+            if (settings.downloadFullWebpageForOfflineCache) {
+                NSURLSessionDownloadTask *downloadTask = [self.offlineSession downloadTaskWithRequest:[NSURLRequest requestWithURL:url]];
+                [downloadTask resume];
+            }
         }
     }
     
@@ -1039,16 +1043,16 @@
 
 - (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)())completionHandler {
     self.backgroundURLSessionCompletionHandlers[identifier] = completionHandler;
+    completionHandler();
 }
 
 - (void)URLSessionDidFinishEventsForBackgroundURLSession:(NSURLSession *)session {
-    
-    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        void (^completionHandler)() = self.backgroundURLSessionCompletionHandlers[session.configuration.identifier];
-        if (completionHandler) {
-            completionHandler();
-        }
-    }];
+//    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+//        void (^completionHandler)() = self.backgroundURLSessionCompletionHandlers[session.configuration.identifier];
+//        if (completionHandler) {
+//            completionHandler();
+//        }
+//    }];
 }
 
 - (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential *))completionHandler {
@@ -1066,7 +1070,7 @@
         }
     }
     else {
-        completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
+        completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, nil);
     }
 }
 
@@ -1081,7 +1085,7 @@
         BOOL isHTMLResponse = [[(NSHTTPURLResponse *)downloadTask.response allHeaderFields][@"Content-Type"] rangeOfString:@"text/html"].location != NSNotFound;
         BOOL isReaderURL = [downloadTask.response.URL.host isEqualToString:@"pushpin-readability.herokuapp.com"];
         NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        NSURLCache *cache = [NSURLCache sharedURLCache];
+        NSURLCache *cache = self.urlCache;
         if (string && isHTMLResponse && !isReaderURL) {
             // Retrieve all assets and queue them for download. Use a set to prevent duplicates.
             NSMutableSet *assets = [NSMutableSet set];
@@ -1132,17 +1136,17 @@
         
         BOOL hasAvailableSpace = cache.currentDiskUsage < cache.diskCapacity * 0.99;
         if (hasAvailableSpace && downloadTask.response) {
-            // Only save if current usage is less than 95% of capacity.
-            NSURLRequest *request = [NSURLRequest requestWithURL:downloadTask.originalRequest.URL];
+            // Only save if current usage is less than 99% of capacity.
             NSURLRequest *finalRequest = [NSURLRequest requestWithURL:downloadTask.currentRequest.URL];
-
             [cache storeCachedResponse:[[NSCachedURLResponse alloc] initWithResponse:downloadTask.response data:data] forRequest:finalRequest];
-            [cache storeCachedResponse:[[NSCachedURLResponse alloc] initWithResponse:downloadTask.response data:data] forRequest:request];
+
+            if (![downloadTask.originalRequest.URL isEqual:downloadTask.currentRequest.URL]) {
+                NSURLRequest *request = [NSURLRequest requestWithURL:downloadTask.originalRequest.URL];
+                [cache storeCachedResponse:[[NSCachedURLResponse alloc] initWithResponse:downloadTask.response data:data] forRequest:request];
+            }
         }
         else {
             self.isBackgroundSessionInvalidated = YES;
-            [self.offlineSession invalidateAndCancel];
-            [self.readerViewOfflineSession invalidateAndCancel];
         }
     }
 }
@@ -1153,7 +1157,6 @@
     dispatch_once(&onceToken, ^{
         NSURLSessionConfiguration *sessionConfiguration = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@"io.aurora.Pushpin.OfflineFetchIdentifier"];
         sessionConfiguration.sessionSendsLaunchEvents = YES;
-        sessionConfiguration.HTTPShouldUsePipelining = YES;
         sessionConfiguration.requestCachePolicy = NSURLRequestReloadIgnoringCacheData;
         sessionConfiguration.networkServiceType = NSURLNetworkServiceTypeBackground;
 
@@ -1176,7 +1179,6 @@
         NSString *authorizationValue = [NSString stringWithFormat:@"Basic %@", [authorizationData base64EncodedStringWithOptions:NSDataBase64Encoding76CharacterLineLength]];
         
         sessionConfiguration.HTTPAdditionalHeaders = @{@"Authorization": authorizationValue};
-        sessionConfiguration.HTTPShouldUsePipelining = YES;
         sessionConfiguration.requestCachePolicy = NSURLRequestReloadIgnoringCacheData;
         sessionConfiguration.networkServiceType = NSURLNetworkServiceTypeBackground;
 
