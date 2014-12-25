@@ -759,6 +759,9 @@
     self.urlCache = [[NSURLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024
                                                   diskCapacity:[PPSettings sharedSettings].offlineUsageLimit
                                                       diskPath:@"urlcache"];
+
+    // No-op, but I believe this warms the cache. See https://github.com/davbeck/CacheExample
+    self.urlCache.currentDiskUsage;
     [NSURLCache setSharedURLCache:self.urlCache];
     
     NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
@@ -1049,22 +1052,32 @@
 }
 
 - (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential *))completionHandler {
-    if (challenge.previousFailureCount == 0) {
-        NSURLCredential *credential = [NSURLCredential credentialWithUser:@"pushpin"
-                                                                 password:@"9346edb36e542dab1e7861227f9222b7"
-                                                              persistence:NSURLCredentialPersistenceNone];
+    if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodHTTPBasic]) {
+        if (challenge.previousFailureCount == 0) {
+            NSURLCredential *credential = [NSURLCredential credentialWithUser:@"pushpin"
+                                                                     password:@"9346edb36e542dab1e7861227f9222b7"
+                                                                  persistence:NSURLCredentialPersistenceNone];
 
-        completionHandler(NSURLSessionAuthChallengeUseCredential, credential);
+            [challenge.sender useCredential:credential forAuthenticationChallenge:challenge];
+            completionHandler(NSURLSessionAuthChallengeUseCredential, credential);
+        }
+        else {
+            completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
+        }
     }
     else {
         completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, nil);
     }
 }
 
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
+
+}
+
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location {
     NSError *error;
     NSData *data = [NSData dataWithContentsOfURL:location options:NSDataReadingUncached error:&error];
-    if (data) {
+    if (data && data.length > 0) {
         BOOL isHTMLResponse = [[(NSHTTPURLResponse *)downloadTask.response allHeaderFields][@"Content-Type"] rangeOfString:@"text/html"].location != NSNotFound;
         BOOL isReaderURL = [downloadTask.response.URL.host isEqualToString:@"pushpin-readability.herokuapp.com"];
         NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
@@ -1140,8 +1153,14 @@
     dispatch_once(&onceToken, ^{
         NSURLSessionConfiguration *sessionConfiguration = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@"io.aurora.Pushpin.OfflineFetchIdentifier"];
         sessionConfiguration.sessionSendsLaunchEvents = YES;
-        session = [NSURLSession sessionWithConfiguration:sessionConfiguration delegate:self delegateQueue:[NSOperationQueue mainQueue]];
+        sessionConfiguration.HTTPShouldUsePipelining = YES;
+        sessionConfiguration.requestCachePolicy = NSURLRequestReloadIgnoringCacheData;
+        sessionConfiguration.networkServiceType = NSURLNetworkServiceTypeBackground;
+
+        NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+        session = [NSURLSession sessionWithConfiguration:sessionConfiguration delegate:self delegateQueue:queue];
     });
+
     return session;
 }
 
@@ -1156,8 +1175,13 @@
         NSData *authorizationData = [authorizationString dataUsingEncoding:NSUTF8StringEncoding];
         NSString *authorizationValue = [NSString stringWithFormat:@"Basic %@", [authorizationData base64EncodedStringWithOptions:NSDataBase64Encoding76CharacterLineLength]];
         
-        [sessionConfiguration setHTTPAdditionalHeaders:@{@"Authorization": authorizationValue}];
-        session = [NSURLSession sessionWithConfiguration:sessionConfiguration delegate:self delegateQueue:[NSOperationQueue mainQueue]];
+        sessionConfiguration.HTTPAdditionalHeaders = @{@"Authorization": authorizationValue};
+        sessionConfiguration.HTTPShouldUsePipelining = YES;
+        sessionConfiguration.requestCachePolicy = NSURLRequestReloadIgnoringCacheData;
+        sessionConfiguration.networkServiceType = NSURLNetworkServiceTypeBackground;
+
+        NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+        session = [NSURLSession sessionWithConfiguration:sessionConfiguration delegate:self delegateQueue:queue];
     });
     return session;
 }
