@@ -1017,7 +1017,7 @@
 
     self.isBackgroundSessionInvalidated = NO;
     PPSettings *settings = [PPSettings sharedSettings];
-    NSURLCache *cache = self.urlCache;
+    NSURLCache *cache = [NSURLCache sharedURLCache];
     BOOL hasAvailableSpace = cache.currentDiskUsage < cache.diskCapacity * 0.99;
     if (hasAvailableSpace) {
         for (NSURL *url in urlsToCache) {
@@ -1085,7 +1085,7 @@
         BOOL isHTMLResponse = [[(NSHTTPURLResponse *)downloadTask.response allHeaderFields][@"Content-Type"] rangeOfString:@"text/html"].location != NSNotFound;
         BOOL isReaderURL = [downloadTask.response.URL.host isEqualToString:@"pushpin-readability.herokuapp.com"];
         NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        NSURLCache *cache = self.urlCache;
+        NSURLCache *cache = [NSURLCache sharedURLCache];
         if (string && isHTMLResponse && !isReaderURL) {
             // Retrieve all assets and queue them for download. Use a set to prevent duplicates.
             NSMutableSet *assets = [NSMutableSet set];
@@ -1157,8 +1157,6 @@
     dispatch_once(&onceToken, ^{
         NSURLSessionConfiguration *sessionConfiguration = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@"io.aurora.Pushpin.OfflineFetchIdentifier"];
         sessionConfiguration.sessionSendsLaunchEvents = YES;
-        sessionConfiguration.requestCachePolicy = NSURLRequestReloadIgnoringCacheData;
-        sessionConfiguration.networkServiceType = NSURLNetworkServiceTypeBackground;
 
         NSOperationQueue *queue = [[NSOperationQueue alloc] init];
         session = [NSURLSession sessionWithConfiguration:sessionConfiguration delegate:self delegateQueue:queue];
@@ -1179,8 +1177,6 @@
         NSString *authorizationValue = [NSString stringWithFormat:@"Basic %@", [authorizationData base64EncodedStringWithOptions:NSDataBase64Encoding76CharacterLineLength]];
         
         sessionConfiguration.HTTPAdditionalHeaders = @{@"Authorization": authorizationValue};
-        sessionConfiguration.requestCachePolicy = NSURLRequestReloadIgnoringCacheData;
-        sessionConfiguration.networkServiceType = NSURLNetworkServiceTypeBackground;
 
         NSOperationQueue *queue = [[NSOperationQueue alloc] init];
         session = [NSURLSession sessionWithConfiguration:sessionConfiguration delegate:self delegateQueue:queue];
