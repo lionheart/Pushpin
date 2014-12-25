@@ -12,12 +12,6 @@
 #define COCOAPODS_VERSION_MINOR_1PasswordExtension 0
 #define COCOAPODS_VERSION_PATCH_1PasswordExtension 9
 
-// AFCache
-#define COCOAPODS_POD_AVAILABLE_AFCache
-#define COCOAPODS_VERSION_MAJOR_AFCache 0
-#define COCOAPODS_VERSION_MINOR_AFCache 10
-#define COCOAPODS_VERSION_PATCH_AFCache 2
-
 // AFNetworking
 #define COCOAPODS_POD_AVAILABLE_AFNetworking
 #define COCOAPODS_VERSION_MAJOR_AFNetworking 2
@@ -227,12 +221,6 @@
 #define COCOAPODS_VERSION_MAJOR_YHRoundBorderedButton 0
 #define COCOAPODS_VERSION_MINOR_YHRoundBorderedButton 1
 #define COCOAPODS_VERSION_PATCH_YHRoundBorderedButton 0
-
-// ZipArchive
-#define COCOAPODS_POD_AVAILABLE_ZipArchive
-#define COCOAPODS_VERSION_MAJOR_ZipArchive 1
-#define COCOAPODS_VERSION_MINOR_ZipArchive 3
-#define COCOAPODS_VERSION_PATCH_ZipArchive 0
 
 // hpple
 #define COCOAPODS_POD_AVAILABLE_hpple
