@@ -47,7 +47,7 @@ static NSString *PPCachingEnabledKey = @"PPCachingEnabled";
 }
 
 - (NSCachedURLResponse *)cachedResponseByFollowingRedirects:(NSURLRequest *)request {
-    NSCachedURLResponse *cachedResponse = [[NSURLCache sharedURLCache] cachedResponseForRequest:request];
+    NSCachedURLResponse *cachedResponse = [[PPAppDelegate sharedDelegate].urlCache cachedResponseForRequest:request];
     NSHTTPURLResponse *HTTPURLResponse = (NSHTTPURLResponse *)cachedResponse.response;
     
     if ([@[@301, @302, @303, @307, @308] containsObject:@(HTTPURLResponse.statusCode)]) {
@@ -112,7 +112,7 @@ static NSString *PPCachingEnabledKey = @"PPCachingEnabled";
     [self.client URLProtocolDidFinishLoading:self];
     
     NSCachedURLResponse *cachedResponse = [[NSCachedURLResponse alloc] initWithResponse:self.response data:self.data];
-    [[NSURLCache sharedURLCache] storeCachedResponse:cachedResponse forRequest:self.canonicalRequest];
+    [[PPAppDelegate sharedDelegate].urlCache storeCachedResponse:cachedResponse forRequest:self.canonicalRequest];
     
     [self reset];
 }

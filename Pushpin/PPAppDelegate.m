@@ -31,6 +31,7 @@
 #import "PPDeliciousDataSource.h"
 #import "PPSettings.h"
 #import "PPCachingURLProtocol.h"
+#import "PPURLCache.h"
 
 #import "NSString+URLEncoding2.h"
 #import <LHSDelicious/LHSDelicious.h>
@@ -672,7 +673,7 @@
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    application.applicationSupportsShakeToEdit = YES;
+    [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
 
     [Crashlytics startWithAPIKey:@"ed1bff5018819b0c5dbb8dbb35edac18a8b1af02"];
 
@@ -754,16 +755,12 @@
             ],
 #endif
         }];
-    
-    // 4 MB memory, 100 MB disk
-    self.urlCache = [[NSURLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024
+
+    [PPURLCache migrateDatabase];
+    self.urlCache = [[PPURLCache alloc] initWithMemoryCapacity:0
                                                   diskCapacity:[PPSettings sharedSettings].offlineUsageLimit
                                                       diskPath:@"urlcache"];
 
-    // No-op, but I believe this warms the cache. See https://github.com/davbeck/CacheExample
-    self.urlCache.currentDiskUsage;
-    [NSURLCache setSharedURLCache:self.urlCache];
-    
     NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
     [sharedDefaults setObject:[[PPSettings sharedSettings] token] forKey:@"token"];
     
@@ -972,7 +969,8 @@
 #pragma mark - Background Fetch
 
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-    NSMutableArray *urlsToCache = [NSMutableArray array];
+    NSMutableArray *candidateUrlsToCache = [NSMutableArray array];
+    NSMutableArray *candidateReaderUrlsToCache = [NSMutableArray array];
     self.backgroundURLSessionCompletionHandlers = [NSMutableDictionary dictionary];
 
     [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
@@ -1004,32 +1002,60 @@
         while ([results next]) {
             NSString *urlString = [results stringForColumn:@"url"];
             NSURL *url = [NSURL URLWithString:urlString];
+
+            // https://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=
+            NSString *readerURLString = [NSString stringWithFormat:@"http://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [url.absoluteString urlEncodeUsingEncoding:NSUTF8StringEncoding]];
+            NSURL *readerURL = [NSURL URLWithString:readerURLString];
             
             if (url) {
-                NSCachedURLResponse *response = [self.urlCache cachedResponseForRequest:[NSURLRequest requestWithURL:url]];
-                if (!response) {
-                    [urlsToCache addObject:url];
-                }
+                [candidateUrlsToCache addObject:url];
+            }
+            
+            if (readerURL) {
+                [candidateReaderUrlsToCache addObject:readerURL];
             }
         }
         [results close];
     }];
 
+    NSMutableArray *urlsToCache = [NSMutableArray array];
+    NSMutableArray *readerUrlsToCache = [NSMutableArray array];
+    [[PPURLCache databaseQueue] inDatabase:^(FMDatabase *db) {
+        for (NSURL *url in candidateUrlsToCache) {
+            FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM cache WHERE url=?" withArgumentsInArray:@[url.absoluteString]];
+            [result next];
+            NSInteger count = [result intForColumnIndex:0];
+            [result close];
+            if (count == 0) {
+                [urlsToCache addObject:url];
+            }
+        }
+        
+        for (NSURL *url in candidateReaderUrlsToCache) {
+            FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM cache WHERE url=?" withArgumentsInArray:@[url.absoluteString]];
+            [result next];
+            NSInteger count = [result intForColumnIndex:0];
+            [result close];
+            if (count == 0) {
+                [readerUrlsToCache addObject:url];
+            }
+        }
+    }];
+
     self.isBackgroundSessionInvalidated = NO;
     PPSettings *settings = [PPSettings sharedSettings];
-    NSURLCache *cache = [NSURLCache sharedURLCache];
-    BOOL hasAvailableSpace = cache.currentDiskUsage < cache.diskCapacity * 0.99;
+    BOOL hasAvailableSpace = self.urlCache.currentDiskUsage < self.urlCache.diskCapacity * 0.99;
     if (hasAvailableSpace) {
-        for (NSURL *url in urlsToCache) {
-            // https://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=
-            NSString *readerURLString = [NSString stringWithFormat:@"http://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [url.absoluteString urlEncodeUsingEncoding:NSUTF8StringEncoding]];
-            NSURLSessionDownloadTask *readerDownloadTask = [self.readerViewOfflineSession downloadTaskWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:readerURLString]]];
-            [readerDownloadTask resume];
-
-            if (settings.downloadFullWebpageForOfflineCache) {
+        if (settings.downloadFullWebpageForOfflineCache) {
+            for (NSURL *url in urlsToCache) {
                 NSURLSessionDownloadTask *downloadTask = [self.offlineSession downloadTaskWithRequest:[NSURLRequest requestWithURL:url]];
                 [downloadTask resume];
             }
+        }
+        
+        for (NSURL *url in readerUrlsToCache) {
+            NSURLSessionDownloadTask *readerDownloadTask = [self.readerViewOfflineSession downloadTaskWithRequest:[NSURLRequest requestWithURL:url]];
+            [readerDownloadTask resume];
         }
     }
     
@@ -1043,16 +1069,16 @@
 
 - (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)())completionHandler {
     self.backgroundURLSessionCompletionHandlers[identifier] = completionHandler;
-    completionHandler();
+//    completionHandler();
 }
 
 - (void)URLSessionDidFinishEventsForBackgroundURLSession:(NSURLSession *)session {
-//    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-//        void (^completionHandler)() = self.backgroundURLSessionCompletionHandlers[session.configuration.identifier];
-//        if (completionHandler) {
-//            completionHandler();
-//        }
-//    }];
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        void (^completionHandler)() = self.backgroundURLSessionCompletionHandlers[session.configuration.identifier];
+        if (completionHandler) {
+            completionHandler();
+        }
+    }];
 }
 
 - (void)URLSession:(NSURLSession *)session didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition, NSURLCredential *))completionHandler {
@@ -1082,32 +1108,11 @@
     NSError *error;
     NSData *data = [NSData dataWithContentsOfURL:location options:NSDataReadingUncached error:&error];
     if (data && data.length > 0) {
-        BOOL isHTMLResponse = [[(NSHTTPURLResponse *)downloadTask.response allHeaderFields][@"Content-Type"] rangeOfString:@"text/html"].location != NSNotFound;
         BOOL isReaderURL = [downloadTask.response.URL.host isEqualToString:@"pushpin-readability.herokuapp.com"];
-        NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        NSURLCache *cache = [NSURLCache sharedURLCache];
-        if (string && isHTMLResponse && !isReaderURL) {
-            // Retrieve all assets and queue them for download. Use a set to prevent duplicates.
-            NSMutableSet *assets = [NSMutableSet set];
-            
-            NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<img [^><]*src=['\"]([^'\"]+)['\"]" options:NSRegularExpressionCaseInsensitive error:nil];
-            NSArray *matches = [regex matchesInString:string options:0 range:NSMakeRange(0, string.length)];
-            for (NSTextCheckingResult *result in matches) {
-                if ([result numberOfRanges] > 1) {
-                    NSString *imageURLString = [string substringWithRange:[result rangeAtIndex:1]];
-                    [assets addObject:imageURLString];
-                }
-            }
-            
-            regex = [NSRegularExpression regularExpressionWithPattern:@"<link [^><]*href=['\"]([^'\"]+\\.css)['\"]" options:NSRegularExpressionCaseInsensitive error:nil];
-            matches = [regex matchesInString:string options:0 range:NSMakeRange(0, string.length)];
-            for (NSTextCheckingResult *result in matches) {
-                if ([result numberOfRanges] > 1) {
-                    NSString *cssURLString = [string substringWithRange:[result rangeAtIndex:1]];
-                    [assets addObject:cssURLString];
-                }
-            }
+        NSCachedURLResponse *cachedURLResponse = [[NSCachedURLResponse alloc] initWithResponse:downloadTask.response data:data];
 
+        NSMutableSet *assets = [PPAppDelegate staticAssetURLsForCachedURLResponse:cachedURLResponse];
+        if (assets.count > 0 && !isReaderURL) {
             NSURL *responseURL = downloadTask.response.URL;
             for (NSString *urlString in assets) {
                 NSString *finalURLString = [urlString copy];
@@ -1126,7 +1131,7 @@
                     NSURL *url = [NSURL URLWithString:finalURLString];
                     NSURLRequest *request = [NSURLRequest requestWithURL:url];
 
-                    if (![cache cachedResponseForRequest:request] && !self.isBackgroundSessionInvalidated) {
+                    if (url && ![self.urlCache cachedResponseForRequest:request] && !self.isBackgroundSessionInvalidated) {
                         NSURLSessionDownloadTask *downloadTask = [self.offlineSession downloadTaskWithRequest:request];
                         [downloadTask resume];
                     }
@@ -1134,15 +1139,15 @@
             }
         }
         
-        BOOL hasAvailableSpace = cache.currentDiskUsage < cache.diskCapacity * 0.99;
+        BOOL hasAvailableSpace = self.urlCache.currentDiskUsage < self.urlCache.diskCapacity * 0.99;
         if (hasAvailableSpace && downloadTask.response) {
             // Only save if current usage is less than 99% of capacity.
             NSURLRequest *finalRequest = [NSURLRequest requestWithURL:downloadTask.currentRequest.URL];
-            [cache storeCachedResponse:[[NSCachedURLResponse alloc] initWithResponse:downloadTask.response data:data] forRequest:finalRequest];
+            [self.urlCache storeCachedResponse:cachedURLResponse forRequest:finalRequest];
 
-            if (![downloadTask.originalRequest.URL isEqual:downloadTask.currentRequest.URL]) {
+            if (![downloadTask.originalRequest.URL.absoluteString isEqualToString:downloadTask.currentRequest.URL.absoluteString]) {
                 NSURLRequest *request = [NSURLRequest requestWithURL:downloadTask.originalRequest.URL];
-                [cache storeCachedResponse:[[NSCachedURLResponse alloc] initWithResponse:downloadTask.response data:data] forRequest:request];
+                [self.urlCache storeCachedResponse:cachedURLResponse forRequest:request];
             }
         }
         else {
@@ -1182,6 +1187,35 @@
         session = [NSURLSession sessionWithConfiguration:sessionConfiguration delegate:self delegateQueue:queue];
     });
     return session;
+}
+
++ (NSMutableSet *)staticAssetURLsForCachedURLResponse:(NSCachedURLResponse *)cachedURLResponse {
+    BOOL isHTMLResponse = [[(NSHTTPURLResponse *)cachedURLResponse.response allHeaderFields][@"Content-Type"] rangeOfString:@"text/html"].location != NSNotFound;
+    NSMutableSet *assets = [NSMutableSet set];
+    NSString *html = [[NSString alloc] initWithData:cachedURLResponse.data encoding:NSUTF8StringEncoding];
+
+    if (isHTMLResponse && html) {
+        // Retrieve all assets and queue them for download. Use a set to prevent duplicates.
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<img [^><]*src=['\"]([^'\"]+)['\"]" options:NSRegularExpressionCaseInsensitive error:nil];
+        NSArray *matches = [regex matchesInString:html options:0 range:NSMakeRange(0, html.length)];
+        for (NSTextCheckingResult *result in matches) {
+            if ([result numberOfRanges] > 1) {
+                NSString *imageURLString = [html substringWithRange:[result rangeAtIndex:1]];
+                [assets addObject:imageURLString];
+            }
+        }
+        
+        regex = [NSRegularExpression regularExpressionWithPattern:@"<link [^><]*href=['\"]([^'\"]+\\.css)['\"]" options:NSRegularExpressionCaseInsensitive error:nil];
+        matches = [regex matchesInString:html options:0 range:NSMakeRange(0, html.length)];
+        for (NSTextCheckingResult *result in matches) {
+            if ([result numberOfRanges] > 1) {
+                NSString *cssURLString = [html substringWithRange:[result rangeAtIndex:1]];
+                [assets addObject:cssURLString];
+            }
+        }
+    }
+    
+    return assets;
 }
 
 @end

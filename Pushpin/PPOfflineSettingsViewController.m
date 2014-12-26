@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Lionheart Software. All rights reserved.
 //
 
+#import "PPAppDelegate.h"
 #import "PPOfflineSettingsViewController.h"
 #import "PPTheme.h"
 #import <LHSTableViewCells/LHSTableViewCellValue1.h>
@@ -118,7 +119,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
                     
                 case PPOfflineSettingsRowUsage: {
                     cell.textLabel.text = @"Current Usage";
-                    NSInteger diskUsage = [[NSURLCache sharedURLCache] currentDiskUsage];
+                    NSInteger diskUsage = [[PPAppDelegate sharedDelegate].urlCache currentDiskUsage];
                     cell.detailTextLabel.text = [NSByteCountFormatter stringFromByteCount:diskUsage countStyle:NSByteCountFormatterCountStyleFile];
                     cell.accessoryType = UITableViewCellAccessoryNone;
                     break;
@@ -126,7 +127,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
                     
                 case PPOfflineSettingsRowLimit: {
                     cell.textLabel.text = @"Usage Limit";
-                    NSInteger diskUsage = [[NSURLCache sharedURLCache] diskCapacity];
+                    NSInteger diskUsage = [[PPAppDelegate sharedDelegate].urlCache diskCapacity];
                     cell.detailTextLabel.text = [NSByteCountFormatter stringFromByteCount:diskUsage countStyle:NSByteCountFormatterCountStyleFile];
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
@@ -286,7 +287,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
 }
 
 - (void)updateUsageLimitTo:(NSInteger)limit {
-    NSURLCache *cache = [NSURLCache sharedURLCache];
+    PPURLCache *cache = [PPAppDelegate sharedDelegate].urlCache;
     cache.diskCapacity = limit;
 
     PPSettings *settings = [PPSettings sharedSettings];

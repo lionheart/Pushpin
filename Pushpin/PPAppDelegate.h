@@ -11,6 +11,7 @@
 
 #import "PPLoginViewController.h"
 #import "PPConstants.h"
+#import "PPURLCache.h"
 
 #import <TextExpander/SMTEDelegateController.h>
 
@@ -24,7 +25,7 @@
     NSInteger secondsLeft;
 }
 
-@property (nonatomic, strong) NSURLCache *urlCache;
+@property (nonatomic, strong) PPURLCache *urlCache;
 
 @property (nonatomic) BOOL bookmarksLoading;
 
@@ -58,5 +59,7 @@
 - (NSString *)defaultFeedDescription;
 
 + (PPAppDelegate *)sharedDelegate;
+
++ (NSMutableSet *)staticAssetURLsForCachedURLResponse:(NSCachedURLResponse *)cachedURLResponse;
 
 @end

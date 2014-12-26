@@ -2837,6 +2837,28 @@
             "sourceTree": "<group>",
             "xcLanguageSpecificationIdentifier": "xcode.lang.objc"
         },
+        "375B622F1A4DA9240045AFE7": {
+            "fileEncoding": "4",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "sourcecode.c.h",
+            "path": "PPURLCache.h",
+            "sourceTree": "<group>"
+        },
+        "375B62301A4DA9240045AFE7": {
+            "fileEncoding": "4",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "sourcecode.c.objc",
+            "path": "PPURLCache.m",
+            "sourceTree": "<group>"
+        },
+        "375B62311A4DA9240045AFE7": {
+            "fileRef": "375B622F1A4DA9240045AFE7",
+            "isa": "PBXBuildFile"
+        },
+        "375B62321A4DA9240045AFE7": {
+            "fileRef": "375B62301A4DA9240045AFE7",
+            "isa": "PBXBuildFile"
+        },
         "3769A5741879BCAF00AC8C44": {
             "fileEncoding": "4",
             "isa": "PBXFileReference",
@@ -4779,6 +4801,7 @@
                 "3747C50419CCD88900FAD488",
                 "37EE01791A093F2B00A03F3B",
                 "3790428B19CBDCDF00409D34",
+                "375B62321A4DA9240045AFE7",
                 "3790428C19CBDCDF00409D34",
                 "3790428D19CBDCDF00409D34",
                 "3790428E19CBDCDF00409D34",
@@ -4828,6 +4851,7 @@
             "buildActionMask": "2147483647",
             "files": [
                 "37EE01781A093F2B00A03F3B",
+                "375B62311A4DA9240045AFE7",
                 "379042B719CC646900409D34"
             ],
             "isa": "PBXHeadersBuildPhase",
@@ -8389,7 +8413,9 @@
                 "37B4FFE21923AD18002F8558",
                 "37D4B00318833BC800E07EB3",
                 "372AEEF6186B804F00F131A9",
-                "372AEEF7186B804F00F131A9"
+                "372AEEF7186B804F00F131A9",
+                "375B622F1A4DA9240045AFE7",
+                "375B62301A4DA9240045AFE7"
             ],
             "isa": "PBXGroup",
             "path": "Pushpin",
