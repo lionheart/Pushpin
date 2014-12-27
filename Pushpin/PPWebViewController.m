@@ -1206,6 +1206,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     configuration.URLCredentialStorage = credentials;
+    configuration.URLCache = [PPAppDelegate sharedDelegate].urlCache;
     configuration.requestCachePolicy = NSURLRequestReturnCacheDataElseLoad;
     NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration
                                                           delegate:nil
