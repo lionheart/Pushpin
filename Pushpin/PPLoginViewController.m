@@ -503,8 +503,8 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     if (textField == self.usernameTextField) {
         BOOL isInsertingNewCharacters = string.length > range.length;
         if (isInsertingNewCharacters) {
-            BOOL isGreaterThanOrEqualTo30Characters = textField.text.length + string.length >= 30;
-            if (isGreaterThanOrEqualTo30Characters) {
+            BOOL isGreaterThanOrEqualTo40Characters = textField.text.length + string.length >= 40;
+            if (isGreaterThanOrEqualTo40Characters) {
                 return NO;
             }
         }
