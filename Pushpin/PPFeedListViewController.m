@@ -666,6 +666,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     switch (sectionType) {
         case PPPinboardSectionPersonal: {
             cell = [tableView dequeueReusableCellWithIdentifier:FeedListCellIdentifier forIndexPath:indexPath];
+            cell.textLabel.font = [PPTheme textLabelFont];
+            cell.detailTextLabel.font = [PPTheme detailLabelFont];
             PPPinboardPersonalFeedType feedType = [self personalFeedForIndexPath:indexPath];
 
             switch (feedType) {
@@ -717,6 +719,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         case PPPinboardSectionCommunity: {
             cell = [tableView dequeueReusableCellWithIdentifier:FeedListCellIdentifier forIndexPath:indexPath];
             cell.imageView.image = nil;
+            cell.textLabel.font = [PPTheme textLabelFont];
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             PPPinboardCommunityFeedType feedType = [self communityFeedForIndexPath:indexPath];
 
@@ -789,6 +792,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             cell.textLabel.adjustsFontSizeToFitWidth = YES;
             cell.textLabel.font = [PPTheme textLabelFont];
             cell.textLabel.text = search[@"name"];
+            cell.detailTextLabel.font = [PPTheme detailLabelFontAlternate1];
+            cell.detailTextLabel.adjustsFontSizeToFitWidth = YES;
             cell.imageView.image = [UIImage imageNamed:@"browse-search"];
             cell.accessoryType = UITableViewCellAccessoryNone;
         
