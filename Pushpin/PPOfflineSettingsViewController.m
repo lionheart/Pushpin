@@ -241,7 +241,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
             [confirmation lhs_addActionWithTitle:@"Delete"
                                            style:UIAlertActionStyleDestructive
                                          handler:^(UIAlertAction *action) {
-                                             NSURLCache *cache = [NSURLCache sharedURLCache];
+                                             PPURLCache *cache = [PPAppDelegate sharedDelegate].urlCache;
                                              [cache removeAllCachedResponses];
                                              
                                              [tableView beginUpdates];

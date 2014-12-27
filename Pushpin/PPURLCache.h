@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface PPURLCache : NSObject
+@interface PPURLCache : NSURLCache
 
 @property (nonatomic) NSUInteger memoryCapacity;
 @property (nonatomic) NSUInteger diskCapacity;

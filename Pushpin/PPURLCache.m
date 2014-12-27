@@ -24,24 +24,11 @@
 + (NSString *)filePathForChecksum:(NSString *)checksum;
 + (NSString *)md5ChecksumForData:(NSData *)data;
 
+- (NSCache *)cache;
+
 @end
 
 @implementation PPURLCache
-
-- (instancetype)initWithMemoryCapacity:(NSUInteger)memoryCapacity
-                          diskCapacity:(NSUInteger)diskCapacity
-                              diskPath:(NSString *)path {
-    self = [super init];
-    if (self) {
-        self.memoryCapacity = memoryCapacity;
-        self.diskCapacity = diskCapacity;
-        self.removeStaleItemsWhenCacheIsFull = NO;
-
-        self.cache = [[NSCache alloc] init];
-        self.cache.totalCostLimit = memoryCapacity;
-    }
-    return self;
-}
 
 - (void)storeCachedResponse:(NSCachedURLResponse *)cachedResponse forRequest:(NSURLRequest *)request {
     if (cachedResponse.data) {
@@ -116,16 +103,17 @@
         }];
 
         if (count > 0) {
-            data = [NSData dataWithContentsOfFile:path options:0 error:nil];
+            NSError *error;
+            data = [NSData dataWithContentsOfFile:path options:0 error:&error];
 
             // Save the object to the cache for future retrieval.
-            [self.cache setObject:data forKey:request.URL.absoluteString cost:data.length];
-            return [NSKeyedUnarchiver unarchiveObjectWithData:data];
-        }
-        else {
-            return nil;
+            if (data) {
+                [self.cache setObject:data forKey:request.URL.absoluteString cost:data.length];
+                return [NSKeyedUnarchiver unarchiveObjectWithData:data];
+            }
         }
     }
+    return nil;
 }
 
 - (void)removeCachedResponseForRequest:(NSURLRequest *)request {
@@ -309,7 +297,7 @@
 }
 
 + (NSString *)databasePath {
-    return [[self directoryPath] stringByAppendingString:@"Cache.db"];
+    return [[self directoryPath] stringByAppendingString:@"/Cache.db"];
 }
 
 + (NSString *)md5ChecksumForData:(NSData *)data {
@@ -337,6 +325,16 @@
         queue = [FMDatabaseQueue databaseQueueWithPath:[self databasePath]];
     });
     return queue;
+}
+
+- (NSCache *)cache {
+    static NSCache *cache;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        cache = [[NSCache alloc] init];
+        cache.totalCostLimit = self.memoryCapacity;
+    });
+    return cache;
 }
 
 @end
