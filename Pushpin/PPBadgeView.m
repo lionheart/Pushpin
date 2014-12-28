@@ -71,13 +71,16 @@ static const CGFloat PADDING_Y = 2;
     if (self) {
         // Defaults
         NSMutableDictionary *badgeOptions = [@{
-                                         PPBadgeFontSize: @(10.0f),
+                                         PPBadgeFontSize: @(10),
                                          PPBadgeNormalBackgroundColor: HEX(0x73c5ffff),
                                          PPBadgeActiveBackgroundColor: [self lightenColor:HEX(0x73c5ffff) amount:50],
                                          PPBadgeDisabledBackgroundColor: HEX(0xCCCCCCFF),
-                                         PPBadgeFontColor: [UIColor whiteColor]
+                                         PPBadgeFontColor: [UIColor whiteColor],
+                                         PPBadgeFontName: [PPTheme browseFontName]
                                          } mutableCopy];
+
         [badgeOptions addEntriesFromDictionary:options];
+        UIFont *font = [UIFont fontWithName:badgeOptions[PPBadgeFontName] size:[badgeOptions[PPBadgeFontSize] floatValue]];
         self.normalColor = badgeOptions[PPBadgeNormalBackgroundColor];
         self.selectedColor = badgeOptions[PPBadgeActiveBackgroundColor];
         self.disabledColor = badgeOptions[PPBadgeDisabledBackgroundColor];
@@ -86,7 +89,7 @@ static const CGFloat PADDING_Y = 2;
 
         self.textLabel = [[UILabel alloc] init];
         self.textLabel.text = [text stringByDecodingHTMLEntities];
-        self.textLabel.font = [UIFont fontWithName:[PPTheme browseFontName] size:[badgeOptions[PPBadgeFontSize] floatValue]];
+        self.textLabel.font = font;
         self.textLabel.lineBreakMode = NSLineBreakByTruncatingTail;
         self.textLabel.backgroundColor = self.normalColor;
         self.textLabel.textColor = badgeOptions[PPBadgeFontColor];
