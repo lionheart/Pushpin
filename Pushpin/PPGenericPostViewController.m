@@ -1361,6 +1361,8 @@ static NSInteger PPBookmarkEditMaximum = 25;
         }
 
         self.navigationItem.leftBarButtonItem.title = @"Mark All";
+        
+        [self updateMultipleEditUI];
     }
     else {
         NSInteger numberOfRows = [self.tableView numberOfRowsInSection:0];
@@ -1374,10 +1376,10 @@ static NSInteger PPBookmarkEditMaximum = 25;
                                                              }
                                                              
                                                              self.navigationItem.leftBarButtonItem.title = @"Mark None";
+                                                             
+                                                             [self updateMultipleEditUI];
                                                          }];
     }
-
-    [self updateMultipleEditUI];
 }
 
 - (void)alertIfSelectedBookmarkCountExceedsRecommendation:(NSInteger)count cancel:(void (^)())cancel update:(void (^)())update {
