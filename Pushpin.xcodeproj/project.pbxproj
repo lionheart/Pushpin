@@ -3733,6 +3733,106 @@
             "fileRef": "378482D6186CB9ED00DF7A74",
             "isa": "PBXBuildFile"
         },
+        "3784B0F01A50AD1500CD1435": {
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "image.png",
+            "path": "731-cloud-download.png",
+            "sourceTree": "<group>"
+        },
+        "3784B0F11A50AD1500CD1435": {
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "image.png",
+            "path": "731-cloud-download@2x.png",
+            "sourceTree": "<group>"
+        },
+        "3784B0F21A50AD1500CD1435": {
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "image.png",
+            "path": "740-gear.png",
+            "sourceTree": "<group>"
+        },
+        "3784B0F31A50AD1500CD1435": {
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "image.png",
+            "path": "740-gear@2x.png",
+            "sourceTree": "<group>"
+        },
+        "3784B0F41A50AD1500CD1435": {
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "image.png",
+            "path": "810-document-2.png",
+            "sourceTree": "<group>"
+        },
+        "3784B0F51A50AD1500CD1435": {
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "image.png",
+            "path": "810-document-2@2x.png",
+            "sourceTree": "<group>"
+        },
+        "3784B0F61A50AD1500CD1435": {
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "image.png",
+            "path": "874-newspaper.png",
+            "sourceTree": "<group>"
+        },
+        "3784B0F71A50AD1500CD1435": {
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "image.png",
+            "path": "874-newspaper@2x.png",
+            "sourceTree": "<group>"
+        },
+        "3784B0F81A50AD1500CD1435": {
+            "fileRef": "3784B0F01A50AD1500CD1435",
+            "isa": "PBXBuildFile"
+        },
+        "3784B0F91A50AD1600CD1435": {
+            "fileRef": "3784B0F11A50AD1500CD1435",
+            "isa": "PBXBuildFile"
+        },
+        "3784B0FA1A50AD1600CD1435": {
+            "fileRef": "3784B0F21A50AD1500CD1435",
+            "isa": "PBXBuildFile"
+        },
+        "3784B0FB1A50AD1600CD1435": {
+            "fileRef": "3784B0F31A50AD1500CD1435",
+            "isa": "PBXBuildFile"
+        },
+        "3784B0FC1A50AD1600CD1435": {
+            "fileRef": "3784B0F41A50AD1500CD1435",
+            "isa": "PBXBuildFile"
+        },
+        "3784B0FD1A50AD1600CD1435": {
+            "fileRef": "3784B0F51A50AD1500CD1435",
+            "isa": "PBXBuildFile"
+        },
+        "3784B0FE1A50AD1600CD1435": {
+            "fileRef": "3784B0F61A50AD1500CD1435",
+            "isa": "PBXBuildFile"
+        },
+        "3784B0FF1A50AD1600CD1435": {
+            "fileRef": "3784B0F71A50AD1500CD1435",
+            "isa": "PBXBuildFile"
+        },
+        "3784B1001A50AE0800CD1435": {
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "image.png",
+            "path": "782-compass.png",
+            "sourceTree": "<group>"
+        },
+        "3784B1011A50AE0800CD1435": {
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "image.png",
+            "path": "782-compass@2x.png",
+            "sourceTree": "<group>"
+        },
+        "3784B1021A50AE0900CD1435": {
+            "fileRef": "3784B1001A50AE0800CD1435",
+            "isa": "PBXBuildFile"
+        },
+        "3784B1031A50AE0900CD1435": {
+            "fileRef": "3784B1011A50AE0800CD1435",
+            "isa": "PBXBuildFile"
+        },
         "37887D6818C51F1A00A20B76": {
             "buildActionMask": "12",
             "files": [],
@@ -4801,7 +4901,6 @@
                 "3747C50419CCD88900FAD488",
                 "37EE01791A093F2B00A03F3B",
                 "3790428B19CBDCDF00409D34",
-                "375B62321A4DA9240045AFE7",
                 "3790428C19CBDCDF00409D34",
                 "3790428D19CBDCDF00409D34",
                 "3790428E19CBDCDF00409D34",
@@ -4829,6 +4928,7 @@
                 "379042A419CBDCDF00409D34",
                 "379042A519CBDCDF00409D34",
                 "379042A619CBDCDF00409D34",
+                "375B62321A4DA9240045AFE7",
                 "372943E719CF3AFF00ABF006",
                 "379042A819CBDCDF00409D34",
                 "379042A919CBDCDF00409D34",
@@ -8050,6 +8150,16 @@
             "files": [
                 "3747C6F219CCDB1F00FAD488",
                 "3747C6F319CCDB1F00FAD488",
+                "3784B0F81A50AD1500CD1435",
+                "3784B0F91A50AD1600CD1435",
+                "3784B0FA1A50AD1600CD1435",
+                "3784B0FB1A50AD1600CD1435",
+                "3784B1021A50AE0900CD1435",
+                "3784B1031A50AE0900CD1435",
+                "3784B0FC1A50AD1600CD1435",
+                "3784B0FD1A50AD1600CD1435",
+                "3784B0FE1A50AD1600CD1435",
+                "3784B0FF1A50AD1600CD1435",
                 "37AD159518A13365005813CC",
                 "37D0D0C116B8E2310062C27E",
                 "37CBB7551881FFBC000F9C36",
@@ -8409,13 +8519,13 @@
                 "370F92EE17500722005F0AD7",
                 "37BC1BD91889C6730022020A",
                 "37BC1BDA1889C6740022020A",
+                "375B622F1A4DA9240045AFE7",
+                "375B62301A4DA9240045AFE7",
                 "37B4FFE11923AD18002F8558",
                 "37B4FFE21923AD18002F8558",
                 "37D4B00318833BC800E07EB3",
                 "372AEEF6186B804F00F131A9",
-                "372AEEF7186B804F00F131A9",
-                "375B622F1A4DA9240045AFE7",
-                "375B62301A4DA9240045AFE7"
+                "372AEEF7186B804F00F131A9"
             ],
             "isa": "PBXGroup",
             "path": "Pushpin",
@@ -8691,6 +8801,16 @@
                 "37A7B5C018345D6A0038677E",
                 "37E312E31868CCD600B944F1",
                 "37E312E41868CCD600B944F1",
+                "3784B0F01A50AD1500CD1435",
+                "3784B0F11A50AD1500CD1435",
+                "3784B0F21A50AD1500CD1435",
+                "3784B0F31A50AD1500CD1435",
+                "3784B1001A50AE0800CD1435",
+                "3784B1011A50AE0800CD1435",
+                "3784B0F41A50AD1500CD1435",
+                "3784B0F51A50AD1500CD1435",
+                "3784B0F61A50AD1500CD1435",
+                "3784B0F71A50AD1500CD1435",
                 "37D0D0C016B8E2310062C27E",
                 "3732DF9E17596D7500978A68",
                 "3732DF9F17596D7500978A68",
