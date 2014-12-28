@@ -157,6 +157,7 @@ static NSString *PPBadgeNormalBackgroundColor = @"normalBackgroundColor";
 static NSString *PPBadgeActiveBackgroundColor = @"activeBackgroundColor";
 static NSString *PPBadgeDisabledBackgroundColor = @"disabledBackgroundColor";
 static NSString *PPBadgeFontColor = @"fontColor";
+static NSString *PPBadgeFontName = @"fontName";
 
 static NSString *PPBookmarkDisplaySettingUpdated = @"PPBookmarkDisplaySetting";
 static NSString *PPBookmarkCompressSettingUpdate = @"PPBookmarkCompressSetting";

@@ -1362,7 +1362,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
         }
     }
 
-    PPBadgeWrapperView *wrapper = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme staticBadgeFontSize]) }];
+    PPBadgeWrapperView *wrapper = [[PPBadgeWrapperView alloc] initWithBadges:badges
+                                                                     options:@{
+                                                                               PPBadgeFontName: [PPTheme fontName],
+                                                                               PPBadgeFontSize: @([PPTheme staticBadgeFontSize]) }];
     
     if (!self.isEditingTags) {
         wrapper.userInteractionEnabled = NO;

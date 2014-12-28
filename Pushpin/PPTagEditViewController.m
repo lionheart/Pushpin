@@ -807,7 +807,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
         }
     }
     
-    PPBadgeWrapperView *wrapper = [[PPBadgeWrapperView alloc] initWithBadges:badges options:@{ PPBadgeFontSize: @([PPTheme staticBadgeFontSize]) }];
+    PPBadgeWrapperView *wrapper = [[PPBadgeWrapperView alloc] initWithBadges:badges
+                                                                     options:@{
+                                                                               PPBadgeFontName: [PPTheme fontName],
+                                                                               PPBadgeFontSize: @([PPTheme staticBadgeFontSize]) }];
     wrapper.translatesAutoresizingMaskIntoConstraints = NO;
     wrapper.delegate = self;
     return wrapper;
