@@ -42,14 +42,20 @@
 
 static NSString *BookmarkCellIdentifier = @"BookmarkCellIdentifier";
 static NSInteger kToolbarHeight = 44;
+static NSInteger PPBookmarkEditMaximum = 25;
 
 @interface PPGenericPostViewController ()
+
+@property (nonatomic, strong) UIBarButtonItem *hamburgerBarButtonItem;
+@property (nonatomic, strong) UIBarButtonItem *selectAllBarButtonItem;
 
 @property (nonatomic, strong) UIButton *multipleMarkAsReadButton;
 @property (nonatomic, strong) UIButton *multipleTagEditButton;
 @property (nonatomic, strong) UIButton *multipleDeleteButton;
+
 @property (nonatomic, strong) UIAlertController *confirmDeletionActionSheet;
 @property (nonatomic, strong) UIAlertController *confirmMultipleDeletionActionSheet;
+
 @property (nonatomic, strong) NSLayoutConstraint *multipleEditToolbarBottomConstraint;
 @property (nonatomic, retain) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, strong) NSArray *indexPathsToDelete;
@@ -91,6 +97,7 @@ static NSInteger kToolbarHeight = 44;
 - (void)toggleCompressedPosts;
 - (void)setMultipleEditButtonsEnabled:(BOOL)enabled;
 - (void)didReceiveDisplaySettingsUpdateNotification:(NSNotification *)notification;
+- (void)updateMultipleEditUI;
 - (void)updateTitleViewText;
 - (CGFloat)currentWidth;
 - (CGFloat)currentWidthForOrientation:(UIInterfaceOrientation)orientation;
@@ -120,6 +127,9 @@ static NSInteger kToolbarHeight = 44;
 
 - (void)deletePosts:(NSArray *)posts dataSource:(id<PPDataSource>)dataSource;
 - (void)deletePosts:(NSArray *)posts;
+
+- (void)toggleSelectAllBookmarks:(id)sender;
+- (void)alertIfSelectedBookmarkCountExceedsRecommendation:(NSInteger)count cancel:(void (^)())cancel update:(void (^)())update;
 
 - (UITableView *)currentTableView;
 
@@ -249,6 +259,7 @@ static NSInteger kToolbarHeight = 44;
         self.searchController.searchBar.scopeButtonTitles = @[@"All", @"Title", @"Desc.", @"Tags", @"Full Text"];
 #endif
         
+        self.searchPostDataSource = [self.postDataSource searchDataSource];
         if ([self.searchPostDataSource respondsToSelector:@selector(searchPlaceholder)]) {
             self.searchController.searchBar.placeholder = [self.searchPostDataSource searchPlaceholder];
         }
@@ -352,9 +363,21 @@ static NSInteger kToolbarHeight = 44;
     }
     
     UIViewController *backViewController = (self.navigationController.viewControllers.count >= 2) ? self.navigationController.viewControllers[self.navigationController.viewControllers.count - 2] : nil;
-    
+
+    self.selectAllBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Mark All"
+                                                                   style:UIBarButtonItemStyleDone
+                                                                  target:self
+                                                                  action:@selector(toggleSelectAllBookmarks:)];
+    self.selectAllBarButtonItem.possibleTitles = [NSSet setWithObjects:@"Mark All", @"Mark None", nil];
+
     if (![UIApplication isIPad] && [backViewController isKindOfClass:[PPFeedListViewController class]]) {
-        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"navigation-list"] landscapeImagePhone:[UIImage imageNamed:@"navigation-list"] style:UIBarButtonItemStylePlain target:self action:@selector(popViewController)];
+        self.hamburgerBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"navigation-list"]
+                                                         landscapeImagePhone:[UIImage imageNamed:@"navigation-list"]
+                                                                       style:UIBarButtonItemStylePlain
+                                                                      target:self
+                                                                      action:@selector(popViewController)];
+
+        self.navigationItem.leftBarButtonItem = self.hamburgerBarButtonItem;
         self.navigationItem.accessibilityLabel = NSLocalizedString(@"Back", nil);
         
         __weak id weakself = self;
@@ -474,7 +497,7 @@ static NSInteger kToolbarHeight = 44;
             self.multipleMarkAsReadButton.enabled = NO;
         }
         
-        [self updateTitleViewText];
+        [self updateMultipleEditUI];
     }
 }
 
@@ -495,8 +518,13 @@ static NSInteger kToolbarHeight = 44;
     
     if (self.selectedTableView.editing) {
         NSUInteger selectedRowCount = [self.selectedTableView.indexPathsForSelectedRows count];
-        [self setMultipleEditButtonsEnabled:(selectedRowCount > 0)];
-        [self updateTitleViewText];
+        [self alertIfSelectedBookmarkCountExceedsRecommendation:selectedRowCount
+                                                         cancel:^{
+                                                             [tableView deselectRowAtIndexPath:indexPath animated:YES];
+                                                         }
+                                                         update:^{
+                                                             [self updateMultipleEditUI];
+                                                         }];
     }
     else {
         // If configured, always mark the post as read
@@ -730,10 +758,6 @@ static NSInteger kToolbarHeight = 44;
                         [self.tableView endUpdates];
                     }
                     
-                    if ([self.postDataSource searchSupported] && [self.postDataSource respondsToSelector:@selector(searchDataSource)] && !self.searchPostDataSource) {
-                        self.searchPostDataSource = [self.postDataSource searchDataSource];
-                    }
-                    
                     if (callback) {
                         callback();
                     }
@@ -782,10 +806,14 @@ static NSInteger kToolbarHeight = 44;
         
         self.tableView.allowsMultipleSelectionDuringEditing = NO;
         [self.tableView setEditing:NO animated:YES];
+
+        [self.navigationItem setRightBarButtonItem:self.editButton
+                                          animated:YES];
         
-        self.navigationItem.leftBarButtonItem.enabled = YES;
+        [self.navigationItem setLeftBarButtonItem:self.hamburgerBarButtonItem
+                                         animated:YES];
+
         self.navigationItem.backBarButtonItem.enabled = YES;
-        [self.navigationItem setRightBarButtonItem:self.editButton animated:YES];
         
         if ([self.postDataSource respondsToSelector:@selector(titleViewWithDelegate:)]) {
             PPTitleButton *titleView = (PPTitleButton *)[self.postDataSource titleViewWithDelegate:self];
@@ -808,8 +836,7 @@ static NSInteger kToolbarHeight = 44;
     else {
         self.tableView.allowsMultipleSelectionDuringEditing = YES;
         [self.tableView setEditing:YES animated:YES];
-        
-        self.navigationItem.leftBarButtonItem.enabled = NO;
+
         self.navigationItem.backBarButtonItem.enabled = NO;
         
         UIBarButtonItem *cancelBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Cancel", nil)
@@ -819,7 +846,10 @@ static NSInteger kToolbarHeight = 44;
         [self.navigationItem setRightBarButtonItem:cancelBarButtonItem
                                           animated:YES];
 
-        [self updateTitleViewText];
+        [self.navigationItem setLeftBarButtonItem:self.selectAllBarButtonItem
+                                         animated:YES];
+
+        [self updateMultipleEditUI];
         
         [UIView animateWithDuration:0.25 animations:^{
             
@@ -1323,6 +1353,53 @@ static NSInteger kToolbarHeight = 44;
     [self presentViewController:self.confirmDeletionActionSheet animated:YES completion:nil];
 }
 
+- (void)toggleSelectAllBookmarks:(id)sender {
+    NSArray *indexPathsForSelectedRows = self.tableView.indexPathsForSelectedRows;
+    if (indexPathsForSelectedRows.count > 0) {
+        for (NSIndexPath *indexPath in indexPathsForSelectedRows) {
+            [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
+        }
+
+        self.navigationItem.leftBarButtonItem.title = @"Mark All";
+    }
+    else {
+        NSInteger numberOfRows = [self.tableView numberOfRowsInSection:0];
+
+        [self alertIfSelectedBookmarkCountExceedsRecommendation:numberOfRows
+                                                         cancel:nil
+                                                         update:^{
+                                                             for (NSInteger i=0; i<numberOfRows; i++) {
+                                                                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
+                                                                 [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+                                                             }
+
+                                                             self.navigationItem.leftBarButtonItem.title = @"Mark None";
+                                                         }];
+    }
+
+    [self updateMultipleEditUI];
+}
+
+- (void)alertIfSelectedBookmarkCountExceedsRecommendation:(NSInteger)count cancel:(void (^)())cancel update:(void (^)())update {
+    if (count > PPBookmarkEditMaximum) {
+        UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:@"Warning"
+                                                                     message:[NSString stringWithFormat:@"Bulk-editing more than %lu bookmarks at a time might take a while to complete and will probably incur the wrath of the Pinboard gods. Are you absolutely sure you want to continue?", PPBookmarkEditMaximum]];
+        [alert lhs_addActionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            if (cancel) {
+                cancel();
+            }
+        }];
+        [alert lhs_addActionWithTitle:@"Continue" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+            update();
+        }];
+
+        [self presentViewController:alert animated:YES completion:nil];
+    }
+    else {
+        update();
+    }
+}
+
 #pragma mark - UISearchBarDelegate
 
 - (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope {
@@ -1608,16 +1685,21 @@ static NSInteger kToolbarHeight = 44;
     return [self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)];
 }
 
+- (void)updateMultipleEditUI {
+    [self setMultipleEditButtonsEnabled:([self.tableView indexPathsForSelectedRows].count > 0)];
+    [self updateTitleViewText];
+}
+
 - (void)updateTitleViewText {
     NSInteger selectedRowCount = [self.tableView indexPathsForSelectedRows].count;
     PPTitleButton *button = [PPTitleButton button];
     
     NSString *title;
     if (selectedRowCount == 1) {
-        title = NSLocalizedString(@"1 bookmark selected", nil);
+        title = NSLocalizedString(@"1 bookmark", nil);
     }
     else {
-        title = [NSString stringWithFormat:@"%lu %@", (unsigned long)selectedRowCount, NSLocalizedString(@"bookmarks selected", nil)];
+        title = [NSString stringWithFormat:@"%lu %@", (unsigned long)selectedRowCount, NSLocalizedString(@"bookmarks", nil)];
     }
     
     [button setTitle:title imageName:nil];
