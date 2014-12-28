@@ -42,11 +42,14 @@
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <OpenInChrome/OpenInChromeController.h>
 #import <LHSCategoryCollection/UIViewController+LHSAdditions.h>
+#import <LHSCategoryCollection/NSData+Base64.h>
 #import <Crashlytics/Crashlytics.h>
 #import "MFMailComposeViewController+Theme.h"
 #import <LHSDiigo/LHSDiigoClient.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
 #import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
+#import <RNCryptor/RNDecryptor.h>
+#import <RNCryptor/RNCryptor.h>
 
 @interface PPAppDelegate ()
 
@@ -1112,8 +1115,24 @@
         BOOL isReaderURL = [downloadTask.response.URL.host isEqualToString:@"pushpin-readability.herokuapp.com"];
         NSCachedURLResponse *cachedURLResponse = [[NSCachedURLResponse alloc] initWithResponse:downloadTask.response data:data];
 
-        NSMutableSet *assets = [PPAppDelegate staticAssetURLsForCachedURLResponse:cachedURLResponse];
-        if (assets.count > 0 && !isReaderURL) {
+        NSMutableSet *assets;
+        if (isReaderURL) {
+            NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            NSData *encodedData = [NSData dataWithBase64EncodedString:string];
+            NSData *decryptedData = [RNDecryptor decryptData:encodedData
+                                                withPassword:@"Isabelle and Dante"
+                                                       error:nil];
+            id article = [NSJSONSerialization JSONObjectWithData:decryptedData
+                                                         options:NSJSONReadingAllowFragments
+                                                           error:nil];
+
+            assets = [PPAppDelegate staticAssetURLsForHTML:article[@"content"]];
+        }
+        else {
+            assets = [PPAppDelegate staticAssetURLsForCachedURLResponse:cachedURLResponse];
+        }
+
+        if (assets.count > 0) {
             NSURL *responseURL = downloadTask.response.URL;
             for (NSString *urlString in assets) {
                 NSString *finalURLString = [urlString copy];
@@ -1190,12 +1209,10 @@
     return session;
 }
 
-+ (NSMutableSet *)staticAssetURLsForCachedURLResponse:(NSCachedURLResponse *)cachedURLResponse {
-    BOOL isHTMLResponse = [[(NSHTTPURLResponse *)cachedURLResponse.response allHeaderFields][@"Content-Type"] rangeOfString:@"text/html"].location != NSNotFound;
++ (NSMutableSet *)staticAssetURLsForHTML:(NSString *)html {
     NSMutableSet *assets = [NSMutableSet set];
-    NSString *html = [[NSString alloc] initWithData:cachedURLResponse.data encoding:NSUTF8StringEncoding];
 
-    if (isHTMLResponse && html) {
+    if (html) {
         // Retrieve all assets and queue them for download. Use a set to prevent duplicates.
         NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<img [^><]*src=['\"]([^'\"]+)['\"]" options:NSRegularExpressionCaseInsensitive error:nil];
         NSArray *matches = [regex matchesInString:html options:0 range:NSMakeRange(0, html.length)];
@@ -1215,8 +1232,19 @@
             }
         }
     }
-    
+
     return assets;
+}
+
++ (NSMutableSet *)staticAssetURLsForCachedURLResponse:(NSCachedURLResponse *)cachedURLResponse {
+    BOOL isHTMLResponse = [[(NSHTTPURLResponse *)cachedURLResponse.response allHeaderFields][@"Content-Type"] rangeOfString:@"text/html"].location != NSNotFound;
+
+    if (isHTMLResponse) {
+        return [self staticAssetURLsForHTML:[[NSString alloc] initWithData:cachedURLResponse.data encoding:NSUTF8StringEncoding]];
+    }
+    else {
+        return [NSMutableSet set];
+    }
 }
 
 @end
