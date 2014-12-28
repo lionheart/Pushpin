@@ -13,7 +13,6 @@
 #import "PPAppDelegate.h"
 #import "PPLoadingView.h"
 #import "PPTableViewController.h"
-#import "PocketAPI.h"
 
 typedef NS_ENUM(NSInteger, PPSectionType) {
     PPSectionMainSettings,
@@ -22,7 +21,6 @@ typedef NS_ENUM(NSInteger, PPSectionType) {
 };
 
 typedef NS_ENUM(NSInteger, PPMainSettingsRowType) {
-    PPMainReadLater,
     PPMainReader,
     PPMainOffline,
     PPMainBrowser,
@@ -45,14 +43,10 @@ enum : NSInteger {
 @interface PPSettingsViewController : PPTableViewController <UIWebViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate>
 
 @property (nonatomic, retain) UIAlertController *supportActionSheet;
-@property (nonatomic, retain) UIAlertController *readLaterActionSheet;
 @property (nonatomic, strong) UIAlertController *twitterAccountActionSheet;
 @property (nonatomic, retain) NSMutableArray *readLaterServices;
 
 - (void)showAboutPage;
 - (void)closeAboutPage;
-
-- (void)pocketFinishedLogin;
-- (void)pocketStartedLogin;
 
 @end
