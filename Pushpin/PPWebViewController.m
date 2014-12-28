@@ -756,11 +756,12 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 - (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
     if (![UIApplication isIPad]) {
         BOOL hideToolbar = self.toolbarConstraint.constant < (kToolbarHeight / 2);
-        self.yOffsetToStartShowingToolbar = MAX(0, scrollView.contentOffset.y) + kToolbarHeight;
         if (hideToolbar) {
+            self.yOffsetToStartShowingToolbar = MAX(0, scrollView.contentOffset.y);
             [self setToolbarVisible:NO animated:YES];
         }
         else {
+            self.yOffsetToStartShowingToolbar = MAX(0, scrollView.contentOffset.y) + kToolbarHeight;
             [self setToolbarVisible:YES animated:YES];
         }
     }
