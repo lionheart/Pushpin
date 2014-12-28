@@ -544,30 +544,32 @@ static NSString *CellIdentifier = @"TagCell";
                 section++;
             }
             
-            // We have the semaroid
-            dispatch_semaphore_t sem = dispatch_semaphore_create(0);
-            dispatch_async(dispatch_get_main_queue(), ^{
-                BOOL firstLaunch = self.tagCounts.count == 0;
-                self.sectionTitles = updatedSectionTitles;
-                self.tagCounts = updatedTagCounts;
-                self.duplicates = updatedDuplicates;
+            BOOL firstLaunch = self.tagCounts.count == 0;
+            if (firstLaunch || indexPathsToDelete.count > 0 || indexPathsToInsert.count > 0 || indexPathsToReload.count > 0 || sectionIndicesToDelete.count > 0 || sectionIndicesToInsert.count > 0) {
+                // We have the semaroid
+                dispatch_semaphore_t sem = dispatch_semaphore_create(0);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.sectionTitles = updatedSectionTitles;
+                    self.tagCounts = updatedTagCounts;
+                    self.duplicates = updatedDuplicates;
 
-                if (firstLaunch) {
-                    [self.tableView reloadData];
-                }
-                else {
-                    [self.tableView beginUpdates];
-                    [self.tableView deleteSections:sectionIndicesToDelete withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView insertSections:sectionIndicesToInsert withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                    [self.tableView endUpdates];
-                }
-                dispatch_semaphore_signal(sem);
-            });
-            
-            dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
+                    if (firstLaunch) {
+                        [self.tableView reloadData];
+                    }
+                    else {
+                        [self.tableView beginUpdates];
+                        [self.tableView deleteSections:sectionIndicesToDelete withRowAnimation:UITableViewRowAnimationFade];
+                        [self.tableView insertSections:sectionIndicesToInsert withRowAnimation:UITableViewRowAnimationFade];
+                        [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                        [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                        [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                        [self.tableView endUpdates];
+                    }
+                    dispatch_semaphore_signal(sem);
+                });
+
+                dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
+            }
         });
     }
 }
