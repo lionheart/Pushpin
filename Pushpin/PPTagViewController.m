@@ -332,6 +332,8 @@ static NSString *CellIdentifier = @"TagCell";
         tag = self.filteredTags[indexPath.row];
     }
     
+    tag = [tag stringByEncodingHTMLEntities];
+
     [self.navigationController.navigationBar setBarTintColor:HEX(0x0096FFFF)];
 
     PPGenericPostViewController *postViewController = [[PPGenericPostViewController alloc] init];
