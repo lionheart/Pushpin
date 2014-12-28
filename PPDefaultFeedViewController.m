@@ -25,6 +25,8 @@ static NSString *CellIdentifier = @"Cell";
 @property (nonatomic, retain) NSMutableArray *savedFeeds;
 @property (nonatomic, retain) NSMutableArray *searches;
 
+- (PPPinboardSectionType)sectionForSectionIndex:(NSInteger)index;
+
 @end
 
 @implementation PPDefaultFeedViewController
@@ -170,7 +172,8 @@ static NSString *CellIdentifier = @"Cell";
 #endif
     
 #ifdef PINBOARD
-    switch ((PPPinboardSectionType)section) {
+    PPPinboardSectionType sectionType = [self sectionForSectionIndex:section];
+    switch (sectionType) {
         case PPPinboardSectionPersonal:
             return PPPinboardPersonalRows;
             
@@ -198,7 +201,8 @@ static NSString *CellIdentifier = @"Cell";
 #endif
 
 #ifdef PINBOARD
-    switch ((PPPinboardSectionType)section) {
+    PPPinboardSectionType sectionType = [self sectionForSectionIndex:section];
+    switch (sectionType) {
         case PPPinboardSectionPersonal:
             return [PPTableViewTitleView heightWithText:NSLocalizedString(@"Personal", nil)] + 10;
 
@@ -227,7 +231,8 @@ static NSString *CellIdentifier = @"Cell";
 #endif
     
 #ifdef PINBOARD
-    switch ((PPPinboardSectionType)section) {
+    PPPinboardSectionType sectionType = [self sectionForSectionIndex:section];
+    switch (sectionType) {
         case PPPinboardSectionPersonal:
             return NSLocalizedString(@"Personal", nil);
             
@@ -278,7 +283,8 @@ static NSString *CellIdentifier = @"Cell";
 #endif
 
 #ifdef PINBOARD
-    switch ((PPPinboardSectionType)indexPath.section) {
+    PPPinboardSectionType section = [self sectionForSectionIndex:indexPath.section];
+    switch (section) {
         case PPPinboardSectionPersonal: {
             switch ((PPPinboardPersonalFeedType)indexPath.row) {
                 case PPPinboardPersonalFeedAll:
@@ -454,9 +460,8 @@ static NSString *CellIdentifier = @"Cell";
 #endif
         
 #ifdef PINBOARD
-        PPPinboardSectionType sectionType = (PPPinboardSectionType)indexPath.section;
-
-        switch (sectionType) {
+        PPPinboardSectionType section = [self sectionForSectionIndex:indexPath.section];
+        switch (section) {
             case PPPinboardSectionPersonal:
                 switch ((PPPinboardPersonalFeedType)indexPath.row) {
                     case PPPinboardPersonalFeedAll:
@@ -532,6 +537,39 @@ static NSString *CellIdentifier = @"Cell";
     else {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
+}
+
+- (PPPinboardSectionType)sectionForSectionIndex:(NSInteger)index {
+    NSInteger numSectionsSkipped = 0;
+    NSInteger numSectionsNotSkipped = 0;
+
+    while (YES) {
+        if (self.savedFeeds.count == 0) {
+            numSectionsSkipped++;
+        }
+        else {
+            numSectionsNotSkipped++;
+
+            if (numSectionsNotSkipped == index) {
+                break;
+            }
+        }
+
+        if (self.searches.count == 0) {
+            numSectionsSkipped++;
+        }
+        else {
+            numSectionsNotSkipped++;
+
+            if (numSectionsNotSkipped == index) {
+                break;
+            }
+        }
+
+        break;
+    }
+
+    return (PPPinboardSectionType)(index + numSectionsSkipped);
 }
 
 @end
