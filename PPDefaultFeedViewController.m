@@ -544,6 +544,16 @@ static NSString *CellIdentifier = @"Cell";
     NSInteger numSectionsNotSkipped = 0;
 
     while (YES) {
+        if (numSectionsNotSkipped == index) {
+            break;
+        }
+
+        numSectionsNotSkipped++;
+
+        if (numSectionsNotSkipped == index) {
+            break;
+        }
+
         if (self.savedFeeds.count == 0) {
             numSectionsSkipped++;
         }
