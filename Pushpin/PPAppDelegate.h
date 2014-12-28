@@ -60,6 +60,7 @@
 
 + (PPAppDelegate *)sharedDelegate;
 
++ (NSMutableSet *)staticAssetURLsForHTML:(NSString *)html;
 + (NSMutableSet *)staticAssetURLsForCachedURLResponse:(NSCachedURLResponse *)cachedURLResponse;
 
 @end
