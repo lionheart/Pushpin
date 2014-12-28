@@ -845,7 +845,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                                                                                action:@selector(toggleEditingMode:)];
         [self.navigationItem setRightBarButtonItem:cancelBarButtonItem
                                           animated:YES];
-
+        
         [self.navigationItem setLeftBarButtonItem:self.selectAllBarButtonItem
                                          animated:YES];
 
@@ -1364,7 +1364,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
     }
     else {
         NSInteger numberOfRows = [self.tableView numberOfRowsInSection:0];
-
+        
         [self alertIfSelectedBookmarkCountExceedsRecommendation:numberOfRows
                                                          cancel:nil
                                                          update:^{
@@ -1372,7 +1372,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                                                                  NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
                                                                  [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
                                                              }
-
+                                                             
                                                              self.navigationItem.leftBarButtonItem.title = @"Mark None";
                                                          }];
     }

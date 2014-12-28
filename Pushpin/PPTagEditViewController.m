@@ -98,13 +98,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [super viewDidLoad];
 
     self.title = NSLocalizedString(@"Edit Tags", nil);
-    
-#ifdef PINBOARD
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Suggest", nil)
-                                                                              style:UIBarButtonItemStyleDone
-                                                                             target:self
-                                                                             action:@selector(rightBarButtonItemTouchUpInside:)];
-#endif
 
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
     self.tableView.dataSource = self;
@@ -746,39 +739,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
             [self searchUpdatedWithString:self.searchString];
         }
     });
-}
-
-- (void)rightBarButtonItemTouchUpInside:(id)sender {
-    self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Suggest", nil);
-
-    if (self.filteredPopularAndRecommendedTagsVisible) {
-        // Hide them if they're already showing
-        NSInteger finalAmount;
-        if (self.tagCompletions.count > 0) {
-            finalAmount = self.tagCompletions.count;
-        }
-        else {
-            finalAmount = 0;
-        }
-        
-        [self intersectionBetweenStartingAmount:self.filteredPopularAndRecommendedTags.count
-                                 andFinalAmount:finalAmount
-                                         offset:[self tagOffset]
-                                       callback:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
-                                           [self.popularTags removeAllObjects];
-                                           [self.recommendedTags removeAllObjects];
-                                           
-                                           [self.tableView beginUpdates];
-                                           [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                                           [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                                           [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                                           [self.tableView endUpdates];
-                                       }];
-    }
-    else {
-        self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Hide", nil);
-        [self prefillPopularTags];
-    }
 }
 
 - (void)deleteTagButtonTouchUpInside:(id)sender {

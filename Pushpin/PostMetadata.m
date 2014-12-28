@@ -94,12 +94,14 @@
 
     NSString *description = [post[@"description"] stringByTrimmingCharactersInSet:whitespace];
 
-    NSString *date = [[self dateFormatter] stringFromDate:post[@"created_at"]];
-    if ([description isEqualToString:emptyString]) {
-        description = date;
-    }
-    else {
-        description = [NSString stringWithFormat:@"%@ · %@", date, description];
+    if (post[@"created_at"]) {
+        NSString *date = [[self dateFormatter] stringFromDate:post[@"created_at"]];
+        if ([description isEqualToString:emptyString]) {
+            description = date;
+        }
+        else {
+            description = [NSString stringWithFormat:@"%@ · %@", date, description];
+        }
     }
 
     NSString *tags = post[@"tags"];

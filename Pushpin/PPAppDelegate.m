@@ -971,81 +971,82 @@
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     NSMutableArray *candidateUrlsToCache = [NSMutableArray array];
     NSMutableArray *candidateReaderUrlsToCache = [NSMutableArray array];
-    self.backgroundURLSessionCompletionHandlers = [NSMutableDictionary dictionary];
-
-    [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
-        PPSettings *settings = [PPSettings sharedSettings];
-        
-        NSString *query;
-        
-        // Timestamp for last 30 days.
-        NSInteger timestamp = [[NSDate date] timeIntervalSince1970] - (60 * 60 * 24 * 30);
-
-        switch (settings.offlineFetchCriteria) {
-            case PPOfflineFetchCriteriaUnread:
-                query = @"SELECT url FROM bookmark WHERE unread=1";
-                break;
-                
-            case PPOfflineFetchCriteriaRecent:
-                query = [NSString stringWithFormat:@"SELECT url FROM bookmark WHERE created_at>%lu", (long)timestamp];
-                break;
-                
-            case PPOfflineFetchCriteriaUnreadAndRecent:
-                query = [NSString stringWithFormat:@"SELECT url FROM bookmark WHERE created_at>%lu OR unread=1", (long)timestamp];
-                break;
-                
-            case PPOfflineFetchCriteriaEverything:
-                query = @"SELECT url FROM bookmark";
-                break;
-        }
-        FMResultSet *results = [db executeQuery:query];
-        while ([results next]) {
-            NSString *urlString = [results stringForColumn:@"url"];
-            NSURL *url = [NSURL URLWithString:urlString];
-
-            // https://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=
-            NSString *readerURLString = [NSString stringWithFormat:@"http://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [url.absoluteString urlEncodeUsingEncoding:NSUTF8StringEncoding]];
-            NSURL *readerURL = [NSURL URLWithString:readerURLString];
-            
-            if (url) {
-                [candidateUrlsToCache addObject:url];
-            }
-            
-            if (readerURL) {
-                [candidateReaderUrlsToCache addObject:readerURL];
-            }
-        }
-        [results close];
-    }];
-
     NSMutableArray *urlsToCache = [NSMutableArray array];
     NSMutableArray *readerUrlsToCache = [NSMutableArray array];
-    [[PPURLCache databaseQueue] inDatabase:^(FMDatabase *db) {
-        for (NSURL *url in candidateUrlsToCache) {
-            FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM cache WHERE url=?" withArgumentsInArray:@[url.absoluteString]];
-            [result next];
-            NSInteger count = [result intForColumnIndex:0];
-            [result close];
-            if (count == 0) {
-                [urlsToCache addObject:url];
-            }
-        }
-        
-        for (NSURL *url in candidateReaderUrlsToCache) {
-            FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM cache WHERE url=?" withArgumentsInArray:@[url.absoluteString]];
-            [result next];
-            NSInteger count = [result intForColumnIndex:0];
-            [result close];
-            if (count == 0) {
-                [readerUrlsToCache addObject:url];
-            }
-        }
-    }];
 
-    self.isBackgroundSessionInvalidated = NO;
-    PPSettings *settings = [PPSettings sharedSettings];
+    self.backgroundURLSessionCompletionHandlers = [NSMutableDictionary dictionary];
     BOOL hasAvailableSpace = self.urlCache.currentDiskUsage < self.urlCache.diskCapacity * 0.99;
+
     if (hasAvailableSpace) {
+        [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
+            PPSettings *settings = [PPSettings sharedSettings];
+            
+            NSString *query;
+            
+            // Timestamp for last 30 days.
+            NSInteger timestamp = [[NSDate date] timeIntervalSince1970] - (60 * 60 * 24 * 30);
+            
+            switch (settings.offlineFetchCriteria) {
+                case PPOfflineFetchCriteriaUnread:
+                    query = @"SELECT url FROM bookmark WHERE unread=1";
+                    break;
+                    
+                case PPOfflineFetchCriteriaRecent:
+                    query = [NSString stringWithFormat:@"SELECT url FROM bookmark WHERE created_at>%lu", (long)timestamp];
+                    break;
+                    
+                case PPOfflineFetchCriteriaUnreadAndRecent:
+                    query = [NSString stringWithFormat:@"SELECT url FROM bookmark WHERE created_at>%lu OR unread=1", (long)timestamp];
+                    break;
+                    
+                case PPOfflineFetchCriteriaEverything:
+                    query = @"SELECT url FROM bookmark";
+                    break;
+            }
+            FMResultSet *results = [db executeQuery:query];
+            while ([results next]) {
+                NSString *urlString = [results stringForColumn:@"url"];
+                NSURL *url = [NSURL URLWithString:urlString];
+                
+                // https://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=
+                NSString *readerURLString = [NSString stringWithFormat:@"http://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [url.absoluteString urlEncodeUsingEncoding:NSUTF8StringEncoding]];
+                NSURL *readerURL = [NSURL URLWithString:readerURLString];
+                
+                if (url) {
+                    [candidateUrlsToCache addObject:url];
+                }
+                
+                if (readerURL) {
+                    [candidateReaderUrlsToCache addObject:readerURL];
+                }
+            }
+            [results close];
+        }];
+        
+        [[PPURLCache databaseQueue] inDatabase:^(FMDatabase *db) {
+            for (NSURL *url in candidateUrlsToCache) {
+                FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM cache WHERE url=?" withArgumentsInArray:@[url.absoluteString]];
+                [result next];
+                NSInteger count = [result intForColumnIndex:0];
+                [result close];
+                if (count == 0) {
+                    [urlsToCache addObject:url];
+                }
+            }
+            
+            for (NSURL *url in candidateReaderUrlsToCache) {
+                FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM cache WHERE url=?" withArgumentsInArray:@[url.absoluteString]];
+                [result next];
+                NSInteger count = [result intForColumnIndex:0];
+                [result close];
+                if (count == 0) {
+                    [readerUrlsToCache addObject:url];
+                }
+            }
+        }];
+        
+        self.isBackgroundSessionInvalidated = NO;
+        PPSettings *settings = [PPSettings sharedSettings];
         if (settings.downloadFullWebpageForOfflineCache) {
             for (NSURL *url in urlsToCache) {
                 NSURLSessionDownloadTask *downloadTask = [self.offlineSession downloadTaskWithRequest:[NSURLRequest requestWithURL:url]];
