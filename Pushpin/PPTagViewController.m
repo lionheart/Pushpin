@@ -24,6 +24,7 @@
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import <LHSTableViewCells/LHSTableViewCellValue1.h>
+#import <MWFeedParser/NSString+HTML.h>
 
 static NSString *CellIdentifier = @"TagCell";
 
@@ -265,6 +266,7 @@ static NSString *CellIdentifier = @"TagCell";
                 
                 while ([result next]) {
                     NSString *tagName = [result stringForColumn:@"name"];
+                    tagName = [tagName stringByDecodingHTMLEntities];
                     
                     if (tagName) {
                         [newTagNames addObject:tagName];
@@ -428,6 +430,8 @@ static NSString *CellIdentifier = @"TagCell";
                 FMResultSet *results = [db executeQuery:@"SELECT name, group_concat(name, ' '), SUM(count) FROM tag GROUP BY lower(name) ORDER BY lower(name) ASC"];
                 while ([results next]) {
                     NSString *name = [results stringForColumnIndex:0];
+                    name = [name stringByDecodingHTMLEntities];
+
                     NSArray *names = [[results stringForColumnIndex:1] componentsSeparatedByString:@" "];
                     NSString *count = [results stringForColumnIndex:2];
                     NSMutableString *lossyName = [name mutableCopy];
@@ -457,7 +461,7 @@ static NSString *CellIdentifier = @"TagCell";
 
                     updatedTagCounts[name] = count;
                     for (NSString *otherName in names) {
-                        updatedTagCounts[otherName] = count;
+                        updatedTagCounts[[otherName stringByDecodingHTMLEntities]] = count;
                     }
 
                     [temp addObject:name];
