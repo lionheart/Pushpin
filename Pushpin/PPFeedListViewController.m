@@ -720,6 +720,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             cell = [tableView dequeueReusableCellWithIdentifier:FeedListCellIdentifier forIndexPath:indexPath];
             cell.imageView.image = nil;
             cell.textLabel.font = [PPTheme textLabelFont];
+            cell.detailTextLabel.text = nil;
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             PPPinboardCommunityFeedType feedType = [self communityFeedForIndexPath:indexPath];
 
@@ -763,6 +764,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             cell.selectionStyle = UITableViewCellSelectionStyleGray;
             cell.textLabel.adjustsFontSizeToFitWidth = YES;
             cell.textLabel.font = [PPTheme textLabelFont];
+            cell.detailTextLabel.text = nil;
 
             if (tableView.editing) {
                 if (indexPath.row == 0) {

@@ -766,7 +766,7 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (NSString *)searchPlaceholder {
-    if (self.searchQuery) {
+    if (self.searchQuery && ![self.searchQuery isEqualToString:@"*"]) {
         return @"Search in Results";
     }
     

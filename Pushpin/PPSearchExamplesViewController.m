@@ -63,10 +63,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
-        return CGRectGetHeight([self.text boundingRectWithSize:CGSizeMake(CGRectGetWidth(self.tableView.frame) - 40, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: [PPTheme descriptionFont]} context:nil]) + 40;
+        return CGRectGetHeight([self.text boundingRectWithSize:CGSizeMake(CGRectGetWidth(self.tableView.frame) - 40, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: [PPTheme detailLabelFont]} context:nil]) + 40;
     }
     else {
-        return CGRectGetHeight([self.examples[indexPath.section - 1][@"example"] boundingRectWithSize:CGSizeMake(CGRectGetWidth(self.tableView.frame)- 30, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: [PPTheme descriptionFont]} context:nil]) + 30;
+        return CGRectGetHeight([self.examples[indexPath.section - 1][@"example"] boundingRectWithSize:CGSizeMake(CGRectGetWidth(self.tableView.frame)- 30, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: [PPTheme textLabelFont]} context:nil]) + 30;
     }
 }
 
@@ -78,7 +78,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     if (indexPath.section == 0) {
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
 
-        cell.textLabel.font = [PPTheme descriptionFont];
+        cell.textLabel.font = [PPTheme detailLabelFont];
         cell.textLabel.numberOfLines = 0;
         cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
         cell.textLabel.text = self.text;

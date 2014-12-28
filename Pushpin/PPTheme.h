@@ -23,7 +23,9 @@
 + (UIFont *)textLabelFont;
 + (UIFont *)detailLabelFont;
 + (UIFont *)detailLabelFontAlternate1;
+
 + (NSString *)fontName;
++ (NSString *)browseFontName;
 + (NSString *)boldFontName;
 
 + (CGFloat)fontSize;
