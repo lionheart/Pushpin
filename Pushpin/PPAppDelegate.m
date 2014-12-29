@@ -676,7 +676,13 @@
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
+    PPSettings *settings = [PPSettings sharedSettings];
+    if (settings.offlineReadingEnabled) {
+        [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
+    }
+    else {
+        [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalNever];
+    }
 
     [Crashlytics startWithAPIKey:@"ed1bff5018819b0c5dbb8dbb35edac18a8b1af02"];
 
