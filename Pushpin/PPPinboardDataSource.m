@@ -1308,6 +1308,23 @@ static BOOL kPinboardSyncInProgress = NO;
             }
             
             __block BOOL shouldReturn = NO;
+            __block NSMutableSet *urls = [NSMutableSet set];
+            [[PPURLCache databaseQueue] inDatabase:^(FMDatabase *db) {
+                FMResultSet *results = [db executeQuery:@"SELECT url FROM cache"];
+
+                while ([results next]) {
+                    NSString *url = [results stringForColumnIndex:0];
+                    if ([url hasPrefix:@"http://pushpin-readability.herokuapp.com/v1/parser?url="] && [url hasSuffix:@"&format=json&onerr="]) {
+                        NSRange range = NSMakeRange(0, 55);
+                        NSRange range2 = NSMakeRange(url.length - 19, 19);
+
+                        url = [url stringByReplacingCharactersInRange:range2 withString:@""];
+                        url = [url stringByReplacingCharactersInRange:range withString:@""];
+                        url = [url stringByRemovingPercentEncoding];
+                    }
+                    [urls addObject:[results stringForColumnIndex:0]];
+                }
+            }];
             
             [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                 FMResultSet *results = [db executeQuery:query withArgumentsInArray:parameters];
@@ -1322,8 +1339,10 @@ static BOOL kPinboardSyncInProgress = NO;
                     NSString *hash = [results stringForColumn:@"hash"];
                     NSString *meta = [results stringForColumn:@"meta"];
                     NSString *hashmeta = [@[hash, meta] componentsJoinedByString:@"_"];
-                    NSDictionary *post = [PPPinboardDataSource postFromResultSet:results];
-                    
+                    NSMutableDictionary *post = [[PPPinboardDataSource postFromResultSet:results] mutableCopy];
+                    if ([urls containsObject:post[@"url"]]) {
+                        post[@"offline"] = @(YES);
+                    }
                     [updatedBookmarks addObject:post];
                     
                     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];

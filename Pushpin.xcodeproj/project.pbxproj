@@ -3091,6 +3091,28 @@
             "fileRef": "3784B1011A50AE0800CD1435",
             "isa": "PBXBuildFile"
         },
+        "3784B1041A51B29B00CD1435": {
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "image.png",
+            "name": "badge-cloud.png",
+            "path": "Assets/badge-cloud.png",
+            "sourceTree": "<group>"
+        },
+        "3784B1051A51B29B00CD1435": {
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "image.png",
+            "name": "badge-cloud@2x.png",
+            "path": "Assets/badge-cloud@2x.png",
+            "sourceTree": "<group>"
+        },
+        "3784B1061A51B29B00CD1435": {
+            "fileRef": "3784B1041A51B29B00CD1435",
+            "isa": "PBXBuildFile"
+        },
+        "3784B1071A51B29B00CD1435": {
+            "fileRef": "3784B1051A51B29B00CD1435",
+            "isa": "PBXBuildFile"
+        },
         "37887D6818C51F1A00A20B76": {
             "buildActionMask": "12",
             "files": [],
@@ -6358,6 +6380,8 @@
                 "3747C6F519CCDB1F00FAD488",
                 "37DE5AAA174EF8AF0073A2F4",
                 "37DE5AAB174EF8AF0073A2F4",
+                "3784B1061A51B29B00CD1435",
+                "3784B1071A51B29B00CD1435",
                 "3747C6F619CCDB1F00FAD488",
                 "3747C6F719CCDB1F00FAD488",
                 "3747C6F819CCDB1F00FAD488",
@@ -8505,6 +8529,8 @@
         },
         "E8F987EC183E7BF800EF976D": {
             "children": [
+                "3784B1041A51B29B00CD1435",
+                "3784B1051A51B29B00CD1435",
                 "E80EEF91185F5BCF00979AA3",
                 "E80EEF92185F5BCF00979AA3",
                 "E80EEF93185F5BCF00979AA3",

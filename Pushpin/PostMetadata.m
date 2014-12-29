@@ -206,13 +206,16 @@
 
     UIColor *privateColor;
     UIColor *starredColor;
+    UIColor *offlineColor;
     if (dimmed) {
         privateColor = HEX(0xddddddff);
         starredColor = HEX(0xddddddff);
+        offlineColor = HEX(0xddddddff);
     }
     else {
         privateColor = HEX(0xfdbb6dff);
         starredColor = HEX(0xf0b2f7ff);
+        offlineColor = HEX(0x30A1C1FF);
     }
 
     PPSettings *settings = [PPSettings sharedSettings];
@@ -225,6 +228,12 @@
     if (post[@"starred"]) {
         if ([post[@"starred"] boolValue]) {
             [badges addObject:@{ @"type": @"image", @"image": @"badge-favorite", @"options": @{ PPBadgeNormalBackgroundColor: starredColor } }];
+        }
+    }
+
+    if (post[@"offline"]) {
+        if ([post[@"offline"] boolValue]) {
+            [badges addObject:@{ @"type": @"image", @"image": @"badge-cloud", @"options": @{ PPBadgeNormalBackgroundColor: offlineColor } }];
         }
     }
 
