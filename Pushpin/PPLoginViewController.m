@@ -77,7 +77,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     self.progressView.translatesAutoresizingMaskIntoConstraints = NO;
     self.progressView.hidden = YES;
 
-    self.textViewAttributes = @{NSFontAttributeName: [PPTheme urlFont]};
+    self.textViewAttributes = @{NSFontAttributeName: [PPTheme detailLabelFontAlternate1]};
     
 #ifdef PINBOARD
     self.authTokenFooterTextView = [[UITextView alloc] init];
