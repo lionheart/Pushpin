@@ -677,12 +677,6 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     PPSettings *settings = [PPSettings sharedSettings];
-    if (settings.offlineReadingEnabled) {
-        [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
-    }
-    else {
-        [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalNever];
-    }
 
     [Crashlytics startWithAPIKey:@"ed1bff5018819b0c5dbb8dbb35edac18a8b1af02"];
 
@@ -820,8 +814,14 @@
 
     [application setStatusBarStyle:UIStatusBarStyleLightContent];
 
-    PPSettings *settings = [PPSettings sharedSettings];
     if (settings.isAuthenticated) {
+        if (settings.offlineReadingEnabled) {
+            [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
+        }
+        else {
+            [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalNever];
+        }
+
 #ifdef PINBOARD
         pinboard.token = settings.token;
 #endif
