@@ -798,13 +798,13 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             cell.detailTextLabel.adjustsFontSizeToFitWidth = YES;
             cell.imageView.image = [UIImage imageNamed:@"browse-search"];
             cell.accessoryType = UITableViewCellAccessoryNone;
-        
+
             NSString *query = search[@"query"];
             NSMutableArray *components = [NSMutableArray array];
             if (query && ![query isEqualToString:@""]) {
-                [components addObject:[NSString stringWithFormat:@"query: %@", query]];
+                [components addObject:[NSString stringWithFormat:@"query: \"%@\"", query]];
             }
-            
+
             kPushpinFilterType isPrivate = [search[@"private"] integerValue];
             switch (isPrivate) {
                 case kPushpinFilterFalse:
