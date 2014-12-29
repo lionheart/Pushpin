@@ -586,6 +586,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             }
 
             [store setArray:iCloudSearches forKey:kSavedSearchesKey];
+            [store synchronize];
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.searches removeObjectAtIndex:indexPath.row];
@@ -1841,10 +1842,12 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     NSMutableArray *iCloudSearches = [NSMutableArray arrayWithArray:[store arrayForKey:kSavedSearchesKey]];
     
     [db beginTransaction];
+    [db executeUpdate:@"DELETE FROM feeds"];
     for (NSString *components in iCloudFeeds) {
         [db executeUpdate:@"INSERT OR IGNORE INTO feeds (components) VALUES (?)" withArgumentsInArray:@[components]];
     }
-    
+
+    [db executeUpdate:@"DELETE FROM searches"];
     for (NSDictionary *search in iCloudSearches) {
         [db executeUpdate:@"INSERT OR IGNORE INTO searches (name, query, private, unread, starred, tagged) VALUES (:name, :query, :private, :unread, :starred, :tagged)" withParameterDictionary:search];
     }
@@ -1866,7 +1869,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     }
 
     FMResultSet *result = [db executeQuery:@"SELECT components FROM feeds ORDER BY components ASC"];
-
     while ([result next]) {
         NSString *componentString = [result stringForColumnIndex:0];
         NSArray *components = [componentString componentsSeparatedByString:@" "];
@@ -1886,14 +1888,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         kPushpinFilterType starred = [searchResults intForColumn:@"starred"];
         kPushpinFilterType tagged = [searchResults intForColumn:@"tagged"];
         
-#warning XXX Super inefficient.
-        BOOL existsOnICloud = NO;
-        for (NSDictionary *search in iCloudSearches) {
-            if ([search[@"name"] isEqualToString:name]) {
-                existsOnICloud = YES;
-            }
-        }
-        
         NSDictionary *search = @{@"name": name,
                                  @"query": query,
                                  @"private": @(private),
@@ -1901,14 +1895,10 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                                  @"starred": @(starred),
                                  @"tagged": @(tagged) };
 
-        if (!existsOnICloud) {
-            [iCloudSearches addObject:search];
-        }
-
         [updatedSearchNames addObject:name];
         [updatedSearches addObject:search];
     }
-    
+
     [result close];
     
     NSInteger offset;
@@ -1953,12 +1943,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                                       [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:row + offset
                                                                                        inSection:section]];
                                   }
-                                  
-                                  // Remove duplicates from the array
-                                  NSArray *iCloudFeedsWithoutDuplicates = [[NSSet setWithArray:iCloudFeeds] allObjects];
-                                  
-                                  // Sync the new saved feed list with iCloud
-                                  [store setArray:iCloudFeedsWithoutDuplicates forKey:kSavedFeedsKey];
                                   
                                   dispatch_async(dispatch_get_main_queue(), ^{
                                       self.feeds = [updatedFeeds mutableCopy];
@@ -2026,9 +2010,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                                       [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:row
                                                                                        inSection:searchSection]];
                                   }
-                                  
-                                  // Sync the new saved feed list with iCloud
-                                  [store setArray:iCloudSearches forKey:kSavedSearchesKey];
 
                                   dispatch_async(dispatch_get_main_queue(), ^{
                                       self.searches = [updatedSearches mutableCopy];

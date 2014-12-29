@@ -804,11 +804,51 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
             [alert lhs_addActionWithTitle:@"Save" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                 NSString *searchName = [(UITextField *)alert.textFields[0] text];
                 __block BOOL success;
-                [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
-                    success = [db executeUpdate:@"INSERT INTO searches (name, query, private, unread, starred, tagged) VALUES (?, ?, ?, ?, ?, ?)" withArgumentsInArray:@[searchName, self.searchTextField.text, @(self.isPrivate), @(self.read), @(self.starred), @(self.tagged)]];
-                }];
                 
+                kPushpinFilterType unread;
+                switch (self.read) {
+                    case kPushpinFilterTrue:
+                        unread = kPushpinFilterFalse;
+                        break;
+
+                    case kPushpinFilterFalse:
+                        unread = kPushpinFilterTrue;
+                        break;
+
+                    case kPushpinFilterNone:
+                        unread = kPushpinFilterNone;
+                        break;
+                }
+
+                NSDictionary *search = @{@"name": searchName,
+                                         @"query": self.searchTextField.text,
+                                         @"private": @(self.isPrivate),
+                                         @"unread": @(unread),
+                                         @"starred": @(self.starred),
+                                         @"tagged": @(self.tagged) };
+
+                [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
+                    success = [db executeUpdate:@"INSERT INTO searches (name, query, private, unread, starred, tagged) VALUES (:name, :query, :private, :unread, :starred, :tagged)" withParameterDictionary:search];
+                }];
+
                 if (success) {
+                    NSUbiquitousKeyValueStore *store = [NSUbiquitousKeyValueStore defaultStore];
+                    [store synchronize];
+                    NSMutableArray *iCloudSearches = [NSMutableArray arrayWithArray:[store arrayForKey:kSavedSearchesKey]];
+                    BOOL existsOnICloud = NO;
+                    for (NSDictionary *search in iCloudSearches) {
+                        if ([search[@"name"] isEqualToString:searchName]) {
+                            existsOnICloud = YES;
+                        }
+                    }
+
+                    if (!existsOnICloud) {
+                        [iCloudSearches addObject:search];
+                    }
+
+                    [store setArray:iCloudSearches forKey:kSavedSearchesKey];
+                    [store synchronize];
+
                     UIAlertController *successAlert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Success", nil)
                                                                                         message:NSLocalizedString(@"Your saved search was added", nil)];
                     [successAlert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
