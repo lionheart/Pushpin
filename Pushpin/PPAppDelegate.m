@@ -115,6 +115,34 @@
             openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication
          annotation:(id)annotation {
+    void (^PresentView)(UIViewController *vc, UINavigationController *navController) = ^(UIViewController *vc, UINavigationController *navController) {
+        if ([UIApplication isIPad]) {
+            UINavigationController *navigationController = [PPAppDelegate sharedDelegate].navigationController;
+            if (navigationController.viewControllers.count == 1) {
+                UIBarButtonItem *showPopoverBarButtonItem = navigationController.topViewController.navigationItem.leftBarButtonItem;
+                if (showPopoverBarButtonItem) {
+                    vc.navigationItem.leftBarButtonItem = showPopoverBarButtonItem;
+                }
+            }
+            
+            [navigationController setViewControllers:@[vc] animated:YES];
+            
+            if ([vc respondsToSelector:@selector(postDataSource)]) {
+                if ([[(PPGenericPostViewController *)vc postDataSource] respondsToSelector:@selector(barTintColor)]) {
+                    [self.feedListNavigationController.navigationBar setBarTintColor:[[(PPGenericPostViewController *)vc postDataSource] barTintColor]];
+                }
+            }
+            
+            UIPopoverController *popover = [PPAppDelegate sharedDelegate].feedListViewController.popover;
+            if (popover) {
+                [popover dismissPopoverAnimated:YES];
+            }
+        }
+        else {
+            [self.navigationController presentViewController:navController animated:NO completion:nil];
+        }
+    };
+
     if ([[PocketAPI sharedAPI] handleOpenURL:url]) {
         return YES;
     }
@@ -144,6 +172,76 @@
                                                    }
                                                }];
     }
+    else if ([url.host isEqualToString:@"search"]) {
+        NSDictionary *data = [self parseQueryParameters:url.query];
+        PPGenericPostViewController *postViewController = [[PPGenericPostViewController alloc] init];
+        PPPinboardDataSource *dataSource = [[PPPinboardDataSource alloc] init];
+        dataSource.limit = 100;
+        if (data[@"q"]) {
+            dataSource.searchQuery = data[@"q"];
+        }
+        else if (data[@"name"]) {
+            __block NSDictionary *search;
+            [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
+                FMResultSet *searchResults = [db executeQuery:@"SELECT * FROM searches WHERE name=?" withArgumentsInArray:@[data[@"name"]]];
+                while ([searchResults next]) {
+                    NSString *name = [searchResults stringForColumn:@"name"];
+                    NSString *query = [searchResults stringForColumn:@"query"];
+                    kPushpinFilterType private = [searchResults intForColumn:@"private"];
+                    kPushpinFilterType unread = [searchResults intForColumn:@"unread"];
+                    kPushpinFilterType starred = [searchResults intForColumn:@"starred"];
+                    kPushpinFilterType tagged = [searchResults intForColumn:@"tagged"];
+                    
+                    search = @{@"name": name,
+                               @"query": query,
+                               @"private": @(private),
+                               @"unread": @(unread),
+                               @"starred": @(starred),
+                               @"tagged": @(tagged) };
+                }
+            }];
+
+            NSString *searchQuery = search[@"query"];
+            if (searchQuery && ![searchQuery isEqualToString:@""]) {
+                dataSource.searchQuery = search[@"query"];
+            }
+            
+            dataSource.unread = [search[@"unread"] integerValue];
+            dataSource.isPrivate = [search[@"private"] integerValue];
+            dataSource.starred = [search[@"starred"] integerValue];
+            
+            kPushpinFilterType tagged = [search[@"tagged"] integerValue];
+            switch (tagged) {
+                case kPushpinFilterTrue:
+                    dataSource.untagged = kPushpinFilterFalse;
+                    break;
+                    
+                case kPushpinFilterFalse:
+                    dataSource.untagged = kPushpinFilterTrue;
+                    break;
+                    
+                case kPushpinFilterNone:
+                    dataSource.untagged = kPushpinFilterNone;
+                    break;
+            }
+        }
+        
+        postViewController.postDataSource = dataSource;
+        postViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close"
+                                                                                               style:UIBarButtonItemStyleDone
+                                                                                              target:self
+                                                                                              action:@selector(closeModal:)];
+        PPNavigationController *navController = [[PPNavigationController alloc] initWithRootViewController:postViewController];
+
+        if (self.navigationController.presentedViewController) {
+            [self.navigationController dismissViewControllerAnimated:YES completion:^{
+                PresentView(postViewController, navController);
+            }];
+        }
+        else {
+            PresentView(postViewController, navController);
+        }
+    }
     else if ([url.host isEqualToString:@"feed"]) {
         NSDictionary *data = [self parseQueryParameters:url.query];
         NSMutableArray *components = [NSMutableArray array];
@@ -166,41 +264,13 @@
                                                                                               action:@selector(closeModal:)];
         PPNavigationController *navController = [[PPNavigationController alloc] initWithRootViewController:postViewController];
 
-        void (^PresentView)() = ^{
-            if ([UIApplication isIPad]) {
-                UINavigationController *navigationController = [PPAppDelegate sharedDelegate].navigationController;
-                if (navigationController.viewControllers.count == 1) {
-                    UIBarButtonItem *showPopoverBarButtonItem = navigationController.topViewController.navigationItem.leftBarButtonItem;
-                    if (showPopoverBarButtonItem) {
-                        postViewController.navigationItem.leftBarButtonItem = showPopoverBarButtonItem;
-                    }
-                }
-
-                [navigationController setViewControllers:@[postViewController] animated:YES];
-
-                if ([postViewController respondsToSelector:@selector(postDataSource)]) {
-                    if ([[postViewController postDataSource] respondsToSelector:@selector(barTintColor)]) {
-                        [self.feedListNavigationController.navigationBar setBarTintColor:[postViewController.postDataSource barTintColor]];
-                    }
-                }
-
-                UIPopoverController *popover = [PPAppDelegate sharedDelegate].feedListViewController.popover;
-                if (popover) {
-                    [popover dismissPopoverAnimated:YES];
-                }
-            }
-            else {
-                [self.navigationController presentViewController:navController animated:NO completion:nil];
-            }
-        };
-
         if (self.navigationController.presentedViewController) {
             [self.navigationController dismissViewControllerAnimated:YES completion:^{
-                PresentView();
+                PresentView(postViewController, navController);
             }];
         }
         else {
-            PresentView();
+            PresentView(postViewController, navController);
         }
     }
     else if ([url.host isEqualToString:@"x-callback-url"]) {
