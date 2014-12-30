@@ -37,14 +37,10 @@
       launchStyle = "0"
       askForAppToLaunch = "Yes"
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Pinboard Debug"
+      buildConfiguration = "Pinboard Beta"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "NO">
-      <IDERemoteRunnable
-         RemotePath = "/var/mobile/Containers/Bundle/Application/5ADE9ACB-8818-49C7-9E32-A822AB881958/Instapaper.app"
-         BundleIdentifier = "/var/mobile/Containers/Bundle/Application/5ADE9ACB-8818-49C7-9E32-A822AB881958/Instapaper.app">
-      </IDERemoteRunnable>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
@@ -56,6 +52,10 @@
       </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
+      <IDERemoteRunnable
+         RemotePath = "/var/mobile/Containers/Bundle/Application/5ADE9ACB-8818-49C7-9E32-A822AB881958/Instapaper.app"
+         BundleIdentifier = "/var/mobile/Containers/Bundle/Application/5ADE9ACB-8818-49C7-9E32-A822AB881958/Instapaper.app">
+      </IDERemoteRunnable>
       <IDERemoteRunnable
          RemotePath = "/Applications/MobileSafari.app"
          BundleIdentifier = "/Applications/MobileSafari.app">
