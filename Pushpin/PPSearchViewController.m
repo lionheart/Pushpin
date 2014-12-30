@@ -620,7 +620,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
         case PPSearchSectionSave: {
             cell = [tableView dequeueReusableCellWithIdentifier:DefaultCellIdentifier
                                                    forIndexPath:indexPath];
-            cell.textLabel.text = @"Save Search";
+            cell.textLabel.text = NSLocalizedString(@"Save Search", nil);
 
             UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
             UIColor *color = [button titleColorForState:UIControlStateNormal];
@@ -638,7 +638,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
     PPSearchSectionType sectionType = (PPSearchSectionType)section;
     switch (sectionType) {
         case PPSearchSectionQuery:
-            return @"Tap the info button to read about advanced searches.";
+            return NSLocalizedString(@"Tap the info button to read about advanced searches.", nil);
             
         case PPSearchSectionScope:
             return nil;
@@ -794,14 +794,14 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
             break;
             
         case PPSearchSectionSave: {
-            UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:@"Save Search"
-                                                                         message:@"Enter a name for this saved search."];
+            UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Save Search", nil)
+                                                                         message:NSLocalizedString(@"Enter a name for this saved search.", nil)];
             [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
                 textField.keyboardType = UIKeyboardTypeAlphabet;
             }];
             
-            [alert lhs_addActionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
-            [alert lhs_addActionWithTitle:@"Save" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            [alert lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil];
+            [alert lhs_addActionWithTitle:NSLocalizedString(@"Save", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                 NSString *searchName = [(UITextField *)alert.textFields[0] text];
                 __block BOOL success;
                 
@@ -850,7 +850,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                     [store synchronize];
 
                     UIAlertController *successAlert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Success", nil)
-                                                                                        message:NSLocalizedString(@"Your saved search was added", nil)];
+                                                                                        message:NSLocalizedString(@"Your saved search was added.", nil)];
                     [successAlert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
                     [self presentViewController:successAlert animated:YES completion:nil];
                 }

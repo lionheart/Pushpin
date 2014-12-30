@@ -718,7 +718,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
     if (self.isEditingTags) {
         if (section == 0) {
-            return @"Swipe right to suggest popular tags, swipe left to remove them. Separate tags with spaces and make a tag private by prepending it with a period.";
+            return NSLocalizedString(@"Swipe right to suggest popular tags, swipe left to remove them. Separate tags with spaces and make a tag private by prepending it with a period.", nil);
         }
     }
     

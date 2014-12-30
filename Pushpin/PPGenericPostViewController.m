@@ -364,11 +364,11 @@ static NSInteger PPBookmarkEditMaximum = 25;
     
     UIViewController *backViewController = (self.navigationController.viewControllers.count >= 2) ? self.navigationController.viewControllers[self.navigationController.viewControllers.count - 2] : nil;
 
-    self.selectAllBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Mark All"
+    self.selectAllBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Mark All", nil)
                                                                    style:UIBarButtonItemStyleDone
                                                                   target:self
                                                                   action:@selector(toggleSelectAllBookmarks:)];
-    self.selectAllBarButtonItem.possibleTitles = [NSSet setWithObjects:@"Mark All", @"Mark None", nil];
+    self.selectAllBarButtonItem.possibleTitles = [NSSet setWithObjects:NSLocalizedString(@"Mark All", nil), NSLocalizedString(@"Mark None", nil), nil];
 
     if (![UIApplication isIPad] && [backViewController isKindOfClass:[PPFeedListViewController class]]) {
         self.hamburgerBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"navigation-list"]

@@ -301,10 +301,10 @@
             BOOL success = NO;
             BOOL updated = NO;
             if (error) {
-                message = @"Error adding to Reading List";
+                message = NSLocalizedString(@"Error adding to Reading List", nil);
             }
             else {
-                message = @"Added to Reading List";
+                message = NSLocalizedString(@"Added to Reading List", nil);
                 success = YES;
             }
 
