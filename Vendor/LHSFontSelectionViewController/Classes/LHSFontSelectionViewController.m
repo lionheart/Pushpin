@@ -526,7 +526,7 @@ static NSString *CellIdentifier = @"Cell";
             cell.textLabel.attributedText = attributedText;
         }
         else {
-            cell.textLabel.text = @"Restore Purchases";
+            cell.textLabel.text = NSLocalizedString(@"Restore Purchases", nil);
             cell.textLabel.textColor = [UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0];
         }
     }
@@ -753,11 +753,11 @@ static NSString *CellIdentifier = @"Cell";
                     
                     switch (transaction.error.code) {
                         case SKErrorUnknown:
-                            message = @"An unknown error occured.";
+                            message = NSLocalizedString(@"An unknown error occured.", nil);
                             break;
                             
                         case SKErrorClientInvalid:
-                            message = @"This client is not authorized to make in-app purchases.";
+                            message = NSLocalizedString(@"This client is not authorized to make in-app purchases.", nil);
                             break;
 
                         default:
