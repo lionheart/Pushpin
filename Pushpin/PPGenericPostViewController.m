@@ -1385,7 +1385,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
 - (void)alertIfSelectedBookmarkCountExceedsRecommendation:(NSInteger)count cancel:(void (^)())cancel update:(void (^)())update {
     if (count > PPBookmarkEditMaximum) {
         UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:@"Warning"
-                                                                     message:[NSString stringWithFormat:@"Bulk-editing more than %lu bookmarks at a time might take a while to complete and will probably incur the wrath of the Pinboard API gods. Are you absolutely sure you want to continue?", PPBookmarkEditMaximum]];
+                                                                     message:[NSString stringWithFormat:@"Bulk-editing more than %lu bookmarks at a time might take a while to complete and will probably incur the wrath of the Pinboard API gods. Are you absolutely sure you want to continue?", (long)PPBookmarkEditMaximum]];
         [alert lhs_addActionWithTitle:@"Cancel" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
             if (cancel) {
                 cancel();
