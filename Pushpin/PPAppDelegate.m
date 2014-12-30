@@ -287,17 +287,18 @@
     
 
     PPSettings *settings = [PPSettings sharedSettings];
-#ifdef DELICIOUS
-    BOOL isAuthenticated = settings.username != nil && settings.password != nil;
-#endif
-    
-#ifdef PINBOARD
-    BOOL isAuthenticated = settings.token != nil;
-#endif
+    if (settings.isAuthenticated) {
+        if (!didLaunchWithURL && !self.hideURLPrompt && !settings.turnOffBookmarkPrompt) {
+            [self promptUserToAddBookmark];
+            didLaunchWithURL = NO;
+        }
 
-    if (!didLaunchWithURL && isAuthenticated && !self.hideURLPrompt && !settings.turnOffBookmarkPrompt) {
-        [self promptUserToAddBookmark];
-        didLaunchWithURL = NO;
+        if (settings.offlineReadingEnabled) {
+            [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
+        }
+        else {
+            [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalNever];
+        }
     }
 }
 
@@ -815,13 +816,6 @@
     [application setStatusBarStyle:UIStatusBarStyleLightContent];
 
     if (settings.isAuthenticated) {
-        if (settings.offlineReadingEnabled) {
-            [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
-        }
-        else {
-            [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalNever];
-        }
-
 #ifdef PINBOARD
         pinboard.token = settings.token;
 #endif

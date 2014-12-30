@@ -581,7 +581,7 @@
 
 - (BOOL)isAuthenticated {
 #ifdef DELICIOUS
-    return self.username != nil;
+    return self.username != nil && self.password != nil;
 #endif
     
 #ifdef PINBOARD
