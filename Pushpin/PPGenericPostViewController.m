@@ -156,6 +156,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
 #endif
     
     self.edgesForExtendedLayout = UIRectEdgeNone;
+    self.definesPresentationContext = YES;
     self.extendedLayoutIncludesOpaqueBars = NO;
     self.view.backgroundColor = [UIColor whiteColor];
     self.prefersStatusBarHidden = NO;
@@ -243,8 +244,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
         self.searchController = [[UISearchController alloc] initWithSearchResultsController:self.searchResultsController];
         self.searchController.delegate = self;
         self.searchController.searchResultsUpdater = self;
-        self.searchController.definesPresentationContext = YES;
-        
+
         [self.searchController.searchBar sizeToFit];
         self.searchController.searchBar.delegate = self;
         self.searchController.searchBar.keyboardType = UIKeyboardTypeASCIICapable;
