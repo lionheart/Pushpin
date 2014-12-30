@@ -767,15 +767,15 @@ static BOOL kPinboardSyncInProgress = NO;
 
 - (NSString *)searchPlaceholder {
     if (self.searchQuery && ![self.searchQuery isEqualToString:@"*"]) {
-        return @"Search in Results";
+        return NSLocalizedString(@"Search in Results", nil);
     }
     
     switch (self.untagged) {
         case kPushpinFilterFalse:
-            return @"Search Tagged";
+            return NSLocalizedString(@"Search Tagged", nil);
             
         case kPushpinFilterTrue:
-            return @"Search Untagged";
+            return NSLocalizedString(@"Search Untagged", nil);
             
         default:
             break;
@@ -783,10 +783,10 @@ static BOOL kPinboardSyncInProgress = NO;
     
     switch (self.starred) {
         case kPushpinFilterTrue:
-            return @"Search Starred";
+            return NSLocalizedString(@"Search Starred", nil);
             
         case kPushpinFilterFalse:
-            return @"Search Unstarred";
+            return NSLocalizedString(@"Search Unstarred", nil);
             
         default:
             break;
@@ -794,10 +794,10 @@ static BOOL kPinboardSyncInProgress = NO;
 
     switch (self.isPrivate) {
         case kPushpinFilterTrue:
-            return @"Search Private";
+            return NSLocalizedString(@"Search Private", nil);
             
         case kPushpinFilterFalse:
-            return @"Search Public";
+            return NSLocalizedString(@"Search Public", nil);
             
         default:
             break;
@@ -805,16 +805,16 @@ static BOOL kPinboardSyncInProgress = NO;
 
     switch (self.unread) {
         case kPushpinFilterTrue:
-            return @"Search Unread";
+            return NSLocalizedString(@"Search Unread", nil);
             
         case kPushpinFilterFalse:
-            return @"Search Read";
+            return NSLocalizedString(@"Search Read", nil);
             
         default:
             break;
     }
 
-    return @"Search";
+    return NSLocalizedString(@"Search", nil);
 }
 
 - (UIColor *)barTintColor {
