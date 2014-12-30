@@ -76,8 +76,12 @@ static const CGFloat PADDING_Y = 2;
                                          PPBadgeActiveBackgroundColor: [self lightenColor:HEX(0x73c5ffff) amount:50],
                                          PPBadgeDisabledBackgroundColor: HEX(0xCCCCCCFF),
                                          PPBadgeFontColor: [UIColor whiteColor],
-                                         PPBadgeFontName: [PPTheme browseFontName]
                                          } mutableCopy];
+
+        NSString *browseFontName = [PPTheme browseFontName];
+        if (browseFontName) {
+            badgeOptions[PPBadgeFontName] = browseFontName;
+        }
 
         [badgeOptions addEntriesFromDictionary:options];
         UIFont *font = [UIFont fontWithName:badgeOptions[PPBadgeFontName] size:[badgeOptions[PPBadgeFontSize] floatValue]];
