@@ -94,16 +94,6 @@
 
     NSString *description = [post[@"description"] stringByTrimmingCharactersInSet:whitespace];
 
-    if (post[@"created_at"]) {
-        NSString *date = [[self dateFormatter] stringFromDate:post[@"created_at"]];
-        if ([description isEqualToString:emptyString]) {
-            description = date;
-        }
-        else {
-            description = [NSString stringWithFormat:@"%@ · %@", date, description];
-        }
-    }
-
     NSString *tags = post[@"tags"];
 
     NSRange titleRange = NSMakeRange(0, title.length);
@@ -112,6 +102,23 @@
     NSString *linkHost = [linkUrl host];
     if ([linkHost hasPrefix:@"www."]) {
         linkHost = [linkHost stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:@""];
+    }
+
+    BOOL showDateByDescription = NO;
+    if (post[@"created_at"]) {
+        NSString *date = [[self dateFormatter] stringFromDate:post[@"created_at"]];
+
+        if (showDateByDescription) {
+            if ([description isEqualToString:emptyString]) {
+                description = date;
+            }
+            else {
+                description = [NSString stringWithFormat:@"%@ · %@", date, description];
+            }
+        }
+        else {
+            linkHost = [NSString stringWithFormat:@"%@ · %@", date, linkHost];
+        }
     }
 
     NSRange linkRange = NSMakeRange(titleRange.location + titleRange.length + 1, linkHost.length);
