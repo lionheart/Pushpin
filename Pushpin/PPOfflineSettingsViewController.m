@@ -186,6 +186,14 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
                                                 handler:^(UIAlertAction *action) {
                                                 }];
                     
+                    actionSheet.modalPresentationStyle = UIModalPresentationPopover;
+
+                    UIPopoverPresentationController *popPresenter = actionSheet.popoverPresentationController;
+
+                    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+                    popPresenter.sourceView = cell;
+                    popPresenter.sourceRect = cell.bounds;
+
                     [self presentViewController:actionSheet
                                        animated:YES
                                      completion:nil];
@@ -221,6 +229,14 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
                     [actionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                   style:UIAlertActionStyleCancel
                                                 handler:nil];
+
+                    actionSheet.modalPresentationStyle = UIModalPresentationPopover;
+
+                    UIPopoverPresentationController *popPresenter = actionSheet.popoverPresentationController;
+
+                    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+                    popPresenter.sourceView = cell;
+                    popPresenter.sourceRect = cell.bounds;
                     
                     [self presentViewController:actionSheet
                                        animated:YES
