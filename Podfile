@@ -30,6 +30,7 @@ pod 'LHSKeyboardAdjusting', '0.0.1'
 pod 'RNCryptor'
 pod 'YHRoundBorderedButton'
 pod '1PasswordExtension', '1.0.9'
+pod 'TRVSURLSessionOperation', '~> 0.0.1'
 
 target 'DebugPods', :exclusive => true do
   pod 'BugshotKit', '0.1.0'
