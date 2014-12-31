@@ -59,10 +59,30 @@
         [[ASPinboard sharedInstance] setToken:token];
     }
     
+    void (^PresentController)(UINavigationController *nc) = ^(UINavigationController *nc) {
+        PPAddBookmarkViewController *addBookmarkViewController = (PPAddBookmarkViewController *)nc.topViewController;
+        addBookmarkViewController.presentingViewControllersExtensionContext = self.extensionContext;
+        addBookmarkViewController.tokenOverride = token;
+
+        nc.modalPresentationStyle = UIModalPresentationFormSheet;
+        nc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+        [PPTheme customizeUIElements];
+
+        [self presentViewController:nc animated:YES completion:^{
+            if (self.hasToken) {
+                [[ASPinboard sharedInstance] lastUpdateWithSuccess:^(NSDate *date) {}
+                                                           failure:^(NSError *error) {
+                                                               InvalidCredentials(nc);
+                                                           }];
+            }
+            else {
+                InvalidCredentials(nc);
+            }
+        }];
+    };
+
     void (^CompletionHandler)(NSString *urlString, NSString *title) = ^(NSString *urlString, NSString *title) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            PPNavigationController *navigation;
-            
             if (urlString) {
                 // Check if the bookmark is already in the database.
                 __block NSDictionary *post;
@@ -81,44 +101,43 @@
                     [results close];
                 }];
                 
-                if (count > 0) {
-                    navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:post
-                                                                                             update:@(YES)
-                                                                                           callback:nil];
+                if (count == 0) {
+                    UINavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:post
+                                                                                                                     update:@(YES)
+                                                                                                                   callback:nil];
+                    PresentController(navigation);
                 }
                 else {
-                    BOOL readByDefault = [[sharedDefaults objectForKey:@"ReadByDefault"] boolValue];
-                    BOOL privateByDefault = [[sharedDefaults objectForKey:@"PrivateByDefault"] boolValue];
-                    
-                    navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:@{@"title": title,
-                                                                                                      @"url": urlString,
-                                                                                                      @"private": @(privateByDefault),
-                                                                                                      @"unread": @(!readByDefault) }
-                                                                                             update:@(NO)
-                                                                                           callback:nil];
+                    [[ASPinboard sharedInstance] bookmarkWithURL:urlString
+                                                         success:^(NSDictionary *post) {
+                                                             NSDictionary *bookmark = @{@"title": post[@"description"],
+                                                                                        @"description": post[@"extended"],
+                                                                                        @"url": urlString,
+                                                                                        @"private": @([post[@"shared"] isEqualToString:@"no"]),
+                                                                                        @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
+                                                                                        @"tags": post[@"tags"]};
+                                                             UINavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark
+                                                                                                                                                              update:@(YES)
+                                                                                                                                                            callback:nil];
+                                                             PresentController(navigation);
+                                                         }
+                                                         failure:^(NSError *error) {
+                                                             BOOL readByDefault = [[sharedDefaults objectForKey:@"ReadByDefault"] boolValue];
+                                                             BOOL privateByDefault = [[sharedDefaults objectForKey:@"PrivateByDefault"] boolValue];
+
+                                                             PPNavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:@{@"title": title,
+                                                                                                                                               @"url": urlString,
+                                                                                                                                               @"private": @(privateByDefault),
+                                                                                                                                               @"unread": @(!readByDefault) }
+                                                                                                                                                              update:@(NO)
+                                                                                                                                                            callback:nil];
+
+                                                             PPAddBookmarkViewController *addBookmarkViewController = (PPAddBookmarkViewController *)navigation.topViewController;
+                                                             [addBookmarkViewController prefillTitleAndForceUpdate:YES];
+                                                             PresentController(navigation);
+                                                         }];
                 }
-                
-                PPAddBookmarkViewController *addBookmarkViewController = (PPAddBookmarkViewController *)navigation.topViewController;
-                addBookmarkViewController.presentingViewControllersExtensionContext = self.extensionContext;
-                addBookmarkViewController.tokenOverride = token;
-                [addBookmarkViewController prefillTitleAndForceUpdate:YES];
             }
-            
-            navigation.modalPresentationStyle = UIModalPresentationFormSheet;
-            navigation.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-            [PPTheme customizeUIElements];
-            
-            [self presentViewController:navigation animated:YES completion:^{
-                if (self.hasToken) {
-                    [[ASPinboard sharedInstance] lastUpdateWithSuccess:^(NSDate *date) {
-                    } failure:^(NSError *error) {
-                        InvalidCredentials(navigation);
-                    }];
-                }
-                else {
-                    InvalidCredentials(navigation);
-                }
-            }];
         });
     };
 
