@@ -471,7 +471,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     
     // Determine if we should mobilize or not
     if (self.shouldMobilize && !self.mobilized && [PPMobilizerUtility canMobilizeURL:self.url]) {
-        [self toggleMobilizerAnimated:NO];
+        [self toggleMobilizerAnimated:NO loadOriginalURL:YES];
     }
 }
 
@@ -627,10 +627,10 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 }
 
 - (void)toggleMobilizer {
-    [self toggleMobilizerAnimated:YES];
+    [self toggleMobilizerAnimated:YES loadOriginalURL:YES];
 }
 
-- (void)toggleMobilizerAnimated:(BOOL)animated {
+- (void)toggleMobilizerAnimated:(BOOL)animated loadOriginalURL:(BOOL)loadOriginalURL {
     [PPSettings sharedSettings].openLinksWithMobilizer = !self.mobilized;
 
     self.mobilizeButton.selected = !self.mobilized;
@@ -653,8 +653,10 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
         __weak PPWebViewController *weakself = self;
         [self setReaderViewVisible:NO animated:animated completion:^(BOOL finished) {
-            if (![weakself.loadedURLs containsObject:weakself.url]) {
-                [weakself loadURL];
+            if (loadOriginalURL) {
+                if (![weakself.loadedURLs containsObject:weakself.url]) {
+                    [weakself loadURL];
+                }
             }
             [weakself.indicator stopAnimating];
             weakself.markAsReadButton.hidden = NO;
@@ -839,25 +841,6 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 #pragma mark - UIWebViewDelegate
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
-//    if (request.cachePolicy == NSURLRequestUseProtocolCachePolicy) {
-//        NSURLRequestCachePolicy requestCachePolicy;
-//        if ([PPAppDelegate sharedDelegate].connectionAvailable) {
-//            requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
-//        }
-//        else {
-//            requestCachePolicy = NSURLRequestReturnCacheDataDontLoad;
-//        }
-//        
-//        NSMutableURLRequest *newRequest = [request mutableCopy];
-//        newRequest.cachePolicy = requestCachePolicy;
-//
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(.05 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-//            [webView loadRequest:newRequest];
-//        });
-//
-//        return NO;
-//    }
-
     if (navigationType == UIWebViewNavigationTypeLinkClicked) {
         // Reset the "loaded" state on the reader view.
         [[self.readerWebView stringByEvaluatingJavaScriptFromString:@"isLoaded"] isEqualToString:@"false"];
@@ -919,7 +902,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     }
     else {
         if (navigationType == UIWebViewNavigationTypeLinkClicked) {
-            [self toggleMobilizer];
+            [self toggleMobilizerAnimated:YES loadOriginalURL:NO];
 
             NSURLRequest *newRequest = [NSURLRequest requestWithURL:request.URL];
             [self.webView loadRequest:newRequest];
