@@ -76,6 +76,7 @@ static NSString *CellIdentifier = @"TagCell";
     
     // TODO Trying to get this to @"" but back button still displays "Back"
     self.navigationItem.titleView = titleView;
+    self.definesPresentationContext = YES;
     self.searchInProgress = NO;
     self.tagCounts = [NSMutableDictionary dictionary];
     self.sectionTitles = [NSMutableDictionary dictionary];
@@ -105,7 +106,6 @@ static NSString *CellIdentifier = @"TagCell";
     self.searchController = [[UISearchController alloc] initWithSearchResultsController:self.searchResultsController];
     self.searchController.delegate = self;
     self.searchController.searchResultsUpdater = self;
-    self.searchController.definesPresentationContext = YES;
     
     [self.searchController.searchBar sizeToFit];
     self.searchController.searchBar.delegate = self;
