@@ -143,6 +143,8 @@
     NSMutableArray *urlsToCache = [NSMutableArray array];
     NSMutableArray *readerUrlsToCache = [NSMutableArray array];
 
+    self.currentURLString = @"";
+    self.currentAssetURLString = @"";
     self.urlsToDownload = [NSMutableArray array];
     self.assetURLs = [NSMutableSet set];
     self.htmlURLs = [NSMutableSet set];
