@@ -1200,7 +1200,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                 }
                 
                 postViewController.postDataSource = dataSource;
-                [self.navigationController pushViewController:postViewController animated:YES];
+                viewControllerToPush = postViewController;
             }
         }
 #endif
