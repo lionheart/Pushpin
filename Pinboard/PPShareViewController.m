@@ -81,11 +81,11 @@
         }];
     };
 
-    void (^CompletionHandler)(NSString *urlString, NSString *title) = ^(NSString *urlString, NSString *title) {
+    void (^CompletionHandler)(NSString *urlString, NSString *title, NSString *description) = ^(NSString *urlString, NSString *title, NSString *description) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (urlString) {
                 // Check if the bookmark is already in the database.
-                __block NSDictionary *post;
+                __block NSDictionary *post = @{@"url": urlString, @"title": title, @"description": description};
                 __block NSInteger count;
                 
                 NSURL *containerURL = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:APP_GROUP];
@@ -97,16 +97,18 @@
                     if (count > 0) {
                         post = [PPPinboardDataSource postFromResultSet:results];
                     }
-                    
+
                     [results close];
                 }];
                 
                 if (count == 0) {
-                    UINavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:@{@"url": urlString}
+                    UINavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:post
                                                                                                                      update:@(YES)
                                                                                                                    callback:nil];
                     PPAddBookmarkViewController *addBookmarkViewController = (PPAddBookmarkViewController *)navigation.topViewController;
-                    [addBookmarkViewController prefillTitleAndForceUpdate:YES];
+                    if (!title && !description) {
+                        [addBookmarkViewController prefillTitleAndForceUpdate:YES];
+                    }
                     PresentController(navigation);
                 }
                 else {
@@ -129,13 +131,17 @@
 
                                                              PPNavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:@{@"title": title,
                                                                                                                                                @"url": urlString,
+                                                                                                                                                                       @"description": description,
                                                                                                                                                @"private": @(privateByDefault),
                                                                                                                                                @"unread": @(!readByDefault) }
                                                                                                                                                               update:@(NO)
                                                                                                                                                             callback:nil];
 
                                                              PPAddBookmarkViewController *addBookmarkViewController = (PPAddBookmarkViewController *)navigation.topViewController;
-                                                             [addBookmarkViewController prefillTitleAndForceUpdate:YES];
+
+                                                             if (!title && !description) {
+                                                                 [addBookmarkViewController prefillTitleAndForceUpdate:YES];
+                                                             }
                                                              PresentController(navigation);
                                                          }];
                 }
@@ -149,7 +155,7 @@
             [itemProvider loadItemForTypeIdentifier:(__bridge NSString *)kUTTypeURL
                                             options:0
                                   completionHandler:^(NSURL *url, NSError *error) {
-                                      CompletionHandler(url.absoluteString, nil);
+                                      CompletionHandler(url.absoluteString, @"", @"");
                                   }];
             break;
         }
@@ -160,10 +166,10 @@
                                   completionHandler:^(NSString *text, NSError *error) {
                                       NSURL *url = [NSURL URLWithString:text];
                                       if (url) {
-                                          CompletionHandler(text, nil);
+                                          CompletionHandler(text, @"", @"");
                                       }
                                       else {
-                                          CompletionHandler(nil, text);
+                                          CompletionHandler(@"", text, @"");
                                       }
                                   }];
             break;
@@ -173,7 +179,8 @@
             [itemProvider loadItemForTypeIdentifier:(__bridge NSString *)kUTTypePropertyList
                                             options:0
                                   completionHandler:^(NSDictionary *results, NSError *error) {
-                                      CompletionHandler(results[NSExtensionJavaScriptPreprocessingResultsKey][@"url"], results[NSExtensionJavaScriptPreprocessingResultsKey][@"title"]);
+                                      NSDictionary *data = results[NSExtensionJavaScriptPreprocessingResultsKey];
+                                      CompletionHandler(data[@"url"], data[@"title"], data[@"selection"]);
                                   }];
             break;
         }
