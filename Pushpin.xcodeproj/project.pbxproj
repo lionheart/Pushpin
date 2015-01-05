@@ -1310,6 +1310,8 @@
                 "371A48E618ADB516009D7533",
                 "37802193198D709000CE269A",
                 "37802194198D709000CE269A",
+                "3762CACD1A59D04700301C97",
+                "3762CACE1A59D04700301C97",
                 "37F91F36177A91A500683D46",
                 "37F91F37177A91A500683D46"
             ],
@@ -1353,6 +1355,8 @@
                 "37F91F3D177AB1D500683D46",
                 "37CFA5FE19683ED300C67338",
                 "37CFA5FF19683ED300C67338",
+                "3762CAC51A55A59600301C97",
+                "3762CAC61A55A59600301C97",
                 "37EE01761A093F2B00A03F3B",
                 "37EE01771A093F2B00A03F3B",
                 "37A2B4A0199E6D8D005B7671",
@@ -2115,6 +2119,50 @@
         },
         "375B62321A4DA9240045AFE7": {
             "fileRef": "375B62301A4DA9240045AFE7",
+            "isa": "PBXBuildFile"
+        },
+        "3762CAC51A55A59600301C97": {
+            "fileEncoding": "4",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "sourcecode.c.h",
+            "path": "PPOfflineDownloadViewController.h",
+            "sourceTree": "<group>"
+        },
+        "3762CAC61A55A59600301C97": {
+            "fileEncoding": "4",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "sourcecode.c.objc",
+            "path": "PPOfflineDownloadViewController.m",
+            "sourceTree": "<group>"
+        },
+        "3762CAC71A55A59600301C97": {
+            "fileRef": "3762CAC51A55A59600301C97",
+            "isa": "PBXBuildFile"
+        },
+        "3762CAC81A55A59600301C97": {
+            "fileRef": "3762CAC61A55A59600301C97",
+            "isa": "PBXBuildFile"
+        },
+        "3762CACD1A59D04700301C97": {
+            "fileEncoding": "4",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "sourcecode.c.h",
+            "path": "NSString+Additions.h",
+            "sourceTree": "<group>"
+        },
+        "3762CACE1A59D04700301C97": {
+            "fileEncoding": "4",
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "sourcecode.c.objc",
+            "path": "NSString+Additions.m",
+            "sourceTree": "<group>"
+        },
+        "3762CACF1A59D04700301C97": {
+            "fileRef": "3762CACD1A59D04700301C97",
+            "isa": "PBXBuildFile"
+        },
+        "3762CAD01A59D04700301C97": {
+            "fileRef": "3762CACE1A59D04700301C97",
             "isa": "PBXBuildFile"
         },
         "3769A5741879BCAF00AC8C44": {
@@ -4134,6 +4182,7 @@
                 "3790426919CBDCDF00409D34",
                 "3790426A19CBDCDF00409D34",
                 "3790426B19CBDCDF00409D34",
+                "3762CAD01A59D04700301C97",
                 "3790426C19CBDCDF00409D34",
                 "3790426D19CBDCDF00409D34",
                 "3790426E19CBDCDF00409D34",
@@ -4166,6 +4215,7 @@
                 "3790428819CBDCDF00409D34",
                 "3790428919CBDCDF00409D34",
                 "3747C50419CCD88900FAD488",
+                "3762CAC81A55A59600301C97",
                 "37EE01791A093F2B00A03F3B",
                 "3790428B19CBDCDF00409D34",
                 "3790428C19CBDCDF00409D34",
@@ -4217,6 +4267,8 @@
         "379042AF19CC646700409D34": {
             "buildActionMask": "2147483647",
             "files": [
+                "3762CACF1A59D04700301C97",
+                "3762CAC71A55A59600301C97",
                 "37EE01781A093F2B00A03F3B",
                 "375B62311A4DA9240045AFE7",
                 "379042B719CC646900409D34"

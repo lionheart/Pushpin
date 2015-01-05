@@ -8,7 +8,10 @@
 
 #import "PPAppDelegate.h"
 #import "PPOfflineSettingsViewController.h"
+#import "PPOfflineDownloadViewController.h"
 #import "PPTheme.h"
+#import "PPNavigationController.h"
+
 #import <LHSTableViewCells/LHSTableViewCellValue1.h>
 #import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 
@@ -48,7 +51,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 2;
+    return 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -57,6 +60,9 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
             return PPOfflineSettingsRowCount;
             
         case PPOfflineSettingsSectionClearCache:
+            return 1;
+
+        case PPOfflineSettingsSectionManualDownload:
             return 1;
     }
 }
@@ -122,6 +128,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
                     NSInteger diskUsage = [[PPAppDelegate sharedDelegate].urlCache currentDiskUsage];
                     cell.detailTextLabel.text = [NSByteCountFormatter stringFromByteCount:diskUsage countStyle:NSByteCountFormatterCountStyleFile];
                     cell.accessoryType = UITableViewCellAccessoryNone;
+
                     break;
                 }
                     
@@ -137,6 +144,24 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
             break;
         }
             
+        case PPOfflineSettingsSectionManualDownload: {
+            cell = [tableView dequeueReusableCellWithIdentifier:DefaultCellIdentifier forIndexPath:indexPath];
+            cell.textLabel.text = NSLocalizedString(@"Start Download", nil);
+            UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+            UIColor *color = [button titleColorForState:UIControlStateNormal];
+            cell.textLabel.textAlignment = NSTextAlignmentCenter;
+
+            if (self.offlineReadingSwitch.on) {
+                cell.textLabel.textColor = color;
+                cell.userInteractionEnabled = YES;
+            }
+            else {
+                cell.textLabel.textColor = [UIColor grayColor];
+                cell.userInteractionEnabled = NO;
+            }
+            break;
+        }
+
         case PPOfflineSettingsSectionClearCache: {
             cell = [tableView dequeueReusableCellWithIdentifier:DefaultCellIdentifier forIndexPath:indexPath];
             cell.textLabel.text = NSLocalizedString(@"Clear Offline Cache", nil);
@@ -250,6 +275,13 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
             break;
         }
             
+        case PPOfflineSettingsSectionManualDownload: {
+            PPOfflineDownloadViewController *offlineDownloadViewController = [[PPOfflineDownloadViewController alloc] init];
+            PPNavigationController *navigation = [[PPNavigationController alloc] initWithRootViewController:offlineDownloadViewController];
+            [self presentViewController:navigation animated:YES completion:nil];
+            break;
+        }
+
         case PPOfflineSettingsSectionClearCache: {
             UIAlertController *confirmation = [UIAlertController lhs_alertViewWithTitle:nil
                                                                                 message:NSLocalizedString(@"Are you sure you'd like to clear the cache? There is no undo.", nil)];

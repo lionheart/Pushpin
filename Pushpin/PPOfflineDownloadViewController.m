@@ -25,6 +25,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
 @property (nonatomic, strong) UILabel *assetLabel;
 @property (nonatomic, strong) UILabel *htmlLabel;
 
+@property (nonatomic, strong) UILabel *assetDetail;
+@property (nonatomic, strong) UILabel *htmlDetail;
+
+@property (nonatomic) NSInteger numberOfStaticAssets;
+
 - (void)dismissViewController;
 
 @end
@@ -46,6 +51,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [activity startAnimating];
 
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:activity];
+    self.numberOfStaticAssets = 0;
 
     self.assetProgressView = [[UIProgressView alloc] init];
     self.assetProgressView.progress = 0;
@@ -55,70 +61,25 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.htmlProgressView.progress = 0;
     self.htmlProgressView.translatesAutoresizingMaskIntoConstraints = NO;
     
-    UILabel *assetName = [[UILabel alloc] init];
-    assetName.font = [PPTheme textLabelFont];
-    assetName.text = @"CSS, JS, & Images";
-    assetName.translatesAutoresizingMaskIntoConstraints = NO;
+    self.assetDetail = [[UILabel alloc] init];
+    self.assetDetail.font = [PPTheme detailLabelFontAlternate1];
+    self.assetDetail.translatesAutoresizingMaskIntoConstraints = NO;
 
-    UILabel *htmlName = [[UILabel alloc] init];
-    htmlName.font = [PPTheme textLabelFont];
-    htmlName.text = @"HTML";
-    htmlName.translatesAutoresizingMaskIntoConstraints = NO;
+    self.htmlDetail = [[UILabel alloc] init];
+    self.htmlDetail.font = [PPTheme detailLabelFontAlternate1];
+    self.htmlDetail.translatesAutoresizingMaskIntoConstraints = NO;
     
     self.assetLabel = [[UILabel alloc] init];
     self.assetLabel.translatesAutoresizingMaskIntoConstraints = NO;
     self.assetLabel.backgroundColor = [UIColor whiteColor];
-    self.assetLabel.font = [PPTheme detailLabelFontAlternate1];
-    self.assetLabel.text = @"0 / 0";
+    self.assetLabel.font = [PPTheme textLabelFont];
     
     self.htmlLabel = [[UILabel alloc] init];
     self.htmlLabel.translatesAutoresizingMaskIntoConstraints = NO;
     self.htmlLabel.backgroundColor = [UIColor whiteColor];
-    self.htmlLabel.font = [PPTheme detailLabelFontAlternate1];
-    self.htmlLabel.text = @"0%";
+    self.htmlLabel.font = [PPTheme textLabelFont];
     
-    UIView *htmlContainer = [[UIView alloc] init];
-    htmlContainer.translatesAutoresizingMaskIntoConstraints = NO;
-    htmlContainer.backgroundColor = [UIColor whiteColor];
-    
-    UIView *assetContainer = [[UIView alloc] init];
-    assetContainer.translatesAutoresizingMaskIntoConstraints = NO;
-    assetContainer.backgroundColor = [UIColor whiteColor];
-
-    NSDictionary *views = @{@"assetProgress": self.assetProgressView,
-                            @"htmlProgress": self.htmlProgressView,
-                            @"asset": self.assetLabel,
-                            @"html": self.htmlLabel,
-                            @"assetName": assetName,
-                            @"htmlName": htmlName,
-                            @"htmlContainer": htmlContainer,
-                            @"assetContainer": assetContainer };
-
-    [htmlContainer addSubview:htmlName];
-    [htmlContainer addSubview:self.htmlLabel];
-    [htmlContainer addSubview:self.htmlProgressView];
-
-    [assetContainer addSubview:assetName];
-    [assetContainer addSubview:self.assetLabel];
-    [assetContainer addSubview:self.assetProgressView];
-
-    [assetContainer lhs_addConstraints:@"V:|-4-[assetName][asset]-3-[assetProgress(10)]|" views:views];
-    [assetContainer lhs_addConstraints:@"H:|-10-[asset]-10-|" views:views];
-    [assetContainer lhs_addConstraints:@"H:|-10-[assetName]-10-|" views:views];
-
-    [htmlContainer lhs_addConstraints:@"V:|-4-[htmlName][html]-3-[htmlProgress(10)]|" views:views];
-    [htmlContainer lhs_addConstraints:@"H:|-10-[html]-10-|" views:views];
-    [htmlContainer lhs_addConstraints:@"H:|-10-[htmlName]-10-|" views:views];
-
-    [self.assetProgressView lhs_fillWidthOfSuperview];
-    [self.htmlProgressView lhs_fillWidthOfSuperview];
-    
-    [self.view addSubview:assetContainer];
-    [self.view addSubview:htmlContainer];
-    
-    [self.view lhs_addConstraints:@"V:|-20-[htmlContainer]-20-[assetContainer]" views:views];
-    [assetContainer lhs_fillWidthOfSuperview];
-    [htmlContainer lhs_fillWidthOfSuperview];
+    [self.tableView registerClass:[LHSTableViewCellSubtitle class] forCellReuseIdentifier:CellIdentifier];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -127,35 +88,130 @@ static NSString *CellIdentifier = @"CellIdentifier";
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         PPURLCache *cache = [PPAppDelegate sharedDelegate].urlCache;
         [cache initiateBackgroundDownloadsWithCompletion:^(NSInteger count) {
-        } progress:^(NSString *urlString, NSInteger htmlCurrent, NSInteger htmlTotal, NSInteger assetCurrent, NSInteger assetTotal) {
+        } progress:^(NSString *urlString, NSString *assetURLString, NSInteger htmlCurrent, NSInteger htmlTotal, NSInteger assetCurrent, NSInteger assetTotal) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                static NSNumberFormatter *formatter;
-                static dispatch_once_t onceToken;
-                dispatch_once(&onceToken, ^{
-                    formatter = [[NSNumberFormatter alloc] init];
-                    formatter.numberStyle = NSNumberFormatterPercentStyle;
-                    formatter.minimumFractionDigits = 1;
-                });
+                if (assetTotal != self.numberOfStaticAssets) {
+                    self.numberOfStaticAssets = assetTotal;
+                    @try {
+                        [self.tableView beginUpdates];
+                        if (assetTotal == 0) {
+                            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
+                        }
+                        else {
+                            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
+                        }
+                        [self.tableView endUpdates];
+                    }
+                    @catch (NSException *exception) {
+                        [self.tableView reloadData];
+                    }
+                }
 
-                float htmlProgress = (float)htmlCurrent / (float)htmlTotal;
-                float assetProgress;
-                if (assetTotal > 0) {
-                    assetProgress = (float)assetCurrent / (float)assetTotal;
-                    [self.assetProgressView setProgress:assetProgress animated:YES];
-                    self.assetLabel.text = [NSString stringWithFormat:@"%lu / %lu", (long)assetCurrent, (long)assetTotal];
+                if (htmlCurrent < htmlTotal) {
+                    static NSNumberFormatter *formatter;
+                    static dispatch_once_t onceToken;
+                    dispatch_once(&onceToken, ^{
+                        formatter = [[NSNumberFormatter alloc] init];
+                        formatter.numberStyle = NSNumberFormatterPercentStyle;
+                        formatter.minimumFractionDigits = 1;
+                    });
+
+                    float htmlProgress = (float)htmlCurrent / (float)htmlTotal;
+                    float assetProgress;
+                    if (assetTotal > 0) {
+                        assetProgress = (float)assetCurrent / (float)assetTotal;
+                        [self.assetProgressView setProgress:assetProgress animated:YES];
+                        self.assetLabel.text = [NSString stringWithFormat:@"%lu / %lu", (long)assetCurrent, (long)assetTotal];
+                    }
+                    else {
+                        assetProgress = 0;
+                        [self.assetProgressView setProgress:assetProgress animated:NO];
+                    }
+
+                    self.htmlDetail.text = [formatter stringFromNumber:@(htmlProgress)];
+                    self.htmlLabel.text = [urlString originalURLString];
+                    [self.htmlProgressView setProgress:htmlProgress animated:YES];
                 }
                 else {
-                    assetProgress = 0;
-                    [self.assetProgressView setProgress:assetProgress animated:NO];
-                    self.assetLabel.text = @"-";
+                    self.navigationItem.rightBarButtonItem.title = @"Done";
                 }
-
-//                self.htmlLabel.text = [formatter stringFromNumber:@(htmlProgress)];
-                self.htmlLabel.text = [urlString originalURLString];
-                [self.htmlProgressView setProgress:htmlProgress animated:YES];
             });
         }];
     });
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if (section == 0) {
+        return @"HTML";
+    }
+    else {
+        return @"Static Assets";
+    }
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    [cell.contentView lhs_removeSubviews];
+
+    NSDictionary *views;
+    UIProgressView *progress;
+    UILabel *label;
+    UILabel *detail;
+    if (indexPath.section == 0) {
+        progress = self.htmlProgressView;
+        label = self.htmlLabel;
+        detail = self.htmlDetail;
+
+        views = @{@"progress": progress,
+                  @"label": label,
+                  @"detail": detail };
+
+        [cell.contentView addSubview:progress];
+        [cell.contentView addSubview:label];
+        [cell.contentView addSubview:detail];
+
+        [progress lhs_fillWidthOfSuperview];
+        [cell.contentView lhs_addConstraints:@"V:|-4-[label][detail]-3-[progress(8)]|" views:views];
+        [cell.contentView lhs_addConstraints:@"H:|-10-[label]-10-|" views:views];
+        [cell.contentView lhs_addConstraints:@"H:|-10-[detail]-10-|" views:views];
+    }
+    else {
+        progress = self.assetProgressView;
+        label = self.assetLabel;
+        detail = self.assetDetail;
+
+        views = @{@"progress": progress,
+                  @"label": label,
+                  @"detail": detail };
+
+        [cell.contentView addSubview:progress];
+        [cell.contentView addSubview:label];
+
+        [progress lhs_fillWidthOfSuperview];
+        [cell.contentView lhs_addConstraints:@"V:|-4-[label]-3-[progress(8)]|" views:views];
+        [cell.contentView lhs_addConstraints:@"H:|-10-[label]-10-|" views:views];
+    }
+    return cell;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 0) {
+        return 60;
+    }
+    return 44;
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    if (self.numberOfStaticAssets > 0) {
+        return 2;
+    }
+    else {
+        return 1;
+    }
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 1;
 }
 
 - (void)dismissViewController {

@@ -19,7 +19,7 @@
 @class PPSplitViewController;
 @class PPFeedListViewController;
 
-@interface PPAppDelegate : UIResponder <UIApplicationDelegate,  UISplitViewControllerDelegate, MFMailComposeViewControllerDelegate, NSURLSessionDelegate, NSURLSessionDownloadDelegate> {
+@interface PPAppDelegate : UIResponder <UIApplicationDelegate,  UISplitViewControllerDelegate, MFMailComposeViewControllerDelegate> {
     BOOL didLaunchWithURL;
     BOOL timerPaused;
     NSInteger secondsLeft;
@@ -59,8 +59,5 @@
 - (NSString *)defaultFeedDescription;
 
 + (PPAppDelegate *)sharedDelegate;
-
-+ (NSMutableSet *)staticAssetURLsForHTML:(NSString *)html;
-+ (NSMutableSet *)staticAssetURLsForCachedURLResponse:(NSCachedURLResponse *)cachedURLResponse;
 
 @end
