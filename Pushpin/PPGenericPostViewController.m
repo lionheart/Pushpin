@@ -1368,8 +1368,6 @@ static NSInteger PPBookmarkEditMaximum = 25;
         for (NSIndexPath *indexPath in indexPathsForSelectedRows) {
             [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
         }
-
-        self.navigationItem.leftBarButtonItem.title = @"Mark All";
         
         [self updateMultipleEditUI];
     }
@@ -1383,8 +1381,6 @@ static NSInteger PPBookmarkEditMaximum = 25;
                                                                  NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
                                                                  [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
                                                              }
-                                                             
-                                                             self.navigationItem.leftBarButtonItem.title = @"Mark None";
                                                              
                                                              [self updateMultipleEditUI];
                                                          }];
@@ -1697,7 +1693,16 @@ static NSInteger PPBookmarkEditMaximum = 25;
 }
 
 - (void)updateMultipleEditUI {
-    [self setMultipleEditButtonsEnabled:([self.tableView indexPathsForSelectedRows].count > 0)];
+    NSInteger numberOfSelectedRows = [self.tableView indexPathsForSelectedRows].count > 0;
+
+    if (numberOfSelectedRows > 0) {
+        self.navigationItem.leftBarButtonItem.title = @"Mark None";
+    }
+    else {
+        self.navigationItem.leftBarButtonItem.title = @"Mark All";
+    }
+
+    [self setMultipleEditButtonsEnabled:numberOfSelectedRows];
     [self updateTitleViewText];
 }
 
