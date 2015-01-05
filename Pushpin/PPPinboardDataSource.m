@@ -19,6 +19,7 @@
 
 #import "NSAttributedString+Attributes.h"
 #import "NSString+LHSAdditions.h"
+#import "NSString+Additions.h"
 #import "PPPinboardMetadataCache.h"
 #import "PPUtilities.h"
 
@@ -1314,14 +1315,7 @@ static BOOL kPinboardSyncInProgress = NO;
 
                 while ([results next]) {
                     NSString *url = [results stringForColumnIndex:0];
-                    if ([url hasPrefix:@"http://pushpin-readability.herokuapp.com/v1/parser?url="] && [url hasSuffix:@"&format=json&onerr="]) {
-                        NSRange range = NSMakeRange(0, 55);
-                        NSRange range2 = NSMakeRange(url.length - 19, 19);
-
-                        url = [url stringByReplacingCharactersInRange:range2 withString:@""];
-                        url = [url stringByReplacingCharactersInRange:range withString:@""];
-                        url = [url stringByRemovingPercentEncoding];
-                    }
+                    url = [url originalURLString];
                     [urls addObject:[results stringForColumnIndex:0]];
                 }
             }];

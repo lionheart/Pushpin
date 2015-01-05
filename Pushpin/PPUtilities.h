@@ -37,6 +37,9 @@
 + (void)shareToReadLater:(PPReadLaterType)readLater URL:(NSString *)url title:(NSString *)title delay:(CGFloat)seconds completion:(void (^)())completion;
 + (void)retrievePageTitle:(NSURL *)url callback:(void (^)(NSString *title, NSString *description))callback;
 
++ (NSMutableSet *)staticAssetURLsForHTML:(NSString *)html;
++ (NSMutableSet *)staticAssetURLsForCachedURLResponse:(NSCachedURLResponse *)cachedURLResponse;
+
 + (void)migrateDatabase;
 + (void)deleteDatabaseFile;
 + (void)resetDatabase;

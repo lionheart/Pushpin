@@ -20,8 +20,13 @@ typedef NS_ENUM(NSInteger, PPOfflineSettingsDestructiveRowType) {
     PPOfflineSettingsDestructiveRowClearCache
 };
 
+typedef NS_ENUM(NSInteger, PPOfflineSettingsManualDownloadRowType) {
+    PPOfflineSettingsManualDownloadRow,
+};
+
 typedef NS_ENUM(NSInteger, PPOfflineSettingsSectionType) {
     PPOfflineSettingsSectionTop,
+    PPOfflineSettingsSectionManualDownload,
     PPOfflineSettingsSectionClearCache
 };
 

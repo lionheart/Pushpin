@@ -8,11 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
-@interface PPURLCache : NSURLCache
+@interface PPURLCache : NSURLCache <NSURLSessionDelegate, NSURLSessionDownloadDelegate>
 
 @property (nonatomic) NSUInteger memoryCapacity;
 @property (nonatomic) NSUInteger diskCapacity;
 @property (nonatomic) BOOL removeStaleItemsWhenCacheIsFull;
+
+@property (nonatomic, strong) NSMutableDictionary *backgroundURLSessionCompletionHandlers;
 
 - (instancetype)initWithMemoryCapacity:(NSUInteger)memoryCapacity
                           diskCapacity:(NSUInteger)diskCapacity
@@ -29,6 +31,9 @@
 - (void)getCachedResponseForDataTask:(NSURLSessionDataTask *)dataTask completionHandler:(void (^) (NSCachedURLResponse *cachedResponse))completionHandler;
 - (void)removeCachedResponseForDataTask:(NSURLSessionDataTask *)dataTask;
 
+- (void)initiateBackgroundDownloadsWithCompletion:(void (^)(NSInteger count))completion progress:(void (^)(NSString *urlString, NSString *assetURLString, NSInteger htmlCurrent, NSInteger htmlTotal, NSInteger assetCurrent, NSInteger assetTotal))progress;
+
+- (void)stopAllDownloads;
 + (FMDatabaseQueue *)databaseQueue;
 + (void)migrateDatabase;
 

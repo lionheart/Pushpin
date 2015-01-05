@@ -13,6 +13,7 @@
 #import <PocketAPI/PocketAPI.h>
 #import <oauthconsumer/OAuthConsumer.h>
 #import <HTMLParser/HTMLParser.h>
+#import <MWFeedParser/NSString+HTML.h>
 
 @implementation PPUtilities
 
@@ -320,6 +321,52 @@
         case PPReadLaterNone:
             completion();
             break;
+    }
+}
+
++ (NSMutableSet *)staticAssetURLsForHTML:(NSString *)html {
+    NSMutableSet *assets = [NSMutableSet set];
+
+    if (html) {
+        // Retrieve all assets and queue them for download. Use a set to prevent duplicates.
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<img [^><]*src=['\"]([^'\"]+)['\"]" options:NSRegularExpressionCaseInsensitive error:nil];
+        NSArray *matches = [regex matchesInString:html options:0 range:NSMakeRange(0, html.length)];
+        NSCharacterSet *charactersToTrim = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+        for (NSTextCheckingResult *result in matches) {
+            if ([result numberOfRanges] > 1) {
+                NSString *imageURLString = [html substringWithRange:[result rangeAtIndex:1]];
+                imageURLString = [imageURLString stringByDecodingHTMLEntities];
+                imageURLString = [imageURLString stringByTrimmingCharactersInSet:charactersToTrim];
+                [assets addObject:imageURLString];
+            }
+        }
+
+        regex = [NSRegularExpression regularExpressionWithPattern:@"<link [^><]*href=['\"]([^'\"]+\\.css)['\"]" options:NSRegularExpressionCaseInsensitive error:nil];
+        matches = [regex matchesInString:html options:0 range:NSMakeRange(0, html.length)];
+        for (NSTextCheckingResult *result in matches) {
+            if ([result numberOfRanges] > 1) {
+                NSString *cssURLString = [html substringWithRange:[result rangeAtIndex:1]];
+                cssURLString = [cssURLString stringByDecodingHTMLEntities];
+                cssURLString = [cssURLString stringByTrimmingCharactersInSet:charactersToTrim];
+                [assets addObject:cssURLString];
+            }
+        }
+    }
+
+    return assets;
+}
+
++ (NSMutableSet *)staticAssetURLsForCachedURLResponse:(NSCachedURLResponse *)cachedURLResponse {
+    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)cachedURLResponse.response;
+    BOOL isHTMLResponse = [[httpResponse allHeaderFields][@"Content-Type"] rangeOfString:@"text/html"].location != NSNotFound;
+
+    // If a static asset 404s, we do this to prevent recursion.
+    BOOL isSuccessfulResponse = httpResponse.statusCode != 404;
+    if (isHTMLResponse && isSuccessfulResponse) {
+        return [self staticAssetURLsForHTML:[[NSString alloc] initWithData:cachedURLResponse.data encoding:NSUTF8StringEncoding]];
+    }
+    else {
+        return [NSMutableSet set];
     }
 }
 

@@ -73,7 +73,7 @@ static NSString *CellIdentifier = @"TagCell";
 
     PPTitleButton *titleView = [PPTitleButton button];
     [titleView setTitle:NSLocalizedString(@"Tags", nil) imageName:nil];
-    
+
     // TODO Trying to get this to @"" but back button still displays "Back"
     self.navigationItem.titleView = titleView;
     self.definesPresentationContext = YES;
@@ -106,7 +106,7 @@ static NSString *CellIdentifier = @"TagCell";
     self.searchController = [[UISearchController alloc] initWithSearchResultsController:self.searchResultsController];
     self.searchController.delegate = self;
     self.searchController.searchResultsUpdater = self;
-    
+
     [self.searchController.searchBar sizeToFit];
     self.searchController.searchBar.delegate = self;
     self.searchController.searchBar.autocapitalizationType = UITextAutocapitalizationTypeNone;

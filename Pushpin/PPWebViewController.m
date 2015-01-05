@@ -999,6 +999,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                         if (article) {
                             NSString *content = [[PPSettings sharedSettings].readerSettings readerHTMLForArticle:article];
                             [self.readerWebView loadHTMLString:content baseURL:self.url];
+                            self.readerWebView.hidden = NO;
                         }
                         else {
                             self.mobilizeButton.selected = NO;
