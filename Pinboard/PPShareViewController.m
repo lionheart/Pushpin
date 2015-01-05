@@ -102,9 +102,11 @@
                 }];
                 
                 if (count == 0) {
-                    UINavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:post
+                    UINavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:@{@"url": urlString}
                                                                                                                      update:@(YES)
                                                                                                                    callback:nil];
+                    PPAddBookmarkViewController *addBookmarkViewController = (PPAddBookmarkViewController *)navigation.topViewController;
+                    [addBookmarkViewController prefillTitleAndForceUpdate:YES];
                     PresentController(navigation);
                 }
                 else {
