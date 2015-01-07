@@ -701,7 +701,20 @@ static NSInteger PPBookmarkEditMaximum = 25;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (!error) {
                         UITableView *tableView = self.searchResultsController.tableView;
-                        [tableView reloadData];
+
+                        // attempt to delete row 99 from section 0 which only contains 2 rows before the update
+
+                        @try {
+                            [tableView beginUpdates];
+                            [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                            [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                            [tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                            [tableView endUpdates];
+                        }
+                        @catch (NSException *exception) {
+                            CLS_LOG(@"Table View Reload 1");
+                            [tableView reloadData];
+                        }
                         
                         if (callback) {
                             callback();
@@ -743,8 +756,18 @@ static NSInteger PPBookmarkEditMaximum = 25;
                         // attempt to delete row 99 from section 0 which only contains 2 rows before the update
                         // attempt to delete row 99 from section 0 which only contains 0 rows before the update
 
-                        CLS_LOG(@"Table View Reload 2");
-                        [self.tableView reloadData];
+                        @try {
+                            // attempt to delete row 99 from section 0 which only contains 2 rows before the update
+                            [self.tableView beginUpdates];
+                            [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                            [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                            [self.tableView endUpdates];
+                        }
+                        @catch (NSException *exception) {
+                            CLS_LOG(@"Table View Reload 2");
+                            [self.tableView reloadData];
+                        }
                     }
                     
                     if (callback) {
