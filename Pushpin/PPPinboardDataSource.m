@@ -382,6 +382,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                    withArgumentsInArray:@[bookmark[@"hash"]]];
                                   }];
                                   
+                                  [[PPPinboardDataSource resultCache] removeAllObjects];
                                   callback(nil);
                                   return;
                               }
@@ -398,6 +399,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                                      withArgumentsInArray:@[bookmark[@"hash"]]];
                                                     }];
 
+                                                    [[PPPinboardDataSource resultCache] removeAllObjects];
                                                     callback(nil);
                                                 });
                                             }
@@ -454,6 +456,7 @@ static BOOL kPinboardSyncInProgress = NO;
         // NOTE: Previously, new posts were loaded here.  We should let the GenericPostViewController handle any necessary refreshes to avoid consistency issues
         dispatch_group_notify(inner_group, queue, ^{
             if (callback) {
+                [[PPPinboardDataSource resultCache] removeAllObjects];
                 callback();
             }
         });
@@ -483,6 +486,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 NSInteger index = [self.posts indexOfObject:post];
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
 
+                [[PPPinboardDataSource resultCache] removeAllObjects];
                 callback(indexPath);
             });
         };
