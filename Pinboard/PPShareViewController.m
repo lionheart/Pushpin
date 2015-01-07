@@ -102,16 +102,6 @@
                 }];
                 
                 if (count == 0) {
-                    UINavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:post
-                                                                                                                     update:@(YES)
-                                                                                                                   callback:nil];
-                    PPAddBookmarkViewController *addBookmarkViewController = (PPAddBookmarkViewController *)navigation.topViewController;
-                    if (!title && !description) {
-                        [addBookmarkViewController prefillTitleAndForceUpdate:YES];
-                    }
-                    PresentController(navigation);
-                }
-                else {
                     [[ASPinboard sharedInstance] bookmarkWithURL:urlString
                                                          success:^(NSDictionary *post) {
                                                              NSDictionary *bookmark = @{@"title": post[@"description"],
@@ -130,10 +120,10 @@
                                                              BOOL privateByDefault = [[sharedDefaults objectForKey:@"PrivateByDefault"] boolValue];
 
                                                              PPNavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:@{@"title": title,
-                                                                                                                                               @"url": urlString,
+                                                                                                                                                                       @"url": urlString,
                                                                                                                                                                        @"description": description,
-                                                                                                                                               @"private": @(privateByDefault),
-                                                                                                                                               @"unread": @(!readByDefault) }
+                                                                                                                                                                       @"private": @(privateByDefault),
+                                                                                                                                                                       @"unread": @(!readByDefault) }
                                                                                                                                                               update:@(NO)
                                                                                                                                                             callback:nil];
 
@@ -144,6 +134,12 @@
                                                              }
                                                              PresentController(navigation);
                                                          }];
+                }
+                else {
+                    UINavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:post
+                                                                                                                     update:@(YES)
+                                                                                                                   callback:nil];
+                    PresentController(navigation);
                 }
             }
         });
