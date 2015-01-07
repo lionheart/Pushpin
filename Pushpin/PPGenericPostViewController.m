@@ -400,11 +400,6 @@ static NSInteger PPBookmarkEditMaximum = 25;
     PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
 
     [self updateFromLocalDatabaseWithCallback:^{
-        if (self.searchController) {
-            self.tableView.tableHeaderView = self.searchController.searchBar;
-            [self.tableView setContentOffset:CGPointMake(0, CGRectGetHeight(self.searchController.searchBar.frame)) animated:NO];
-        }
-
         if (delegate.connectionAvailable) {
             [self.postDataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
                 if (error) {
@@ -740,12 +735,13 @@ static NSInteger PPBookmarkEditMaximum = 25;
                     if (firstLoad) {
                         [activityIndicator removeFromSuperview];
                         [self.tableView reloadData];
+
+                        if (self.searchController) {
+                            self.tableView.tableHeaderView = self.searchController.searchBar;
+                            [self.tableView setContentOffset:CGPointMake(0, CGRectGetHeight(self.searchController.searchBar.frame)) animated:NO];
+                        }
                     }
                     else {
-#warning XXX - Crash: http://crashes.to/s/d4cb56826ff
-                        // attempt to delete row 99 from section 0 which only contains 2 rows before the update
-                        // attempt to delete row 99 from section 0 which only contains 0 rows before the update
-
                         CLS_LOG(@"Table View Reload 2");
                         [self.tableView reloadData];
                     }
