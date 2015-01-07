@@ -263,8 +263,6 @@ static NSInteger PPBookmarkEditMaximum = 25;
         if ([self.searchPostDataSource respondsToSelector:@selector(searchPlaceholder)]) {
             self.searchController.searchBar.placeholder = [self.searchPostDataSource searchPlaceholder];
         }
-
-        self.tableView.tableHeaderView = self.searchController.searchBar;
     }
     
     // Setup the multi-edit toolbar
@@ -402,6 +400,11 @@ static NSInteger PPBookmarkEditMaximum = 25;
     PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
 
     [self updateFromLocalDatabaseWithCallback:^{
+        if (self.searchController) {
+            self.tableView.tableHeaderView = self.searchController.searchBar;
+            [self.tableView setContentOffset:CGPointMake(0, CGRectGetHeight(self.searchController.searchBar.frame)) animated:NO];
+        }
+
         if (delegate.connectionAvailable) {
             [self.postDataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
                 if (error) {
