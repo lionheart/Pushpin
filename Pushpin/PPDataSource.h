@@ -58,7 +58,7 @@ static dispatch_queue_t PPBookmarkReloadQueue() {
                            progress:(void (^)(NSInteger, NSInteger))progress;
 
 // Refreshes local cache.
-- (void)reloadBookmarksWithCompletion:(void (^)(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error))completion
+- (void)reloadBookmarksWithCompletion:(void (^)(NSError *error))completion
                                cancel:(BOOL (^)())cancel
                                 width:(CGFloat)width;
 
