@@ -85,7 +85,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     self.fontSizeAdjustmentActionSheet = [UIAlertController lhs_actionSheetWithTitle:NSLocalizedString(@"Font Adjustment", nil)];
     
     for (NSString *title in PPFontAdjustmentTypes()) {
-        [self.fontSizeAdjustmentActionSheet lhs_addActionWithTitle:title
+        [self.fontSizeAdjustmentActionSheet lhs_addActionWithTitle:NSLocalizedString(title, nil)
                                                              style:UIAlertActionStyleDefault
                                                            handler:^(UIAlertAction *action) {
                                                                NSInteger index = [PPFontAdjustmentTypes() indexOfObject:action.title];
@@ -412,7 +412,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.accessoryView = nil;
 
                     cell.textLabel.text = NSLocalizedString(@"Font size", nil);
-                    cell.detailTextLabel.text = PPFontAdjustmentTypes()[[[PPSettings sharedSettings] fontAdjustment]];
+                    cell.detailTextLabel.text = NSLocalizedString(PPFontAdjustmentTypes()[[[PPSettings sharedSettings] fontAdjustment]], nil);
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
                 }
@@ -644,13 +644,13 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     switch ((PPDisplaySettingsSectionType)section) {
         case PPSectionBrowseSettings:
-            return @"Browsing";
+            return NSLocalizedString(@"Browsing", nil);
             
         case PPSectionDisplaySettings:
-            return @"Editing";
+            return NSLocalizedString(@"Editing", nil);
             
         case PPSectionOtherDisplaySettings:
-            return @"Clipboard URL Detection";
+            return NSLocalizedString(@"Clipboard URL detection", nil);
             
         case PPSectionTextExpanderSettings:
             return nil;

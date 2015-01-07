@@ -256,7 +256,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
 #endif
         
 #ifdef PINBOARD
-        self.searchController.searchBar.scopeButtonTitles = @[@"All", @"Title", @"Desc.", @"Tags", @"Full Text"];
+        self.searchController.searchBar.scopeButtonTitles = @[NSLocalizedString(@"All", nil), NSLocalizedString(@"Title", nil), NSLocalizedString(@"Desc.", nil), NSLocalizedString(@"Tags", nil), NSLocalizedString(@"Full Text", nil)];
 #endif
         
         self.searchPostDataSource = [self.postDataSource searchDataSource];
@@ -1696,10 +1696,10 @@ static NSInteger PPBookmarkEditMaximum = 25;
     NSInteger numberOfSelectedRows = [self.tableView indexPathsForSelectedRows].count > 0;
 
     if (numberOfSelectedRows > 0) {
-        self.navigationItem.leftBarButtonItem.title = @"Mark None";
+        self.navigationItem.leftBarButtonItem.title = NSLocalizedString(@"Mark None", nil);
     }
     else {
-        self.navigationItem.leftBarButtonItem.title = @"Mark All";
+        self.navigationItem.leftBarButtonItem.title = NSLocalizedString(@"Mark All", nil);
     }
 
     [self setMultipleEditButtonsEnabled:numberOfSelectedRows];

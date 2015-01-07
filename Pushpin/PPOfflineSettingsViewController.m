@@ -117,7 +117,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
                     
                 case PPOfflineSettingsRowFetchCriteria: {
                     cell.textLabel.text = NSLocalizedString(@"Fetch Criteria", nil);
-                    cell.detailTextLabel.text = PPOfflineFetchCriterias()[[PPSettings sharedSettings].offlineFetchCriteria];
+                    cell.detailTextLabel.text = NSLocalizedString(PPOfflineFetchCriterias()[[PPSettings sharedSettings].offlineFetchCriteria], nil);
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     break;

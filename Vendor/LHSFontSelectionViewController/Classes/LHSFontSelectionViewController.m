@@ -415,7 +415,7 @@ static NSString *CellIdentifier = @"Cell";
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (self.preferredFontNames.count > 0 && section == 0) {
-        return @"Premium Fonts";
+        return NSLocalizedString(@"Premium Fonts", nil);
     }
     return self.sectionIndexTitles[section];
 }
