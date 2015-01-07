@@ -332,4 +332,17 @@ static NSInteger kEditButtonOuterMargin = 20;
     return [NSString stringWithFormat:@"%@, %@, %@", self.titleLabel.text, self.linkLabel.text, self.descriptionLabel.text];
 }
 
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+    [super setSelected:selected animated:animated];
+}
+
+- (void)setSelectedBackgroundView:(UIView *)selectedBackgroundView {
+    [super setSelectedBackgroundView:selectedBackgroundView];
+}
+
+- (void)setEditing:(BOOL)editing animated:(BOOL)animated {
+    [super setEditing:NO animated:animated];
+    [self setNeedsLayout];
+}
+
 @end
