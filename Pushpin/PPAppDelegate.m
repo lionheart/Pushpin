@@ -38,7 +38,6 @@
 #import <ASPinboard/ASPinboard.h>
 #import <Reachability/Reachability.h>
 #import <PocketAPI/PocketAPI.h>
-#import <TestFlightSDK/TestFlight.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <OpenInChrome/OpenInChromeController.h>
 #import <LHSCategoryCollection/UIViewController+LHSAdditions.h>

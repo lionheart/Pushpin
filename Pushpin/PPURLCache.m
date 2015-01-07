@@ -167,22 +167,22 @@
 
             switch (settings.offlineFetchCriteria) {
                 case PPOfflineFetchCriteriaUnread:
-                    query = @"SELECT url FROM bookmark WHERE unread=1";
+                    query = @"SELECT url FROM bookmark WHERE unread=1 ORDER BY created_at DESC";
                     break;
 
                 case PPOfflineFetchCriteriaRecent:
-                    query = [NSString stringWithFormat:@"SELECT url FROM bookmark WHERE created_at>%lu", (long)timestamp];
+                    query = [NSString stringWithFormat:@"SELECT url FROM bookmark WHERE created_at>%lu ORDER BY created_at DESC", (long)timestamp];
                     break;
 
                 case PPOfflineFetchCriteriaUnreadAndRecent:
-                    query = [NSString stringWithFormat:@"SELECT url FROM bookmark WHERE created_at>%lu OR unread=1", (long)timestamp];
+                    query = [NSString stringWithFormat:@"SELECT url FROM bookmark WHERE created_at>%lu OR unread=1 ORDER BY created_at DESC", (long)timestamp];
                     break;
 
                 case PPOfflineFetchCriteriaEverything:
 #ifdef DEBUG
-                    query = @"SELECT url FROM bookmark";
+                    query = @"SELECT url FROM bookmark ORDER BY created_at DESC";
 #else
-                    query = @"SELECT url FROM bookmark";
+                    query = @"SELECT url FROM bookmark ORDER BY created_at DESC";
 #endif
                     break;
             }
@@ -628,6 +628,8 @@
         if (isReaderURL) {
             NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             NSData *encodedData = [NSData dataWithBase64EncodedString:string];
+            
+#warning EXC_BAD_ACCESS on encodedData (somehow it becomes null)
             NSData *decryptedData = [RNDecryptor decryptData:encodedData
                                                 withPassword:@"Isabelle and Dante"
                                                        error:nil];

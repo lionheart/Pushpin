@@ -400,11 +400,6 @@ static NSInteger PPBookmarkEditMaximum = 25;
     PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
 
     [self updateFromLocalDatabaseWithCallback:^{
-        if (self.searchController) {
-            self.tableView.tableHeaderView = self.searchController.searchBar;
-            [self.tableView setContentOffset:CGPointMake(0, CGRectGetHeight(self.searchController.searchBar.frame)) animated:NO];
-        }
-
         if (delegate.connectionAvailable) {
             [self.postDataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
                 if (error) {
@@ -505,7 +500,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
 }
 
 - (BOOL)tableView:(UITableView *)tableView shouldIndentWhileEditingRowAtIndexPath:(NSIndexPath *)indexPath {
-    return YES;
+    return NO;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -697,24 +692,14 @@ static NSInteger PPBookmarkEditMaximum = 25;
 
     dispatch_async(dispatch_get_main_queue(), ^{
         if (self.searchController.isActive) {
-            [self.searchPostDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
+            [self.searchPostDataSource reloadBookmarksWithCompletion:^(NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (!error) {
                         UITableView *tableView = self.searchResultsController.tableView;
 
                         // attempt to delete row 99 from section 0 which only contains 2 rows before the update
 
-                        @try {
-                            [tableView beginUpdates];
-                            [tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                            [tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                            [tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                            [tableView endUpdates];
-                        }
-                        @catch (NSException *exception) {
-                            CLS_LOG(@"Table View Reload 1");
-                            [tableView reloadData];
-                        }
+                        [tableView reloadData];
                         
                         if (callback) {
                             callback();
@@ -745,29 +730,20 @@ static NSInteger PPBookmarkEditMaximum = 25;
                 [self.view lhs_centerVerticallyForView:activityIndicator];
             }
             
-            [self.postDataSource reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
+            [self.postDataSource reloadBookmarksWithCompletion:^(NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (firstLoad) {
                         [activityIndicator removeFromSuperview];
                         [self.tableView reloadData];
+
+                        if (self.searchController) {
+                            self.tableView.tableHeaderView = self.searchController.searchBar;
+                            [self.tableView setContentOffset:CGPointMake(0, CGRectGetHeight(self.searchController.searchBar.frame)) animated:NO];
+                        }
                     }
                     else {
-#warning XXX - Crash: http://crashes.to/s/d4cb56826ff
-                        // attempt to delete row 99 from section 0 which only contains 2 rows before the update
-                        // attempt to delete row 99 from section 0 which only contains 0 rows before the update
-
-                        @try {
-                            // attempt to delete row 99 from section 0 which only contains 2 rows before the update
-                            [self.tableView beginUpdates];
-                            [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                            [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                            [self.tableView endUpdates];
-                        }
-                        @catch (NSException *exception) {
-                            CLS_LOG(@"Table View Reload 2");
-                            [self.tableView reloadData];
-                        }
+                        CLS_LOG(@"Table View Reload 2");
+                        [self.tableView reloadData];
                     }
                     
                     if (callback) {

@@ -84,7 +84,7 @@
     return noteViewController;
 }
 
-- (void)reloadBookmarksWithCompletion:(void (^)(NSArray *, NSArray *, NSArray *, NSError *))completion
+- (void)reloadBookmarksWithCompletion:(void (^)(NSError *))completion
                                cancel:(BOOL (^)())cancel
                                 width:(CGFloat)width {
     NSMutableArray *indexPathsToAdd = [NSMutableArray array];
@@ -174,7 +174,7 @@
                     }
                     
                     self.posts = [newNotes copy];
-                    completion(indexPathsToAdd, indexPathsToReload, indexPathsToRemove, nil);
+                    completion(nil);
                 });
             });
         }];
