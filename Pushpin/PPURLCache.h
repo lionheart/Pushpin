@@ -36,5 +36,6 @@
 - (void)stopAllDownloads;
 + (FMDatabaseQueue *)databaseQueue;
 + (void)migrateDatabase;
++ (NSString *)md5ChecksumForData:(NSData *)data;
 
 @end
