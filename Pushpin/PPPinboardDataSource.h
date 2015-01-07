@@ -66,5 +66,6 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
 - (PPPinboardDataSource *)dataSourceWithAdditionalTag:(NSString *)tag;
 - (NSArray *)quotedTags;
 + (NSDictionary *)postFromResultSet:(FMResultSet *)resultSet;
++ (NSCache *)resultCache;
 
 @end

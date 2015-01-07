@@ -11,6 +11,7 @@
 #import "PPAppDelegate.h"
 #import "PPTheme.h"
 #import "NSString+Additions.h"
+#import "PPPinboardDataSource.h"
 
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import <LHSTableViewCells/LHSTableViewCellSubtitle.h>
@@ -150,6 +151,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     self.downloadInProgress = NO;
 
                     [self.tableView reloadData];
+
+                    [[PPPinboardDataSource resultCache] removeAllObjects];
+                    [[PPAppDelegate sharedDelegate].urlCache stopAllDownloads];
                 }
             });
         }];
