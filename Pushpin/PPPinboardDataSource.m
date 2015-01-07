@@ -22,6 +22,7 @@
 #import "NSString+Additions.h"
 #import "PPPinboardMetadataCache.h"
 #import "PPUtilities.h"
+#import "PPURLCache.h"
 
 #import <MWFeedParser/NSString+HTML.h>
 #import <FMDB/FMDatabase.h>
@@ -30,6 +31,19 @@
 #import <LHSCategoryCollection/UIViewController+LHSAdditions.h>
 
 static BOOL kPinboardSyncInProgress = NO;
+
+@interface PPCachedResult : NSObject
+
+@property (nonatomic, strong) NSMutableArray *bookmarks;
+@property (nonatomic, strong) NSMutableDictionary *hashesToIndexPaths;
+@property (nonatomic, strong) NSMutableDictionary *hashmetasToHashes;
+@property (nonatomic, strong) NSMutableDictionary *tagsWithFrequencies;
+
+@end
+
+@implementation PPCachedResult
+
+@end
 
 @interface PPPinboardDataSource ()
 
@@ -49,6 +63,15 @@ static BOOL kPinboardSyncInProgress = NO;
 @end
 
 @implementation PPPinboardDataSource
+
++ (NSCache *)resultCache {
+    static NSCache *cache;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        cache = [[NSCache alloc] init];
+    });
+    return cache;
+}
 
 - (id)init {
     self = [super init];
@@ -1176,7 +1199,11 @@ static BOOL kPinboardSyncInProgress = NO;
                                           }];
                                           
                                           NSDate *endDate = [NSDate date];
-                                          
+
+                                          if (inserted.count > 0 || updated.count > 0 || deleted.count > 0) {
+                                              [[PPPinboardDataSource resultCache] removeAllObjects];
+                                          }
+
                                           DLog(@"%f", [endDate timeIntervalSinceDate:startDate]);
                                           DLog(@"added %lu", (unsigned long)[inserted count]);
                                           DLog(@"updated %lu", (unsigned long)[updated count]);
@@ -1319,59 +1346,80 @@ static BOOL kPinboardSyncInProgress = NO;
                     [urls addObject:[results stringForColumnIndex:0]];
                 }
             }];
+
+            row = 0;
+            for (NSDictionary *post in previousBookmarks) {
+                NSString *hash = post[@"hash"];
+
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
+                oldHashesToIndexPaths[hash] = indexPath;
+                row++;
+            }
+
+            NSString *key = [query stringByAppendingString:[parameters componentsJoinedByString:@""]];
+            NSString *checksum = [PPURLCache md5ChecksumForData:[key dataUsingEncoding:NSUTF8StringEncoding]];
             
-            [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
-                FMResultSet *results = [db executeQuery:query withArgumentsInArray:parameters];
+            PPCachedResult *result = [[PPPinboardDataSource resultCache] objectForKey:checksum];
+            if (result) {
+                newTagsWithFrequencies = result.tagsWithFrequencies;
+                newHashmetasToHashes = result.hashmetasToHashes;
+                newHashesToIndexPaths = result.hashesToIndexPaths;
+                updatedBookmarks = result.bookmarks;
+            }
+            else {
+                [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
+                    FMResultSet *results = [db executeQuery:query withArgumentsInArray:parameters];
 
-                if (cancel && cancel()) {
-                    completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
-                    shouldReturn = YES;
-                    return;
-                }
-
-                while ([results next]) {
-                    NSString *hash = [results stringForColumn:@"hash"];
-                    NSString *meta = [results stringForColumn:@"meta"];
-                    NSString *hashmeta = [@[hash, meta] componentsJoinedByString:@"_"];
-                    NSMutableDictionary *post = [[PPPinboardDataSource postFromResultSet:results] mutableCopy];
-                    if ([urls containsObject:post[@"url"]]) {
-                        post[@"offline"] = @(YES);
+                    if (cancel && cancel()) {
+                        completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                        shouldReturn = YES;
+                        return;
                     }
-                    [updatedBookmarks addObject:post];
                     
-                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
-                    newHashesToIndexPaths[hash] = indexPath;
-                    newHashmetasToHashes[hashmeta] = hash;
-                    row++;
-                }
-                
-                [results close];
+                    row = 0;
+                    while ([results next]) {
+                        NSString *hash = [results stringForColumn:@"hash"];
+                        NSString *meta = [results stringForColumn:@"meta"];
+                        NSString *hashmeta = [@[hash, meta] componentsJoinedByString:@"_"];
+                        NSMutableDictionary *post = [[PPPinboardDataSource postFromResultSet:results] mutableCopy];
+                        if ([urls containsObject:post[@"url"]]) {
+                            post[@"offline"] = @(YES);
+                        }
+                        [updatedBookmarks addObject:post];
 
-                row = 0;
-                for (NSDictionary *post in previousBookmarks) {
-                    NSString *hash = post[@"hash"];
+                        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
+                        newHashesToIndexPaths[hash] = indexPath;
+                        newHashmetasToHashes[hashmeta] = hash;
+                        row++;
+                    }
                     
-                    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
-                    oldHashesToIndexPaths[hash] = indexPath;
-                    row++;
-                }
-                
-                if (cancel && cancel()) {
-                    DLog(@"B: Cancelling search for query (%@)", self.searchQuery);
-                    completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
-                    shouldReturn = YES;
-                    return;
-                }
-                
-                FMResultSet *tagResult = [db executeQuery:@"SELECT name, count FROM tag ORDER BY count DESC;"];
-                while ([tagResult next]) {
-                    NSString *tag = [tagResult stringForColumnIndex:0];
-                    NSNumber *count = [tagResult objectForColumnIndex:1];
-                    newTagsWithFrequencies[tag] = count;
-                }
+                    [results close];
 
-                [tagResult close];
-            }];
+                    if (cancel && cancel()) {
+                        DLog(@"B: Cancelling search for query (%@)", self.searchQuery);
+                        completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                        shouldReturn = YES;
+                        return;
+                    }
+
+                    FMResultSet *tagResult = [db executeQuery:@"SELECT name, count FROM tag ORDER BY count DESC;"];
+                    while ([tagResult next]) {
+                        NSString *tag = [tagResult stringForColumnIndex:0];
+                        NSNumber *count = [tagResult objectForColumnIndex:1];
+                        newTagsWithFrequencies[tag] = count;
+                    }
+
+                    [tagResult close];
+                }];
+                
+                result = [[PPCachedResult alloc] init];
+                result.hashesToIndexPaths = newHashesToIndexPaths;
+                result.hashmetasToHashes = newHashmetasToHashes;
+                result.tagsWithFrequencies = newTagsWithFrequencies;
+                result.bookmarks = updatedBookmarks;
+
+                [[PPPinboardDataSource resultCache] setObject:result forKey:checksum];
+            }
             
             if (shouldReturn) {
                 return;

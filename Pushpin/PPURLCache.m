@@ -39,7 +39,6 @@
 + (NSString *)databasePath;
 + (NSString *)directoryPathForChecksum:(NSString *)checksum;
 + (NSString *)filePathForChecksum:(NSString *)checksum;
-+ (NSString *)md5ChecksumForData:(NSData *)data;
 
 + (NSOperationQueue *)operationQueue;
 
