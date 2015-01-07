@@ -14,7 +14,9 @@
 
 + (instancetype)sharedCache;
 - (void)reset;
+- (void)removeAllObjects;
 
+- (void)removeCachedMetadataForPost:(NSDictionary *)post width:(CGFloat)width;
 - (PostMetadata *)cachedMetadataForPost:(NSDictionary *)post compressed:(BOOL)compressed dimmed:(BOOL)dimmed width:(CGFloat)width;
 - (void)cacheMetadata:(PostMetadata *)metadata forPost:(NSDictionary *)post compressed:(BOOL)compressed dimmed:(BOOL)dimmed width:(CGFloat)width;
 

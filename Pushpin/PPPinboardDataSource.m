@@ -382,7 +382,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                    withArgumentsInArray:@[bookmark[@"hash"]]];
                                   }];
                                   
-                                  [[PPPinboardDataSource resultCache] removeAllObjects];
+                                  [[PPPinboardMetadataCache sharedCache] removeCachedMetadataForPost:bookmark width:self.mostRecentWidth];
                                   callback(nil);
                                   return;
                               }
@@ -399,7 +399,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                                      withArgumentsInArray:@[bookmark[@"hash"]]];
                                                     }];
 
-                                                    [[PPPinboardDataSource resultCache] removeAllObjects];
+                                                    [[PPPinboardMetadataCache sharedCache] removeCachedMetadataForPost:bookmark width:self.mostRecentWidth];
                                                     callback(nil);
                                                 });
                                             }
@@ -1206,6 +1206,7 @@ static BOOL kPinboardSyncInProgress = NO;
 
                                           if (inserted.count > 0 || updated.count > 0 || deleted.count > 0) {
                                               [[PPPinboardDataSource resultCache] removeAllObjects];
+                                              [[PPPinboardMetadataCache sharedCache] removeAllObjects];
                                           }
 
                                           DLog(@"%f", [endDate timeIntervalSinceDate:startDate]);

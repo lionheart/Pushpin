@@ -40,6 +40,17 @@
     [self.cache removeAllObjects];
 }
 
+- (void)removeAllObjects {
+    [self reset];
+}
+
+- (void)removeCachedMetadataForPost:(NSDictionary *)post width:(CGFloat)width {
+    [self.cache removeObjectForKey:[self cacheKeyForPost:post compressed:YES dimmed:YES width:width]];
+    [self.cache removeObjectForKey:[self cacheKeyForPost:post compressed:YES dimmed:NO width:width]];
+    [self.cache removeObjectForKey:[self cacheKeyForPost:post compressed:NO dimmed:YES width:width]];
+    [self.cache removeObjectForKey:[self cacheKeyForPost:post compressed:NO dimmed:NO width:width]];
+}
+
 - (PostMetadata *)cachedMetadataForPost:(NSDictionary *)post compressed:(BOOL)compressed dimmed:(BOOL)dimmed width:(CGFloat)width {
     return self.cache[[self cacheKeyForPost:post compressed:compressed dimmed:dimmed width:width]];
 }

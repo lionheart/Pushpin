@@ -11,6 +11,8 @@
 #import "PPOfflineDownloadViewController.h"
 #import "PPTheme.h"
 #import "PPNavigationController.h"
+#import "PPPinboardDataSource.h"
+#import "PPPinboardMetadataCache.h"
 
 #import <LHSTableViewCells/LHSTableViewCellValue1.h>
 #import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
@@ -306,6 +308,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
                                          handler:^(UIAlertAction *action) {
                                              PPURLCache *cache = [PPAppDelegate sharedDelegate].urlCache;
                                              [cache removeAllCachedResponses];
+                                             [[PPPinboardMetadataCache sharedCache] removeAllObjects];
                                              
                                              [tableView beginUpdates];
                                              [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPOfflineSettingsRowUsage inSection:PPOfflineSettingsSectionTop]]

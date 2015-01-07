@@ -11,7 +11,7 @@
 #import "PPAppDelegate.h"
 #import "PPTheme.h"
 #import "NSString+Additions.h"
-#import "PPPinboardDataSource.h"
+#import "PPPinboardMetadataCache.h"
 
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import <LHSTableViewCells/LHSTableViewCellSubtitle.h>
@@ -92,7 +92,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
         PPURLCache *cache = [PPAppDelegate sharedDelegate].urlCache;
         [cache initiateBackgroundDownloadsWithCompletion:^(NSInteger count) {
         } progress:^(NSString *urlString, NSString *assetURLString, NSInteger htmlCurrent, NSInteger htmlTotal, NSInteger assetCurrent, NSInteger assetTotal) {
-            DLog(@"%@", urlString);
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSInteger oldStaticAssetTotal = self.numberOfStaticAssets;
 
@@ -152,8 +151,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
                     [self.tableView reloadData];
 
-                    [[PPPinboardDataSource resultCache] removeAllObjects];
-                    [[PPAppDelegate sharedDelegate].urlCache stopAllDownloads];
+                    [[PPPinboardMetadataCache sharedCache] removeAllObjects];
                 }
             });
         }];

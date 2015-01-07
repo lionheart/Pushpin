@@ -32,11 +32,20 @@ static NSString *PPCachingEnabledKey = @"PPCachingEnabled";
         if ([request.URL.host rangeOfString:@"feeds.pinboard.in"].location != NSNotFound) {
             return NO;
         }
-        else if ([request allHTTPHeaderFields] == nil) {
-            return YES;
+
+        if (![PPAppDelegate sharedDelegate].connectionAvailable) {
+            if ([request allHTTPHeaderFields] == nil) {
+                return YES;
+            }
+            BOOL isWebViewRequest = [[request valueForHTTPHeaderField:@"User-Agent"] containsString:@"AppleWebKit"];
+
+            if (isWebViewRequest) {
+                NSCachedURLResponse *cachedResponse = [PPCachingURLProtocol cachedResponseByFollowingRedirects:request];
+                if (cachedResponse) {
+                    return YES;
+                }
+            }
         }
-        BOOL isWebViewRequest = [[request valueForHTTPHeaderField:@"User-Agent"] containsString:@"AppleWebKit"];
-        return isWebViewRequest;
     }
 
     return NO;
@@ -46,7 +55,7 @@ static NSString *PPCachingEnabledKey = @"PPCachingEnabled";
     return request;
 }
 
-- (NSCachedURLResponse *)cachedResponseByFollowingRedirects:(NSURLRequest *)request {
++ (NSCachedURLResponse *)cachedResponseByFollowingRedirects:(NSURLRequest *)request {
     NSCachedURLResponse *cachedResponse = [[PPAppDelegate sharedDelegate].urlCache cachedResponseForRequest:request];
     NSHTTPURLResponse *HTTPURLResponse = (NSHTTPURLResponse *)cachedResponse.response;
     
@@ -65,7 +74,7 @@ static NSString *PPCachingEnabledKey = @"PPCachingEnabled";
 }
 
 - (void)startLoading {
-    NSCachedURLResponse *cachedResponse = [self cachedResponseByFollowingRedirects:self.canonicalRequest];
+    NSCachedURLResponse *cachedResponse = [PPCachingURLProtocol cachedResponseByFollowingRedirects:self.canonicalRequest];
     if (cachedResponse) {
         [self.client URLProtocol:self didReceiveResponse:cachedResponse.response cacheStoragePolicy:NSURLCacheStorageNotAllowed];
         [self.client URLProtocol:self didLoadData:cachedResponse.data];
