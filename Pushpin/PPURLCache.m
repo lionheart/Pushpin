@@ -180,7 +180,11 @@
                     break;
 
                 case PPOfflineFetchCriteriaEverything:
+#ifdef DEBUG
                     query = @"SELECT url FROM bookmark";
+#else
+                    query = @"SELECT url FROM bookmark";
+#endif
                     break;
             }
             FMResultSet *results = [db executeQuery:query];
@@ -239,7 +243,13 @@
         }
 
         self.urlsToDownload = [[self.htmlURLs allObjects] mutableCopy];
-        [self queueNextHTMLDownload];
+
+        if (self.urlsToDownload.count > 0) {
+            [self queueNextHTMLDownload];
+        }
+        else {
+            progress(@"", @"", 1, 1, 1, 1);
+        }
     }
 
     completion(self.htmlURLs.count);
@@ -574,14 +584,17 @@
 }
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
-    if (error) {
-        NSURL *url = task.originalRequest.URL;
-        [self downloadCompletedForURL:url];
+    NSURL *url = task.originalRequest.URL;
+    [self downloadCompletedForURL:url];
 
-        if ([self.htmlURLs containsObject:url]) {
-            [self queueNextHTMLDownload];
-        }
+    if (self.completedAssetURLs.count == self.assetURLs.count) {
+        [self queueNextHTMLDownload];
     }
+}
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task willPerformHTTPRedirection:(NSHTTPURLResponse *)response newRequest:(NSURLRequest *)request completionHandler:(void (^)(NSURLRequest *))completionHandler {
+
+    completionHandler(request);
 }
 
 - (void)URLSession:(NSURLSession *)session didBecomeInvalidWithError:(NSError *)error {
@@ -589,11 +602,15 @@
 }
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didSendBodyData:(int64_t)bytesSent totalBytesSent:(int64_t)totalBytesSent totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
+
+}
+
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
+    DLog(@"wrote data: %@", downloadTask.originalRequest.URL);
 }
 
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location {
     NSURL *originalURL = downloadTask.originalRequest.URL;
-    [self downloadCompletedForURL:originalURL];
 
     if ([self.assetURLs containsObject:downloadTask.originalRequest.URL]) {
         self.currentAssetURLString = downloadTask.originalRequest.URL.absoluteString;
@@ -626,59 +643,74 @@
         }
 
         if (assets.count > 0) {
+            static dispatch_queue_t processAssetQueue;
+            static dispatch_once_t onceToken;
+            dispatch_once(&onceToken, ^{
+                processAssetQueue = dispatch_queue_create("com.lionheartsw.pushpin.asset_tasks", DISPATCH_QUEUE_SERIAL);
+            });
+
+            dispatch_async(processAssetQueue, ^{
             for (NSString *urlString in assets) {
-                NSString *finalURLString = [urlString copy];
-                if (originalURL.scheme && ![self.completedAssetURLs containsObject:[NSURL URLWithString:urlString]]) {
-                    if ([finalURLString hasPrefix:@"//"]) {
-                        finalURLString = [NSString stringWithFormat:@"%@:%@", originalURL.scheme, finalURLString];
-                    }
-                    else if ([finalURLString hasPrefix:@"/"]) {
-                        finalURLString = [NSString stringWithFormat:@"%@://%@%@", originalURL.scheme, originalURL.host, finalURLString];
-                    }
-                    else if (![finalURLString hasPrefix:originalURL.scheme] && ![finalURLString hasPrefix:@"http://"] && ![finalURLString hasPrefix:@"https://"]) {
-                        // This is a relative URL
-                        NSMutableArray *trimmedComponents = [originalURL.pathComponents mutableCopy];
-                        if ([[trimmedComponents firstObject] isEqualToString:@"/"]) {
-                            [trimmedComponents removeObjectAtIndex:0];
+                    NSString *finalURLString = [urlString copy];
+                    if (originalURL.scheme && ![self.completedAssetURLs containsObject:[NSURL URLWithString:urlString]]) {
+                        if ([finalURLString hasPrefix:@"//"]) {
+                            finalURLString = [NSString stringWithFormat:@"%@:%@", originalURL.scheme, finalURLString];
+                        }
+                        else if ([finalURLString hasPrefix:@"/"]) {
+                            finalURLString = [NSString stringWithFormat:@"%@://%@%@", originalURL.scheme, originalURL.host, finalURLString];
+                        }
+                        else if (![finalURLString hasPrefix:originalURL.scheme] && ![finalURLString hasPrefix:@"http://"] && ![finalURLString hasPrefix:@"https://"]) {
+                            // This is a relative URL
+                            NSMutableArray *trimmedComponents = [originalURL.pathComponents mutableCopy];
+                            if ([[trimmedComponents firstObject] isEqualToString:@"/"]) {
+                                [trimmedComponents removeObjectAtIndex:0];
+                            }
+
+                            if (![[trimmedComponents lastObject] hasSuffix:@"/"]) {
+                                [trimmedComponents removeLastObject];
+                            }
+
+                            while ([finalURLString hasPrefix:@"../"]) {
+                                finalURLString = [finalURLString stringByReplacingCharactersInRange:NSMakeRange(0, 3) withString:@""];
+                                [trimmedComponents removeLastObject];
+                            }
+
+                            if (![finalURLString hasPrefix:@"/"]) {
+                                // Add an extra component on the end of the trimmed components so that a / is added at the end of the string.
+                                [trimmedComponents removeLastObject];
+                                [trimmedComponents addObject:@""];
+                            }
+                            NSString *paths = [trimmedComponents componentsJoinedByString:@"/"];
+
+                            // http://www.atgbrewery.com/../res/uploads/media/TSK.JPG
+                            finalURLString = [NSString stringWithFormat:@"%@://%@/%@%@", originalURL.scheme, originalURL.host, paths, finalURLString];
                         }
 
-                        if (![[trimmedComponents lastObject] hasSuffix:@"/"]) {
-                            [trimmedComponents removeLastObject];
+                        // If there are still ../'s in the URL, assume it was malformed and remove them.
+//                        NSRange range = [finalURLString rangeOfString:@"../"];
+//                        while (range.location != NSNotFound) {
+//                            finalURLString = [finalURLString stringByReplacingCharactersInRange:range withString:@""];
+//                            range = [finalURLString rangeOfString:@"../"];
+//                        }
+
+                        NSURL *url = [NSURL URLWithString:finalURLString];
+                        NSURLRequest *request = [NSURLRequest requestWithURL:url];
+
+                        if (url && ![self cachedResponseForRequest:request] && !self.isBackgroundSessionInvalidated) {
+                            [self.assetURLs addObject:url];
                         }
-
-                        while ([finalURLString hasPrefix:@"../"]) {
-                            finalURLString = [finalURLString stringByReplacingCharactersInRange:NSMakeRange(0, 3) withString:@""];
-                            [trimmedComponents removeLastObject];
-                        }
-
-                        if (![finalURLString hasPrefix:@"/"]) {
-                            // Add an extra component on the end of the trimmed components so that a / is added at the end of the string.
-                            [trimmedComponents removeLastObject];
-                            [trimmedComponents addObject:@""];
-                        }
-                        NSString *paths = [trimmedComponents componentsJoinedByString:@"/"];
-
-                        // http://www.atgbrewery.com/../res/uploads/media/TSK.JPG
-                        finalURLString = [NSString stringWithFormat:@"%@://%@/%@%@", originalURL.scheme, originalURL.host, paths, finalURLString];
-                    }
-
-                    NSURL *url = [NSURL URLWithString:finalURLString];
-                    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-
-                    if (url && ![self cachedResponseForRequest:request] && !self.isBackgroundSessionInvalidated) {
-                        [self.assetURLs addObject:url];
                     }
                 }
-            }
 
-            self.currentAssetURLString = @"-";
-            self.ProgressBlock(self.currentURLString, self.currentAssetURLString, self.completedHTMLURLs.count, self.htmlURLs.count, self.completedAssetURLs.count, self.assetURLs.count);
+                self.currentAssetURLString = @"-";
+                self.ProgressBlock(self.currentURLString, self.currentAssetURLString, self.completedHTMLURLs.count, self.htmlURLs.count, self.completedAssetURLs.count, self.assetURLs.count);
 
-            // Since one of the tasks might complete before this is done looping, we make a copy of the list.
-            for (NSURL *url in [self.assetURLs copy]) {
-                NSURLSessionDownloadTask *task = [self.offlineSession downloadTaskWithURL:url];
-                [task resume];
-            }
+                // Since one of the tasks might complete before this is done looping, we make a copy of the list.
+                for (NSURL *url in self.assetURLs) {
+                    NSURLSessionDownloadTask *task = [self.offlineSession downloadTaskWithURL:url];
+                    [task resume];
+                }
+            });
         }
 
         BOOL hasAvailableSpace = self.currentDiskUsage < self.diskCapacity * 0.99;
@@ -695,10 +727,6 @@
         else {
             [self stopAllDownloads];
         }
-    }
-
-    if (self.completedAssetURLs.count == self.assetURLs.count) {
-        [self queueNextHTMLDownload];
     }
 }
 
@@ -729,9 +757,7 @@
         [self.completedHTMLURLs addObject:url];
     }
     else {
-        if ([self.assetURLs containsObject:url]) {
-            [self.completedAssetURLs addObject:url];
-        }
+        [self.completedAssetURLs addObject:url];
     }
 
     self.ProgressBlock(self.currentURLString, self.currentAssetURLString, self.completedHTMLURLs.count, self.htmlURLs.count, self.completedAssetURLs.count, self.assetURLs.count);

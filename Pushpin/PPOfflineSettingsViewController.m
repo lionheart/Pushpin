@@ -50,6 +50,15 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:DefaultCellIdentifier];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+
+    [self.tableView beginUpdates];
+    [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPOfflineSettingsRowUsage inSection:PPOfflineSettingsSectionTop]]
+                          withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView endUpdates];
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 3;
 }
@@ -182,6 +191,12 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
             switch ((PPOfflineSettingsRowType)indexPath.row) {
                 case PPOfflineSettingsRowLimit: {
                     UIAlertController *actionSheet = [UIAlertController lhs_actionSheetWithTitle:NSLocalizedString(@"Usage Limit", nil)];
+                    [actionSheet lhs_addActionWithTitle:@"10 MB"
+                                                  style:UIAlertActionStyleDefault
+                                                handler:^(UIAlertAction *action) {
+                                                    [self updateUsageLimitTo:10 * 1000 * 1000];
+                                                }];
+
                     [actionSheet lhs_addActionWithTitle:@"100 MB"
                                                   style:UIAlertActionStyleDefault
                                                 handler:^(UIAlertAction *action) {

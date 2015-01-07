@@ -29,6 +29,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 @property (nonatomic, strong) UILabel *htmlDetail;
 
 @property (nonatomic) NSInteger numberOfStaticAssets;
+@property (nonatomic) BOOL downloadInProgress;
 
 - (void)dismissViewController;
 
@@ -52,6 +53,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:activity];
     self.numberOfStaticAssets = 0;
+    self.downloadInProgress = YES;
 
     self.assetProgressView = [[UIProgressView alloc] init];
     self.assetProgressView.progress = 0;
@@ -89,25 +91,31 @@ static NSString *CellIdentifier = @"CellIdentifier";
         PPURLCache *cache = [PPAppDelegate sharedDelegate].urlCache;
         [cache initiateBackgroundDownloadsWithCompletion:^(NSInteger count) {
         } progress:^(NSString *urlString, NSString *assetURLString, NSInteger htmlCurrent, NSInteger htmlTotal, NSInteger assetCurrent, NSInteger assetTotal) {
+            DLog(@"%@", urlString);
             dispatch_async(dispatch_get_main_queue(), ^{
-                if (assetTotal != self.numberOfStaticAssets) {
-                    self.numberOfStaticAssets = assetTotal;
+                NSInteger oldStaticAssetTotal = self.numberOfStaticAssets;
+
+                if (assetTotal != oldStaticAssetTotal) {
                     @try {
-                        [self.tableView beginUpdates];
+                        self.numberOfStaticAssets = assetTotal;
+
                         if (assetTotal == 0) {
+                            [self.tableView beginUpdates];
                             [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
+                            [self.tableView endUpdates];
                         }
-                        else {
+                        else if (oldStaticAssetTotal == 0) {
+                            [self.tableView beginUpdates];
                             [self.tableView insertSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
+                            [self.tableView endUpdates];
                         }
-                        [self.tableView endUpdates];
                     }
                     @catch (NSException *exception) {
                         [self.tableView reloadData];
                     }
                 }
 
-                if (htmlCurrent < htmlTotal) {
+                if (htmlCurrent < htmlTotal || assetCurrent < assetTotal) {
                     static NSNumberFormatter *formatter;
                     static dispatch_once_t onceToken;
                     dispatch_once(&onceToken, ^{
@@ -134,6 +142,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 }
                 else {
                     self.navigationItem.rightBarButtonItem.title = @"Done";
+                    self.navigationItem.leftBarButtonItem = nil;
+
+                    self.htmlLabel.text = NSLocalizedString(@"Download complete!", nil);
+                    self.htmlDetail.text = @"100%";
+                    [self.htmlProgressView setProgress:1 animated:NO];
+                    self.downloadInProgress = NO;
+
+                    [self.tableView reloadData];
                 }
             });
         }];
@@ -145,12 +161,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
         return @"HTML";
     }
     else {
-        return @"Static Assets";
+        return NSLocalizedString(@"Static Assets", nil);
     }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
     [cell.contentView lhs_removeSubviews];
 
     NSDictionary *views;
@@ -202,7 +220,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    if (self.numberOfStaticAssets > 0) {
+    if (self.numberOfStaticAssets > 0 && self.downloadInProgress) {
         return 2;
     }
     else {
