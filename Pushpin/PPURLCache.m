@@ -628,7 +628,7 @@
         if (isReaderURL) {
             NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             NSData *encodedData = [NSData dataWithBase64EncodedString:string];
-
+            
 #warning EXC_BAD_ACCESS on encodedData (somehow it becomes null)
             NSData *decryptedData = [RNDecryptor decryptData:encodedData
                                                 withPassword:@"Isabelle and Dante"
