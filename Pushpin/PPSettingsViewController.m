@@ -212,7 +212,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     switch ((PPSectionType)section) {
         case PPSectionMainSettings:
-            return @"Main Settings";
+            return NSLocalizedString(@"Main Settings", nil);
 
         default:
             return nil;

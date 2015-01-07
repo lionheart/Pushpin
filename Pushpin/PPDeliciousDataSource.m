@@ -1036,14 +1036,14 @@ static BOOL kPinboardSyncInProgress = NO;
 
 - (NSString *)searchPlaceholder {
     if (self.unread == kPushpinFilterTrue) {
-        return @"Search Unread";
+        return NSLocalizedString(@"Search Unread", nil);
     }
     
     if (self.untagged == kPushpinFilterTrue) {
-        return @"Search Untagged";
+        return NSLocalizedString(@"Search Untagged", nil);
     }
     
-    return @"Search";
+    return NSLocalizedString(@"Search", nil);
 }
 
 - (UIColor *)barTintColor {

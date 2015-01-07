@@ -41,8 +41,8 @@
     
     void (^InvalidCredentials)(UIViewController *controller) = ^(UIViewController *controller) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Invalid Token"
-                                                                           message:@"Please open Pushpin to refresh your credentials."
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Invalid Token", nil)
+                                                                           message:NSLocalizedString(@"Please open Pushpin to refresh your credentials.", nil)
                                                                     preferredStyle:UIAlertControllerStyleAlert];
             [alert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                 [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
