@@ -32,7 +32,7 @@ typedef NS_ENUM(NSInteger, PPSearchSectionType) {
 };
 
 static NSArray *PPSearchScopes() {
-    return @[@"Mine", @"Mine (Pinboard Syntax)"];
+    return @[@"Pushpin", @"Pinboard Servers"];
 }
 #endif
 

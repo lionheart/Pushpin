@@ -441,7 +441,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
             cell.textLabel.font = [PPTheme textLabelFont];
             cell.textLabel.textColor = [UIColor blackColor];
             cell.textLabel.hidden = NO;
-            cell.textLabel.text = NSLocalizedString(@"Search scope", nil);
+            cell.textLabel.text = @"Search method";
 
             cell.detailTextLabel.font = [PPTheme detailLabelFont];
             cell.detailTextLabel.text = PPSearchScopes()[self.searchScope];
