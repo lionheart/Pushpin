@@ -14,11 +14,11 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 @implementation NSData (Base64)
 
 + (id)dataWithBase64EncodedString:(NSString *)string {
-    return [[NSData alloc] initWithBase64EncodedString:string options:0];
+    return [[NSData alloc] initWithBase64EncodedString:string options:NSDataBase64Encoding64CharacterLineLength];
 }
 
 - (NSString *)base64Encoding {
-    return [self base64EncodedStringWithOptions:0];
+    return [self base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
 }
 
 @end

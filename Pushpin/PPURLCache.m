@@ -732,25 +732,27 @@
 }
 
 - (void)stopAllDownloads {
-    [[self offlineSessionForeground] getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
-        for (NSURLSessionDataTask *task in dataTasks) {
-            [task cancel];
-        }
+    if (!self.isBackgroundSessionInvalidated) {
+        [[self offlineSessionForeground] getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
+            for (NSURLSessionDataTask *task in dataTasks) {
+                [task cancel];
+            }
 
-        for (NSURLSessionUploadTask *task in uploadTasks) {
-            [task cancel];
-        }
+            for (NSURLSessionUploadTask *task in uploadTasks) {
+                [task cancel];
+            }
 
-        for (NSURLSessionDownloadTask *task in downloadTasks) {
-            [task cancel];
-        }
-    }];
+            for (NSURLSessionDownloadTask *task in downloadTasks) {
+                [task cancel];
+            }
+        }];
 
-    self.isBackgroundSessionInvalidated = YES;
-    [[PPURLCache operationQueue] cancelAllOperations];
+        self.isBackgroundSessionInvalidated = YES;
+        [[PPURLCache operationQueue] cancelAllOperations];
 
-    // Set everything to 100%.
-    self.ProgressBlock(@"", @"", 1, 1, 1, 1);
+        // Set everything to 100%.
+        self.ProgressBlock(@"", @"", 1, 1, 1, 1);
+    }
 }
 
 - (void)downloadCompletedForURL:(NSURL *)url {

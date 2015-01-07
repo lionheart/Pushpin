@@ -844,19 +844,21 @@
     UIUserNotificationSettings* notificationSettings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories:nil];
     [[UIApplication sharedApplication] registerUserNotificationSettings:notificationSettings];
 
+    [NSURLProtocol registerClass:[PPCachingURLProtocol class]];
+
     Reachability *reach = [Reachability reachabilityForInternetConnection];
     self.connectionAvailable = [reach isReachable];
     reach.reachableBlock = ^(Reachability *reach) {
         self.connectionAvailable = YES;
 #if !FORCE_OFFLINE
-        [NSURLProtocol unregisterClass:[PPCachingURLProtocol class]];
+//        [NSURLProtocol unregisterClass:[PPCachingURLProtocol class]];
 #endif
     };
 
     reach.unreachableBlock = ^(Reachability *reach) {
         self.connectionAvailable = NO;
 #if !FORCE_OFFLINE
-        [NSURLProtocol registerClass:[PPCachingURLProtocol class]];
+//        [NSURLProtocol registerClass:[PPCachingURLProtocol class]];
 #endif
     };
     [reach startNotifier];
