@@ -140,13 +140,13 @@
     completion(YES, nil);
 }
 
-- (void)reloadBookmarksWithCompletion:(void (^)(NSArray *, NSArray *, NSArray *, NSError *))completion
+- (void)reloadBookmarksWithCompletion:(void (^)(NSError *))completion
                                cancel:(BOOL (^)())cancel
                                 width:(CGFloat)width {
     dispatch_async(PPPinboardFeedReloadQueue(), ^{
         
         if (cancel && cancel()) {
-            completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+            completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
             return;
         }
 
@@ -180,7 +180,7 @@
                                                             }
                                                             
                                                             if (cancel && cancel()) {
-                                                                completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                                                                completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                                                                 return;
                                                             }
                                                             
@@ -219,7 +219,7 @@
                                                             
                                                             
                                                             if (cancel && cancel()) {
-                                                                completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                                                                completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                                                                 return;
                                                             }
                                                             
@@ -256,7 +256,7 @@
                                                                                           }
                                                                                           
                                                                                           if (cancel && cancel()) {
-                                                                                              completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                                                                                              completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                                                                                               return;
                                                                                           }
                                                                                           else {
@@ -264,7 +264,7 @@
                                                                                               self.metadata = newMetadata;
                                                                                               self.compressedMetadata = newCompressedMetadata;
                                                                                               
-                                                                                              completion(indexPathsToInsert, indexPathsToReload, indexPathsToDelete, nil);
+                                                                                              completion(nil);
                                                                                           }
                                                                                       }];
                                                         }

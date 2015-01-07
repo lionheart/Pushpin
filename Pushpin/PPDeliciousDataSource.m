@@ -471,7 +471,7 @@ static BOOL kPinboardSyncInProgress = NO;
     });
 }
 
-- (void)reloadBookmarksWithCompletion:(void (^)(NSArray *, NSArray *, NSArray *, NSError *))completion
+- (void)reloadBookmarksWithCompletion:(void (^)(NSError *))completion
                                cancel:(BOOL (^)())cancel
                                 width:(CGFloat)width {
 
@@ -489,7 +489,7 @@ static BOOL kPinboardSyncInProgress = NO;
 
             if (cancel && cancel()) {
                 DLog(@"Cancelling search for query (%@)", self.searchQuery);
-                completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                 return;
             }
 
@@ -498,7 +498,7 @@ static BOOL kPinboardSyncInProgress = NO;
 
                 if (cancel && cancel()) {
                     DLog(@"Cancelling search for query (%@)", self.searchQuery);
-                    completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                    completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                     return;
                 }
 
@@ -529,7 +529,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 
                 if (cancel && cancel()) {
                     DLog(@"Cancelling search for query (%@)", self.searchQuery);
-                    completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                    completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                     return;
                 }
                 
@@ -549,7 +549,7 @@ static BOOL kPinboardSyncInProgress = NO;
             
             if (cancel && cancel()) {
                 DLog(@"Cancelling search for query (%@)", self.searchQuery);
-                completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                 return;
             }
             
@@ -601,7 +601,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                           // We run this block to make sure that these results should be the latest on file
                                           if (cancel && cancel()) {
                                               DLog(@"Cancelling search for query (%@)", self.searchQuery);
-                                              completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                                              completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                                           }
                                           else {
                                               self.posts = updatedBookmarks;
@@ -609,7 +609,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                               self.compressedMetadata = newCompressedMetadata;
                                               self.tagsWithFrequency = newTagsWithFrequencies;
                                               
-                                              completion(indexPathsToInsert, indexPathsToReload, indexPathsToDelete, nil);
+                                              completion(nil);
                                           }
                                       }];
         };
@@ -678,7 +678,7 @@ static BOOL kPinboardSyncInProgress = NO;
                     }];
 }
 
-- (void)deletePostsAtIndexPaths:(NSArray *)indexPaths callback:(void (^)(NSArray *, NSArray *, NSArray *))callback {
+- (void)deletePostsAtIndexPaths:(NSArray *)indexPaths callback:(void (^)())callback {
     void (^SuccessBlock)();
     void (^ErrorBlock)(NSError *);
 
@@ -729,8 +729,8 @@ static BOOL kPinboardSyncInProgress = NO;
 
         dispatch_group_notify(inner_group, queue, ^{
             if (callback) {
-                [self reloadBookmarksWithCompletion:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete, NSError *error) {
-                    callback(indexPathsToInsert, indexPathsToReload, indexPathsToDelete);
+                [self reloadBookmarksWithCompletion:^(NSError *error) {
+                    callback();
                 } cancel:nil width:self.mostRecentWidth];
             }
         });

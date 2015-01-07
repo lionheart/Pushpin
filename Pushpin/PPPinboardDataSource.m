@@ -1312,7 +1312,7 @@ static BOOL kPinboardSyncInProgress = NO;
          };
 }
 
-- (void)reloadBookmarksWithCompletion:(void (^)(NSArray *, NSArray *, NSArray *, NSError *))completion
+- (void)reloadBookmarksWithCompletion:(void (^)(NSError *))completion
                                cancel:(BOOL (^)())cancel
                                 width:(CGFloat)width {
     NSDate *timeWhenReloadBegan = [NSDate date];
@@ -1321,17 +1321,13 @@ static BOOL kPinboardSyncInProgress = NO;
         self.mostRecentWidth = width;
 
         void (^HandleSearch)(NSString *, NSArray *) = ^(NSString *query, NSArray *parameters) {
-            NSArray *previousBookmarks = [self.posts copy];
             NSMutableArray *updatedBookmarks = [NSMutableArray array];
             __block NSInteger row = 0;
-            
-            NSMutableDictionary *oldHashesToIndexPaths = [NSMutableDictionary dictionary];
-            NSMutableDictionary *newHashesToIndexPaths = [NSMutableDictionary dictionary];
-            NSMutableDictionary *newHashmetasToHashes = [NSMutableDictionary dictionary];
+
             NSMutableDictionary *newTagsWithFrequencies = [NSMutableDictionary dictionary];
             
             if (cancel && cancel()) {
-                completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                 return;
             }
             
@@ -1347,23 +1343,12 @@ static BOOL kPinboardSyncInProgress = NO;
                 }
             }];
 
-            row = 0;
-            for (NSDictionary *post in previousBookmarks) {
-                NSString *hash = post[@"hash"];
-
-                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
-                oldHashesToIndexPaths[hash] = indexPath;
-                row++;
-            }
-
             NSString *key = [query stringByAppendingString:[parameters componentsJoinedByString:@""]];
             NSString *checksum = [PPURLCache md5ChecksumForData:[key dataUsingEncoding:NSUTF8StringEncoding]];
             
             PPCachedResult *result = [[PPPinboardDataSource resultCache] objectForKey:checksum];
             if (result) {
                 newTagsWithFrequencies = result.tagsWithFrequencies;
-                newHashmetasToHashes = result.hashmetasToHashes;
-                newHashesToIndexPaths = result.hashesToIndexPaths;
                 updatedBookmarks = result.bookmarks;
             }
             else {
@@ -1371,33 +1356,25 @@ static BOOL kPinboardSyncInProgress = NO;
                     FMResultSet *results = [db executeQuery:query withArgumentsInArray:parameters];
 
                     if (cancel && cancel()) {
-                        completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                        completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                         shouldReturn = YES;
                         return;
                     }
                     
                     row = 0;
                     while ([results next]) {
-                        NSString *hash = [results stringForColumn:@"hash"];
-                        NSString *meta = [results stringForColumn:@"meta"];
-                        NSString *hashmeta = [@[hash, meta] componentsJoinedByString:@"_"];
                         NSMutableDictionary *post = [[PPPinboardDataSource postFromResultSet:results] mutableCopy];
                         if ([urls containsObject:post[@"url"]]) {
                             post[@"offline"] = @(YES);
                         }
                         [updatedBookmarks addObject:post];
-
-                        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:row inSection:0];
-                        newHashesToIndexPaths[hash] = indexPath;
-                        newHashmetasToHashes[hashmeta] = hash;
-                        row++;
                     }
                     
                     [results close];
 
                     if (cancel && cancel()) {
                         DLog(@"B: Cancelling search for query (%@)", self.searchQuery);
-                        completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                        completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                         shouldReturn = YES;
                         return;
                     }
@@ -1411,10 +1388,8 @@ static BOOL kPinboardSyncInProgress = NO;
 
                     [tagResult close];
                 }];
-                
+
                 result = [[PPCachedResult alloc] init];
-                result.hashesToIndexPaths = newHashesToIndexPaths;
-                result.hashmetasToHashes = newHashmetasToHashes;
                 result.tagsWithFrequencies = newTagsWithFrequencies;
                 result.bookmarks = updatedBookmarks;
 
@@ -1424,80 +1399,45 @@ static BOOL kPinboardSyncInProgress = NO;
             if (shouldReturn) {
                 return;
             }
-            
-            NSMutableArray *indexPathsToInsert = [NSMutableArray array];
-            NSMutableArray *indexPathsToDelete = [NSMutableArray array];
-            NSMutableArray *indexPathsToReload = [NSMutableArray array];
 
             if (cancel && cancel()) {
                 DLog(@"C: Cancelling search for query (%@)", self.searchQuery);
-                completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                 return;
             }
+            
+            NSMutableArray *newMetadata = [NSMutableArray array];
+            NSMutableArray *newCompressedMetadata = [NSMutableArray array];
 
-            [PPUtilities generateDiffForPrevious:previousBookmarks
-                                         updated:updatedBookmarks
-                                            hash:^NSString *(id obj) { return obj[@"hash"]; }
-                                            meta:^NSString *(id obj) { return obj[@"meta"]; }
-                                      completion:^(NSSet *inserted, NSSet *updated, NSSet *deleted) {
-                                          for (NSString *hash in deleted) {
-                                              [indexPathsToDelete addObject:oldHashesToIndexPaths[hash]];
-                                          }
-                                          
-                                          for (NSString *hashmeta in updated) {
-                                              NSString *hash = newHashmetasToHashes[hashmeta];
-                                              [indexPathsToReload addObject:oldHashesToIndexPaths[hash]];
-                                          }
-                                          
-                                          for (NSString *hash in inserted) {
-                                              [indexPathsToInsert addObject:newHashesToIndexPaths[hash]];
-                                          }
-                                          
-                                          NSMutableArray *newMetadata = [NSMutableArray array];
-                                          NSMutableArray *newCompressedMetadata = [NSMutableArray array];
-                                          
-                                          for (NSDictionary *post in updatedBookmarks) {
-                                              NSString *hash = post[@"hash"];
-                                              NSString *meta = post[@"meta"];
-                                              NSString *hashmeta = [hash stringByAppendingString:meta];
-                                              
-                                              BOOL useCache;
-                                              if ([updated containsObject:hashmeta] || [inserted containsObject:hash]) {
-                                                  useCache = NO;
-                                              }
-                                              else {
-                                                  useCache = YES;
-                                              }
-                                              
-                                              PostMetadata *metadata = [PostMetadata metadataForPost:post
-                                                                                          compressed:NO
-                                                                                               width:width
-                                                                                   tagsWithFrequency:self.tagsWithFrequency
-                                                                                               cache:useCache];
-                                              [newMetadata addObject:metadata];
-                                              
-                                              PostMetadata *compressedMetadata = [PostMetadata metadataForPost:post
-                                                                                                    compressed:YES
-                                                                                                         width:width
-                                                                                             tagsWithFrequency:self.tagsWithFrequency
-                                                                                                         cache:useCache];
-                                              [newCompressedMetadata addObject:compressedMetadata];
-                                          }
-
-                                          // We run this block to make sure that these results should be the latest on file
-                                          if (cancel && cancel() && self.latestReloadTime != timeWhenReloadBegan) {
-                                              DLog(@"Cancelling search for query (%@)", self.searchQuery);
-                                              completion(nil, nil, nil, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
-                                          }
-                                          else {
-                                              self.posts = updatedBookmarks;
-                                              self.metadata = newMetadata;
-                                              self.compressedMetadata = newCompressedMetadata;
-                                              self.tagsWithFrequency = newTagsWithFrequencies;
-
-                                              completion(indexPathsToInsert, indexPathsToReload, indexPathsToDelete, nil);
-                                          }
-                                      }];
+            for (NSDictionary *post in updatedBookmarks) {
+                PostMetadata *metadata = [PostMetadata metadataForPost:post
+                                                            compressed:NO
+                                                                 width:width
+                                                     tagsWithFrequency:self.tagsWithFrequency
+                                                                 cache:YES];
+                [newMetadata addObject:metadata];
+                
+                PostMetadata *compressedMetadata = [PostMetadata metadataForPost:post
+                                                                      compressed:YES
+                                                                           width:width
+                                                               tagsWithFrequency:self.tagsWithFrequency
+                                                                           cache:YES];
+                [newCompressedMetadata addObject:compressedMetadata];
+            }
+            
+            // We run this block to make sure that these results should be the latest on file
+            if (cancel && cancel() && self.latestReloadTime != timeWhenReloadBegan) {
+                DLog(@"Cancelling search for query (%@)", self.searchQuery);
+                completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+            }
+            else {
+                self.posts = updatedBookmarks;
+                self.metadata = newMetadata;
+                self.compressedMetadata = newCompressedMetadata;
+                self.tagsWithFrequency = newTagsWithFrequencies;
+                
+                completion(nil);
+            }
         };
         
         if (self.searchScope != ASPinboardSearchScopeNone) {
