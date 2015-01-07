@@ -55,7 +55,6 @@ PODS:
   - Reachability (3.0.0)
   - RNCryptor (2.2)
   - RPSTPasswordManagementAppService (0.0.1)
-  - TestFlightSDK (3.0.2)
   - TextExpander (2.3.1)
   - TTTAttributedLabel (1.10.1)
   - uservoice-iphone-sdk (3.2.1)
@@ -85,7 +84,6 @@ DEPENDENCIES:
   - Reachability (= 3.0.0)
   - RNCryptor
   - RPSTPasswordManagementAppService (from `Specs/RPSTPasswordManagementAppService.podspec`)
-  - TestFlightSDK (= 3.0.2)
   - TextExpander (= 2.3.1)
   - TTTAttributedLabel (= 1.10.1)
   - uservoice-iphone-sdk (= 3.2.1)
@@ -131,7 +129,6 @@ SPEC CHECKSUMS:
   Reachability: d369b8d7d33730a4bb71d0f601e287da9867c9dd
   RNCryptor: 4f562062c39f288b99601674f2c50dd44b68d58a
   RPSTPasswordManagementAppService: ef9ba65edee84b8031c822dcebc264615b23e789
-  TestFlightSDK: 0c24c533748d0d84bfe7a3cb6036fa79124d84ee
   TextExpander: 52e77e37c52115ec59cad66b082800f0e54fa545
   TTTAttributedLabel: 94bb04f1e005616002dd2cee0262a0082e533627
   uservoice-iphone-sdk: 7cbc1e76dcbbc3d5ae3b4bf009fdcf355e1e83ec
