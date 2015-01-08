@@ -182,6 +182,7 @@
 
                 case PPOfflineFetchCriteriaEverything:
 #ifdef DEBUG
+//                    query = @"SELECT url FROM bookmark WHERE url LIKE '%%stories.californiasunday.com%%' ORDER BY created_at DESC";
                     query = @"SELECT url FROM bookmark ORDER BY created_at DESC";
 #else
                     query = @"SELECT url FROM bookmark ORDER BY created_at DESC";
