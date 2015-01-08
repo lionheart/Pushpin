@@ -652,8 +652,9 @@
                 processAssetQueue = dispatch_queue_create("com.lionheartsw.pushpin.asset_tasks", DISPATCH_QUEUE_SERIAL);
             });
 
-            dispatch_async(processAssetQueue, ^{
-            for (NSString *urlString in assets) {
+            dispatch_sync(processAssetQueue, ^{
+                NSMutableArray *tasks = [NSMutableArray array];
+                for (NSString *urlString in assets) {
                     NSString *finalURLString = [urlString copy];
                     if (originalURL.scheme && ![self.completedAssetURLs containsObject:[NSURL URLWithString:urlString]]) {
                         if ([finalURLString hasPrefix:@"//"]) {
@@ -701,18 +702,14 @@
 
                         if (url && ![self cachedResponseForRequest:request] && !self.isBackgroundSessionInvalidated) {
                             [self.assetURLs addObject:url];
+                            NSURLSessionDownloadTask *task = [self.offlineSession downloadTaskWithURL:url];
+                            [task resume];
                         }
                     }
                 }
 
                 self.currentAssetURLString = @"-";
-                self.ProgressBlock(self.currentURLString, self.currentAssetURLString, self.completedHTMLURLs.count, self.htmlURLs.count, self.completedAssetURLs.count, self.assetURLs.count);
-
-                // Since one of the tasks might complete before this is done looping, we make a copy of the list.
-                for (NSURL *url in self.assetURLs) {
-                    NSURLSessionDownloadTask *task = [self.offlineSession downloadTaskWithURL:url];
-                    [task resume];
-                }
+                [self updateProgress];
             });
         }
 
