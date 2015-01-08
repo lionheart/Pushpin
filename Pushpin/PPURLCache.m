@@ -50,6 +50,8 @@
 - (NSURLSession *)readerViewOfflineSessionForeground;
 - (void)downloadCompletedForURL:(NSURL *)url;
 - (void)queueNextHTMLDownload;
+- (void)updateProgress;
+- (void)updateProgressWithCompletedValues;
 
 @end
 
@@ -247,7 +249,7 @@
             [self queueNextHTMLDownload];
         }
         else {
-            progress(@"", @"", 1, 1, 1, 1);
+            [self updateProgressWithCompletedValues];
         }
     }
 
@@ -597,7 +599,7 @@
 }
 
 - (void)URLSession:(NSURLSession *)session didBecomeInvalidWithError:(NSError *)error {
-
+    self.ProgressBlock(@"", @"", 1, 1, 1, 1);
 }
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didSendBodyData:(int64_t)bytesSent totalBytesSent:(int64_t)totalBytesSent totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
@@ -605,7 +607,7 @@
 }
 
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
-    DLog(@"wrote data: %@", downloadTask.originalRequest.URL);
+
 }
 
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location {
@@ -751,7 +753,7 @@
         [[PPURLCache operationQueue] cancelAllOperations];
 
         // Set everything to 100%.
-        self.ProgressBlock(@"", @"", 1, 1, 1, 1);
+        [self updateProgressWithCompletedValues];
     }
 }
 
@@ -763,7 +765,7 @@
         [self.completedAssetURLs addObject:url];
     }
 
-    self.ProgressBlock(self.currentURLString, self.currentAssetURLString, self.completedHTMLURLs.count, self.htmlURLs.count, self.completedAssetURLs.count, self.assetURLs.count);
+    [self updateProgress];
 }
 
 - (void)queueNextHTMLDownload {
@@ -797,8 +799,20 @@
             [task resume];
         }
 
-        self.ProgressBlock(self.currentURLString, self.currentAssetURLString, self.completedHTMLURLs.count, self.htmlURLs.count, self.completedAssetURLs.count, self.assetURLs.count);
+        [self updateProgress];
     }
+}
+
+- (void)updateProgress {
+    self.ProgressBlock(self.currentURLString, self.currentAssetURLString, self.completedHTMLURLs.count, self.htmlURLs.count, self.completedAssetURLs.count, self.assetURLs.count);
+
+    if (self.completedAssetURLs.count > self.assetURLs.count) {
+
+    }
+}
+
+- (void)updateProgressWithCompletedValues {
+    self.ProgressBlock(@"", @"", 1, 1, 1, 1);
 }
 
 @end
