@@ -31,7 +31,6 @@
 #endif
 
 #import <JavaScriptCore/JavaScriptCore.h>
-#import <LHSCategoryCollection/NSData+Base64.h>
 #import "NSString+URLEncoding2.h"
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <oauthconsumer/OAuthConsumer.h>
@@ -1208,7 +1207,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
                                                 if ([[(NSHTTPURLResponse *)response MIMEType] isEqualToString:@"text/plain"]) {
                                                     NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                                                    NSData *encodedData = [NSData dataWithBase64EncodedString:string];
+                                                    NSData *encodedData = [[NSData alloc] initWithBase64EncodedString:string options:0];
                                                     NSData *decryptedData = [RNDecryptor decryptData:encodedData
                                                                                         withPassword:@"Isabelle and Dante"
                                                                                                error:nil];
