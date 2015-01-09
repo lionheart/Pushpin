@@ -486,7 +486,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                 case PPOtherDisplayClearCache:
                     cell.textLabel.text = NSLocalizedString(@"Reset the list of stored URLs", nil);
                     cell.detailTextLabel.text = NSLocalizedString(@"Resets the list of URLs that you've decided not to add from the clipboard.", nil);
-                    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     cell.isAccessibilityElement = YES;
                     cell.accessibilityLabel = NSLocalizedString(@"Reset URL", nil);
                     break;
