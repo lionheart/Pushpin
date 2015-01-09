@@ -2110,8 +2110,10 @@
             "fileEncoding": "4",
             "isa": "PBXFileReference",
             "lastKnownFileType": "sourcecode.c.objc",
+            "lineEnding": "0",
             "path": "PPURLCache.m",
-            "sourceTree": "<group>"
+            "sourceTree": "<group>",
+            "xcLanguageSpecificationIdentifier": "xcode.lang.objc"
         },
         "375B62311A4DA9240045AFE7": {
             "fileRef": "375B622F1A4DA9240045AFE7",
