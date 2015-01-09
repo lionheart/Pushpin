@@ -1200,14 +1200,13 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                                          timeoutInterval:10];
     
     [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];
-#warning Sometimes getting a 401 here. Not sure why.
     NSURLSessionDataTask *task = [session dataTaskWithRequest:request
                                             completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                                                 [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
 
                                                 if ([[(NSHTTPURLResponse *)response MIMEType] isEqualToString:@"text/plain"]) {
                                                     NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                                                    NSData *encodedData = [[NSData alloc] initWithBase64EncodedString:string options:0];
+                                                    NSData *encodedData = [[NSData alloc] initWithBase64EncodedString:string options:NSDataBase64DecodingIgnoreUnknownCharacters];
                                                     NSData *decryptedData = [RNDecryptor decryptData:encodedData
                                                                                         withPassword:@"Isabelle and Dante"
                                                                                                error:nil];
