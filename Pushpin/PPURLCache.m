@@ -289,11 +289,9 @@
         
         // Multiple URLs might share the same response data
         __block BOOL responseDataInCache = YES;
-        
-        BOOL cacheIsFull = self.currentDiskUsage >= self.diskCapacity;
-        
+
         // Before we do anything, we check if the cache is full.
-        if (!cacheIsFull) {
+        if (self.hasAvailableSpace) {
             [[PPURLCache databaseQueue] inDatabase:^(FMDatabase *db) {
                 FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM cache WHERE url=?" withArgumentsInArray:@[urlString]];
                 [result next];
@@ -312,7 +310,7 @@
         }
         
         // Only update the cache if the file previously did not exist
-        if (!cacheIsFull && !responseDataInCache) {
+        if (self.hasAvailableSpace && !responseDataInCache) {
             NSString *filePath = [PPURLCache filePathForChecksum:checksum];
             
             BOOL isDirectory;
@@ -659,7 +657,7 @@
         NSMutableSet *assets;
         if (isReaderURL) {
             NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-            NSData *encodedData = [[NSData alloc] initWithBase64EncodedString:string options:0];
+            NSData *encodedData = [[NSData alloc] initWithBase64EncodedString:string options:NSDataBase64DecodingIgnoreUnknownCharacters];
             
 #warning EXC_BAD_ACCESS on encodedData (somehow it becomes null)
             NSData *decryptedData = [RNDecryptor decryptData:encodedData
@@ -774,21 +772,35 @@
 - (void)stopAllDownloads {
     if (!self.isBackgroundSessionInvalidated) {
         self.isBackgroundSessionInvalidated = YES;
+        
+        dispatch_group_t group = dispatch_group_create();
+        dispatch_group_enter(group);
+        dispatch_group_enter(group);
+        dispatch_group_enter(group);
+        dispatch_group_enter(group);
 
-        [[self offlineSessionForeground] getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
+        void (^CompletionHandler)(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) = ^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
             for (NSURLSessionDataTask *task in dataTasks) {
                 [task cancel];
             }
-
+            
             for (NSURLSessionUploadTask *task in uploadTasks) {
                 [task cancel];
             }
-
+            
             for (NSURLSessionDownloadTask *task in downloadTasks) {
                 [task cancel];
             }
-        }];
+            
+            dispatch_group_leave(group);
+        };
 
+        [self.offlineSessionForeground getTasksWithCompletionHandler:CompletionHandler];
+        [self.offlineSession getTasksWithCompletionHandler:CompletionHandler];
+        [self.readerViewOfflineSessionForeground getTasksWithCompletionHandler:CompletionHandler];
+        [self.readerViewOfflineSession getTasksWithCompletionHandler:CompletionHandler];
+
+        dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
         [self.sessionDownloadTimer invalidate];
         self.sessionDownloadTimer = nil;
         [[PPURLCache operationQueue] cancelAllOperations];
