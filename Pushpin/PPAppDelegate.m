@@ -41,7 +41,6 @@
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <OpenInChrome/OpenInChromeController.h>
 #import <LHSCategoryCollection/UIViewController+LHSAdditions.h>
-#import <LHSCategoryCollection/NSData+Base64.h>
 #import <Crashlytics/Crashlytics.h>
 #import "MFMailComposeViewController+Theme.h"
 #import <LHSDiigo/LHSDiigoClient.h>

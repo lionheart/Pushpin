@@ -15,7 +15,6 @@
 #import <FMDB/FMDatabaseQueue.h>
 #import <RNCryptor/RNDecryptor.h>
 #import <RNCryptor/RNCryptor.h>
-#import <LHSCategoryCollection/NSData+Base64.h>
 
 @interface PPURLCache ()
 
@@ -32,6 +31,12 @@
 @property (nonatomic, strong) NSMutableSet *htmlURLs;
 @property (nonatomic, strong) NSMutableSet *completedHTMLURLs;
 @property (nonatomic, strong) NSMutableSet *completedAssetURLs;
+@property (nonatomic, strong) NSMutableDictionary *sessionDownloadTasks;
+
+@property (nonatomic, strong) NSTimer *sessionDownloadTimer;
+
+@property (nonatomic, strong) NSMutableDictionary *assetURLsToHTMLURLs;
+@property (nonatomic) NSInteger assetsCompletedAsOfLastHTMLDownload;
 
 @property (nonatomic, copy) void (^ProgressBlock)(NSString *, NSString *, NSInteger, NSInteger, NSInteger, NSInteger);
 
@@ -44,6 +49,8 @@
 
 - (NSCache *)cache;
 
+- (NSURLSession *)sessionForURL:(NSURL *)url;
+
 - (NSURLSession *)offlineSession;
 - (NSURLSession *)readerViewOfflineSession;
 - (NSURLSession *)offlineSessionForeground;
@@ -52,6 +59,7 @@
 - (void)queueNextHTMLDownload;
 - (void)updateProgress;
 - (void)updateProgressWithCompletedValues;
+- (void)cancelLongRunningTasks:(id)sender;
 
 @end
 
@@ -151,6 +159,14 @@
     self.htmlURLs = [NSMutableSet set];
     self.completedAssetURLs = [NSMutableSet set];
     self.completedHTMLURLs = [NSMutableSet set];
+    self.assetURLsToHTMLURLs = [NSMutableDictionary dictionary];
+    self.sessionDownloadTasks = [NSMutableDictionary dictionary];
+    self.sessionDownloadTimer = [NSTimer timerWithTimeInterval:1
+                                                        target:self
+                                                      selector:@selector(cancelLongRunningTasks:)
+                                                      userInfo:nil
+                                                       repeats:YES];
+    [[NSRunLoop mainRunLoop] addTimer:self.sessionDownloadTimer forMode:NSRunLoopCommonModes];
 
     if (progress) {
         self.ProgressBlock = progress;
@@ -182,7 +198,7 @@
 
                 case PPOfflineFetchCriteriaEverything:
 #ifdef DEBUG
-//                    query = @"SELECT url FROM bookmark WHERE url LIKE '%%stories.californiasunday.com%%' ORDER BY created_at DESC";
+//                    query = @"SELECT url FROM bookmark WHERE url LIKE '%%www.t-gaap.com%%' ORDER BY created_at DESC";
                     query = @"SELECT url FROM bookmark ORDER BY created_at DESC";
 #else
                     query = @"SELECT url FROM bookmark ORDER BY created_at DESC";
@@ -585,6 +601,8 @@
     }
 }
 
+#pragma mark - NSURLSessionTaskDelegate
+
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
     NSURL *url = task.originalRequest.URL;
     [self downloadCompletedForURL:url];
@@ -596,16 +614,28 @@
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task willPerformHTTPRedirection:(NSHTTPURLResponse *)response newRequest:(NSURLRequest *)request completionHandler:(void (^)(NSURLRequest *))completionHandler {
 
+    if (![request.URL isEqual:task.originalRequest.URL]) {
+        NSURL *url = self.assetURLsToHTMLURLs[task.originalRequest.URL];
+        if (url) {
+            self.assetURLsToHTMLURLs[request.URL] = url;
+        }
+    }
     completionHandler(request);
 }
 
 - (void)URLSession:(NSURLSession *)session didBecomeInvalidWithError:(NSError *)error {
-    self.ProgressBlock(@"", @"", 1, 1, 1, 1);
+    [self updateProgress];
 }
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didSendBodyData:(int64_t)bytesSent totalBytesSent:(int64_t)totalBytesSent totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
 
 }
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task needNewBodyStream:(void (^)(NSInputStream *))completionHandler {
+
+}
+
+#pragma mark - NSURLSessionDownloadDelegate
 
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
 
@@ -623,14 +653,21 @@
 
     NSError *error;
     NSData *data = [NSData dataWithContentsOfURL:location options:NSDataReadingUncached error:&error];
-    if (data && data.length > 0 && downloadTask.response) {
+
+    if (error) {
+
+    }
+    NSHTTPURLResponse *httpURLResponse = (NSHTTPURLResponse *)downloadTask.response;
+    BOOL hasValidData = data && data.length > 0;
+    BOOL hasValidResponse = httpURLResponse && httpURLResponse.statusCode != 504;
+    if (hasValidData && hasValidResponse) {
         BOOL isReaderURL = [originalURL.absoluteString isReadabilityURL];
         NSCachedURLResponse *cachedURLResponse = [[NSCachedURLResponse alloc] initWithResponse:downloadTask.response data:data];
 
         NSMutableSet *assets;
         if (isReaderURL) {
             NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-            NSData *encodedData = [NSData dataWithBase64EncodedString:string];
+            NSData *encodedData = [[NSData alloc] initWithBase64EncodedString:string options:0];
             
 #warning EXC_BAD_ACCESS on encodedData (somehow it becomes null)
             NSData *decryptedData = [RNDecryptor decryptData:encodedData
@@ -653,11 +690,11 @@
                 processAssetQueue = dispatch_queue_create("com.lionheartsw.pushpin.asset_tasks", DISPATCH_QUEUE_SERIAL);
             });
 
-            dispatch_sync(processAssetQueue, ^{
+            dispatch_async(processAssetQueue, ^{
                 NSMutableArray *tasks = [NSMutableArray array];
                 for (NSString *urlString in assets) {
                     NSString *finalURLString = [urlString copy];
-                    if (originalURL.scheme && ![self.completedAssetURLs containsObject:[NSURL URLWithString:urlString]]) {
+                    if (originalURL.scheme) {
                         if ([finalURLString hasPrefix:@"//"]) {
                             finalURLString = [NSString stringWithFormat:@"%@:%@", originalURL.scheme, finalURLString];
                         }
@@ -699,14 +736,26 @@
 //                        }
 
                         NSURL *url = [NSURL URLWithString:finalURLString];
-                        NSURLRequest *request = [NSURLRequest requestWithURL:url];
+//                        NSURL *url = [NSURL URLWithString:@"http://testing1234442322.com"];
 
-                        if (url && ![self cachedResponseForRequest:request] && !self.isBackgroundSessionInvalidated) {
-                            [self.assetURLs addObject:url];
-                            NSURLSessionDownloadTask *task = [self.offlineSession downloadTaskWithURL:url];
-                            [task resume];
+                        if (![[self.assetURLsToHTMLURLs allKeys] containsObject:url]) {
+                            NSURLRequest *request = [NSURLRequest requestWithURL:url];
+
+                            if (url && ![self cachedResponseForRequest:request] && !self.isBackgroundSessionInvalidated) {
+                                [self.assetURLs addObject:url];
+                                self.assetURLsToHTMLURLs[url] = originalURL;
+                                NSURLSessionDownloadTask *task = [self.offlineSession downloadTaskWithURL:url];
+                                [tasks addObject:task];
+                            }
                         }
                     }
+                }
+
+                for (NSURLSessionDownloadTask *task in tasks) {
+                    [task resume];
+
+                    // Set the start date
+                    self.sessionDownloadTasks[@(task.taskIdentifier)] = [NSDate date];
                 }
 
                 self.currentAssetURLString = @"-";
@@ -747,6 +796,8 @@
             }
         }];
 
+        [self.sessionDownloadTimer invalidate];
+        self.sessionDownloadTimer = nil;
         self.isBackgroundSessionInvalidated = YES;
         [[PPURLCache operationQueue] cancelAllOperations];
 
@@ -768,28 +819,11 @@
 
 - (void)queueNextHTMLDownload {
     if (!self.isBackgroundSessionInvalidated) {
-        [self.completedAssetURLs removeAllObjects];
-        [self.assetURLs removeAllObjects];
+        self.assetsCompletedAsOfLastHTMLDownload = self.completedAssetURLs.count;
 
         NSURL *url = [self.urlsToDownload firstObject];
         if (url) {
-            NSURLSession *session;
-            if ([url.absoluteString isReadabilityURL]) {
-                if (self.ProgressBlock) {
-                    session = self.readerViewOfflineSessionForeground;
-                }
-                else {
-                    session = self.readerViewOfflineSession;
-                }
-            }
-            else {
-                if (self.ProgressBlock) {
-                    session = self.offlineSessionForeground;
-                }
-                else {
-                    session = self.offlineSession;
-                }
-            }
+            NSURLSession *session = [self sessionForURL:url];
 
             self.currentURLString = url.absoluteString;
             [self.urlsToDownload removeObjectAtIndex:0];
@@ -802,7 +836,7 @@
 }
 
 - (void)updateProgress {
-    self.ProgressBlock(self.currentURLString, self.currentAssetURLString, self.completedHTMLURLs.count, self.htmlURLs.count, self.completedAssetURLs.count, self.assetURLs.count);
+    self.ProgressBlock(self.currentURLString, self.currentAssetURLString, self.completedHTMLURLs.count, self.htmlURLs.count, self.completedAssetURLs.count - self.assetsCompletedAsOfLastHTMLDownload, self.assetURLs.count - self.assetsCompletedAsOfLastHTMLDownload);
 
     if (self.completedAssetURLs.count > self.assetURLs.count) {
 
@@ -811,6 +845,66 @@
 
 - (void)updateProgressWithCompletedValues {
     self.ProgressBlock(@"", @"", 1, 1, 1, 1);
+}
+
+#pragma mark - NSURLSessionDataDelegate
+
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask willCacheResponse:(NSCachedURLResponse *)proposedResponse completionHandler:(void (^)(NSCachedURLResponse *))completionHandler {
+    completionHandler(proposedResponse);
+}
+
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
+
+}
+
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask {
+
+}
+
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler {
+    completionHandler(NSURLSessionResponseAllow);
+}
+
+- (NSURLSession *)sessionForURL:(NSURL *)url {
+    if ([url.absoluteString isReadabilityURL]) {
+        if (self.ProgressBlock) {
+            return self.readerViewOfflineSessionForeground;
+        }
+        else {
+            return self.readerViewOfflineSession;
+        }
+    }
+    else {
+        if (self.ProgressBlock) {
+            return self.offlineSessionForeground;
+        }
+        else {
+            return self.offlineSession;
+        }
+    }
+}
+
+- (void)cancelLongRunningTasks:(id)sender {
+    NSDate *date = [NSDate date];
+
+    void (^CompletionHandler)(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) = ^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
+        for (NSURLSessionDownloadTask *task in downloadTasks) {
+            if (task.state == NSURLSessionTaskStateRunning) {
+                NSDate *startDate = self.sessionDownloadTasks[@(task.taskIdentifier)];
+                if (startDate) {
+                    NSTimeInterval interval = [date timeIntervalSinceDate:startDate];
+                    if (interval > 30) {
+                        [task cancel];
+                    }
+                }
+            }
+        }
+    };
+
+    [self.readerViewOfflineSession getTasksWithCompletionHandler:CompletionHandler];
+    [self.readerViewOfflineSessionForeground getTasksWithCompletionHandler:CompletionHandler];
+    [self.offlineSession getTasksWithCompletionHandler:CompletionHandler];
+    [self.offlineSessionForeground getTasksWithCompletionHandler:CompletionHandler];
 }
 
 @end

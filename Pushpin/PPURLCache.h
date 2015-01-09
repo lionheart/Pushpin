@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface PPURLCache : NSURLCache <NSURLSessionDelegate, NSURLSessionDownloadDelegate>
+@interface PPURLCache : NSURLCache <NSURLSessionDelegate, NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate, NSURLSessionDataDelegate>
 
 @property (nonatomic) NSUInteger memoryCapacity;
 @property (nonatomic) NSUInteger diskCapacity;
