@@ -61,6 +61,8 @@
 - (void)updateProgressWithCompletedValues;
 - (void)cancelLongRunningTasks:(id)sender;
 
+- (BOOL)hasAvailableSpace;
+
 @end
 
 @implementation PPURLCache
@@ -172,9 +174,8 @@
         self.ProgressBlock = progress;
     }
     self.backgroundURLSessionCompletionHandlers = [NSMutableDictionary dictionary];
-    BOOL hasAvailableSpace = self.currentDiskUsage < self.diskCapacity * 0.99;
 
-    if (hasAvailableSpace) {
+    if (self.hasAvailableSpace) {
         [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
             PPSettings *settings = [PPSettings sharedSettings];
 
@@ -268,6 +269,9 @@
         else {
             [self updateProgressWithCompletedValues];
         }
+    }
+    else {
+        [self updateProgressWithCompletedValues];
     }
 
     completion(self.htmlURLs.count);
@@ -624,22 +628,10 @@
 }
 
 - (void)URLSession:(NSURLSession *)session didBecomeInvalidWithError:(NSError *)error {
-    [self updateProgress];
-}
-
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didSendBodyData:(int64_t)bytesSent totalBytesSent:(int64_t)totalBytesSent totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
-
-}
-
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task needNewBodyStream:(void (^)(NSInputStream *))completionHandler {
-
+    [self updateProgressWithCompletedValues];
 }
 
 #pragma mark - NSURLSessionDownloadDelegate
-
-- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
-
-}
 
 - (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location {
     NSURL *originalURL = downloadTask.originalRequest.URL;
@@ -653,9 +645,9 @@
 
     NSError *error;
     NSData *data = [NSData dataWithContentsOfURL:location options:NSDataReadingUncached error:&error];
-
+    
     if (error) {
-
+        
     }
     NSHTTPURLResponse *httpURLResponse = (NSHTTPURLResponse *)downloadTask.response;
     BOOL hasValidData = data && data.length > 0;
@@ -750,10 +742,10 @@
                         }
                     }
                 }
-
+                
                 for (NSURLSessionDownloadTask *task in tasks) {
                     [task resume];
-
+                    
                     // Set the start date
                     self.sessionDownloadTasks[@(task.taskIdentifier)] = [NSDate date];
                 }
@@ -763,8 +755,7 @@
             });
         }
 
-        BOOL hasAvailableSpace = self.currentDiskUsage < self.diskCapacity * 0.99;
-        if (hasAvailableSpace && downloadTask.response) {
+        if (self.hasAvailableSpace && downloadTask.response) {
             // Only save if current usage is less than 99% of capacity.
             NSURLRequest *finalRequest = [NSURLRequest requestWithURL:originalURL];
             [self storeCachedResponse:cachedURLResponse forRequest:finalRequest];
@@ -782,6 +773,8 @@
 
 - (void)stopAllDownloads {
     if (!self.isBackgroundSessionInvalidated) {
+        self.isBackgroundSessionInvalidated = YES;
+
         [[self offlineSessionForeground] getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
             for (NSURLSessionDataTask *task in dataTasks) {
                 [task cancel];
@@ -798,7 +791,6 @@
 
         [self.sessionDownloadTimer invalidate];
         self.sessionDownloadTimer = nil;
-        self.isBackgroundSessionInvalidated = YES;
         [[PPURLCache operationQueue] cancelAllOperations];
 
         // Set everything to 100%.
@@ -854,11 +846,11 @@
 }
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
-
+    
 }
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didBecomeDownloadTask:(NSURLSessionDownloadTask *)downloadTask {
-
+    
 }
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition))completionHandler {
@@ -886,17 +878,22 @@
 
 - (void)cancelLongRunningTasks:(id)sender {
     NSDate *date = [NSDate date];
-
+    
     void (^CompletionHandler)(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) = ^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
         for (NSURLSessionDownloadTask *task in downloadTasks) {
-            if (task.state == NSURLSessionTaskStateRunning) {
+            if (task.state == NSURLSessionTaskStateRunning && ![self.htmlURLs containsObject:task.originalRequest.URL]) {
                 NSDate *startDate = self.sessionDownloadTasks[@(task.taskIdentifier)];
                 if (startDate) {
                     NSTimeInterval interval = [date timeIntervalSinceDate:startDate];
-                    if (interval > 30) {
+                    
+                    // For each task still downloading, give another 30 seconds of time to finish up. Since tasks are removed as they're completed, if 1 task is left, this will only be 30 seconds at most.
+                    if (interval > downloadTasks.count * 30) {
                         [task cancel];
                     }
                 }
+            }
+            else {
+                [self.sessionDownloadTasks removeObjectForKey:@(task.taskIdentifier)];
             }
         }
     };
@@ -905,6 +902,10 @@
     [self.readerViewOfflineSessionForeground getTasksWithCompletionHandler:CompletionHandler];
     [self.offlineSession getTasksWithCompletionHandler:CompletionHandler];
     [self.offlineSessionForeground getTasksWithCompletionHandler:CompletionHandler];
+}
+
+- (BOOL)hasAvailableSpace {
+    return self.currentDiskUsage < self.diskCapacity * 0.99;
 }
 
 @end
