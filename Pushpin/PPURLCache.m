@@ -147,170 +147,193 @@
     return session;
 }
 
-
 - (void)initiateBackgroundDownloadsWithCompletion:(void (^)(NSInteger))completion progress:(void (^)(NSString *urlString, NSString *assetURLString, NSInteger, NSInteger, NSInteger, NSInteger))progress {
-    NSMutableSet *candidateUrlsToCache = [NSMutableSet set];
-    NSMutableSet *candidateReaderUrlsToCache = [NSMutableSet set];
-    NSMutableArray *urlsToCache = [NSMutableArray array];
-    NSMutableArray *readerUrlsToCache = [NSMutableArray array];
+    __block NSInteger numberOfTasks = 0;
 
-    self.currentURLString = @"";
-    self.currentAssetURLString = @"";
-    self.urlsToDownload = [NSMutableArray array];
-    self.assetURLs = [NSMutableSet set];
-    self.htmlURLs = [NSMutableSet set];
-    self.completedAssetURLs = [NSMutableSet set];
-    self.completedHTMLURLs = [NSMutableSet set];
-    self.assetURLsToHTMLURLs = [NSMutableDictionary dictionary];
-    self.sessionDownloadTasks = [NSMutableDictionary dictionary];
-    self.sessionDownloadTimer = [NSTimer timerWithTimeInterval:1
-                                                        target:self
-                                                      selector:@selector(cancelLongRunningTasks:)
-                                                      userInfo:nil
-                                                       repeats:YES];
-    [[NSRunLoop mainRunLoop] addTimer:self.sessionDownloadTimer forMode:NSRunLoopCommonModes];
+    dispatch_group_t group = dispatch_group_create();
+    dispatch_group_enter(group);
+    dispatch_group_enter(group);
+    dispatch_group_enter(group);
+    dispatch_group_enter(group);
 
-    if (progress) {
-        self.ProgressBlock = progress;
-    }
-    self.backgroundURLSessionCompletionHandlers = [NSMutableDictionary dictionary];
+    void (^CompletionHandler)(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) = ^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
+        numberOfTasks += dataTasks.count + uploadTasks.count + downloadTasks.count;
+        dispatch_group_leave(group);
+    };
 
-    if (self.hasAvailableSpace) {
-        [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
+    [self.readerViewOfflineSession getTasksWithCompletionHandler:CompletionHandler];
+    [self.readerViewOfflineSessionForeground getTasksWithCompletionHandler:CompletionHandler];
+    [self.offlineSession getTasksWithCompletionHandler:CompletionHandler];
+    [self.offlineSessionForeground getTasksWithCompletionHandler:CompletionHandler];
+
+    dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+    if (numberOfTasks == 0) {
+        self.isBackgroundSessionInvalidated = NO;
+
+        NSMutableSet *candidateUrlsToCache = [NSMutableSet set];
+        NSMutableSet *candidateReaderUrlsToCache = [NSMutableSet set];
+        NSMutableArray *urlsToCache = [NSMutableArray array];
+        NSMutableArray *readerUrlsToCache = [NSMutableArray array];
+
+        self.currentURLString = @"";
+        self.currentAssetURLString = @"";
+        self.urlsToDownload = [NSMutableArray array];
+        self.assetURLs = [NSMutableSet set];
+        self.htmlURLs = [NSMutableSet set];
+        self.completedAssetURLs = [NSMutableSet set];
+        self.completedHTMLURLs = [NSMutableSet set];
+        self.assetURLsToHTMLURLs = [NSMutableDictionary dictionary];
+        self.sessionDownloadTasks = [NSMutableDictionary dictionary];
+        self.sessionDownloadTimer = [NSTimer timerWithTimeInterval:1
+                                                            target:self
+                                                          selector:@selector(cancelLongRunningTasks:)
+                                                          userInfo:nil
+                                                           repeats:YES];
+        [[NSRunLoop mainRunLoop] addTimer:self.sessionDownloadTimer forMode:NSRunLoopCommonModes];
+
+        if (progress) {
+            self.ProgressBlock = progress;
+        }
+        self.backgroundURLSessionCompletionHandlers = [NSMutableDictionary dictionary];
+
+        if (self.hasAvailableSpace) {
+            [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
+                PPSettings *settings = [PPSettings sharedSettings];
+
+                NSString *query;
+
+                // Timestamp for last 30 days.
+                NSInteger timestamp = [[NSDate date] timeIntervalSince1970] - (60 * 60 * 24 * 30);
+
+                switch (settings.offlineFetchCriteria) {
+                    case PPOfflineFetchCriteriaUnread:
+                        query = @"SELECT url FROM bookmark WHERE unread=1 ORDER BY created_at DESC";
+                        break;
+
+                    case PPOfflineFetchCriteriaRecent:
+                        query = [NSString stringWithFormat:@"SELECT url FROM bookmark WHERE created_at>%lu ORDER BY created_at DESC", (long)timestamp];
+                        break;
+
+                    case PPOfflineFetchCriteriaUnreadAndRecent:
+                        query = [NSString stringWithFormat:@"SELECT url FROM bookmark WHERE created_at>%lu OR unread=1 ORDER BY created_at DESC", (long)timestamp];
+                        break;
+
+                    case PPOfflineFetchCriteriaEverything:
+#ifdef DEBUG
+                        //                    query = @"SELECT url FROM bookmark WHERE url LIKE '%%www.t-gaap.com%%' ORDER BY created_at DESC";
+                        query = @"SELECT url FROM bookmark ORDER BY created_at DESC";
+#else
+                        query = @"SELECT url FROM bookmark ORDER BY created_at DESC";
+#endif
+                        break;
+                }
+                FMResultSet *results = [db executeQuery:query];
+                while ([results next]) {
+                    NSString *urlString = [results stringForColumn:@"url"];
+                    NSURL *url = [NSURL URLWithString:urlString];
+
+                    // https://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=
+                    NSString *readerURLString = [NSString stringWithFormat:@"http://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [url.absoluteString urlEncodeUsingEncoding:NSUTF8StringEncoding]];
+                    NSURL *readerURL = [NSURL URLWithString:readerURLString];
+
+                    if (url) {
+                        [candidateUrlsToCache addObject:url];
+                    }
+
+                    if (readerURL) {
+                        [candidateReaderUrlsToCache addObject:readerURL];
+                    }
+                }
+                [results close];
+            }];
+
+            [[PPURLCache databaseQueue] inDatabase:^(FMDatabase *db) {
+                for (NSURL *url in candidateUrlsToCache) {
+                    FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM cache WHERE url=?" withArgumentsInArray:@[url.absoluteString]];
+                    [result next];
+                    NSInteger count = [result intForColumnIndex:0];
+                    [result close];
+                    if (count == 0) {
+                        [urlsToCache addObject:url];
+                    }
+                }
+
+                for (NSURL *url in candidateReaderUrlsToCache) {
+                    FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM cache WHERE url=?" withArgumentsInArray:@[url.absoluteString]];
+                    [result next];
+                    NSInteger count = [result intForColumnIndex:0];
+                    [result close];
+                    if (count == 0) {
+                        [readerUrlsToCache addObject:url];
+                    }
+                }
+            }];
+
             PPSettings *settings = [PPSettings sharedSettings];
 
-            NSString *query;
-
-            // Timestamp for last 30 days.
-            NSInteger timestamp = [[NSDate date] timeIntervalSince1970] - (60 * 60 * 24 * 30);
-
-            switch (settings.offlineFetchCriteria) {
-                case PPOfflineFetchCriteriaUnread:
-                    query = @"SELECT url FROM bookmark WHERE unread=1 ORDER BY created_at DESC";
-                    break;
-
-                case PPOfflineFetchCriteriaRecent:
-                    query = [NSString stringWithFormat:@"SELECT url FROM bookmark WHERE created_at>%lu ORDER BY created_at DESC", (long)timestamp];
-                    break;
-
-                case PPOfflineFetchCriteriaUnreadAndRecent:
-                    query = [NSString stringWithFormat:@"SELECT url FROM bookmark WHERE created_at>%lu OR unread=1 ORDER BY created_at DESC", (long)timestamp];
-                    break;
-
-                case PPOfflineFetchCriteriaEverything:
-#ifdef DEBUG
-//                    query = @"SELECT url FROM bookmark WHERE url LIKE '%%www.t-gaap.com%%' ORDER BY created_at DESC";
-                    query = @"SELECT url FROM bookmark ORDER BY created_at DESC";
-#else
-                    query = @"SELECT url FROM bookmark ORDER BY created_at DESC";
-#endif
-                    break;
-            }
-            FMResultSet *results = [db executeQuery:query];
-            while ([results next]) {
-                NSString *urlString = [results stringForColumn:@"url"];
-                NSURL *url = [NSURL URLWithString:urlString];
-
-                // https://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=
-                NSString *readerURLString = [NSString stringWithFormat:@"http://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [url.absoluteString urlEncodeUsingEncoding:NSUTF8StringEncoding]];
-                NSURL *readerURL = [NSURL URLWithString:readerURLString];
-
-                if (url) {
-                    [candidateUrlsToCache addObject:url];
-                }
-
-                if (readerURL) {
-                    [candidateReaderUrlsToCache addObject:readerURL];
-                }
-            }
-            [results close];
-        }];
-
-        [[PPURLCache databaseQueue] inDatabase:^(FMDatabase *db) {
-            for (NSURL *url in candidateUrlsToCache) {
-                FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM cache WHERE url=?" withArgumentsInArray:@[url.absoluteString]];
-                [result next];
-                NSInteger count = [result intForColumnIndex:0];
-                [result close];
-                if (count == 0) {
-                    [urlsToCache addObject:url];
-                }
-            }
-
-            for (NSURL *url in candidateReaderUrlsToCache) {
-                FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM cache WHERE url=?" withArgumentsInArray:@[url.absoluteString]];
-                [result next];
-                NSInteger count = [result intForColumnIndex:0];
-                [result close];
-                if (count == 0) {
-                    [readerUrlsToCache addObject:url];
-                }
-            }
-        }];
-
-        self.isBackgroundSessionInvalidated = NO;
-        PPSettings *settings = [PPSettings sharedSettings];
-
-        for (NSURL *url in readerUrlsToCache) {
-            [self.htmlURLs addObject:url];
-        }
-
-        if (settings.downloadFullWebpageForOfflineCache) {
-            for (NSURL *url in urlsToCache) {
+            for (NSURL *url in readerUrlsToCache) {
                 [self.htmlURLs addObject:url];
             }
-        }
 
-        self.urlsToDownload = [[self.htmlURLs allObjects] mutableCopy];
+            if (settings.downloadFullWebpageForOfflineCache) {
+                for (NSURL *url in urlsToCache) {
+                    [self.htmlURLs addObject:url];
+                }
+            }
 
-        if (self.urlsToDownload.count > 0) {
-            [self queueNextHTMLDownload];
+            self.urlsToDownload = [[self.htmlURLs allObjects] mutableCopy];
+
+            if (self.urlsToDownload.count > 0) {
+                [self queueNextHTMLDownload];
+            }
+            else {
+                [self updateProgressWithCompletedValues];
+            }
         }
         else {
             [self updateProgressWithCompletedValues];
         }
+
+        completion(self.htmlURLs.count);
     }
     else {
-        [self updateProgressWithCompletedValues];
+        completion(0);
     }
-
-    completion(self.htmlURLs.count);
 }
 
 - (void)storeCachedResponse:(NSCachedURLResponse *)cachedResponse forRequest:(NSURLRequest *)request {
-    if (cachedResponse.data) {
-        NSData *responseData = [NSKeyedArchiver archivedDataWithRootObject:cachedResponse];
-        NSString *checksum = [PPURLCache md5ChecksumForData:responseData];
-        
-        // Update the database entry
-        // insert response size, md5, url, date
-        NSString *urlString = request.URL.absoluteString;
-        __block BOOL urlExistsInCache;
-        
-        // Multiple URLs might share the same response data
-        __block BOOL responseDataInCache = YES;
+    NSString *urlString = request.URL.absoluteString;
 
-        // Before we do anything, we check if the cache is full.
-        if (self.hasAvailableSpace) {
-            [[PPURLCache databaseQueue] inDatabase:^(FMDatabase *db) {
-                FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM cache WHERE url=?" withArgumentsInArray:@[urlString]];
-                [result next];
-                urlExistsInCache = [result intForColumnIndex:0] > 0;
-                [result close];
-                
-                result = [db executeQuery:@"SELECT COUNT(*) FROM cache WHERE url!=? AND md5=?" withArgumentsInArray:@[urlString, checksum]];
-                [result next];
-                responseDataInCache = [result intForColumnIndex:0] > 0;
-                [result close];
-                
-                if (!urlExistsInCache || responseDataInCache) {
-                    [db executeUpdate:@"INSERT INTO cache (url, md5, size) VALUES (?, ?, ?)" withArgumentsInArray:@[urlString, checksum, @(responseData.length)]];
-                }
-            }];
-        }
+    NSData *responseData = [NSKeyedArchiver archivedDataWithRootObject:cachedResponse];
+    NSString *checksum = [PPURLCache md5ChecksumForData:responseData];
+
+    // Update the database entry
+    // insert response size, md5, url, date
+    __block BOOL urlExistsInCache;
+
+    // Multiple URLs might share the same response data
+    __block BOOL responseDataInCache = YES;
+
+    // Before we do anything, we check if the cache is full.
+    if (self.hasAvailableSpace) {
+        [[PPURLCache databaseQueue] inDatabase:^(FMDatabase *db) {
+            FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM cache WHERE url=?" withArgumentsInArray:@[urlString]];
+            [result next];
+            urlExistsInCache = [result intForColumnIndex:0] > 0;
+            [result close];
+
+            result = [db executeQuery:@"SELECT COUNT(*) FROM cache WHERE url!=? AND md5=?" withArgumentsInArray:@[urlString, checksum]];
+            [result next];
+            responseDataInCache = [result intForColumnIndex:0] > 0;
+            [result close];
+
+            if (!urlExistsInCache || responseDataInCache) {
+                [db executeUpdate:@"INSERT INTO cache (url, md5, size) VALUES (?, ?, ?)" withArgumentsInArray:@[urlString, checksum, @(responseData.length)]];
+            }
+        }];
         
         // Only update the cache if the file previously did not exist
-        if (self.hasAvailableSpace && !responseDataInCache) {
+        if (!responseDataInCache) {
             NSString *filePath = [PPURLCache filePathForChecksum:checksum];
             
             BOOL isDirectory;
@@ -643,10 +666,6 @@
 
     NSError *error;
     NSData *data = [NSData dataWithContentsOfURL:location options:NSDataReadingUncached error:&error];
-    
-    if (error) {
-        
-    }
     NSHTTPURLResponse *httpURLResponse = (NSHTTPURLResponse *)downloadTask.response;
     BOOL hasValidData = data && data.length > 0;
     BOOL hasValidResponse = httpURLResponse && httpURLResponse.statusCode != 504;
@@ -743,7 +762,7 @@
                 
                 for (NSURLSessionDownloadTask *task in tasks) {
                     [task resume];
-                    
+
                     // Set the start date
                     self.sessionDownloadTasks[@(task.taskIdentifier)] = [NSDate date];
                 }
@@ -754,7 +773,6 @@
         }
 
         if (self.hasAvailableSpace && downloadTask.response) {
-            // Only save if current usage is less than 99% of capacity.
             NSURLRequest *finalRequest = [NSURLRequest requestWithURL:originalURL];
             [self storeCachedResponse:cachedURLResponse forRequest:finalRequest];
 
@@ -763,9 +781,10 @@
                 [self storeCachedResponse:cachedURLResponse forRequest:request];
             }
         }
-        else {
-            [self stopAllDownloads];
-        }
+    }
+
+    if (!self.hasAvailableSpace) {
+        [self stopAllDownloads];
     }
 }
 
@@ -833,6 +852,9 @@
             [self.urlsToDownload removeObjectAtIndex:0];
             NSURLSessionDownloadTask *task = [session downloadTaskWithURL:url];
             [task resume];
+
+            // Set the start date
+            self.sessionDownloadTasks[@(task.taskIdentifier)] = [NSDate date];
         }
 
         [self updateProgress];
@@ -840,15 +862,19 @@
 }
 
 - (void)updateProgress {
-    self.ProgressBlock(self.currentURLString, self.currentAssetURLString, self.completedHTMLURLs.count, self.htmlURLs.count, self.completedAssetURLs.count - self.assetsCompletedAsOfLastHTMLDownload, self.assetURLs.count - self.assetsCompletedAsOfLastHTMLDownload);
+    if (self.ProgressBlock && !self.isBackgroundSessionInvalidated) {
+        self.ProgressBlock(self.currentURLString, self.currentAssetURLString, self.completedHTMLURLs.count, self.htmlURLs.count, self.completedAssetURLs.count - self.assetsCompletedAsOfLastHTMLDownload, self.assetURLs.count - self.assetsCompletedAsOfLastHTMLDownload);
 
-    if (self.completedAssetURLs.count > self.assetURLs.count) {
+        if (self.completedAssetURLs.count > self.assetURLs.count) {
 
+        }
     }
 }
 
 - (void)updateProgressWithCompletedValues {
-    self.ProgressBlock(@"", @"", 1, 1, 1, 1);
+    if (self.ProgressBlock) {
+        self.ProgressBlock(@"", @"", 1, 1, 1, 1);
+    }
 }
 
 #pragma mark - NSURLSessionDataDelegate
@@ -893,7 +919,7 @@
     
     void (^CompletionHandler)(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) = ^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
         for (NSURLSessionDownloadTask *task in downloadTasks) {
-            if (task.state == NSURLSessionTaskStateRunning && ![self.htmlURLs containsObject:task.originalRequest.URL]) {
+            if (task.state == NSURLSessionTaskStateRunning) {
                 NSDate *startDate = self.sessionDownloadTasks[@(task.taskIdentifier)];
                 if (startDate) {
                     NSTimeInterval interval = [date timeIntervalSinceDate:startDate];
@@ -901,6 +927,16 @@
                     // For each task still downloading, give another 30 seconds of time to finish up. Since tasks are removed as they're completed, if 1 task is left, this will only be 30 seconds at most.
                     if (interval > downloadTasks.count * 30) {
                         [task cancel];
+
+                        NSURL *url = task.originalRequest.URL;
+                        NSURLResponse *response = [[NSURLResponse alloc] initWithURL:url
+                                                                            MIMEType:@"text/plain"
+                                                               expectedContentLength:0
+                                                                    textEncodingName:nil];
+                        NSCachedURLResponse *cachedURLResponse = [[NSCachedURLResponse alloc] initWithResponse:response data:nil];
+
+#warning XXX should store each redirect or alternate response in an object and loop through them
+                        [self storeCachedResponse:cachedURLResponse forRequest:task.originalRequest];
                     }
                 }
             }

@@ -10,8 +10,6 @@
 
 @interface PPURLCache : NSURLCache <NSURLSessionDelegate, NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate, NSURLSessionDataDelegate>
 
-@property (nonatomic) NSUInteger memoryCapacity;
-@property (nonatomic) NSUInteger diskCapacity;
 @property (nonatomic) BOOL removeStaleItemsWhenCacheIsFull;
 
 @property (nonatomic, strong) NSMutableDictionary *backgroundURLSessionCompletionHandlers;
