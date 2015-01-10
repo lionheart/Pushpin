@@ -1024,11 +1024,18 @@ static BOOL kPinboardSyncInProgress = NO;
     if (!progress) {
         progress = ^(NSInteger current, NSInteger total) {};
     }
-    
-    PPSettings *settings = [PPSettings sharedSettings];
 
-    // Dispatch serially to ensure that no two syncs happen simultaneously.
-    dispatch_async(PPBookmarkUpdateQueue(), ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        PPSettings *settings = [PPSettings sharedSettings];
+        
+        static dispatch_semaphore_t sem;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            sem = dispatch_semaphore_create(1);
+        });
+        
+        dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
+        
         ASPinboard *pinboard = [ASPinboard sharedInstance];
         Mixpanel *mixpanel = [Mixpanel sharedInstance];
         
@@ -1038,7 +1045,7 @@ static BOOL kPinboardSyncInProgress = NO;
             
             __block NSUInteger total;
             __block NSMutableArray *previousBookmarks;
-
+            
             [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                 [db executeUpdate:@"DELETE FROM bookmark WHERE hash IS NULL"];
                 
@@ -1050,7 +1057,7 @@ static BOOL kPinboardSyncInProgress = NO;
                     NSString *name = [results stringForColumn:@"name"];
                     [tags addObject:name];
                 }
-
+                
                 [results close];
                 
                 NSString *firstHash;
@@ -1062,7 +1069,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 }
                 
                 total = posts.count;
-
+                
                 if (count > 0) {
                     NSDictionary *earliestPost = [self paramsForPost:[posts lastObject] dateError:NO];
                     results = [db executeQuery:@"SELECT meta, hash, url FROM bookmark WHERE created_at >= ? ORDER BY created_at DESC"
@@ -1077,15 +1084,15 @@ static BOOL kPinboardSyncInProgress = NO;
                     [previousBookmarks addObject:@{@"hash": [results stringForColumn:@"hash"],
                                                    @"meta": [results stringForColumn:@"meta"]}];
                 }
-
+                
                 [results close];
             }];
             
             [mixpanel.people set:@"Bookmarks" to:@(total)];
-
+            
             DLog(@"Iterating posts");
             progress(0, total);
-
+            
             NSNotificationQueue *queue = [NSNotificationQueue defaultQueue];
             [queue enqueueNotification:[NSNotification notificationWithName:kPinboardDataSourceProgressNotification
                                                                      object:nil
@@ -1096,7 +1103,7 @@ static BOOL kPinboardSyncInProgress = NO;
             for (id post in posts) {
                 bookmarks[post[@"hash"]] = post;
             }
-
+            
             [PPUtilities generateDiffForPrevious:previousBookmarks
                                          updated:posts
                                             hash:^NSString *(id obj) { return obj[@"hash"]; }
@@ -1195,7 +1202,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                                   NSNotification *note = [NSNotification notificationWithName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(index), @"total": @(total)}];
                                                   [queue enqueueNotification:note postingStyle:NSPostASAP];
                                               }
-
+                                              
                                               DLog(@"Updating tags");
                                               [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash NOT IN (SELECT hash FROM bookmark)"];
                                               [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
@@ -1203,12 +1210,12 @@ static BOOL kPinboardSyncInProgress = NO;
                                           }];
                                           
                                           NSDate *endDate = [NSDate date];
-
+                                          
                                           if (inserted.count > 0 || updated.count > 0 || deleted.count > 0) {
                                               [[PPPinboardDataSource resultCache] removeAllObjects];
                                               [[PPPinboardMetadataCache sharedCache] removeAllObjects];
                                           }
-
+                                          
                                           DLog(@"%f", [endDate timeIntervalSinceDate:startDate]);
                                           DLog(@"added %lu", (unsigned long)[inserted count]);
                                           DLog(@"updated %lu", (unsigned long)[updated count]);
@@ -1219,33 +1226,35 @@ static BOOL kPinboardSyncInProgress = NO;
                                           
                                           [settings setLastUpdated:[NSDate date]];
                                           kPinboardSyncInProgress = NO;
-
+                                          
                                           progress(total, total);
                                           
                                           NSNotification *note = [NSNotification notificationWithName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(total), @"total": @(total)}];
                                           [queue enqueueNotification:note postingStyle:NSPostASAP];
                                           
                                           [[Mixpanel sharedInstance] track:@"Synced Pinboard bookmarks" properties:@{@"Duration": @([endDate timeIntervalSinceDate:startDate])}];
-
+                                          
                                           BOOL updatesMade = addCount > 0 || updateCount > 0 || deleteCount > 0;
                                           if (skipStarred) {
                                               completion(updatesMade, nil);
+                                              dispatch_semaphore_signal(sem);
                                           }
                                           else {
                                               [self updateStarredPostsWithCompletion:^(NSError *error) {
                                                   completion(updatesMade, error);
+                                                  dispatch_semaphore_signal(sem);
                                               }];
                                           }
                                       }];
         };
-
+        
         void (^BookmarksUpdatedTimeSuccessBlock)(NSDate *) = ^(NSDate *updateTime) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 NSDate *lastLocalUpdate = [settings lastUpdated];
                 BOOL neverUpdated = lastLocalUpdate == nil;
                 BOOL outOfSyncWithAPI = [lastLocalUpdate compare:updateTime] == NSOrderedAscending;
                 BOOL lastUpdatedMoreThanFiveMinutesAgo = abs([lastLocalUpdate timeIntervalSinceNow]) >= 300;
-
+                
                 if (neverUpdated || outOfSyncWithAPI || lastUpdatedMoreThanFiveMinutesAgo) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [pinboard bookmarksWithTags:nil
@@ -1257,6 +1266,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                             success:^(NSArray *bookmarks, NSDictionary *parameters) {
                                                 if ([bookmarks count] == 0) {
                                                     completion(NO, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                                                    dispatch_semaphore_signal(sem);
                                                 }
                                                 else {
                                                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -1266,6 +1276,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                             }
                                             failure:^(NSError *error) {
                                                 completion(NO, error);
+                                                dispatch_semaphore_signal(sem);
                                             }];
                     });
                 }
@@ -1273,6 +1284,7 @@ static BOOL kPinboardSyncInProgress = NO;
                     kPinboardSyncInProgress = NO;
                     [self updateStarredPostsWithCompletion:^(NSError *error) {
                         completion(NO, error);
+                        dispatch_semaphore_signal(sem);
                     }];
                 }
             });
@@ -1281,6 +1293,7 @@ static BOOL kPinboardSyncInProgress = NO;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [pinboard lastUpdateWithSuccess:BookmarksUpdatedTimeSuccessBlock failure:^(NSError *error) {
                 completion(NO, error);
+                dispatch_semaphore_signal(sem);
             }];
         });
     });
@@ -1320,19 +1333,33 @@ static BOOL kPinboardSyncInProgress = NO;
 - (void)reloadBookmarksWithCompletion:(void (^)(NSError *))completion
                                cancel:(BOOL (^)())cancel
                                 width:(CGFloat)width {
-    NSDate *timeWhenReloadBegan = [NSDate date];
-    self.latestReloadTime = timeWhenReloadBegan;
-    dispatch_async(PPBookmarkReloadQueue(), ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSDate *timeWhenReloadBegan = [NSDate date];
+        self.latestReloadTime = timeWhenReloadBegan;
+        
+        static dispatch_semaphore_t sem;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            sem = dispatch_semaphore_create(1);
+        });
+        
+        dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
+        
+        void (^CancelBlock)() = ^{
+            completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+            dispatch_semaphore_signal(sem);
+        };
+        
         self.mostRecentWidth = width;
-
+        
         void (^HandleSearch)(NSString *, NSArray *) = ^(NSString *query, NSArray *parameters) {
             NSMutableArray *updatedBookmarks = [NSMutableArray array];
             __block NSInteger row = 0;
-
+            
             NSMutableDictionary *newTagsWithFrequencies = [NSMutableDictionary dictionary];
             
             if (cancel && cancel()) {
-                completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                CancelBlock();
                 return;
             }
             
@@ -1340,14 +1367,14 @@ static BOOL kPinboardSyncInProgress = NO;
             __block NSMutableSet *urls = [NSMutableSet set];
             [[PPURLCache databaseQueue] inDatabase:^(FMDatabase *db) {
                 FMResultSet *results = [db executeQuery:@"SELECT url FROM cache"];
-
+                
                 while ([results next]) {
                     NSString *url = [results stringForColumnIndex:0];
                     url = [url originalURLString];
                     [urls addObject:url];
                 }
             }];
-
+            
             NSString *key = [query stringByAppendingString:[parameters componentsJoinedByString:@""]];
             NSString *checksum = [PPURLCache md5ChecksumForData:[key dataUsingEncoding:NSUTF8StringEncoding]];
             
@@ -1359,9 +1386,8 @@ static BOOL kPinboardSyncInProgress = NO;
             else {
                 [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                     FMResultSet *results = [db executeQuery:query withArgumentsInArray:parameters];
-
+                    
                     if (cancel && cancel()) {
-                        completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                         shouldReturn = YES;
                         return;
                     }
@@ -1376,44 +1402,44 @@ static BOOL kPinboardSyncInProgress = NO;
                     }
                     
                     [results close];
-
+                    
                     if (cancel && cancel()) {
                         DLog(@"B: Cancelling search for query (%@)", self.searchQuery);
-                        completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                         shouldReturn = YES;
                         return;
                     }
-
+                    
                     FMResultSet *tagResult = [db executeQuery:@"SELECT name, count FROM tag ORDER BY count DESC;"];
                     while ([tagResult next]) {
                         NSString *tag = [tagResult stringForColumnIndex:0];
                         NSNumber *count = [tagResult objectForColumnIndex:1];
                         newTagsWithFrequencies[tag] = count;
                     }
-
+                    
                     [tagResult close];
                 }];
-
+                
                 result = [[PPCachedResult alloc] init];
                 result.tagsWithFrequencies = newTagsWithFrequencies;
                 result.bookmarks = updatedBookmarks;
-
+                
                 [[PPPinboardDataSource resultCache] setObject:result forKey:checksum];
             }
             
             if (shouldReturn) {
+                CancelBlock();
                 return;
             }
-
+            
             if (cancel && cancel()) {
                 DLog(@"C: Cancelling search for query (%@)", self.searchQuery);
-                completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                CancelBlock();
                 return;
             }
             
             NSMutableArray *newMetadata = [NSMutableArray array];
             NSMutableArray *newCompressedMetadata = [NSMutableArray array];
-
+            
             for (NSDictionary *post in updatedBookmarks) {
                 PostMetadata *metadata = [PostMetadata metadataForPost:post
                                                             compressed:NO
@@ -1433,7 +1459,7 @@ static BOOL kPinboardSyncInProgress = NO;
             // We run this block to make sure that these results should be the latest on file
             if (cancel && cancel() && self.latestReloadTime != timeWhenReloadBegan) {
                 DLog(@"Cancelling search for query (%@)", self.searchQuery);
-                completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
+                CancelBlock();
             }
             else {
                 self.posts = updatedBookmarks;
@@ -1441,6 +1467,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 self.compressedMetadata = newCompressedMetadata;
                 self.tagsWithFrequency = newTagsWithFrequencies;
                 
+                dispatch_semaphore_signal(sem);
                 completion(nil);
             }
         };
@@ -1481,8 +1508,13 @@ static BOOL kPinboardSyncInProgress = NO;
             else {
                 if (!self.fullTextSearchAlertView.presentingViewController) {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        [[UIViewController lhs_topViewController] presentViewController:self.fullTextSearchAlertView animated:YES completion:nil];
+                        [[UIViewController lhs_topViewController] presentViewController:self.fullTextSearchAlertView animated:YES completion:^{
+                            dispatch_semaphore_signal(sem);
+                        }];
                     });
+                }
+                else {
+                    dispatch_semaphore_signal(sem);
                 }
             }
         }
