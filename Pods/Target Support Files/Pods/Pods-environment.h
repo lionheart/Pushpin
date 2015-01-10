@@ -100,7 +100,7 @@
 #define COCOAPODS_POD_AVAILABLE_LHSCategoryCollection
 #define COCOAPODS_VERSION_MAJOR_LHSCategoryCollection 0
 #define COCOAPODS_VERSION_MINOR_LHSCategoryCollection 0
-#define COCOAPODS_VERSION_PATCH_LHSCategoryCollection 13
+#define COCOAPODS_VERSION_PATCH_LHSCategoryCollection 17
 
 // LHSDelicious
 #define COCOAPODS_POD_AVAILABLE_LHSDelicious

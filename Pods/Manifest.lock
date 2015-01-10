@@ -31,7 +31,7 @@ PODS:
   - hpple (0.2.0)
   - HTMLParser (0.0.1)
   - KeychainItemWrapper (1.2)
-  - LHSCategoryCollection (0.0.13)
+  - LHSCategoryCollection (0.0.17)
   - LHSDelicious (0.1.1):
     - AFNetworking (~> 2.2.0)
     - XMLDictionary (~> 1.3)
@@ -70,7 +70,7 @@ DEPENDENCIES:
   - FMDB (= 2.3)
   - HTMLParser (from `Specs/HTMLParser.podspec`)
   - KeychainItemWrapper (= 1.2)
-  - LHSCategoryCollection (= 0.0.13)
+  - LHSCategoryCollection (= 0.0.17)
   - LHSDelicious (from `Vendor/LHSDelicious`)
   - LHSDiigo (from `Vendor/LHSDiigo`)
   - LHSFMDatabaseAdditions (from `Specs/LHSFMDatabaseAdditions.podspec`)
@@ -115,7 +115,7 @@ SPEC CHECKSUMS:
   hpple: f4eb7c21a8db83ec264e5d614ec7509e10e5adec
   HTMLParser: cb83b00acd806cc24f0dd75998c51d20feeef95a
   KeychainItemWrapper: 577e9e920185892873ded075b8ceb730bebdfd91
-  LHSCategoryCollection: 565c85a77f4abe5c034822e28a335f60070e227e
+  LHSCategoryCollection: d82650a35afbd4c9ca5ae2925f8f15462f6c427c
   LHSDelicious: f504d944af93d22dc94628b3ee947d8a8892d1bf
   LHSDiigo: 1ba2e8b3c56de11bef4054d57b5abf5b03bdd732
   LHSFMDatabaseAdditions: 476a3baaf7af6583f258e672a59eb0f4e4ec639f
