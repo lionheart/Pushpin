@@ -297,7 +297,7 @@
     metadata.descriptionHeight = descriptionSize.height;
     metadata.badgeHeight = badgeHeight;
     metadata.linkHeight = linkSize.height;
-    metadata.height = @(titleSize.height + linkSize.height + descriptionSize.height + badgeHeight + 17);
+    metadata.height = @(titleSize.height + linkSize.height + descriptionSize.height + badgeHeight + 16);
     metadata.titleString = titleString;
     metadata.descriptionString = descriptionString;
     metadata.linkString = linkString;
