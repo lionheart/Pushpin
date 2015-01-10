@@ -159,23 +159,23 @@
             
             switch (settings.offlineFetchCriteria) {
                 case PPOfflineFetchCriteriaUnread:
-                    query = @"SELECT url FROM bookmark WHERE unread=1 ORDER BY created_at DESC";
+                    query = @"SELECT url FROM bookmark WHERE unread=1 ORDER BY created_at ASC";
                     break;
                     
                 case PPOfflineFetchCriteriaRecent:
-                    query = [NSString stringWithFormat:@"SELECT url FROM bookmark WHERE created_at>%lu ORDER BY created_at DESC", (long)timestamp];
+                    query = [NSString stringWithFormat:@"SELECT url FROM bookmark WHERE created_at>%lu ORDER BY created_at ASC", (long)timestamp];
                     break;
                     
                 case PPOfflineFetchCriteriaUnreadAndRecent:
-                    query = [NSString stringWithFormat:@"SELECT url FROM bookmark WHERE created_at>%lu OR unread=1 ORDER BY created_at DESC", (long)timestamp];
+                    query = [NSString stringWithFormat:@"SELECT url FROM bookmark WHERE created_at>%lu OR unread=1 ORDER BY created_at ASC", (long)timestamp];
                     break;
                     
                 case PPOfflineFetchCriteriaEverything:
 #ifdef DEBUG
-                        query = @"SELECT url FROM bookmark WHERE url LIKE '%%thesaurus.com%%' ORDER BY created_at DESC";
+                        query = @"SELECT url FROM bookmark WHERE url LIKE '%%thesaurus.com%%' ORDER BY created_at ASC";
 //                    query = @"SELECT url FROM bookmark ORDER BY created_at DESC";
 #else
-                    query = @"SELECT url FROM bookmark ORDER BY created_at DESC";
+                    query = @"SELECT url FROM bookmark ORDER BY created_at ASC";
 #endif
                     break;
             }
