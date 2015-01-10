@@ -36,6 +36,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.definesPresentationContext = YES;
     self.title = NSLocalizedString(@"Offline Settings", nil);
     
     PPSettings *settings = [PPSettings sharedSettings];

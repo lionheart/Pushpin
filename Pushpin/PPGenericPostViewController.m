@@ -336,83 +336,85 @@ static NSInteger PPBookmarkEditMaximum = 25;
     
     self.viewIsAppearing = YES;
     
-    if ([self.postDataSource respondsToSelector:@selector(barTintColor)]) {
-        [self.navigationController.navigationBar setBarTintColor:[self.postDataSource barTintColor]];
-    }
-    
-    if (!self.title && [self.postDataSource respondsToSelector:@selector(title)]) {
-        self.title = [self.postDataSource title];
-    }
-    
-    if (!self.navigationItem.titleView && [self.postDataSource respondsToSelector:@selector(titleViewWithDelegate:)]) {
-        PPTitleButton *titleView = (PPTitleButton *)[self.postDataSource titleViewWithDelegate:self];
-        self.navigationItem.titleView = titleView;
-    }
-
-    if (![self.view.constraints containsObject:self.multipleEditToolbarBottomConstraint]) {
-        self.multipleEditToolbarBottomConstraint = [NSLayoutConstraint constraintWithItem:self.multiToolbarView
-                                                                                attribute:NSLayoutAttributeBottom
-                                                                                relatedBy:NSLayoutRelationEqual
-                                                                                   toItem:self.tableView
-                                                                                attribute:NSLayoutAttributeBottom
-                                                                               multiplier:1
-                                                                                 constant:kToolbarHeight];
-        [self.view addConstraint:self.multipleEditToolbarBottomConstraint];
-    }
-    
-    UIViewController *backViewController = (self.navigationController.viewControllers.count >= 2) ? self.navigationController.viewControllers[self.navigationController.viewControllers.count - 2] : nil;
-
-    self.selectAllBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Mark All", nil)
-                                                                   style:UIBarButtonItemStyleDone
-                                                                  target:self
-                                                                  action:@selector(toggleSelectAllBookmarks:)];
-    self.selectAllBarButtonItem.possibleTitles = [NSSet setWithObjects:NSLocalizedString(@"Mark All", nil), NSLocalizedString(@"Mark None", nil), nil];
-
-    if (![UIApplication isIPad] && [backViewController isKindOfClass:[PPFeedListViewController class]]) {
-        self.hamburgerBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"navigation-list"]
-                                                         landscapeImagePhone:[UIImage imageNamed:@"navigation-list"]
-                                                                       style:UIBarButtonItemStylePlain
-                                                                      target:self
-                                                                      action:@selector(popViewController)];
-
-        self.navigationItem.leftBarButtonItem = self.hamburgerBarButtonItem;
-        self.navigationItem.accessibilityLabel = NSLocalizedString(@"Back", nil);
-        
-        __weak id weakself = self;
-        self.navigationController.interactivePopGestureRecognizer.delegate = weakself;
-    }
-    
-    if (self.navigationController.navigationBarHidden) {
-        [self.navigationController setNavigationBarHidden:NO animated:NO];
-    }
-    
-    if ([self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)]) {
-        self.editButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Edit", nil)
-                                                           style:UIBarButtonItemStylePlain
-                                                          target:self
-                                                          action:@selector(toggleEditingMode:)];
-
-        self.navigationItem.rightBarButtonItem = self.editButton;
-    }
-    
-    PPSettings *settings = [PPSettings sharedSettings];
-    self.compressPosts = settings.compressPosts;
-    PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
-
-    [self updateFromLocalDatabaseWithCallback:^{
-        if (delegate.connectionAvailable) {
-            [self.postDataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
-                if (error) {
-                    [self responseFailureHandler:error];
-                }
-                else {
-                    if (updated) {
-                        [self updateFromLocalDatabaseWithCallback:nil];
-                    }
-                }
-            } progress:nil];
+    if (!self.searchController.isActive) {
+        if ([self.postDataSource respondsToSelector:@selector(barTintColor)]) {
+            [self.navigationController.navigationBar setBarTintColor:[self.postDataSource barTintColor]];
         }
-    }];
+
+        if (!self.title && [self.postDataSource respondsToSelector:@selector(title)]) {
+            self.title = [self.postDataSource title];
+        }
+
+        if (!self.navigationItem.titleView && [self.postDataSource respondsToSelector:@selector(titleViewWithDelegate:)]) {
+            PPTitleButton *titleView = (PPTitleButton *)[self.postDataSource titleViewWithDelegate:self];
+            self.navigationItem.titleView = titleView;
+        }
+
+        if (![self.view.constraints containsObject:self.multipleEditToolbarBottomConstraint]) {
+            self.multipleEditToolbarBottomConstraint = [NSLayoutConstraint constraintWithItem:self.multiToolbarView
+                                                                                    attribute:NSLayoutAttributeBottom
+                                                                                    relatedBy:NSLayoutRelationEqual
+                                                                                       toItem:self.tableView
+                                                                                    attribute:NSLayoutAttributeBottom
+                                                                                   multiplier:1
+                                                                                     constant:kToolbarHeight];
+            [self.view addConstraint:self.multipleEditToolbarBottomConstraint];
+        }
+
+        UIViewController *backViewController = (self.navigationController.viewControllers.count >= 2) ? self.navigationController.viewControllers[self.navigationController.viewControllers.count - 2] : nil;
+
+        self.selectAllBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Mark All", nil)
+                                                                       style:UIBarButtonItemStyleDone
+                                                                      target:self
+                                                                      action:@selector(toggleSelectAllBookmarks:)];
+        self.selectAllBarButtonItem.possibleTitles = [NSSet setWithObjects:NSLocalizedString(@"Mark All", nil), NSLocalizedString(@"Mark None", nil), nil];
+
+        if (![UIApplication isIPad] && [backViewController isKindOfClass:[PPFeedListViewController class]]) {
+            self.hamburgerBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"navigation-list"]
+                                                             landscapeImagePhone:[UIImage imageNamed:@"navigation-list"]
+                                                                           style:UIBarButtonItemStylePlain
+                                                                          target:self
+                                                                          action:@selector(popViewController)];
+
+            self.navigationItem.leftBarButtonItem = self.hamburgerBarButtonItem;
+            self.navigationItem.accessibilityLabel = NSLocalizedString(@"Back", nil);
+
+            __weak id weakself = self;
+            self.navigationController.interactivePopGestureRecognizer.delegate = weakself;
+        }
+
+        if (self.navigationController.navigationBarHidden) {
+            [self.navigationController setNavigationBarHidden:NO animated:NO];
+        }
+
+        if ([self.postDataSource respondsToSelector:@selector(deletePostsAtIndexPaths:callback:)]) {
+            self.editButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Edit", nil)
+                                                               style:UIBarButtonItemStylePlain
+                                                              target:self
+                                                              action:@selector(toggleEditingMode:)];
+
+            self.navigationItem.rightBarButtonItem = self.editButton;
+        }
+
+        PPSettings *settings = [PPSettings sharedSettings];
+        self.compressPosts = settings.compressPosts;
+        PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
+
+        [self updateFromLocalDatabaseWithCallback:^{
+            if (delegate.connectionAvailable) {
+                [self.postDataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
+                    if (error) {
+                        [self responseFailureHandler:error];
+                    }
+                    else {
+                        if (updated) {
+                            [self updateFromLocalDatabaseWithCallback:nil];
+                        }
+                    }
+                } progress:nil];
+            }
+        }];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -510,10 +512,6 @@ static NSInteger PPBookmarkEditMaximum = 25;
     id <PPDataSource> dataSource = [self dataSourceForTableView:self.selectedTableView];
     PPSettings *settings = [PPSettings sharedSettings];
     
-    if (self.searchController.active) {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
-    
     if (self.selectedTableView.editing) {
         NSUInteger selectedRowCount = [self.selectedTableView.indexPathsForSelectedRows count];
         [self alertIfSelectedBookmarkCountExceedsRecommendation:selectedRowCount
@@ -553,9 +551,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                     [[PPAppDelegate sharedDelegate].window.rootViewController presentViewController:self.webViewController animated:YES completion:nil];
                 }
                 else {
-                    if ([self.navigationController topViewController] == self) {
-                        [self presentViewController:self.webViewController animated:YES completion:nil];
-                    }
+                    [self.searchController presentViewController:self.webViewController animated:YES completion:nil];
                 }
             }
             else {
@@ -1985,6 +1981,10 @@ static NSInteger PPBookmarkEditMaximum = 25;
             [self updateSearchResultsForSearchPerformedAtTime:self.latestSearchTime];
         }
     }
+}
+
+- (void)didPresentSearchController:(UISearchController *)searchController {
+    searchController.view.frame = (CGRect){{0, 0}, {CGRectGetWidth(self.view.frame), self.view.frame.origin.y + CGRectGetHeight(self.view.frame)}};
 }
 
 - (void)didDismissSearchController:(UISearchController *)searchController {
