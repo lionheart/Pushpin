@@ -41,10 +41,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.title = @"Downloading";
+    self.title = NSLocalizedString(@"Downloading", nil);
     self.view.backgroundColor = HEX(0xF7F9FDFF);
     self.edgesForExtendedLayout = UIRectEdgeNone;
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Stop"
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Stop", nil)
                                                                               style:UIBarButtonItemStyleDone
                                                                              target:self
                                                                              action:@selector(dismissViewController)];
@@ -88,9 +88,28 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
+    void (^Completion)() = ^{
+        self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Done", nil);
+        self.navigationItem.leftBarButtonItem = nil;
+        
+        self.htmlLabel.text = NSLocalizedString(@"Download complete!", nil);
+        self.htmlDetail.text = @"100%";
+        [self.htmlProgressView setProgress:1 animated:NO];
+        self.downloadInProgress = NO;
+        
+        [self.tableView reloadData];
+        
+        [[PPPinboardMetadataCache sharedCache] removeAllObjects];
+    };
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         PPURLCache *cache = [PPAppDelegate sharedDelegate].urlCache;
         [cache initiateBackgroundDownloadsWithCompletion:^(NSInteger count) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (count == 0) {
+                    Completion();
+                }
+            });
         } progress:^(NSString *urlString, NSString *assetURLString, NSInteger htmlCurrent, NSInteger htmlTotal, NSInteger assetCurrent, NSInteger assetTotal) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSInteger oldStaticAssetTotal = self.numberOfStaticAssets;
@@ -107,6 +126,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         else if (oldStaticAssetTotal == 0) {
                             [self.tableView beginUpdates];
                             [self.tableView insertSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
+                            [self.tableView endUpdates];
+                        }
+                        else if (!self.downloadInProgress && oldStaticAssetTotal > 0) {
+                            [self.tableView beginUpdates];
+                            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
                             [self.tableView endUpdates];
                         }
                     }
@@ -141,17 +165,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     [self.htmlProgressView setProgress:htmlProgress animated:YES];
                 }
                 else {
-                    self.navigationItem.rightBarButtonItem.title = @"Done";
-                    self.navigationItem.leftBarButtonItem = nil;
-
-                    self.htmlLabel.text = NSLocalizedString(@"Download complete!", nil);
-                    self.htmlDetail.text = @"100%";
-                    [self.htmlProgressView setProgress:1 animated:NO];
-                    self.downloadInProgress = NO;
-
-                    [self.tableView reloadData];
-
-                    [[PPPinboardMetadataCache sharedCache] removeAllObjects];
+                    Completion();
                 }
             });
         }];
