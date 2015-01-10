@@ -355,7 +355,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 }
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer {
-    if (recognizer == self.longPressGestureRecognizer || recognizer == self.readerLongPressGestureRecognizer) {
+    if (recognizer == self.longPressGestureRecognizer || recognizer == self.readerLongPressGestureRecognizer && !self.selectedActionSheet) {
         UIWebView *webView = (UIWebView *)recognizer.view;
 
         // Get the coordinates of the selected element
@@ -365,11 +365,6 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         CGFloat scaleRatio = webViewContentWidth / viewSize.width;
         webViewCoordinates.x = webViewCoordinates.x * scaleRatio;
         webViewCoordinates.y = webViewCoordinates.y * scaleRatio;
-        
-        // We were getting multiple gesture notifications, so make sure we only process one
-        if (self.selectedActionSheetIsVisible) {
-            return;
-        }
 
         // Search the DOM for the link - will just return immediately if there is an A element at our exact coordinates
         [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"PINBOARD_ACTIVE_ELEMENT = PINBOARD_CLOSEST_LINK_AT(%f, %f)", webViewCoordinates.x, webViewCoordinates.y]];
@@ -394,24 +389,25 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         [self.selectedActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Add to Pinboard", nil)
                                                    style:UIAlertActionStyleDefault
                                                  handler:^(UIAlertAction *action) {
-                                                     [self setSelectedActionSheetIsVisible:NO];
                                                      [self showAddViewController:self.selectedLink];
+                                                     self.selectedActionSheet = nil;
                                                  }];
         
         [self.selectedActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Copy URL", nil)
                                                    style:UIAlertActionStyleDefault
                                                  handler:^(UIAlertAction *action) {
-                                                     [self setSelectedActionSheetIsVisible:NO];
-                                                     [self copyURL:[NSURL URLWithString:[self.selectedLink valueForKey:@"url"]]];
+                                                     [self copyURL:[NSURL URLWithString:self.selectedLink[@"url"]]];
+                                                     self.selectedActionSheet = nil;
                                                  }];
         
         [self.selectedActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                    style:UIAlertActionStyleCancel
-                                                 handler:nil];
-
-        [self setSelectedActionSheetIsVisible:YES];
+                                                 handler:^(UIAlertAction *action) {
+                                                     self.selectedActionSheet = nil;
+                                                 }];
 
         self.selectedActionSheet.popoverPresentationController.sourceView = self.view;
+        self.selectedActionSheet.popoverPresentationController.sourceRect = (CGRect){webViewCoordinates, {1, 1}};
         [self presentViewController:self.selectedActionSheet animated:YES completion:nil];
     }
     else if (recognizer == self.backButtonLongPressGestureRecognizer) {
@@ -840,6 +836,10 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 #pragma mark - UIWebViewDelegate
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+    if (self.selectedActionSheet) {
+        return NO;
+    }
+
     if (navigationType == UIWebViewNavigationTypeLinkClicked) {
         // Reset the "loaded" state on the reader view.
         [[self.readerWebView stringByEvaluatingJavaScriptFromString:@"isLoaded"] isEqualToString:@"false"];
