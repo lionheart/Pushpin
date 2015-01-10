@@ -1888,7 +1888,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
     UIViewController *vc = (UIViewController *)[dataSource editViewControllerForPostAtIndex:index callback:^{
         [self updateFromLocalDatabase];
     }];
-    
+    vc.transitioningDelegate = self.shrinkBackTransition;
     return vc;
 }
 
