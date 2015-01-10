@@ -438,7 +438,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                                                  }];
 
             [self.backActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
-                                                   style:UIAlertActionStyleDefault
+                                                   style:UIAlertActionStyleCancel
                                                  handler:nil];
             CGPoint point = [self.backButtonLongPressGestureRecognizer locationInView:self.backButton];
             
