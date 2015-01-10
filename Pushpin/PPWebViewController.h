@@ -39,7 +39,6 @@
 @property (nonatomic, strong) UILongPressGestureRecognizer *readerLongPressGestureRecognizer;
 @property (nonatomic, strong) UILongPressGestureRecognizer *backButtonLongPressGestureRecognizer;
 
-@property (nonatomic) BOOL actionSheetIsVisible;
 @property (nonatomic) BOOL alreadyLoaded;
 @property (nonatomic) BOOL isFullscreen;
 @property (nonatomic) BOOL selectedActionSheetIsVisible;
