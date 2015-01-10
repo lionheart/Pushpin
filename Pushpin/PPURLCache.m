@@ -601,9 +601,12 @@
     if ([self.htmlURLs containsObject:url]) {
         [self.completedHTMLURLs addObject:url];
         dispatch_semaphore_signal([PPURLCache HTMLDownloadSemaphore]);
-        
-        // Don't keep going until all assets have been processed.
-        dispatch_semaphore_wait([PPURLCache assetsProcessedSemaphore], DISPATCH_TIME_FOREVER);
+
+        // If there was an error, no assets will be associated with this URL.
+        if (!error) {
+            // Don't keep going until all assets have been processed.
+            dispatch_semaphore_wait([PPURLCache assetsProcessedSemaphore], DISPATCH_TIME_FOREVER);
+        }
     }
     else {
         [self.completedAssetURLs addObject:url];
@@ -740,8 +743,6 @@
             self.currentAssetURLString = @"-";
             [self updateProgress];
         }
-        
-        dispatch_semaphore_signal([PPURLCache assetsProcessedSemaphore]);
 
         if (self.hasAvailableSpace && downloadTask.response) {
             NSURLRequest *finalRequest = [NSURLRequest requestWithURL:originalURL];
@@ -754,6 +755,8 @@
         }
     }
     
+    dispatch_semaphore_signal([PPURLCache assetsProcessedSemaphore]);
+
     if (!self.hasAvailableSpace) {
         [self stopAllDownloads];
     }
