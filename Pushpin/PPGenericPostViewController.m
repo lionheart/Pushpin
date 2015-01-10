@@ -742,7 +742,9 @@ static NSInteger PPBookmarkEditMaximum = 25;
                         }
                     }
                     else {
+#if !DEBUG
                         CLS_LOG(@"Table View Reload 2");
+#endif
                         [self.tableView reloadData];
                     }
                     
@@ -858,7 +860,9 @@ static NSInteger PPBookmarkEditMaximum = 25;
                 [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
             }
 
+#if !DEBUG
             CLS_LOG(@"Table View Reload 3");
+#endif
             [self updateFromLocalDatabaseWithCallback:^{
                 [UIView animateWithDuration:0.25 animations:^{
                     UITextField *searchTextField = [self.searchController.searchBar valueForKey:@"_searchField"];
@@ -878,7 +882,9 @@ static NSInteger PPBookmarkEditMaximum = 25;
 - (void)deletePosts:(NSArray *)posts dataSource:(id<PPDataSource>)dataSource {
     [dataSource deletePosts:posts callback:^(NSIndexPath *indexPath) {
         dispatch_async(dispatch_get_main_queue(), ^{
+#if !DEBUG
             CLS_LOG(@"Table View Reload 4");
+#endif
             
             if (dataSource == self.searchPostDataSource) {
                 [self.searchResultsController.tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -1613,8 +1619,10 @@ static NSInteger PPBookmarkEditMaximum = 25;
             NSIndexPath *currentIndexPath = indexPathsForVisibleRows[row];
             
             self.compressPosts = !self.compressPosts;
-            
+
+#if !DEBUG
             CLS_LOG(@"Table View Reload 12");
+#endif
             [self.tableView beginUpdates];
             [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView endUpdates];
