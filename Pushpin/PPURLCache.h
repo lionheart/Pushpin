@@ -14,10 +14,6 @@
 
 @property (nonatomic, strong) NSMutableDictionary *backgroundURLSessionCompletionHandlers;
 
-- (instancetype)initWithMemoryCapacity:(NSUInteger)memoryCapacity
-                          diskCapacity:(NSUInteger)diskCapacity
-                              diskPath:(NSString *)path;
-
 - (void)storeCachedResponse:(NSCachedURLResponse *)cachedResponse forRequest:(NSURLRequest *)request;
 - (NSCachedURLResponse *)cachedResponseForRequest:(NSURLRequest *)request;
 - (void)removeCachedResponseForRequest:(NSURLRequest *)request;
@@ -34,6 +30,7 @@
 - (void)stopAllDownloads;
 + (FMDatabaseQueue *)databaseQueue;
 + (void)migrateDatabase;
++ (void)resetDatabase;
 + (NSString *)md5ChecksumForData:(NSData *)data;
 
 @end
