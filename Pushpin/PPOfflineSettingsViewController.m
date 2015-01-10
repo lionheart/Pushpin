@@ -296,6 +296,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
         case PPOfflineSettingsSectionManualDownload: {
             PPOfflineDownloadViewController *offlineDownloadViewController = [[PPOfflineDownloadViewController alloc] init];
             PPNavigationController *navigation = [[PPNavigationController alloc] initWithRootViewController:offlineDownloadViewController];
+            navigation.modalPresentationStyle = UIModalPresentationFormSheet;
             [self presentViewController:navigation animated:YES completion:nil];
             break;
         }
