@@ -260,10 +260,10 @@ static NSInteger kEditButtonOuterMargin = 20;
         postMetrics[@"badgeHeight"] = @(height);
         [mainContentView addSubview:self.badgeWrapperView];
         [mainContentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:views];
-        [mainContentView lhs_addConstraints:@"V:|-5-[title(titleHeight)][link(linkHeight)]-1-[description(descriptionHeight)]-5-[badges(badgeHeight)]" metrics:postMetrics views:views];
+        [mainContentView lhs_addConstraints:@"V:|-5-[title(titleHeight)][link(linkHeight)][description(descriptionHeight)]-5-[badges(badgeHeight)]" metrics:postMetrics views:views];
     }
     else {
-        [mainContentView lhs_addConstraints:@"V:|-5-[title(titleHeight)][link(linkHeight)]-1-[description(descriptionHeight)]" metrics:postMetrics views:views];
+        [mainContentView lhs_addConstraints:@"V:|-5-[title(titleHeight)][link(linkHeight)][description(descriptionHeight)]" metrics:postMetrics views:views];
     }
 }
 
