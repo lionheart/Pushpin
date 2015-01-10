@@ -41,7 +41,6 @@
 + (NSMutableSet *)staticAssetURLsForCachedURLResponse:(NSCachedURLResponse *)cachedURLResponse;
 
 + (void)migrateDatabase;
-+ (void)deleteDatabaseFile;
 + (void)resetDatabase;
 + (NSString *)databasePath;
 + (FMDatabaseQueue *)databaseQueue;

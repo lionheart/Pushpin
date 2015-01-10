@@ -437,35 +437,11 @@
     return queue;
 }
 
-+ (void)deleteDatabaseFile {
-    NSError *error;
-    
-    // Remove the database.
-    NSFileManager *manager = [NSFileManager defaultManager];
-    BOOL fileExists = [manager fileExistsAtPath:[self databasePath]];
-
-    if (fileExists){
-        BOOL success = [manager removeItemAtPath:[self databasePath] error:&error];
-    }
-}
-
 + (void)resetDatabase {
-    [[self databaseQueue] inDatabase:^(FMDatabase *db) {
-        db.logsErrors = YES;
-        [db executeUpdate:@"DROP TABLE feeds"];
-        [db executeUpdate:@"DROP TABLE rejected_bookmark"];
-        [db executeUpdate:@"DROP TABLE bookmark"];
-        [db executeUpdate:@"DROP TABLE tag"];
-        [db executeUpdate:@"DROP TABLE tagging"];
-        [db executeUpdate:@"DROP TABLE bookmark_fts"];
-        [db executeUpdate:@"DROP TABLE tag_fts"];
-        
-#ifdef PINBOARD
-        [db executeUpdate:@"DROP TABLE note"];
-#endif
-        
-        [db executeUpdate:@"PRAGMA user_version=0;"];
-    }];
+    BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:[self databasePath]];
+    if (exists) {
+        BOOL success = [[NSFileManager defaultManager] removeItemAtPath:[self databasePath] error:nil];
+    }
 }
 
 + (void)migrateDatabase {
