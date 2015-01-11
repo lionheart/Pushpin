@@ -198,7 +198,7 @@ static NSString *CellIdentifier = @"Cell";
             
             if ([self.tagsToRemove containsObject:tag]) {
                 attributes[NSStrikethroughStyleAttributeName] = @(NSUnderlineStyleSingle);
-                attributes[NSForegroundColorAttributeName] = [UIColor grayColor];
+                attributes[NSForegroundColorAttributeName] = [UIColor redColor];
             }
 
             cell.textLabel.attributedText = [[NSAttributedString alloc] initWithString:tag attributes:attributes];
