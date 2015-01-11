@@ -287,6 +287,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                     self.textView.attributedText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"You have successfully authenticated. Please wait while we download your bookmarks.", nil)
                                                                                    attributes:self.textViewAttributes];
                     self.textView.hidden = NO;
+                    self.title = NSLocalizedString(@"Downloading", nil);
                     
                     self.messageUpdateTimer = [NSTimer timerWithTimeInterval:3
                                                                       target:self
