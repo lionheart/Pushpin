@@ -547,11 +547,17 @@ static NSInteger PPBookmarkEditMaximum = 25;
                 self.webViewController.shouldMobilize = settings.openLinksWithMobilizer;
                 self.webViewController.transitioningDelegate = self.shrinkBackTransition;
                 
-                if (self.searchController.isActive) {
-                    [self.searchController presentViewController:self.webViewController animated:YES completion:nil];
+                static BOOL presentModally = YES;
+                if (presentModally) {
+                    if (self.searchController.isActive) {
+                        [self.searchController presentViewController:self.webViewController animated:YES completion:nil];
+                    }
+                    else {
+                        [self presentViewController:self.webViewController animated:YES completion:nil];
+                    }
                 }
                 else {
-                    [self presentViewController:self.webViewController animated:YES completion:nil];
+                    [self.navigationController pushViewController:self.webViewController animated:YES];
                 }
             }
             else {
