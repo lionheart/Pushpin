@@ -682,12 +682,22 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     }
     else if (sender == self.dimReadPostsSwitch) {
         [settings setDimReadPosts:self.dimReadPostsSwitch.on];
+
+        // We clear the cache since posts now look differently.
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [[PPPinboardMetadataCache sharedCache] removeAllObjects];
+        });
     }
     else if (sender == self.markReadSwitch) {
         [settings setMarkReadPosts:self.markReadSwitch.on];
     }
     else if (sender == self.hidePrivateLockSwitch) {
         settings.hidePrivateLock = self.hidePrivateLockSwitch.on;
+
+        // We clear the cache since posts now look differently.
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [[PPPinboardMetadataCache sharedCache] removeAllObjects];
+        });
     }
     else if (sender == self.autoCorrectionSwitch) {
         [settings setEnableAutoCorrect:self.autoCorrectionSwitch.on];
