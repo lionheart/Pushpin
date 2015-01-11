@@ -931,6 +931,10 @@ static NSInteger PPBookmarkEditMaximum = 25;
 
     PPMultipleEditViewController *vc = [[PPMultipleEditViewController alloc] initWithBookmarks:bookmarksToUpdate];
     PPNavigationController *navigationController = [[PPNavigationController alloc] initWithRootViewController:vc];
+
+    if (![UIApplication isIPad]) {
+        navigationController.transitioningDelegate = self.shrinkBackTransition;
+    }
     [self presentViewControllerInFormSheetIfApplicable:navigationController];
 }
 
