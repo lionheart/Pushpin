@@ -18,6 +18,7 @@
 
 @property (nonatomic, strong) NSMutableArray *existingConstraints;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
+@property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 
 - (void)addConstraintsForImageOnly;
 - (void)addConstraintsForImageAndTitle;
@@ -51,8 +52,15 @@
     [titleButton lhs_centerHorizontallyForView:titleButton.containerView];
     [titleButton addConstraintsForImageAndTitle];
     
-    titleButton.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:titleButton action:@selector(gestureDetected:)];
-    [titleButton addGestureRecognizer:titleButton.tapGestureRecognizer];
+    if (delegate) {
+        titleButton.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:titleButton
+                                                                                   action:@selector(gestureDetected:)];
+        [titleButton addGestureRecognizer:titleButton.tapGestureRecognizer];
+
+        titleButton.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:titleButton
+                                                                                               action:@selector(gestureDetected:)];
+        [titleButton addGestureRecognizer:titleButton.longPressGestureRecognizer];
+    }
     
     titleButton.delegate = delegate;
     return titleButton;
@@ -164,9 +172,12 @@
 }
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer {
-    if (recognizer == self.tapGestureRecognizer) {
-        if (self.delegate) {
+    if (self.delegate) {
+        if (recognizer == self.tapGestureRecognizer) {
             [self.delegate titleButtonTouchUpInside:self];
+        }
+        else {
+            [self.delegate titleButtonLongPress:self];
         }
     }
 }

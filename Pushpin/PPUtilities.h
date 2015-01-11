@@ -37,6 +37,15 @@
 + (void)shareToReadLater:(PPReadLaterType)readLater URL:(NSString *)url title:(NSString *)title delay:(CGFloat)seconds completion:(void (^)())completion;
 + (void)retrievePageTitle:(NSURL *)url callback:(void (^)(NSString *title, NSString *description))callback;
 
++ (kPushpinFilterType)inverseValueForFilter:(kPushpinFilterType)filter;
+
++ (UIAlertController *)saveSearchAlertControllerWithQuery:(NSString *)query
+                                                isPrivate:(kPushpinFilterType)isPrivate
+                                                   unread:(kPushpinFilterType)unread
+                                                  starred:(kPushpinFilterType)starred
+                                                   tagged:(kPushpinFilterType)tagged
+                                               completion:(void (^)())completion;
+
 + (NSMutableSet *)staticAssetURLsForHTML:(NSString *)html;
 + (NSMutableSet *)staticAssetURLsForCachedURLResponse:(NSCachedURLResponse *)cachedURLResponse;
 
