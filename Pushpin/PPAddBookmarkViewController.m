@@ -81,6 +81,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
 @property (nonatomic, strong) NSString *currentlySelectedTag;
 @property (nonatomic, strong) UIAlertController *removeTagActionSheet;
 
+@property (nonatomic, strong) NSString *originalTitle;
+
 - (NSArray *)indexPathsForPopularAndSuggestedRows;
 - (NSArray *)indexPathsForAutocompletedRows;
 - (NSArray *)indexPathsForExistingRows;
@@ -868,6 +870,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
                         self.navigationItem.leftBarButtonItem = nil;
                         self.navigationItem.rightBarButtonItem = self.doneBarButtonItem;
+
+                        self.originalTitle = self.title;
+                        self.title = NSLocalizedString(@"Edit Tags", nil);
                         break;
                     }
                 }
@@ -1402,6 +1407,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [self.tableView endUpdates];
         
         self.navigationItem.leftBarButtonItem = self.cancelBarButtonItem;
+        self.title = self.originalTitle;
     }
     else if (self.presentedFromShareSheet) {
         dispatch_async(dispatch_get_main_queue(), ^{
