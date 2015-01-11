@@ -955,7 +955,7 @@
 
 - (void)logout {
     [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalNever];
-    [[PPURLCache sharedURLCache] removeAllCachedResponses];
+    [self.urlCache removeAllCachedResponses];
 
 #ifdef DELICIOUS
     KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"DeliciousCredentials" accessGroup:nil];
