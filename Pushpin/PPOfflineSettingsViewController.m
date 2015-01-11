@@ -308,14 +308,19 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
             [confirmation lhs_addActionWithTitle:NSLocalizedString(@"Delete", nil)
                                            style:UIAlertActionStyleDestructive
                                          handler:^(UIAlertAction *action) {
-                                             PPURLCache *cache = [PPAppDelegate sharedDelegate].urlCache;
-                                             [cache removeAllCachedResponses];
-                                             [[PPPinboardMetadataCache sharedCache] removeAllObjects];
-                                             
-                                             [tableView beginUpdates];
-                                             [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPOfflineSettingsRowUsage inSection:PPOfflineSettingsSectionTop]]
-                                                                   withRowAnimation:UITableViewRowAnimationFade];
-                                             [tableView endUpdates];
+                                             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                                 PPURLCache *cache = [PPAppDelegate sharedDelegate].urlCache;
+                                                 [cache removeAllCachedResponses];
+                                                 [[PPPinboardMetadataCache sharedCache] removeAllObjects];
+                                                 
+                                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                                     [tableView beginUpdates];
+                                                     [tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPOfflineSettingsRowUsage
+                                                                                                            inSection:PPOfflineSettingsSectionTop]]
+                                                                      withRowAnimation:UITableViewRowAnimationFade];
+                                                     [tableView endUpdates];
+                                                 });
+                                             });
                                          }];
             
             [confirmation lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)

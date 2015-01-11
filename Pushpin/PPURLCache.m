@@ -126,6 +126,7 @@
 
 - (void)initiateBackgroundDownloadsWithCompletion:(void (^)(NSInteger))completion progress:(void (^)(NSString *urlString, NSString *assetURLString, NSInteger, NSInteger, NSInteger, NSInteger))progress {
     dispatch_semaphore_wait([PPURLCache semaphore], DISPATCH_TIME_FOREVER);
+    [PPURLCache migrateDatabase];
 
     self.isBackgroundSessionInvalidated = NO;
 
@@ -351,23 +352,8 @@
 }
 
 - (void)removeAllCachedResponses {
-    NSMutableSet *filePaths;
-    [[PPURLCache databaseQueue] inDatabase:^(FMDatabase *db) {
-        FMResultSet *result = [db executeQuery:@"SELECT md5 FROM cache"];
-        while ([result next]) {
-            NSString *checksum = [result stringForColumn:@"md5"];
-            NSString *filePath = [PPURLCache filePathForChecksum:checksum];
-            [filePaths addObject:filePath];
-        }
-        [result close];
-        
-        [db executeUpdate:@"DELETE FROM cache"];
-    }];
-    
-    for (NSString *filePath in filePaths) {
-        [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
-    }
-
+    [PPURLCache resetDatabase];
+    [PPURLCache migrateDatabase];
     self._currentDiskUsage = 0;
 }
 
@@ -410,10 +396,18 @@
 }
 
 + (void)resetDatabase {
+    [[self databaseQueue] close];
+
     BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:[self databasePath]];
-    
+    NSError *error;
     if (exists) {
-        BOOL success = [[NSFileManager defaultManager] removeItemAtPath:[self databasePath] error:nil];
+        BOOL success = [[NSFileManager defaultManager] removeItemAtPath:[self databasePath] error:&error];
+    }
+    
+    NSString *dataPath = [[self directoryPath] stringByAppendingFormat:@"/data/"];
+    exists = [[NSFileManager defaultManager] fileExistsAtPath:dataPath];
+    if (exists) {
+        BOOL success = [[NSFileManager defaultManager] removeItemAtPath:dataPath error:&error];
     }
 }
 
@@ -735,15 +729,15 @@
 
 - (void)stopAllDownloads {
     self.isBackgroundSessionInvalidated = YES;
-    
+
+    [self.urlsToDownload removeAllObjects];
+
     dispatch_semaphore_t sem = dispatch_semaphore_create(0);
     [self.session lhs_cancelAllTasksWithCompletion:^{
         dispatch_semaphore_signal(sem);
     }];
 
     dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
-
-    [[PPURLCache operationQueue] cancelAllOperations];
 
     // Set everything to 100%.
     [self updateProgressWithCompletedValues];

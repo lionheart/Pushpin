@@ -438,6 +438,8 @@
 }
 
 + (void)resetDatabase {
+    [[self databaseQueue] close];
+
     BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:[self databasePath]];
     if (exists) {
         BOOL success = [[NSFileManager defaultManager] removeItemAtPath:[self databasePath] error:nil];
