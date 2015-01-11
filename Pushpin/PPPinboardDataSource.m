@@ -457,6 +457,7 @@ static BOOL kPinboardSyncInProgress = NO;
         dispatch_group_notify(inner_group, queue, ^{
             if (callback) {
                 [[PPPinboardDataSource resultCache] removeAllObjects];
+
                 callback();
             }
         });

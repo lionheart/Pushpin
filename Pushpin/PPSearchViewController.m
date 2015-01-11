@@ -794,67 +794,14 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
             break;
             
         case PPSearchSectionSave: {
-            UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Save Search", nil)
-                                                                         message:NSLocalizedString(@"Enter a name for this saved search.", nil)];
-            [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
-                textField.keyboardType = UIKeyboardTypeAlphabet;
-            }];
-            
-            [alert lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil];
-            [alert lhs_addActionWithTitle:NSLocalizedString(@"Save", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                NSString *searchName = [(UITextField *)alert.textFields[0] text];
-                __block BOOL success;
-                
-                kPushpinFilterType unread;
-                switch (self.read) {
-                    case kPushpinFilterTrue:
-                        unread = kPushpinFilterFalse;
-                        break;
-
-                    case kPushpinFilterFalse:
-                        unread = kPushpinFilterTrue;
-                        break;
-
-                    case kPushpinFilterNone:
-                        unread = kPushpinFilterNone;
-                        break;
-                }
-
-                NSDictionary *search = @{@"name": searchName,
-                                         @"query": self.searchTextField.text,
-                                         @"private": @(self.isPrivate),
-                                         @"unread": @(unread),
-                                         @"starred": @(self.starred),
-                                         @"tagged": @(self.tagged) };
-
-                [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
-                    success = [db executeUpdate:@"INSERT INTO searches (name, query, private, unread, starred, tagged) VALUES (:name, :query, :private, :unread, :starred, :tagged)" withParameterDictionary:search];
-                }];
-
-                if (success) {
-                    NSUbiquitousKeyValueStore *store = [NSUbiquitousKeyValueStore defaultStore];
-                    [store synchronize];
-                    NSMutableArray *iCloudSearches = [NSMutableArray arrayWithArray:[store arrayForKey:kSavedSearchesKey]];
-                    BOOL existsOnICloud = NO;
-                    for (NSDictionary *search in iCloudSearches) {
-                        if ([search[@"name"] isEqualToString:searchName]) {
-                            existsOnICloud = YES;
-                        }
-                    }
-
-                    if (!existsOnICloud) {
-                        [iCloudSearches addObject:search];
-                    }
-
-                    [store setArray:iCloudSearches forKey:kSavedSearchesKey];
-                    [store synchronize];
-
-                    UIAlertController *successAlert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Success", nil)
-                                                                                        message:NSLocalizedString(@"Your saved search was added.", nil)];
-                    [successAlert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
-                    [self presentViewController:successAlert animated:YES completion:nil];
-                }
-            }];
+            UIAlertController *alert = [PPUtilities saveSearchAlertControllerWithQuery:self.searchTextField.text
+                                                                             isPrivate:self.isPrivate
+                                                                                unread:[PPUtilities inverseValueForFilter:self.read]
+                                                                               starred:self.starred
+                                                                                tagged:self.tagged
+                                                                            completion:^{
+                                                                                nil;
+                                                                            }];
             
             [self presentViewController:alert animated:YES completion:nil];
         }

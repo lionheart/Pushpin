@@ -15,6 +15,7 @@
 @required
 
 - (void)titleButtonTouchUpInside:(PPTitleButton *)titleButton;
+- (void)titleButtonLongPress:(PPTitleButton *)titleButton;
 
 @end
 

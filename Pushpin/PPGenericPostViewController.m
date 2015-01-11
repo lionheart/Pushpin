@@ -1218,6 +1218,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
 
 - (void)markPostsAsRead:(NSArray *)posts notify:(BOOL)notify {
     PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
+
     if (!delegate.connectionAvailable) {
         [PPNotification notifyWithMessage:@"Connection unavailable"];
     }
@@ -1267,6 +1268,9 @@ static NSInteger PPBookmarkEditMaximum = 25;
                     [PPNotification notifyWithMessage:message success:success updated:updated];
                 }
                 
+#warning XXX should probably do something to avoid removing everything
+                [[PPPinboardDataSource resultCache] removeAllObjects];
+
                 [self updateFromLocalDatabase];
             });
             
@@ -1594,6 +1598,18 @@ static NSInteger PPBookmarkEditMaximum = 25;
 
 - (void)titleButtonTouchUpInside:(PPTitleButton *)titleButton {
     [self toggleCompressedPosts];
+}
+
+- (void)titleButtonLongPress:(PPTitleButton *)titleButton {
+    PPPinboardDataSource *pinboardDataSource = (PPPinboardDataSource *)self.postDataSource;
+    UIAlertController *alert = [PPUtilities saveSearchAlertControllerWithQuery:pinboardDataSource.searchQuery
+                                                                     isPrivate:pinboardDataSource.isPrivate
+                                                                        unread:pinboardDataSource.unread
+                                                                       starred:pinboardDataSource.starred
+                                                                        tagged:[PPUtilities inverseValueForFilter:pinboardDataSource.untagged]
+                                                                    completion:^{
+                                                                    }];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)toggleCompressedPosts {

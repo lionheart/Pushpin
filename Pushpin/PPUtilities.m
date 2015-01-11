@@ -14,6 +14,8 @@
 #import <oauthconsumer/OAuthConsumer.h>
 #import <HTMLParser/HTMLParser.h>
 #import <MWFeedParser/NSString+HTML.h>
+#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
+#import <LHSCategoryCollection/UIViewController+LHSAdditions.h>
 
 @implementation PPUtilities
 
@@ -780,6 +782,85 @@
             }
         }];
     });
+}
+
++ (kPushpinFilterType)inverseValueForFilter:(kPushpinFilterType)filter {
+    kPushpinFilterType value;
+    switch (filter) {
+        case kPushpinFilterTrue:
+            value = kPushpinFilterFalse;
+            break;
+
+        case kPushpinFilterFalse:
+            value = kPushpinFilterTrue;
+            break;
+
+        case kPushpinFilterNone:
+            value = kPushpinFilterNone;
+            break;
+    }
+
+    return value;
+}
+
++ (UIAlertController *)saveSearchAlertControllerWithQuery:(NSString *)query
+                                                isPrivate:(kPushpinFilterType)isPrivate
+                                                   unread:(kPushpinFilterType)unread
+                                                  starred:(kPushpinFilterType)starred
+                                                   tagged:(kPushpinFilterType)tagged
+                                               completion:(void (^)())completion {
+    if (!query) {
+        query = @"";
+    }
+
+    UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Save Search", nil)
+                                                                 message:NSLocalizedString(@"Enter a name for this saved search.", nil)];
+    [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+        textField.keyboardType = UIKeyboardTypeAlphabet;
+    }];
+
+    [alert lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil];
+    [alert lhs_addActionWithTitle:NSLocalizedString(@"Save", nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        NSString *searchName = [(UITextField *)alert.textFields[0] text];
+        __block BOOL success;
+
+        NSDictionary *search = @{@"name": searchName,
+                                 @"private": @(isPrivate),
+                                 @"query": query,
+                                 @"unread": @(unread),
+                                 @"starred": @(starred),
+                                 @"tagged": @(tagged) };
+
+        [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
+            success = [db executeUpdate:@"INSERT INTO searches (name, query, private, unread, starred, tagged) VALUES (:name, :query, :private, :unread, :starred, :tagged)" withParameterDictionary:search];
+        }];
+
+        if (success) {
+            NSUbiquitousKeyValueStore *store = [NSUbiquitousKeyValueStore defaultStore];
+            [store synchronize];
+            NSMutableArray *iCloudSearches = [NSMutableArray arrayWithArray:[store arrayForKey:kSavedSearchesKey]];
+            BOOL existsOnICloud = NO;
+            for (NSDictionary *search in iCloudSearches) {
+                if ([search[@"name"] isEqualToString:searchName]) {
+                    existsOnICloud = YES;
+                }
+            }
+
+            if (!existsOnICloud) {
+                [iCloudSearches addObject:search];
+            }
+
+            [store setArray:iCloudSearches forKey:kSavedSearchesKey];
+            [store synchronize];
+
+            UIAlertController *successAlert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Success", nil)
+                                                                                message:NSLocalizedString(@"Your saved search was added.", nil)];
+            [successAlert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+            [[UIViewController lhs_topViewController] presentViewController:successAlert animated:YES completion:nil];
+        }
+    }];
+
+    return alert;
 }
 
 @end
