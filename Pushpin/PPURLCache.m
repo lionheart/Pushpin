@@ -29,7 +29,7 @@
 
 @property (nonatomic, strong) NSMutableArray *urlsToDownload;
 @property (nonatomic, strong) NSMutableSet *assetURLs;
-@property (nonatomic, strong) NSMutableSet *htmlURLs;
+@property (nonatomic, strong) NSSet *htmlURLs;
 @property (nonatomic, strong) NSMutableSet *completedHTMLURLs;
 @property (nonatomic, strong) NSMutableSet *completedAssetURLs;
 
@@ -129,16 +129,13 @@
 
     self.isBackgroundSessionInvalidated = NO;
 
-    NSMutableSet *candidateUrlsToCache = [NSMutableSet set];
-    NSMutableSet *candidateReaderUrlsToCache = [NSMutableSet set];
+    NSMutableArray *candidateUrlsToCache = [NSMutableArray array];
     NSMutableArray *urlsToCache = [NSMutableArray array];
-    NSMutableArray *readerUrlsToCache = [NSMutableArray array];
     
     self.currentURLString = @"";
     self.currentAssetURLString = @"";
     self.urlsToDownload = [NSMutableArray array];
     self.assetURLs = [NSMutableSet set];
-    self.htmlURLs = [NSMutableSet set];
     self.completedAssetURLs = [NSMutableSet set];
     self.completedHTMLURLs = [NSMutableSet set];
     self.assetURLsToHTMLURLs = [NSMutableDictionary dictionary];
@@ -159,23 +156,23 @@
             
             switch (settings.offlineFetchCriteria) {
                 case PPOfflineFetchCriteriaUnread:
-                    query = @"SELECT url FROM bookmark WHERE unread=1 ORDER BY created_at ASC";
+                    query = @"SELECT url FROM bookmark WHERE unread=1 ORDER BY created_at DESC";
                     break;
                     
                 case PPOfflineFetchCriteriaRecent:
-                    query = [NSString stringWithFormat:@"SELECT url FROM bookmark WHERE created_at>%lu ORDER BY created_at ASC", (long)timestamp];
+                    query = [NSString stringWithFormat:@"SELECT url FROM bookmark WHERE created_at>%lu ORDER BY created_at DESC", (long)timestamp];
                     break;
                     
                 case PPOfflineFetchCriteriaUnreadAndRecent:
-                    query = [NSString stringWithFormat:@"SELECT url FROM bookmark WHERE created_at>%lu OR unread=1 ORDER BY created_at ASC", (long)timestamp];
+                    query = [NSString stringWithFormat:@"SELECT url FROM bookmark WHERE created_at>%lu OR unread=1 ORDER BY created_at DESC", (long)timestamp];
                     break;
                     
                 case PPOfflineFetchCriteriaEverything:
-#ifdef DEBUG
-                        query = @"SELECT url FROM bookmark WHERE url LIKE '%%thesaurus.com%%' ORDER BY created_at ASC";
+#if 0
+                        query = @"SELECT url FROM bookmark WHERE url LIKE '%%thesaurus.com%%' ORDER BY created_at DESC";
 //                    query = @"SELECT url FROM bookmark ORDER BY created_at DESC";
 #else
-                    query = @"SELECT url FROM bookmark ORDER BY created_at ASC";
+                    query = @"SELECT url FROM bookmark ORDER BY created_at DESC";
 #endif
                     break;
             }
@@ -188,12 +185,12 @@
                 NSString *readerURLString = [NSString stringWithFormat:@"http://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [url.absoluteString urlEncodeUsingEncoding:NSUTF8StringEncoding]];
                 NSURL *readerURL = [NSURL URLWithString:readerURLString];
                 
-                if (url) {
-                    [candidateUrlsToCache addObject:url];
-                }
-                
-                if (readerURL) {
-                    [candidateReaderUrlsToCache addObject:readerURL];
+                if ([@[@"http", @"https"] containsObject:url.scheme]) {
+                    if (settings.downloadFullWebpageForOfflineCache) {
+                        [candidateUrlsToCache addObject:url];
+                    }
+
+                    [candidateUrlsToCache addObject:readerURL];
                 }
             }
             [results close];
@@ -209,36 +206,10 @@
                     [urlsToCache addObject:url];
                 }
             }
-            
-            for (NSURL *url in candidateReaderUrlsToCache) {
-                FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM cache WHERE url=?" withArgumentsInArray:@[url.absoluteString]];
-                [result next];
-                NSInteger count = [result intForColumnIndex:0];
-                [result close];
-                if (count == 0) {
-                    [readerUrlsToCache addObject:url];
-                }
-            }
         }];
 
-        PPSettings *settings = [PPSettings sharedSettings];
-        
-        for (NSURL *url in readerUrlsToCache) {
-            if ([@[@"http", @"https"] containsObject:url.scheme]) {
-                [self.htmlURLs addObject:url];
-            }
-        }
-        
-        if (settings.downloadFullWebpageForOfflineCache) {
-            for (NSURL *url in urlsToCache) {
-                if ([@[@"http", @"https"] containsObject:url.scheme]) {
-                    [self.htmlURLs addObject:url];
-                }
-            }
-        }
-
-        self.urlsToDownload = [[self.htmlURLs allObjects] mutableCopy];
-
+        self.htmlURLs = [NSSet setWithArray:urlsToCache];
+        self.urlsToDownload = [urlsToCache mutableCopy];
         if (self.urlsToDownload.count > 0) {
             [self queueNextHTMLDownload];
         }
