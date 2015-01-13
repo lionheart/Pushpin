@@ -73,37 +73,13 @@
     return nil;
 }
 
-- (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+- (void)navigationController:(UINavigationController *)navigationController
+       didShowViewController:(UIViewController *)viewController
+                    animated:(BOOL)animated {
     self.interactivePopGestureRecognizer.enabled = YES;
     
     if ([[viewController class] isSubclassOfClass:[PPWebViewController class]]) {
         [self.navigationController setNavigationBarHidden:YES animated:animated];
-    }
-}
-
-- (void)navigationController:(UINavigationController *)navigationController
-      willShowViewController:(UIViewController *)viewController
-                    animated:(BOOL)animated {
-
-    UIBarButtonItem *backButton = nil;
-    
-    if ([UIApplication isIPad]) {
-        backButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Back", nil) style:UIBarButtonItemStyleDone target:nil action:nil];
-        if ([[viewController class] isEqual:[PPGenericPostViewController class]] && navigationController.viewControllers.count == 1) {
-            viewController.navigationItem.leftBarButtonItem = self.splitViewControllerBarButtonItem;
-        }
-    }
-    else {
-        if ([[viewController class] isEqual:[PPFeedListViewController class]]) {
-            backButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Browse", nil) style:UIBarButtonItemStylePlain target:nil action:nil];
-        }
-        else {
-            backButton = [[UIBarButtonItem alloc] initWithTitle:@" " style:UIBarButtonItemStylePlain target:nil action:nil];
-        }
-    }
-
-    if (backButton) {
-        viewController.navigationItem.backBarButtonItem = backButton;
     }
 }
 
