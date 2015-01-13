@@ -10,4 +10,6 @@
 
 @interface PPShrinkBackTransition : NSObject <UIViewControllerTransitioningDelegate>
 
++ (PPShrinkBackTransition *)sharedInstance;
+
 @end

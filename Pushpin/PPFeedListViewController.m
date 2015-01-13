@@ -26,6 +26,7 @@
 #import "PPAddSavedFeedViewController.h"
 #import "PPSearchViewController.h"
 #import "PPSettings.h"
+#import "PPShrinkBackTransition.h"
 #import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 
 #import <ASPinboard/ASPinboard.h>
@@ -1828,6 +1829,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     }
     else {
         PPNavigationController *nav = [[PPNavigationController alloc] initWithRootViewController:search];
+        nav.transitioningDelegate = [PPShrinkBackTransition sharedInstance];
         [self presentViewController:nav animated:YES completion:nil];
     }
 }

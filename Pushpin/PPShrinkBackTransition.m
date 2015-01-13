@@ -11,6 +11,15 @@
 
 @implementation PPShrinkBackTransition
 
++ (PPShrinkBackTransition *)sharedInstance {
+    static dispatch_once_t onceToken;
+    static PPShrinkBackTransition *transition;
+    dispatch_once(&onceToken, ^{
+        transition = [[PPShrinkBackTransition alloc] init];
+    });
+    return transition;
+}
+
 - (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed {
     PPShrinkBackAnimator *animator = [PPShrinkBackAnimator new];
     animator.reverse = YES;

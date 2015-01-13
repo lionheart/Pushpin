@@ -86,8 +86,6 @@ static NSInteger PPBookmarkEditMaximum = 25;
 @property (nonatomic, strong) UISnapBehavior *circleSnapBehavior;
 @property (nonatomic, strong) NSTimer *circleHideTimer;
 
-@property (nonatomic, strong) PPShrinkBackTransition *shrinkBackTransition;
-
 @property (nonatomic, strong) PPTableViewController *searchResultsController;
 @property (nonatomic, strong) UISearchController *searchController;
 
@@ -154,7 +152,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
     UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
     pasteboard.URL = [NSURL URLWithString:@"http://lionheartsw.com"];
 #endif
-    
+
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.definesPresentationContext = YES;
     self.extendedLayoutIncludesOpaqueBars = NO;
@@ -162,7 +160,6 @@ static NSInteger PPBookmarkEditMaximum = 25;
     self.prefersStatusBarHidden = NO;
     self.latestSearchTime = [NSDate date];
     self.isProcessingPosts = NO;
-    self.shrinkBackTransition = [[PPShrinkBackTransition alloc] init];
     
     self.focusSearchKeyCommand = [UIKeyCommand keyCommandWithInput:@"/"
                                                      modifierFlags:0
@@ -545,7 +542,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                 
                 self.webViewController = [PPWebViewController webViewControllerWithURL:urlString];
                 self.webViewController.shouldMobilize = settings.openLinksWithMobilizer;
-                self.webViewController.transitioningDelegate = self.shrinkBackTransition;
+                self.webViewController.transitioningDelegate = [PPShrinkBackTransition sharedInstance];
                 
                 static BOOL presentModally = YES;
                 if (presentModally) {
@@ -939,7 +936,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
     PPNavigationController *navigationController = [[PPNavigationController alloc] initWithRootViewController:vc];
 
     if (![UIApplication isIPad]) {
-        navigationController.transitioningDelegate = self.shrinkBackTransition;
+        navigationController.transitioningDelegate = [PPShrinkBackTransition sharedInstance];
     }
     [self presentViewControllerInFormSheetIfApplicable:navigationController];
 }
@@ -1912,7 +1909,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
     }];
 
     if (![UIApplication isIPad]) {
-        vc.transitioningDelegate = self.shrinkBackTransition;
+        vc.transitioningDelegate = [PPShrinkBackTransition sharedInstance];
     }
     return vc;
 }
