@@ -7,7 +7,6 @@
 //
 
 #import "PPActivityViewController.h"
-#import "PPReadLaterActivity.h"
 #import "PPConstants.h"
 #import "PPAppDelegate.h"
 #import "PPBrowserActivity.h"
@@ -55,41 +54,18 @@
         [browserActivites addObject:browserActivity];
     }
 
-    // Read later
-    NSMutableArray *readLaterActivities = [NSMutableArray array];
-    PPReadLaterType readLater = [PPSettings sharedSettings].readLater;
-    
-    // Always include the native Reading List
-    PPReadLaterActivity *nativeReadLaterActivity = [[PPReadLaterActivity alloc] initWithService:PPReadLaterNative];
-    nativeReadLaterActivity.delegate = self;
-    [readLaterActivities addObject:nativeReadLaterActivity];
-    
-    // If they have a third-party read later service configured, add it too
-    if (readLater != PPReadLaterNone) {
-        PPReadLaterActivity *readLaterActivity = [[PPReadLaterActivity alloc] initWithService:readLater];
-        readLaterActivity.delegate = self;
-        [readLaterActivities addObject:readLaterActivity];
-    }
-
-    NSMutableArray *allActivities = [readLaterActivities mutableCopy];
-    [allActivities addObjectsFromArray:browserActivites];
-
-    self = [super initWithActivityItems:activityItems applicationActivities:allActivities];
+    self = [super initWithActivityItems:activityItems applicationActivities:browserActivites];
     if (self) {
         self.excludedActivityTypes = @[UIActivityTypePostToWeibo,
                                        UIActivityTypeAssignToContact,
                                        UIActivityTypeAirDrop,
-                                       UIActivityTypePostToVimeo,
-                                       UIActivityTypeAddToReadingList];
+                                       UIActivityTypePostToVimeo];
     }
     return self;
 }
 
 - (UIActivityViewControllerCompletionHandler)completionHandler {
     return ^(NSString *activityType, BOOL completed) {
-        if ([activityType isEqualToString:PPInstapaperActivity]) {
-
-        }
     };
 }
 

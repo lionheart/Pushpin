@@ -31,7 +31,6 @@
 #import <LHSDelicious/LHSDelicious.h>
 #import <ASPinboard/ASPinboard.h>
 #import <Reachability/Reachability.h>
-#import <PocketAPI/PocketAPI.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <OpenInChrome/OpenInChromeController.h>
 #import <LHSCategoryCollection/UIViewController+LHSAdditions.h>
@@ -127,9 +126,6 @@
         }
     };
 
-    if ([[PocketAPI sharedAPI] handleOpenURL:url]) {
-        return YES;
-    }
     if ([@"/TextExpanderSettings" isEqualToString:url.path]) {
         NSError *error;
         BOOL cancel;
@@ -757,13 +753,6 @@
     [PPTheme customizeUIElements];
 
     Mixpanel *mixpanel = [Mixpanel sharedInstanceWithToken:PPMixpanelToken];
-    
-    if ([UIApplication isIPad]) {
-        [[PocketAPI sharedAPI] setConsumerKey:PPPocketIPadToken];
-    }
-    else {
-        [[PocketAPI sharedAPI] setConsumerKey:PPPocketIPhoneToken];
-    }
 
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults registerDefaults:@{

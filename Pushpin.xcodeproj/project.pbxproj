@@ -33,22 +33,6 @@
             "path": "PPBrowserActivity.m",
             "sourceTree": "<group>"
         },
-        "37018CE5180E3C0B00226408": {
-            "fileEncoding": "4",
-            "isa": "PBXFileReference",
-            "lastKnownFileType": "sourcecode.c.h",
-            "path": "PPReadLaterActivity.h",
-            "sourceTree": "<group>"
-        },
-        "37018CE6180E3C0B00226408": {
-            "fileEncoding": "4",
-            "isa": "PBXFileReference",
-            "lastKnownFileType": "sourcecode.c.objc",
-            "lineEnding": "0",
-            "path": "PPReadLaterActivity.m",
-            "sourceTree": "<group>",
-            "xcLanguageSpecificationIdentifier": "xcode.lang.objc"
-        },
         "37076D41158AD0B1002566CD": {
             "children": [
                 "E84A8D9217FB1BCB003B4F50",
@@ -1009,20 +993,6 @@
         "3729441019CF5E5700ABF006": {
             "fileRef": "374D91DF19CE26A700995DF1",
             "isa": "PBXBuildFile"
-        },
-        "372AEEF6186B804F00F131A9": {
-            "fileEncoding": "4",
-            "isa": "PBXFileReference",
-            "lastKnownFileType": "sourcecode.c.h",
-            "path": "ScreenshotViewController.h",
-            "sourceTree": "<group>"
-        },
-        "372AEEF7186B804F00F131A9": {
-            "fileEncoding": "4",
-            "isa": "PBXFileReference",
-            "lastKnownFileType": "sourcecode.c.objc",
-            "path": "ScreenshotViewController.m",
-            "sourceTree": "<group>"
         },
         "372C84071870E3B300BF520D": {
             "isa": "PBXFileReference",
@@ -2989,9 +2959,7 @@
         "378482CD186C965700DF7A74": {
             "children": [
                 "37018CE3180E3C0B00226408",
-                "37018CE4180E3C0B00226408",
-                "37018CE5180E3C0B00226408",
-                "37018CE6180E3C0B00226408"
+                "37018CE4180E3C0B00226408"
             ],
             "isa": "PBXGroup",
             "name": "Activities",
@@ -4066,16 +4034,8 @@
             "fileRef": "37A2B4A1199E6D8D005B7671",
             "isa": "PBXBuildFile"
         },
-        "3790429219CBDCDF00409D34": {
-            "fileRef": "37018CE6180E3C0B00226408",
-            "isa": "PBXBuildFile"
-        },
         "3790429319CBDCDF00409D34": {
             "fileRef": "3714DB7717558A2000B23F4F",
-            "isa": "PBXBuildFile"
-        },
-        "3790429419CBDCDF00409D34": {
-            "fileRef": "3798AD7D18767718002D684B",
             "isa": "PBXBuildFile"
         },
         "3790429519CBDCDF00409D34": {
@@ -4112,10 +4072,6 @@
         },
         "3790429D19CBDCDF00409D34": {
             "fileRef": "37D4B001188325B000E07EB3",
-            "isa": "PBXBuildFile"
-        },
-        "3790429E19CBDCDF00409D34": {
-            "fileRef": "37C6D61F186B99820096FA88",
             "isa": "PBXBuildFile"
         },
         "3790429F19CBDCDF00409D34": {
@@ -4160,10 +4116,6 @@
         },
         "379042AA19CBDCDF00409D34": {
             "fileRef": "37802199198EADE000CE269A",
-            "isa": "PBXBuildFile"
-        },
-        "379042AB19CBDCDF00409D34": {
-            "fileRef": "372AEEF7186B804F00F131A9",
             "isa": "PBXBuildFile"
         },
         "379042AC19CBDCDF00409D34": {
@@ -4226,9 +4178,7 @@
                 "3790428F19CBDCDF00409D34",
                 "3790429019CBDCDF00409D34",
                 "3790429119CBDCDF00409D34",
-                "3790429219CBDCDF00409D34",
                 "3790429319CBDCDF00409D34",
-                "3790429419CBDCDF00409D34",
                 "3790429519CBDCDF00409D34",
                 "3790429619CBDCDF00409D34",
                 "3790429719CBDCDF00409D34",
@@ -4238,7 +4188,6 @@
                 "3790429B19CBDCDF00409D34",
                 "3790429C19CBDCDF00409D34",
                 "3790429D19CBDCDF00409D34",
-                "3790429E19CBDCDF00409D34",
                 "3790429F19CBDCDF00409D34",
                 "379042A019CBDCDF00409D34",
                 "379042A119CBDCDF00409D34",
@@ -4252,7 +4201,6 @@
                 "379042A819CBDCDF00409D34",
                 "379042A919CBDCDF00409D34",
                 "379042AA19CBDCDF00409D34",
-                "379042AB19CBDCDF00409D34",
                 "379042AC19CBDCDF00409D34"
             ],
             "isa": "PBXSourcesBuildPhase",
@@ -4906,20 +4854,6 @@
         "3798AD7B18766DA3002D684B": {
             "fileRef": "3798AD7918766DA3002D684B",
             "isa": "PBXBuildFile"
-        },
-        "3798AD7C18767718002D684B": {
-            "fileEncoding": "4",
-            "isa": "PBXFileReference",
-            "lastKnownFileType": "sourcecode.c.h",
-            "path": "PPScrollView.h",
-            "sourceTree": "<group>"
-        },
-        "3798AD7D18767718002D684B": {
-            "fileEncoding": "4",
-            "isa": "PBXFileReference",
-            "lastKnownFileType": "sourcecode.c.objc",
-            "path": "PPScrollView.m",
-            "sourceTree": "<group>"
         },
         "3798B08A18767DAB002D684B": {
             "isa": "PBXFileReference",
@@ -5691,20 +5625,6 @@
         "37C611EB16377D5D008DB30B": {
             "fileRef": "37C611E816377D5D008DB30B",
             "isa": "PBXBuildFile"
-        },
-        "37C6D61E186B99820096FA88": {
-            "fileEncoding": "4",
-            "isa": "PBXFileReference",
-            "lastKnownFileType": "sourcecode.c.h",
-            "path": "PPStatusBarNotification.h",
-            "sourceTree": "<group>"
-        },
-        "37C6D61F186B99820096FA88": {
-            "fileEncoding": "4",
-            "isa": "PBXFileReference",
-            "lastKnownFileType": "sourcecode.c.objc",
-            "path": "PPStatusBarNotification.m",
-            "sourceTree": "<group>"
         },
         "37CBB7401881B44B000F9C36": {
             "fileEncoding": "4",
@@ -6742,16 +6662,12 @@
                 "3743B7371875DAA800B97E6D",
                 "37A2B4A8199EA8CA005B7671",
                 "37A2B4A9199EA8CA005B7671",
-                "3798AD7C18767718002D684B",
-                "3798AD7D18767718002D684B",
                 "37889D4219981212002E245A",
                 "37889D4319981212002E245A",
                 "37FF412F187D95CF00F2D481",
                 "37FF4130187D95CF00F2D481",
                 "37D4B000188325B000E07EB3",
                 "37D4B001188325B000E07EB3",
-                "37C6D61E186B99820096FA88",
-                "37C6D61F186B99820096FA88",
                 "3743B73918763D1D00B97E6D",
                 "3743B73A18763D1D00B97E6D",
                 "370B1B771864FADC00319A20",
@@ -6764,9 +6680,7 @@
                 "375B62301A4DA9240045AFE7",
                 "37B4FFE11923AD18002F8558",
                 "37B4FFE21923AD18002F8558",
-                "37D4B00318833BC800E07EB3",
-                "372AEEF6186B804F00F131A9",
-                "372AEEF7186B804F00F131A9"
+                "37D4B00318833BC800E07EB3"
             ],
             "isa": "PBXGroup",
             "path": "Pushpin",

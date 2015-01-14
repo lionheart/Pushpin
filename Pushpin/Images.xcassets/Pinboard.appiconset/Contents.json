@@ -26,7 +26,7 @@
     {
       "size" : "29x29",
       "idiom" : "ipad",
-      "filename" : "iPhoneSettings-29.png",
+      "filename" : "iPadSettings-29.png",
       "scale" : "1x"
     },
     {
@@ -70,13 +70,6 @@
       "idiom" : "mac",
       "filename" : "AppStore-512@2x.png",
       "scale" : "2x"
-    },
-    {
-      "size" : "29x29",
-      "idiom" : "iphone",
-      "filename" : "iPadSettings-29.png",
-      "unassigned" : true,
-      "scale" : "1x"
     }
   ],
   "info" : {
