@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "PostMetadata.h"
+#import "PPNavigationController.h"
+#import "PPTitleButton.h"
 
 static dispatch_queue_t PPBookmarkUpdateQueue() {
     static dispatch_once_t onceToken;

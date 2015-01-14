@@ -7,7 +7,6 @@
 //
 
 #import "PPEditDescriptionViewController.h"
-#import "PPAppDelegate.h"
 #import "PPTheme.h"
 #import "PPSettings.h"
 

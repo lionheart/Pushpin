@@ -13,9 +13,8 @@
 #import "PPTheme.h"
 #import "PPTitleButton.h"
 #import "PostMetadata.h"
-#import "PPDefaultFeedViewController.h"
 #import "PPSettings.h"
-#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
+#import "PPGenericPostViewController.h"
 
 #import "NSAttributedString+Attributes.h"
 #import "NSString+LHSAdditions.h"
@@ -29,6 +28,7 @@
 #import <ASPinboard/ASPinboard.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSCategoryCollection/UIViewController+LHSAdditions.h>
+#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 
 static BOOL kPinboardSyncInProgress = NO;
 

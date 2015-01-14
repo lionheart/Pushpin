@@ -8,7 +8,7 @@
 
 @import Foundation;
 
-#import "PPGenericPostViewController.h"
+#import "PPDataSource.h"
 #import "PPConstants.h"
 #import <ASPinboard/ASPinboard.h>
 

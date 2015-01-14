@@ -8,7 +8,6 @@
 
 @import UIKit;
 
-#import "PPAppDelegate.h"
 #import "PPBadgeWrapperView.h"
 #import "PPEditDescriptionViewController.h"
 

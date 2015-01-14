@@ -8,10 +8,6 @@
 
 #import "PPNavigationController.h"
 #import "PPNavigationBar.h"
-#import "PPWebViewController.h"
-#import "PPGenericPostViewController.h"
-#import "PPFeedListViewController.h"
-#import "PPSettingsViewController.h"
 #import "PPAboutViewController.h"
 #import "PPChangelogViewController.h"
 #import "PPAddBookmarkViewController.h"
@@ -71,16 +67,6 @@
 #pragma mark - UINavigationControllerDelegate
 - (id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC {
     return nil;
-}
-
-- (void)navigationController:(UINavigationController *)navigationController
-       didShowViewController:(UIViewController *)viewController
-                    animated:(BOOL)animated {
-    self.interactivePopGestureRecognizer.enabled = YES;
-    
-    if ([[viewController class] isSubclassOfClass:[PPWebViewController class]]) {
-        [self.navigationController setNavigationBarHidden:YES animated:animated];
-    }
 }
 
 #pragma mark Status Bar Styles

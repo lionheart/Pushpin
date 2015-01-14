@@ -9,7 +9,6 @@
 #import "PostMetadata.h"
 #import "PPConstants.h"
 #import "PPTheme.h"
-#import "PPAppDelegate.h"
 #import "PPPinboardMetadataCache.h"
 #import "PPBadgeWrapperView.h"
 #import "PPBookmarkCell.h"

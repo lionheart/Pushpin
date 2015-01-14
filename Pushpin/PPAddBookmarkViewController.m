@@ -783,7 +783,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 NSMutableArray *indexPathsToInsert = [NSMutableArray array];
                 NSMutableIndexSet *indexSetsToInsert = [NSMutableIndexSet indexSet];
                 NSMutableArray *indexPathsToReload = [NSMutableArray array];
-                
+
                 // Add the row to the bookmark list below
                 
                 if (self.existingTags.count == 0) {
