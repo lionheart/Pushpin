@@ -11,7 +11,6 @@
 #import "PPGenericPostViewController.h"
 #import "NSAttributedString+Attributes.h"
 #import "NSString+URLEncoding2.h"
-#import "PPStatusBarNotification.h"
 #import "PPConstants.h"
 #import "PPSettings.h"
 
@@ -20,7 +19,6 @@
 #import "PPMultipleEditViewController.h"
 #import "PPFeedListViewController.h"
 #import "PPTheme.h"
-#import "PPReadLaterActivity.h"
 #import "PPActivityViewController.h"
 #import "PPAddBookmarkViewController.h"
 #import "PPNavigationController.h"
@@ -28,12 +26,10 @@
 #import "PPNotification.h"
 #import "PPSplitViewController.h"
 
-#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
-
 #import <FMDB/FMDatabase.h>
-#import <oauthconsumer/OAuthConsumer.h>
 #import <ASPinboard/ASPinboard.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
+#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import <LHSCategoryCollection/UIImage+LHSAdditions.h>
 #import <LHSCategoryCollection/UIScreen+LHSAdditions.h>
@@ -134,8 +130,6 @@ static NSInteger PPBookmarkEditMaximum = 25;
 @end
 
 @implementation PPGenericPostViewController
-
-@synthesize itemSize = _itemSize;
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return UIStatusBarStyleLightContent;

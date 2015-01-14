@@ -16,7 +16,6 @@
 #import "PPWebViewController.h"
 
 #import "PPBadgeWrapperView.h"
-#import "FluidTableviewFlowLayout.h"
 #import "PPTitleButton.h"
 #import "PPBookmarkCell.h"
 #import "PPDataSource.h"
@@ -61,10 +60,6 @@ typedef enum : NSInteger {
 @property (nonatomic, retain) NSIndexPath *selectedIndexPath;
 @property (nonatomic, strong) UIAlertController *confirmDeletionAlertView;
 @property (nonatomic) CFAbsoluteTime latestSearchUpdateTime;
-
-// UIKit Dynamics
-@property (nonatomic, strong) FluidTableviewFlowLayout *collectionViewLayout;
-@property (nonatomic) CGSize itemSize;
 
 // Multiple Deletion
 @property (nonatomic, strong) PPToolbar *toolbar;

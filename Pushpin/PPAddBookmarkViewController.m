@@ -1918,7 +1918,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         dispatch_async(dispatch_get_main_queue(), ^{
             self.loadingTags = YES;
         });
-        
+
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             ASPinboard *pinboard = [ASPinboard sharedInstance];
             [self.unfilteredPopularTags removeAllObjects];

@@ -7,9 +7,7 @@
 //
 
 #import "PPPinboardDataSource.h"
-#import "PPAppDelegate.h"
 #import "PPAddBookmarkViewController.h"
-#import "PPBadgeView.h"
 #import "PPTheme.h"
 #import "PPTitleButton.h"
 #import "PostMetadata.h"

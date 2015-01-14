@@ -10,22 +10,16 @@
 
 #import "PPAppDelegate.h"
 #import "PPLoginViewController.h"
-#import "PPSettingsViewController.h"
 #import "PPGenericPostViewController.h"
 #import "PPPinboardDataSource.h"
 #import "PPNotification.h"
 #import "PPFeedListViewController.h"
 #import "PPAddBookmarkViewController.h"
 #import "PPWebViewController.h"
-#import "PPToolbar.h"
 #import "PPPinboardFeedDataSource.h"
-#import "PPMultipleEditViewController.h"
 #import "PPNavigationController.h"
 #import "PPTheme.h"
 #import "PPTitleButton.h"
-#import "ScreenshotViewController.h"
-#import "PPStatusBarNotification.h"
-#import "PPMobilizerUtility.h"
 #import "PPSplitViewController.h"
 #import "PPStatusBar.h"
 #import "PPDeliciousDataSource.h"
@@ -525,11 +519,6 @@
         }
     }
     return params;
-}
-
-- (void)openSettings {
-    PPSettingsViewController *settingsViewController = [[PPSettingsViewController alloc] init];
-    [self.navigationController pushViewController:settingsViewController animated:YES];
 }
 
 - (PPSplitViewController *)splitViewController {

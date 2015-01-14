@@ -52,7 +52,6 @@
 
 - (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback;
 
-- (void)openSettings;
 - (void)promptUserToAddBookmark;
 - (void)logout;
 

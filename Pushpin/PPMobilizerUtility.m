@@ -7,7 +7,6 @@
 //
 
 #import "PPMobilizerUtility.h"
-#import "PPAppDelegate.h"
 #import "PPSettings.h"
 #import "NSString+URLEncoding2.h"
 
