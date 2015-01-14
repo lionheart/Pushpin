@@ -1016,15 +1016,6 @@
             "fileRef": "372C84081870E3B300BF520D",
             "isa": "PBXBuildFile"
         },
-        "372D43291723A7AC00E802C0": {
-            "children": [
-                "376E0A7D175AA245004CCDEE"
-            ],
-            "isa": "PBXGroup",
-            "name": "Appearance",
-            "path": "Assets/Appearance",
-            "sourceTree": "<group>"
-        },
         "372F88811673EE280073D0B6": {
             "isa": "PBXFileReference",
             "lastKnownFileType": "compiled.mach-o.dylib",
@@ -1329,6 +1320,8 @@
                 "3762CAC61A55A59600301C97",
                 "37EE01761A093F2B00A03F3B",
                 "37EE01771A093F2B00A03F3B",
+                "37CBB7511881F31C000F9C36",
+                "37CBB7521881F31C000F9C36",
                 "37A2B4A0199E6D8D005B7671",
                 "37A2B4A1199E6D8D005B7671",
                 "3714DB7617558A2000B23F4F",
@@ -2262,14 +2255,6 @@
             "path": "PPTableViewController.m",
             "sourceTree": "<group>"
         },
-        "376E0A7D175AA245004CCDEE": {
-            "fileEncoding": "4",
-            "isa": "PBXFileReference",
-            "lastKnownFileType": "text.plist.xml",
-            "name": "About.plist",
-            "path": "../About.plist",
-            "sourceTree": "<group>"
-        },
         "376E0A7F175AA9EC004CCDEE": {
             "isa": "PBXFileReference",
             "lastKnownFileType": "wrapper.framework",
@@ -2955,6 +2940,28 @@
             "lastKnownFileType": "sourcecode.c.objc",
             "path": "PPFadeTransition.m",
             "sourceTree": "<group>"
+        },
+        "3781111E1A65F27700F0D061": {
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "image.png",
+            "name": "activity-browser-safari.png",
+            "path": "Assets/activity-browser-safari.png",
+            "sourceTree": "<group>"
+        },
+        "3781111F1A65F27700F0D061": {
+            "isa": "PBXFileReference",
+            "lastKnownFileType": "image.png",
+            "name": "activity-browser-safari@2x.png",
+            "path": "Assets/activity-browser-safari@2x.png",
+            "sourceTree": "<group>"
+        },
+        "378111201A65F27700F0D061": {
+            "fileRef": "3781111E1A65F27700F0D061",
+            "isa": "PBXBuildFile"
+        },
+        "378111211A65F27700F0D061": {
+            "fileRef": "3781111F1A65F27700F0D061",
+            "isa": "PBXBuildFile"
         },
         "378482CD186C965700DF7A74": {
             "children": [
@@ -5664,16 +5671,14 @@
             "fileEncoding": "4",
             "isa": "PBXFileReference",
             "lastKnownFileType": "sourcecode.c.h",
-            "name": "PPPlainTextViewController.h",
-            "path": "Pushpin/PPPlainTextViewController.h",
+            "path": "PPPlainTextViewController.h",
             "sourceTree": "<group>"
         },
         "37CBB7521881F31C000F9C36": {
             "fileEncoding": "4",
             "isa": "PBXFileReference",
             "lastKnownFileType": "sourcecode.c.objc",
-            "name": "PPPlainTextViewController.m",
-            "path": "Pushpin/PPPlainTextViewController.m",
+            "path": "PPPlainTextViewController.m",
             "sourceTree": "<group>"
         },
         "37CBB7541881FFBC000F9C36": {
@@ -5708,18 +5713,6 @@
             "lastKnownFileType": "sourcecode.c.objc",
             "path": "PPNoteViewController.m",
             "sourceTree": "<group>"
-        },
-        "37D0D0C016B8E2310062C27E": {
-            "fileEncoding": "4",
-            "isa": "PBXFileReference",
-            "lastKnownFileType": "text.html",
-            "name": "about.html",
-            "path": "Assets/about.html",
-            "sourceTree": "<group>"
-        },
-        "37D0D0C116B8E2310062C27E": {
-            "fileRef": "37D0D0C016B8E2310062C27E",
-            "isa": "PBXBuildFile"
         },
         "37D2351C16B8DDD0007541DC": {
             "fileEncoding": "4",
@@ -6323,6 +6316,7 @@
             "buildActionMask": "2147483647",
             "files": [
                 "3747C6F219CCDB1F00FAD488",
+                "378111211A65F27700F0D061",
                 "3747C6F319CCDB1F00FAD488",
                 "3784B0F81A50AD1500CD1435",
                 "3784B0F91A50AD1600CD1435",
@@ -6335,21 +6329,10 @@
                 "3784B0FE1A50AD1600CD1435",
                 "3784B0FF1A50AD1600CD1435",
                 "37AD159518A13365005813CC",
-                "37D0D0C116B8E2310062C27E",
                 "37CBB7551881FFBC000F9C36",
                 "37CBB7411881B44B000F9C36",
                 "E873423B180DAC8800CF9E5F",
                 "E873423C180DAC8800CF9E5F",
-                "E873422B180DAA5B00CF9E5F",
-                "E873422C180DAA5B00CF9E5F",
-                "E8734233180DAC3400CF9E5F",
-                "E8734234180DAC3400CF9E5F",
-                "E8734237180DAC3400CF9E5F",
-                "E8734238180DAC3400CF9E5F",
-                "E8734235180DAC3400CF9E5F",
-                "E8734236180DAC3400CF9E5F",
-                "E80495131810419500C5CA8B",
-                "E80495141810419500C5CA8B",
                 "3747C6F419CCDB1F00FAD488",
                 "3747C6F519CCDB1F00FAD488",
                 "37DE5AAA174EF8AF0073A2F4",
@@ -6362,6 +6345,7 @@
                 "3747C6F919CCDB1F00FAD488",
                 "3747C6FA19CCDB1F00FAD488",
                 "3747C6FB19CCDB1F00FAD488",
+                "378111201A65F27700F0D061",
                 "3747C6FC19CCDB1F00FAD488",
                 "3747C6FD19CCDB1F00FAD488",
                 "3747C6FE19CCDB1F00FAD488",
@@ -6943,7 +6927,6 @@
         "37FEEBDC15748BA7003F2B77": {
             "children": [
                 "E8734228180DAA4B00CF9E5F",
-                "372D43291723A7AC00E802C0",
                 "E8F987EC183E7BF800EF976D",
                 "E8DA795A183D23F9002B1D0B",
                 "37802196198EAD2500CE269A",
@@ -6963,7 +6946,6 @@
                 "3784B0F51A50AD1500CD1435",
                 "3784B0F61A50AD1500CD1435",
                 "3784B0F71A50AD1500CD1435",
-                "37D0D0C016B8E2310062C27E",
                 "37C611E616377D5D008DB30B",
                 "37ECBC5617739C24005AE740",
                 "37C611E816377D5D008DB30B",
@@ -6984,8 +6966,6 @@
                 "376C9E8317488B8500A62CB5",
                 "376C9E8617488F2300A62CB5",
                 "376C9E8717488F2300A62CB5",
-                "37CBB7511881F31C000F9C36",
-                "37CBB7521881F31C000F9C36",
                 "37BC1BD7188642F90022020A",
                 "37BC1BD3188641D80022020A",
                 "370BBE011901ABBB004FA557",
@@ -7226,28 +7206,6 @@
         },
         "E804951018103DC700C5CA8B": {
             "fileRef": "E804950F18103DC700C5CA8B",
-            "isa": "PBXBuildFile"
-        },
-        "E80495111810419500C5CA8B": {
-            "isa": "PBXFileReference",
-            "lastKnownFileType": "image.png",
-            "name": "activity-readinglist.png",
-            "path": "Assets/activity-readinglist.png",
-            "sourceTree": "<group>"
-        },
-        "E80495121810419500C5CA8B": {
-            "isa": "PBXFileReference",
-            "lastKnownFileType": "image.png",
-            "name": "activity-readinglist@2x.png",
-            "path": "Assets/activity-readinglist@2x.png",
-            "sourceTree": "<group>"
-        },
-        "E80495131810419500C5CA8B": {
-            "fileRef": "E80495111810419500C5CA8B",
-            "isa": "PBXBuildFile"
-        },
-        "E80495141810419500C5CA8B": {
-            "fileRef": "E80495121810419500C5CA8B",
             "isa": "PBXBuildFile"
         },
         "E80495191810597A00C5CA8B": {
@@ -7568,110 +7526,14 @@
         },
         "E8734228180DAA4B00CF9E5F": {
             "children": [
+                "3781111E1A65F27700F0D061",
+                "3781111F1A65F27700F0D061",
                 "E8734239180DAC8800CF9E5F",
-                "E873423A180DAC8800CF9E5F",
-                "E8734229180DAA5B00CF9E5F",
-                "E873422A180DAA5B00CF9E5F",
-                "E873422D180DAC3300CF9E5F",
-                "E873422E180DAC3300CF9E5F",
-                "E8734231180DAC3400CF9E5F",
-                "E8734232180DAC3400CF9E5F",
-                "E873422F180DAC3400CF9E5F",
-                "E8734230180DAC3400CF9E5F",
-                "E80495111810419500C5CA8B",
-                "E80495121810419500C5CA8B"
+                "E873423A180DAC8800CF9E5F"
             ],
             "isa": "PBXGroup",
             "name": "Activities",
             "sourceTree": "<group>"
-        },
-        "E8734229180DAA5B00CF9E5F": {
-            "isa": "PBXFileReference",
-            "lastKnownFileType": "image.png",
-            "name": "activity-browser-safari.png",
-            "path": "Assets/activity-browser-safari.png",
-            "sourceTree": "<group>"
-        },
-        "E873422A180DAA5B00CF9E5F": {
-            "isa": "PBXFileReference",
-            "lastKnownFileType": "image.png",
-            "name": "activity-browser-safari@2x.png",
-            "path": "Assets/activity-browser-safari@2x.png",
-            "sourceTree": "<group>"
-        },
-        "E873422B180DAA5B00CF9E5F": {
-            "fileRef": "E8734229180DAA5B00CF9E5F",
-            "isa": "PBXBuildFile"
-        },
-        "E873422C180DAA5B00CF9E5F": {
-            "fileRef": "E873422A180DAA5B00CF9E5F",
-            "isa": "PBXBuildFile"
-        },
-        "E873422D180DAC3300CF9E5F": {
-            "isa": "PBXFileReference",
-            "lastKnownFileType": "image.png",
-            "name": "activity-instapaper.png",
-            "path": "Assets/activity-instapaper.png",
-            "sourceTree": "<group>"
-        },
-        "E873422E180DAC3300CF9E5F": {
-            "isa": "PBXFileReference",
-            "lastKnownFileType": "image.png",
-            "name": "activity-instapaper@2x.png",
-            "path": "Assets/activity-instapaper@2x.png",
-            "sourceTree": "<group>"
-        },
-        "E873422F180DAC3400CF9E5F": {
-            "isa": "PBXFileReference",
-            "lastKnownFileType": "image.png",
-            "name": "activity-readability.png",
-            "path": "Assets/activity-readability.png",
-            "sourceTree": "<group>"
-        },
-        "E8734230180DAC3400CF9E5F": {
-            "isa": "PBXFileReference",
-            "lastKnownFileType": "image.png",
-            "name": "activity-readability@2x.png",
-            "path": "Assets/activity-readability@2x.png",
-            "sourceTree": "<group>"
-        },
-        "E8734231180DAC3400CF9E5F": {
-            "isa": "PBXFileReference",
-            "lastKnownFileType": "image.png",
-            "name": "activity-pocket.png",
-            "path": "Assets/activity-pocket.png",
-            "sourceTree": "<group>"
-        },
-        "E8734232180DAC3400CF9E5F": {
-            "isa": "PBXFileReference",
-            "lastKnownFileType": "image.png",
-            "name": "activity-pocket@2x.png",
-            "path": "Assets/activity-pocket@2x.png",
-            "sourceTree": "<group>"
-        },
-        "E8734233180DAC3400CF9E5F": {
-            "fileRef": "E873422D180DAC3300CF9E5F",
-            "isa": "PBXBuildFile"
-        },
-        "E8734234180DAC3400CF9E5F": {
-            "fileRef": "E873422E180DAC3300CF9E5F",
-            "isa": "PBXBuildFile"
-        },
-        "E8734235180DAC3400CF9E5F": {
-            "fileRef": "E873422F180DAC3400CF9E5F",
-            "isa": "PBXBuildFile"
-        },
-        "E8734236180DAC3400CF9E5F": {
-            "fileRef": "E8734230180DAC3400CF9E5F",
-            "isa": "PBXBuildFile"
-        },
-        "E8734237180DAC3400CF9E5F": {
-            "fileRef": "E8734231180DAC3400CF9E5F",
-            "isa": "PBXBuildFile"
-        },
-        "E8734238180DAC3400CF9E5F": {
-            "fileRef": "E8734232180DAC3400CF9E5F",
-            "isa": "PBXBuildFile"
         },
         "E8734239180DAC8800CF9E5F": {
             "isa": "PBXFileReference",
