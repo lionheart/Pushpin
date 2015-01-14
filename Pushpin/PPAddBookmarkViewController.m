@@ -1915,9 +1915,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
         && [[UIApplication sharedApplication] canOpenURL:url]
         && ([url.scheme isEqualToString:@"http"] || [url.scheme isEqualToString:@"https"]);
     if (shouldPrefillTags) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.loadingTags = YES;
-        });
+        self.loadingTags = YES;
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];
 
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             ASPinboard *pinboard = [ASPinboard sharedInstance];
@@ -1926,11 +1925,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
             
             [pinboard tagSuggestionsForURL:self.bookmarkData[@"url"]
                                    success:^(NSArray *popular, NSArray *recommended) {
-                                       dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                           [self.unfilteredPopularTags addObjectsFromArray:popular];
-                                           [self.unfilteredRecommendedTags addObjectsFromArray:recommended];
-                                           [self handleTagSuggestions];
+                                       dispatch_async(dispatch_get_main_queue(), ^{
+                                           [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
                                        });
+
+                                       [self.unfilteredPopularTags addObjectsFromArray:popular];
+                                       [self.unfilteredRecommendedTags addObjectsFromArray:recommended];
+                                       [self handleTagSuggestions];
                                    }];
         });
     }
