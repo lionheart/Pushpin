@@ -337,6 +337,9 @@
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
+    // Close the database before copying files over.
+    [[PPUtilities databaseQueue] close];
+
     // Copy over the database file to the shared container URL
     NSURL *containerURL = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:APP_GROUP];
     NSURL *newDatabaseURL = [containerURL URLByAppendingPathComponent:@"shared.db"];
