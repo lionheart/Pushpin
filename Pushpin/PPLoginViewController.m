@@ -18,12 +18,11 @@
 #import "PPTableViewTitleView.h"
 #import "PPDeliciousDataSource.h"
 #import "PPSettings.h"
-#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 
 #import <uservoice-iphone-sdk/UserVoice.h>
-#import <RPSTPasswordManagementAppService/RPSTPasswordManagementAppService.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
+#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 #import <ASPinboard/ASPinboard.h>
 #import <LHSDelicious/LHSDelicious.h>
 #import <OnePasswordExtension.h>
@@ -823,7 +822,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 #ifdef DELICIOUS
     NSString *searchTerm = @"delicious";
 #endif
-    return [[UIApplication sharedApplication] canOpenURL:[RPSTPasswordManagementAppService passwordManagementAppCompleteURLForSearchQuery:searchTerm]];
+    return [[OnePasswordExtension sharedExtension] isAppExtensionAvailable];
 }
             
 - (BOOL)authTokenProvided {
