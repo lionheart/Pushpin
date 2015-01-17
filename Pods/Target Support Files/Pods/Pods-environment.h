@@ -9,8 +9,8 @@
 // 1PasswordExtension
 #define COCOAPODS_POD_AVAILABLE_1PasswordExtension
 #define COCOAPODS_VERSION_MAJOR_1PasswordExtension 1
-#define COCOAPODS_VERSION_MINOR_1PasswordExtension 0
-#define COCOAPODS_VERSION_PATCH_1PasswordExtension 9
+#define COCOAPODS_VERSION_MINOR_1PasswordExtension 1
+#define COCOAPODS_VERSION_PATCH_1PasswordExtension 0
 
 // AFNetworking
 #define COCOAPODS_POD_AVAILABLE_AFNetworking
@@ -62,26 +62,27 @@
 
 // CrashlyticsFramework
 #define COCOAPODS_POD_AVAILABLE_CrashlyticsFramework
-#define COCOAPODS_VERSION_MAJOR_CrashlyticsFramework 2
-#define COCOAPODS_VERSION_MINOR_CrashlyticsFramework 2
-#define COCOAPODS_VERSION_PATCH_CrashlyticsFramework 4
+// This library does not follow semantic-versioning,
+// so we were not able to define version macros.
+// Please contact the author.
+// Version: 2.2.5.2.
 
 // FMDB
 #define COCOAPODS_POD_AVAILABLE_FMDB
 #define COCOAPODS_VERSION_MAJOR_FMDB 2
-#define COCOAPODS_VERSION_MINOR_FMDB 3
+#define COCOAPODS_VERSION_MINOR_FMDB 4
 #define COCOAPODS_VERSION_PATCH_FMDB 0
 
 // FMDB/common
 #define COCOAPODS_POD_AVAILABLE_FMDB_common
 #define COCOAPODS_VERSION_MAJOR_FMDB_common 2
-#define COCOAPODS_VERSION_MINOR_FMDB_common 3
+#define COCOAPODS_VERSION_MINOR_FMDB_common 4
 #define COCOAPODS_VERSION_PATCH_FMDB_common 0
 
 // FMDB/standard
 #define COCOAPODS_POD_AVAILABLE_FMDB_standard
 #define COCOAPODS_VERSION_MAJOR_FMDB_standard 2
-#define COCOAPODS_VERSION_MINOR_FMDB_standard 3
+#define COCOAPODS_VERSION_MINOR_FMDB_standard 4
 #define COCOAPODS_VERSION_PATCH_FMDB_standard 0
 
 // HTMLParser
@@ -159,8 +160,14 @@
 // Mixpanel
 #define COCOAPODS_POD_AVAILABLE_Mixpanel
 #define COCOAPODS_VERSION_MAJOR_Mixpanel 2
-#define COCOAPODS_VERSION_MINOR_Mixpanel 4
-#define COCOAPODS_VERSION_PATCH_Mixpanel 0
+#define COCOAPODS_VERSION_MINOR_Mixpanel 6
+#define COCOAPODS_VERSION_PATCH_Mixpanel 2
+
+// Mixpanel/MPCategoryHelpers
+#define COCOAPODS_POD_AVAILABLE_Mixpanel_MPCategoryHelpers
+#define COCOAPODS_VERSION_MAJOR_Mixpanel_MPCategoryHelpers 2
+#define COCOAPODS_VERSION_MINOR_Mixpanel_MPCategoryHelpers 6
+#define COCOAPODS_VERSION_PATCH_Mixpanel_MPCategoryHelpers 2
 
 // OpenInChrome
 #define COCOAPODS_POD_AVAILABLE_OpenInChrome
@@ -168,41 +175,29 @@
 #define COCOAPODS_VERSION_MINOR_OpenInChrome 0
 #define COCOAPODS_VERSION_PATCH_OpenInChrome 1
 
-// PocketAPI
-#define COCOAPODS_POD_AVAILABLE_PocketAPI
-#define COCOAPODS_VERSION_MAJOR_PocketAPI 1
-#define COCOAPODS_VERSION_MINOR_PocketAPI 0
-#define COCOAPODS_VERSION_PATCH_PocketAPI 2
-
 // RNCryptor
 #define COCOAPODS_POD_AVAILABLE_RNCryptor
 #define COCOAPODS_VERSION_MAJOR_RNCryptor 2
 #define COCOAPODS_VERSION_MINOR_RNCryptor 2
 #define COCOAPODS_VERSION_PATCH_RNCryptor 0
 
-// RPSTPasswordManagementAppService
-#define COCOAPODS_POD_AVAILABLE_RPSTPasswordManagementAppService
-#define COCOAPODS_VERSION_MAJOR_RPSTPasswordManagementAppService 0
-#define COCOAPODS_VERSION_MINOR_RPSTPasswordManagementAppService 0
-#define COCOAPODS_VERSION_PATCH_RPSTPasswordManagementAppService 1
-
 // Reachability
 #define COCOAPODS_POD_AVAILABLE_Reachability
 #define COCOAPODS_VERSION_MAJOR_Reachability 3
-#define COCOAPODS_VERSION_MINOR_Reachability 0
+#define COCOAPODS_VERSION_MINOR_Reachability 2
 #define COCOAPODS_VERSION_PATCH_Reachability 0
 
 // TTTAttributedLabel
 #define COCOAPODS_POD_AVAILABLE_TTTAttributedLabel
 #define COCOAPODS_VERSION_MAJOR_TTTAttributedLabel 1
-#define COCOAPODS_VERSION_MINOR_TTTAttributedLabel 10
-#define COCOAPODS_VERSION_PATCH_TTTAttributedLabel 1
+#define COCOAPODS_VERSION_MINOR_TTTAttributedLabel 13
+#define COCOAPODS_VERSION_PATCH_TTTAttributedLabel 0
 
 // TextExpander
 #define COCOAPODS_POD_AVAILABLE_TextExpander
-#define COCOAPODS_VERSION_MAJOR_TextExpander 2
-#define COCOAPODS_VERSION_MINOR_TextExpander 3
-#define COCOAPODS_VERSION_PATCH_TextExpander 1
+#define COCOAPODS_VERSION_MAJOR_TextExpander 3
+#define COCOAPODS_VERSION_MINOR_TextExpander 0
+#define COCOAPODS_VERSION_PATCH_TextExpander 5
 
 // XMLDictionary
 #define COCOAPODS_POD_AVAILABLE_XMLDictionary
@@ -222,15 +217,9 @@
 #define COCOAPODS_VERSION_MINOR_hpple 2
 #define COCOAPODS_VERSION_PATCH_hpple 0
 
-// oauthconsumer
-#define COCOAPODS_POD_AVAILABLE_oauthconsumer
-#define COCOAPODS_VERSION_MAJOR_oauthconsumer 0
-#define COCOAPODS_VERSION_MINOR_oauthconsumer 0
-#define COCOAPODS_VERSION_PATCH_oauthconsumer 1
-
 // uservoice-iphone-sdk
 #define COCOAPODS_POD_AVAILABLE_uservoice_iphone_sdk
 #define COCOAPODS_VERSION_MAJOR_uservoice_iphone_sdk 3
 #define COCOAPODS_VERSION_MINOR_uservoice_iphone_sdk 2
-#define COCOAPODS_VERSION_PATCH_uservoice_iphone_sdk 1
+#define COCOAPODS_VERSION_PATCH_uservoice_iphone_sdk 2
 

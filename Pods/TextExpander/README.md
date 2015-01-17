@@ -1,52 +1,140 @@
 # TextExpander touch SDK
 (Release notes are found at the bottom of this document.)
 
-[Smile](http://smilesoftware.com/) provides the TextExpander framework to include TextExpander functionality in your iOS app, subject to the License Agreement below.
-
-The teTouchSDK project is a working example app demonstrating how to add TextExpander functionality to your app.
+[Smile](http://smilesoftware.com/) provides the TextExpander framework to include TextExpander functionality in your iOS app, custom keyboard, or extension, subject to the License Agreement below.
 
 [TextExpander touch SDK home page](http://smilesoftware.com/sdk)
 
 [TextExpander touch home page](http://smilesoftware.com/TextExpander/touch/index.html)
 
-[Basic tutorial](http://smile.clarify-it.com/d/lkwwdw)
-
 [Fill-ins tutorial](http://smile.clarify-it.com/d/ehf7a4)
 
 [Google Group tetouch-sdk (for announcements)](http://groups.google.com/group/tetouch-sdk)
 
-### Prerequisites
+The TextExpanderDemoApp project is a working example app demonstrating how to add TextExpander functionality to your app and custom keyboard.
 
-- Xcode 4.3 or later
-- iOS 5.1 or later
-- [TextExpander touch](http://smilesoftware.com/cgi-bin/redirect.pl?product=tetouch&cmd=itunes) is needed if you wish to test with your own snippets. Without TextExpander touch, you'll be limited to testing with the default snippets, listed below under Default Abbreviations & Snippets and added via the Defaults.textexpander file.
+# How to Add TextExpander to your iOS App
 
-### Getting Started / Build Notes
+## Grab the latest TextExpander touch SDK from GitHub
 
-- Add the TextExpander.framework to your project [^1]
-- Add these frameworks to your project if they're not already included:
-    - AudioToolbox
-    - CoreGraphics
-    - CoreText
-    - Foundation
-    - UIKit
-- Add Defaults.textexpander if you want to test without TextExpander touch
+1. Launch Terminal
+2. Change the the directory into which you'd like to download the SDK
+3. Run this command:
 
-### TextExpanderDemoApp
+<pre>git clone https://github.com/SmileSoftware/TextExpanderTouchSDK</pre>
 
-TextExpanderDemoApp is an iPhone app, which demonstrates acquiring / updating snippet data via its Settings view, usage of TextExpander in UITextField, UITextView, UISearchBar, and UIWebView. It includes a regular web view and a content editable web view. It's not meant to be a model iOS app. It's meant to demonstrate TextExpander functionality so that you can see it in context and adopt it easily in your app. To dismiss the keyboard in the Text Views view, tap the blank area on either side of the UITextField.
+## Build the Sample Project
 
-### Acquiring / Updating Snippet Data
+TextExpanderDemoApp is an iPhone app, which demonstrates acquiring / updating snippet data via its Settings view, usage of TextExpander in UITextField, UITextView, UISearchBar, UIWebView, and a custom keyboard. It includes a regular web view and a content editable web view. It's not meant to be a model iOS app. It's meant to demonstrate TextExpander functionality so that you can see it in context and adopt it easily in your app. 
 
-As of November 25, 2013 (and SDK version 2.3), apps which implement the TextExpander touch SDK in iOS 7 or later must use an x-callback-url to acquire and update TextExpander snippet data in response to user action. This differs from the previous Reminders and persistent pasteboard methods, both of which have been retired by Apple. For background, see [this post](https://groups.google.com/forum/#!topic/tetouch-sdk/x_tQWItEDnk) on our Google Group.
+1. [Download](http://smilesoftware.com/cgi-bin/redirect.pl?product=tetouch&cmd=itunes) TextExpander from the App Store
+2. Open the TextExpanderTouchSDK folder from step 1
+3. Double-click TextExpanderDemoApp.xcodeproj to open the sample project in Xcode
+4. Choose Product -> Run to run the sample
+5. Tap Settings
+6. Turn on "Use TextExpander"
+7. Tap Fetch Snippets to get the snippets from TextExpander
+8. Tap on the views and expand snippets into them, such as "ddate" or "sig1"
+
+Note: To dismiss the keyboard, tap the whitespace to the left or right of the text field.
+
+## Add TextExpander to Your Project
+
+1. Drag TextExpander.framework into your project
+2. Select your app's target
+3. Click on "Info"
+4. Scroll down to "Linked Frameworks and Libraries"
+5. Drag the TextExpander.framework from your project to that list
+6. Use + to add the following frameworks to your project, if it doesn't already include them:
+- AudioToolbox.framework
+- CoreGraphics.framework
+- CoreText.framework
+- Foundation.framework
+- UIKit.framework
+
+## Add TextExpander to Your View
+
+TextExpander works with these views:
+- UITextView
+- UITextField
+- UISearchBar
+- UIWebView
+
+1. Import the TextExpander header into your view controller's header:<pre>#import "SMTEDelegateController.h"</pre>
+2. Add an SMTEDelegateController to your view controller's subclass:<pre>@property (nonatomic, strong) SMTEDelegateController *textExpander;</pre>
+3. In your view controller's viewDidLoad method, initialize SMTEDelegateController and make it the delegate of your view(s):<pre>self.textExpander = [[SMTEDelegateController alloc] init];<br>[self.textView setDelegate:self.textExpander];<br>[self.textExpander setNextDelegate:self];</pre>
+
+## Disabling TextExpander Custom Keyboard Expansions (NEW in 3.0 / iOS 8 Only)
+
+TextExpander 3.0 will ship with a custom keyboard, which can expand TextExpander abbreviations when typed.
+
+Custom keyboards do not support rich text, and their UI is more limited than the x-callback-url for fill-ins.
+
+If your app implements the SDK, you'll want to disable TextExpander custom keyboard expansion for the best user experience.
+
+To disable TextExpander custom keyboard expansion, you'll add a listener for the Darwin notification "com.smileonmymac.tetouch.keyboard.viewWillAppear" and in that listener you'll call [SMTEDelegateController setCustomKeyboardExpansionEnabled:NO]. Here's an example:
+
+<pre>
+    int status = notify_register_dispatch("com.smileonmymac.tetouch.keyboard.viewWillAppear",
+                                          &SMAppDelegateCustomKeyboardWillAppearToken,
+                                          dispatch_get_main_queue(), ^(int t) {
+                                              [SMTEDelegateController setCustomKeyboardExpansionEnabled:NO];
+                                          });
+</pre>
+
+There is also a corresponding "com.smileonmymac.tetouch.keyboard.viewWillDisappear" notification. It is not necessary to register for that to re-enable expansion.
+
+## Add TextExpander to Your Custom Keyboard or Other Extension (NEW in 3.0 / iOS 8 Only)
+
+Your app which contains your extension ("containing app") will have to acquire snippet data from TextExpander (see Acquiring / Updating Snippet Data below).
+
+Both your containing app and your extension will have to turn on the App Group capability in the Info section of their Xcode targets, and they'll have to share an identically named app group. You can see an example of this in the TextExpanderDemoApp project and its custom keyboard.
+
+1. Import the TextExpander header into your view controller's header:<pre>#import "SMTEDelegateController.h"</pre>
+2. Add an SMTEDelegateController to your view controller's subclass:<pre>@property (nonatomic, strong) SMTEDelegateController *textExpander;</pre>
+3. In your view controller's viewDidLoad method, initialize SMTEDelegateController and set its appGroupIdentifier:<pre>self.textExpander = [[SMTEDelegateController alloc] init];<br>self.textExpander.appGroupIdentifier = @"<YOUR APP GROUP IDENTIFIER>";</pre>
+4. Implement Acquiring / Updating Snippet Data in your containing app as described below
+
+The TextExpander SDK will call [NSFileManager containerURLForSecurityApplicationGroupIdentifier:appGroupIdentifier] to obtain your app group container, and it will store and retrieve its snippet data from an appended path component of: Library/Application Support/TextExpander, creating the folders if necessary.
+
+A custom keyboard won't use views and delegate methods. It will interact with TextExpander using:
+
+<pre>[SMTEDelegateController stringByExpandingAbbreviations:stringToExpand cursorPosition:&cursorPosition options:expansionOptions];</pre>
+
+This method extends the previous stringByExpandingAbbreviations: method by returning the index of the cursor in the expanded text when the user expands a snippet with cursor positioning.
+
+As of iOS 8b5, a custom keyboard could not both insert text and position the cursor in a single pass of the runloop. If that gets fixed, you can remove the workaround in the demo keyboard. [<rdar://problem/17895140>](rdar://problem/17895140)
+
+The TextExpanderDemoApp includes a custom keyboard target, which serves as an example of how to support TextExpander in a custom keyboard. To add the custom keyboard to the demo app:
+
+1. Select the TextExpanderDemoApp target, and in its Build Phases tab, add the DemoAppKeyboard as a Target dependency
+2. In the TextExpanderDemoApp target, set the Code Signing Entitlements to TextExpanderDemoApp/TextExpanderDemoApp.Entitlements
+3. On developer.apple.com, you'll need to do the following, but with your own IDs in place of our examples:
+- Create an App Group (e.g. group.com.smileonmymac.textexpander.demoapp)
+- Create an App ID (e.g. com.smileonmymac.TextExpanderDemoApp)
+- Edit the App ID to add the App Group
+- Create a Provisioning Profile for development, download it, and drag it to Xcode
+- Create another App ID for the keyboard (e.g. com.smileonmymac.TextExpanderDemoApp.DemoAppKeyboard)
+- Edit the App ID to add the App Group
+- Create a Provisioning Profile for development, download it, and drag it to Xcode
+4. Select the TextExpanderDemoApp target, and in its Capbilities tab, turn your App Group on, and check the appropriate Group
+5. Select the DemoAppKeyboard target, and in its Capbilities tab, turn your App Group on, and check the appropriate Group
+6. Select the TextExpanderDemoApp target, and in its Build Phases tab, add the DemoAppKeyboard to Embed App Extensions
+7. Change the appGroupIdentifier setting in SMFirstViewController, SMSecondViewController, SMThirdViewController, and KeyboardViewController to match yours (search and replace @"group.com.smileonmymac.textexpander.demoapp")
+8. Run the demo app, and update its snippets (so that they get written to the app group container)
+9. Add your keyboard and do the test expansion in any app
+
+Note: Snippet changes made in TextExpander touch are not automatically available to your custom keyboard. It gets its snippets from its container app, which uses the x-callback-url method described below to acquire and update snippet data.
+
+## Acquiring / Updating Snippet Data
 
 To acquire / update snippet data, your app needs to:
 
 1. Provide a URL scheme for getting snippets via x-callback-url:
-    1. Set the getSnippetsScheme property of the SMTEDelegateController 
-    2. Add the scheme to your app's Info in Xcode under "URL Types" (if not using an existing URL scheme -- see note below)
-    3. Implement application:openURL:sourceApplication:annotation: or application:handleOpenURL: in your app delegate, and call [SMTEDelegateController handleGetSnippetsURL:error:cancelFlag:] with any URL's that have that scheme (or which meet the criteria as described in the note below)
-    4. If cancelFlag is returned as true, the user has Share Snippets turned off in TextExpander and did not permit sharing temporarily when prompted. If error is not nil, an error occurred, and you should probably inform the user.
+    a. Set the getSnippetsScheme property of the SMTEDelegateController 
+    b. Add the scheme to your app's Info in Xcode under "URL Types"
+    c. Implement application:openURL:sourceApplication:annotation: or application:handleOpenURL: in your app delegate, and call [SMTEDelegateController handleGetSnippetsURL:error:cancelFlag:] with any URL's that have that scheme (or which meet the criteria as described in the note below)
+    d. If cancelFlag is returned as true, the user has Share Snippets turned off in TextExpander and did not permit sharing temporarily when prompted. If error is not nil, an error occurred, and you should probably inform the user.
 2. Add a user interface element to your app which, when touched, initiates acquisition / updating of snippet data by calling - [SMTEDelegateController getSnippets]
 3. Set the clientAppName property of the SMTEDelegateController, which is used to display the name of your app in the TextExpander app, as might be the case when Share Snippets is turned off to identify which app is requesting snippet data and offering the user a choice to turn Share Snippets on or to cancel.
 
@@ -56,7 +144,7 @@ Note that you can use an existing URL scheme as your getSnippetsScheme if you wa
 
 So you can easily examine the URL for the presence of x-callback-url in the URL host and /TextExpander as the prefix of the URL path to determine whether or not a given URL is a snippet data callback to your URL scheme.
 
-To provide user's information about the current status of TextExpander data, you can use `expansionStatusForceLoad:snippetCount:loadDate:error:` to obtain the last-obtained snippet settings'  modification date, or find that no snippet settings have yet been fetched.
+To provide users information about the current status of TextExpander data, you can use `expansionStatusForceLoad:snippetCount:loadDate:error:` to obtain the last-obtained snippet settings'  modification date, or find that no snippet settings have yet been fetched.
 
 Please note that it is possible, though unlikely, that your app will be unloaded when TextExpander touch is launched. You may find that you will need code before or after you call [SMTEDelegateController handleGetSnippetsURL:] to check your app's state and to restore it if necessary.
 
@@ -67,7 +155,7 @@ Please note that it is possible, though unlikely, that your app will be unloaded
 - **UISearchBar**: instantiate SMTEDelegateController and set it as the delegate of the UISearchBar
 - To add your own delegate to a UITextView/Field/SearchBar, call -[SMTEDelegateController setNextDelegate:] on the instance you created. Your delegate will be called after TextExpander has a chance to process the delegate calls. In the shouldChangeText/CharactersInRange: call, you can examine SMTEDelegate.isAttemptingToExpandText to see if TextExpander is going to expand a snippet based on the current character(s) being inserted. Returning NO will prevent that snippet expansion.
 - A single SMTEDelegateController can service many UITextViews, UITextFields, UIWebViews, and UISearchBars. If you use setNextDelegate for multiple views or fields, please be sure to test the view or field passed to your delegate and respond accordingly.
-- Look at the example app's file tetestViewController.m to see examples of all these.
+- Look at the example app's file SMFirstViewController.m and SMSecondViewController.m to see examples of all these.
 
 ### Handling Attributed Text
 
@@ -93,7 +181,7 @@ In the simplest case, where your view is all formatted the same way, these metho
 		self.text = [newText string];
 	}
 
-(Note: To avoid locking up when performing a snippet expansion Undo using setAttributedText:, TextExpander uses `dispatch_async(dispatch_get_main_queue(), ^{ blah setAttributedText: blah }); `)
+(Note: To avoid locking up when performing a snippet expansion Undo using setAttributedText:, TextExpander uses `dispatch_async(dispatch_get_main_queue(), ^{ blah setAttributedText: changedText }); `)
 
 ### Supporting Fill-in Snippets
 
@@ -135,7 +223,7 @@ The example app includes two different implementations of SMTEFillDelegate, and 
 ### Testing Notes
 
 - If you use TextExpander for Mac OS X, you should probably disable it when testing in the iPhone Simulator, especially if you use your own snippets, as your abbreviations in the Simulator may conflict with those on Mac OS X.
-- If you are running in the iOS/iPhone Simulator, you can expand the <UUID>.zip file in the "2.0" folder on GitHub into your [home]/Library/Application Support/iPhone Simulator/6.1/Applications folder while the simulator is not running, and then the TEtouch app should appear in your simulator. This allows you to create snippets and test fill-in snippets on the simulator.
+- If you are running in the iOS/iPhone Simulator, you can expand the <UUID>.zip file in the "Simulator" folder on GitHub into your [home]/Library/Developer/CoreSimulator/Devices/<Device UUID>/data/Containers/Bundle/Application folder while the simulator is not running, and then the TEtouch app should appear in your simulator. This allows you to create snippets and test fill-in snippets on the simulator.
 - You can enable some diagnostic/debug logging in the SDK by calling the handleFillCompletionURL: method with a URL like this: [anyScheme]://x-callback-url/SMTEsetlog?log=[off|on|detailed] The log setting resets to off when your app launches (when the SDK library is loaded).
 - If expansion is enabled, you can type the "virtual" snippet abbreviation "SmileTE.status" to see a summary of what snippets data, if any, has been loaded.
 
@@ -147,7 +235,7 @@ Stay informed about new versions of the TextExpander framework on this announcem
 
 ### License Agreement
 
-The TextExpander framework is Copyright © 2009-2013 SmileOnMyMac, LLC dba Smile, and is supplied "AS IS" and without warranty. SmileOnMyMac, LLC disclaims all warranties, expressed or implied, including, without limitation the warranties of merchantability and of fitness for any purpose. SmileOnMyMac assumes no liability for direct, indirect, incidental, special, exemplary, or consequential damages, which may result from the use of the TextExpander framework, even if advised of the possibility of such damage.
+The TextExpander framework is Copyright © 2009-2014 SmileOnMyMac, LLC dba Smile, and is supplied "AS IS" and without warranty. SmileOnMyMac, LLC disclaims all warranties, expressed or implied, including, without limitation the warranties of merchantability and of fitness for any purpose. SmileOnMyMac assumes no liability for direct, indirect, incidental, special, exemplary, or consequential damages, which may result from the use of the TextExpander framework, even if advised of the possibility of such damage.
 
 Permission is hereby granted to use, copy, and distribute this library, without fee, subject to the following restrictions:
 
@@ -212,6 +300,41 @@ Thank you,
 
 
 ### Release Notes
+
+**3.0.5 (2014-12-09)**
+
+- Resolves offset problems without re-introducing problems with marked text
+- Updates Simulator package to match TextExpander 3.2.2 (waiting for review)
+
+**3.0.4 (2014-10-29)**
+
+- Fixes potential offset problem when expanding plain text snippet into an attributed text object
+	(if the abbreviation is at the end of the text, the end of the abbreviation can end up appended to the text, e.g. October 29, 2014ddat)
+
+**3.0.3 (2014-09-25)**
+
+- Fixes potential crash when abbreviation is entered in a UITextField on iOS 8 with undo support enabled
+
+**3.0.2 (2014-09-18)**
+
+- Release build (versus 3.0.1 which was inadvertently done as a debug build)
+
+**3.0.1 (2014-09-16)**
+
+- Fixes potential crash when abbreviation is entered in a UITextField via marked text (e.g. Japanese input method)
+- Fixes case where additional characters can remain after abbreviation is expanded in UITextView when abbreviation is expanded via marked text
+
+**3.0 (2014-09-04)**
+
+- Adds support for disabling expansion via the TextExpander 3 custom keyboard to avoid conflicts with SDK-implementing apps
+- Adds support for storing and retrieving snippets from an app group to support custom keyboards and extensions
+- Adds -[SMTEDelegateController stringByExpandingAbbreviations:cursorPosition:options:] to allow custom keyboards to support cursor positioning when expanding abbreviations
+- Adds +[SMTEDelegateController expansionEnabled] to query current expansion state
+- Adds custom keyboard to TextExpanderDemoApp as an example
+- Removes namespace conflicts with the subset of Omni frameworks we use for RTF support
+- Includes instructions on how to add the custom keyboard example to TextExpanderDemoApp
+- Updates Simulator version to 3.0b7 to match Public Beta
+- Fixes stringByExpandingAbbreviations to return longest abbreviation, rather than first
 
 **2.3.1 (2013-12-21)**
 
