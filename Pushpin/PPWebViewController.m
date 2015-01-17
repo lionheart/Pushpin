@@ -32,10 +32,8 @@
 #import <JavaScriptCore/JavaScriptCore.h>
 #import "NSString+URLEncoding2.h"
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-#import <oauthconsumer/OAuthConsumer.h>
 #import <UIView+LHSAdditions.h>
 #import <FMDB/FMDatabase.h>
-#import <PocketAPI/PocketAPI.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
 #import <RNCryptor/RNDecryptor.h>
@@ -601,23 +599,6 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     else {
         [self presentViewController:self.activityView animated:YES completion:nil];
     }
-}
-
-- (void)sendToReadLater {
-    // Send to the default read later service
-    [self sendToReadLater:[PPSettings sharedSettings].readLater];
-}
-
-- (void)sendToReadLater:(PPReadLaterType)service {
-    if (self.activityView) {
-        [self.activityView dismissViewControllerAnimated:YES completion:nil];
-    }
-    
-    [PPUtilities shareToReadLater:service
-                              URL:self.url.absoluteString
-                            title:self.title
-                            delay:0
-                       completion:nil];
 }
 
 - (void)toggleMobilizer {

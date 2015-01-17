@@ -9,8 +9,6 @@
 #import "PPConstants.h"
 #import "PPReaderSettings.h"
 
-@class OAToken;
-
 @interface PPSettings : NSObject
 
 @property (nonatomic) PPBrowserType browser;
@@ -50,8 +48,6 @@
 @property (nonatomic, strong) NSString *username;
 @property (nonatomic, strong) NSString *password;
 @property (nonatomic, strong) NSString *fontName;
-@property (nonatomic, strong) OAToken *instapaperToken;
-@property (nonatomic, strong) OAToken *readabilityToken;
 
 @property (nonatomic) BOOL purchasedPremiumFonts;
 

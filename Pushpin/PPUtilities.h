@@ -31,10 +31,6 @@
 
 + (NSDictionary *)dictionaryFromResultSet:(FMResultSet *)resultSet;
 
-+ (void)shareToReadLaterWithURL:(NSString *)url title:(NSString *)title;
-+ (void)shareToReadLaterWithURL:(NSString *)url title:(NSString *)title delay:(CGFloat)seconds;
-+ (void)shareToReadLaterWithURL:(NSString *)url title:(NSString *)title delay:(CGFloat)seconds completion:(void (^)())completion;
-+ (void)shareToReadLater:(PPReadLaterType)readLater URL:(NSString *)url title:(NSString *)title delay:(CGFloat)seconds completion:(void (^)())completion;
 + (void)retrievePageTitle:(NSURL *)url callback:(void (^)(NSString *title, NSString *description))callback;
 
 + (kPushpinFilterType)inverseValueForFilter:(kPushpinFilterType)filter;

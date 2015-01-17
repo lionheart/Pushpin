@@ -9,7 +9,6 @@
 #import "PPSettings.h"
 
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
-#import <oauthconsumer/OAuthConsumer.h>
 
 @interface PPSettings ()
 
@@ -39,8 +38,6 @@
 @synthesize token = _token;
 @synthesize lastUpdated = _lastUpdated;
 @synthesize username = _username;
-@synthesize readabilityToken = _readabilityToken;
-@synthesize instapaperToken = _instapaperToken;
 @synthesize fontAdjustment = _fontAdjustment;
 @synthesize readerSettings = _readerSettings;
 @synthesize purchasedPremiumFonts = _purchasedPremiumFonts;
@@ -619,52 +616,6 @@
 
 - (UITextAutocorrectionType)autoCorrectionType {
     return self.enableAutoCorrect ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo;
-}
-
-- (void)setInstapaperToken:(OAToken *)instapaperToken {
-    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
-    if (_instapaperToken) {
-        [keychain setObject:_instapaperToken.key forKey:(__bridge id)kSecAttrAccount];
-        [keychain setObject:_instapaperToken.secret forKey:(__bridge id)kSecValueData];
-    }
-    else {
-        [keychain resetKeychainItem];
-    }
-}
-
-- (OAToken *)instapaperToken {
-    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"InstapaperOAuth" accessGroup:nil];
-    NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
-    NSString *resourceSecret = [keychain objectForKey:(__bridge id)kSecValueData];
-    if (resourceKey && resourceSecret) {
-        return [[OAToken alloc] initWithKey:resourceKey secret:resourceSecret];
-    }
-    else {
-        return nil;
-    }
-}
-
-- (void)setReadabilityToken:(OAToken *)readabilityToken {
-    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"ReadabilityOAuth" accessGroup:nil];
-    if (_instapaperToken) {
-        [keychain setObject:_readabilityToken.key forKey:(__bridge id)kSecAttrAccount];
-        [keychain setObject:_readabilityToken.secret forKey:(__bridge id)kSecValueData];
-    }
-    else {
-        [keychain resetKeychainItem];
-    }
-}
-
-- (OAToken *)readabilityToken {
-    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"ReadabilityOAuth" accessGroup:nil];
-    NSString *resourceKey = [keychain objectForKey:(__bridge id)kSecAttrAccount];
-    NSString *resourceSecret = [keychain objectForKey:(__bridge id)kSecValueData];
-    if (resourceKey && resourceSecret) {
-        return [[OAToken alloc] initWithKey:resourceKey secret:resourceSecret];
-    }
-    else {
-        return nil;
-    }
 }
 
 - (BOOL)purchasedPremiumFonts {

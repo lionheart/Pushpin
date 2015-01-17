@@ -31,7 +31,6 @@
 #import <uservoice-iphone-sdk/UserVoice.h>
 #import <uservoice-iphone-sdk/UVStyleSheet.h>
 #import <FMDB/FMDatabase.h>
-#import <oauthconsumer/OAuthConsumer.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>

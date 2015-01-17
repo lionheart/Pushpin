@@ -81,12 +81,6 @@
 
 - (PPPostActionType)actionsForPost:(NSDictionary *)post {
     NSInteger actions = PPPostActionCopyToMine | PPPostActionCopyURL | PPPostActionShare;
-
-    BOOL shareToReadLater = NO;
-    if (shareToReadLater && [PPSettings sharedSettings].readLater != PPReadLaterNone) {
-        actions |= PPPostActionReadLater;
-    }
-
     return actions;
 }
 

@@ -1132,39 +1132,6 @@ static NSInteger PPBookmarkEditMaximum = 25;
                                                                         }];
         }
         
-        if (actions & PPPostActionReadLater) {
-            PPSettings *settings = [PPSettings sharedSettings];
-            PPReadLaterType readLater = settings.readLater;
-            
-            NSString *readLaterTitle;
-            switch (readLater) {
-                case PPReadLaterInstapaper:
-                    readLaterTitle = NSLocalizedString(@"Send to Instapaper", nil);
-                    break;
-                    
-                case PPReadLaterReadability:
-                    readLaterTitle = NSLocalizedString(@"Send to Readability", nil);
-                    break;
-                    
-                case PPReadLaterPocket:
-                    readLaterTitle = NSLocalizedString(@"Send to Pocket", nil);
-                    break;
-                    
-                default:
-                    break;
-            }
-
-            if (readLaterTitle) {
-                [self.longPressActionSheet lhs_addActionWithTitle:readLaterTitle
-                                                                              style:UIAlertActionStyleDefault
-                                                                            handler:^(UIAlertAction *action) {
-                                                                                self.tableView.scrollEnabled = YES;
-
-                                                                                [self sendToReadLater];
-                                                                            }];
-            }
-        }
-        
         // Properly set the cancel button index
         [self.longPressActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                                       style:UIAlertActionStyleCancel
@@ -1282,12 +1249,6 @@ static NSInteger PPBookmarkEditMaximum = 25;
 
     [[UIPasteboard generalPasteboard] setString:[self.currentDataSource urlForPostAtIndex:self.selectedIndexPath.row]];
     [[Mixpanel sharedInstance] track:@"Copied URL"];
-}
-
-- (void)sendToReadLater {
-    NSString *urlString = self.selectedPost[@"url"];
-    NSString *title = self.selectedPost[@"title"];
-    [PPUtilities shareToReadLaterWithURL:urlString title:title];
 }
 
 - (void)showConfirmDeletionAlert {

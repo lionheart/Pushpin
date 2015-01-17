@@ -75,8 +75,6 @@
 - (void)toggleMobilizer;
 - (void)toggleMobilizerAnimated:(BOOL)animated loadOriginalURL:(BOOL)loadOriginalURL;
 - (void)enableOrDisableButtons;
-- (void)sendToReadLater;
-- (void)sendToReadLater:(PPReadLaterType)service;
 - (void)loadURL;
 - (void)stopLoading;
 - (NSURL *)url;

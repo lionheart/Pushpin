@@ -801,11 +801,6 @@ static BOOL kPinboardSyncInProgress = NO;
     if ([post[@"unread"] boolValue]) {
         actions |= PPPostActionMarkAsRead;
     }
-    
-    BOOL shareToReadLater = NO;
-    if (shareToReadLater && [PPSettings sharedSettings].readLater != PPReadLaterNone) {
-        actions |= PPPostActionReadLater;
-    }
 
     return actions;
 }

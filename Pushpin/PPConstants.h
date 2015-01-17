@@ -103,7 +103,7 @@ typedef enum : NSInteger {
     PPPostActionCopyURL = 1 << 1,
     PPPostActionDelete = 1 << 2,
     PPPostActionEdit = 1 << 3,
-    PPPostActionReadLater = 1 << 4,
+    PPPostActionReadLaterUnused = 1 << 4,
     PPPostActionMarkAsRead = 1 << 5,
     PPPostActionShare = 1 << 6
 } PPPostActionType;
@@ -225,8 +225,5 @@ static NSArray *PPCommunityFeeds() {
 #endif
 
 @interface PPConstants : NSObject
-
-+ (OAConsumer *)instapaperConsumer;
-+ (OAConsumer *)readabilityConsumer;
 
 @end

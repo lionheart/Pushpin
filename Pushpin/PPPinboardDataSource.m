@@ -519,11 +519,6 @@ static BOOL kPinboardSyncInProgress = NO;
         actions |= PPPostActionMarkAsRead;
     }
 
-    BOOL shareToReadLater = NO;
-    if (shareToReadLater && [PPSettings sharedSettings].readLater != PPReadLaterNone) {
-        actions |= PPPostActionReadLater;
-    }
-
     return actions;
 }
 
