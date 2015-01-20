@@ -34,6 +34,7 @@
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <OpenInChrome/OpenInChromeController.h>
 #import <LHSCategoryCollection/UIViewController+LHSAdditions.h>
+#import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
 #import "MFMailComposeViewController+Theme.h"
 #import <LHSDiigo/LHSDiigoClient.h>
@@ -738,7 +739,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     PPSettings *settings = [PPSettings sharedSettings];
-
+    
+    [Fabric with:@[CrashlyticsKit]];
     [Crashlytics startWithAPIKey:@"ed1bff5018819b0c5dbb8dbb35edac18a8b1af02"];
 
     [self becomeFirstResponder];

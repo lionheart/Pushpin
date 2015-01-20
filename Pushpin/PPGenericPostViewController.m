@@ -34,7 +34,7 @@
 #import <LHSCategoryCollection/UIImage+LHSAdditions.h>
 #import <LHSCategoryCollection/UIScreen+LHSAdditions.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-#import <Crashlytics/Crashlytics.h>
+#import <Fabric/Fabric.h>
 
 static NSString *BookmarkCellIdentifier = @"BookmarkCellIdentifier";
 static NSInteger kToolbarHeight = 44;

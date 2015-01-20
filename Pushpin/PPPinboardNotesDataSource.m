@@ -17,7 +17,7 @@
 #import "NSAttributedString+Attributes.h"
 
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-#import <Crashlytics/Crashlytics.h>
+#import <Fabric/Fabric.h>
 #import <ASPinboard/ASPinboard.h>
 
 @interface PPPinboardNotesDataSource ()

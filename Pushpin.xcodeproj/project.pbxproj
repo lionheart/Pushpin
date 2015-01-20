@@ -2152,6 +2152,11 @@
 				<string>Pushpin.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
 				<string>iPhone Developer: Daniel Loewenherz (32S53QJB5F)</string>
+				<key>FRAMEWORK_SEARCH_PATHS</key>
+				<array>
+					<string>$(inherited)</string>
+					<string>$(PROJECT_DIR)</string>
+				</array>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
 				<string>YES</string>
 				<key>GCC_PREFIX_HEADER</key>
@@ -3376,6 +3381,42 @@
 		<dict>
 			<key>fileRef</key>
 			<string>374D91E019CE26A700995DF1</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>374DE2F01A6F0A5B0056D947</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>wrapper.framework</string>
+			<key>path</key>
+			<string>Fabric.framework</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>374DE2F21A6F0A5B0056D947</key>
+		<dict>
+			<key>fileRef</key>
+			<string>374DE2F01A6F0A5B0056D947</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>374DE2F91A6F0B610056D947</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>wrapper.framework</string>
+			<key>path</key>
+			<string>Crashlytics.framework</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>374DE2FA1A6F0B610056D947</key>
+		<dict>
+			<key>fileRef</key>
+			<string>374DE2F91A6F0B610056D947</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
@@ -5065,6 +5106,11 @@
 				<string>Pushpin/Beta.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
 				<string>iPhone Distribution: Lionheart Software LLC (63553QQ62F)</string>
+				<key>FRAMEWORK_SEARCH_PATHS</key>
+				<array>
+					<string>$(inherited)</string>
+					<string>$(PROJECT_DIR)</string>
+				</array>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
 				<string>YES</string>
 				<key>GCC_PREFIX_HEADER</key>
@@ -5594,7 +5640,7 @@
 			<key>isa</key>
 			<string>PBXShellScriptBuildPhase</string>
 			<key>name</key>
-			<string>Crashlytics</string>
+			<string>Fabric</string>
 			<key>outputPaths</key>
 			<array/>
 			<key>runOnlyForDeploymentPostprocessing</key>
@@ -5602,7 +5648,7 @@
 			<key>shellPath</key>
 			<string>/bin/sh</string>
 			<key>shellScript</key>
-			<string>./Pods/CrashlyticsFramework/Crashlytics.framework/run ed1bff5018819b0c5dbb8dbb35edac18a8b1af02 88e35b37b1eaaf8d61020be6151a57f269bfe58aa5ce7690b61e19ab18453f3a</string>
+			<string>./Fabric.framework/run ed1bff5018819b0c5dbb8dbb35edac18a8b1af02 88e35b37b1eaaf8d61020be6151a57f269bfe58aa5ce7690b61e19ab18453f3a</string>
 		</dict>
 		<key>37887D6918C51F7D00A20B76</key>
 		<dict>
@@ -5614,13 +5660,6 @@
 			<string>Crashlytics.framework</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
-		</dict>
-		<key>37887D6A18C51F7D00A20B76</key>
-		<dict>
-			<key>fileRef</key>
-			<string>37887D6918C51F7D00A20B76</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
 		</dict>
 		<key>37889D4219981212002E245A</key>
 		<dict>
@@ -7358,6 +7397,7 @@
 			<key>files</key>
 			<array>
 				<string>3711BC4A19EEDB7900DC129C</string>
+				<string>374DE2F21A6F0A5B0056D947</string>
 			</array>
 			<key>isa</key>
 			<string>PBXFrameworksBuildPhase</string>
@@ -7494,55 +7534,6 @@
 				</array>
 			</dict>
 		</dict>
-		<key>379042BD19CC646B00409D34</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>379042BE19CC646B00409D34</string>
-				<string>379042C019CC646B00409D34</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>path</key>
-			<string>PushpinFrameworkTests</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>379042BE19CC646B00409D34</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>379042BF19CC646B00409D34</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Supporting Files</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>379042BF19CC646B00409D34</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.plist.xml</string>
-			<key>path</key>
-			<string>Info.plist</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>379042C019CC646B00409D34</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>path</key>
-			<string>PushpinFrameworkTests.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
 		<key>379042C219CC646B00409D34</key>
 		<dict>
 			<key>buildConfigurations</key>
@@ -7614,6 +7605,11 @@
 				<string>@rpath</string>
 				<key>ENABLE_STRICT_OBJC_MSGSEND</key>
 				<string>YES</string>
+				<key>FRAMEWORK_SEARCH_PATHS</key>
+				<array>
+					<string>$(inherited)</string>
+					<string>$(PROJECT_DIR)</string>
+				</array>
 				<key>GCC_C_LANGUAGE_STANDARD</key>
 				<string>gnu99</string>
 				<key>GCC_DYNAMIC_NO_PIC</key>
@@ -7732,6 +7728,11 @@
 				<string>NO</string>
 				<key>ENABLE_STRICT_OBJC_MSGSEND</key>
 				<string>YES</string>
+				<key>FRAMEWORK_SEARCH_PATHS</key>
+				<array>
+					<string>$(inherited)</string>
+					<string>$(PROJECT_DIR)</string>
+				</array>
 				<key>GCC_C_LANGUAGE_STANDARD</key>
 				<string>gnu99</string>
 				<key>GCC_WARN_64_TO_32_BIT_CONVERSION</key>
@@ -7839,6 +7840,11 @@
 				<string>NO</string>
 				<key>ENABLE_STRICT_OBJC_MSGSEND</key>
 				<string>YES</string>
+				<key>FRAMEWORK_SEARCH_PATHS</key>
+				<array>
+					<string>$(inherited)</string>
+					<string>$(PROJECT_DIR)</string>
+				</array>
 				<key>GCC_C_LANGUAGE_STANDARD</key>
 				<string>gnu99</string>
 				<key>GCC_WARN_64_TO_32_BIT_CONVERSION</key>
@@ -7946,6 +7952,11 @@
 				<string>NO</string>
 				<key>ENABLE_STRICT_OBJC_MSGSEND</key>
 				<string>YES</string>
+				<key>FRAMEWORK_SEARCH_PATHS</key>
+				<array>
+					<string>$(inherited)</string>
+					<string>$(PROJECT_DIR)</string>
+				</array>
 				<key>GCC_C_LANGUAGE_STANDARD</key>
 				<string>gnu99</string>
 				<key>GCC_WARN_64_TO_32_BIT_CONVERSION</key>
@@ -8051,6 +8062,11 @@
 				<string>NO</string>
 				<key>ENABLE_STRICT_OBJC_MSGSEND</key>
 				<string>YES</string>
+				<key>FRAMEWORK_SEARCH_PATHS</key>
+				<array>
+					<string>$(inherited)</string>
+					<string>$(PROJECT_DIR)</string>
+				</array>
 				<key>GCC_C_LANGUAGE_STANDARD</key>
 				<string>gnu99</string>
 				<key>GCC_WARN_64_TO_32_BIT_CONVERSION</key>
@@ -8158,6 +8174,11 @@
 				<string>NO</string>
 				<key>ENABLE_STRICT_OBJC_MSGSEND</key>
 				<string>YES</string>
+				<key>FRAMEWORK_SEARCH_PATHS</key>
+				<array>
+					<string>$(inherited)</string>
+					<string>$(PROJECT_DIR)</string>
+				</array>
 				<key>GCC_C_LANGUAGE_STANDARD</key>
 				<string>gnu99</string>
 				<key>GCC_WARN_64_TO_32_BIT_CONVERSION</key>
@@ -8265,6 +8286,11 @@
 				<string>NO</string>
 				<key>ENABLE_STRICT_OBJC_MSGSEND</key>
 				<string>YES</string>
+				<key>FRAMEWORK_SEARCH_PATHS</key>
+				<array>
+					<string>$(inherited)</string>
+					<string>$(PROJECT_DIR)</string>
+				</array>
 				<key>GCC_C_LANGUAGE_STANDARD</key>
 				<string>gnu99</string>
 				<key>GCC_WARN_64_TO_32_BIT_CONVERSION</key>
@@ -8736,6 +8762,11 @@
 				<string>Pushpin/Beta.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
 				<string>iPhone Distribution: Lionheart Software LLC (63553QQ62F)</string>
+				<key>FRAMEWORK_SEARCH_PATHS</key>
+				<array>
+					<string>$(inherited)</string>
+					<string>$(PROJECT_DIR)</string>
+				</array>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
 				<string>YES</string>
 				<key>GCC_PREFIX_HEADER</key>
@@ -8899,6 +8930,11 @@
 				<string>Pushpin.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
 				<string>iPhone Distribution: Lionheart Software LLC (63553QQ62F)</string>
+				<key>FRAMEWORK_SEARCH_PATHS</key>
+				<array>
+					<string>$(inherited)</string>
+					<string>$(PROJECT_DIR)</string>
+				</array>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
 				<string>YES</string>
 				<key>GCC_PREFIX_HEADER</key>
@@ -9059,6 +9095,11 @@
 				<string>Pushpin/Dev.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
 				<string>iPhone Developer: Daniel Loewenherz (32S53QJB5F)</string>
+				<key>FRAMEWORK_SEARCH_PATHS</key>
+				<array>
+					<string>$(inherited)</string>
+					<string>$(PROJECT_DIR)</string>
+				</array>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
 				<string>YES</string>
 				<key>GCC_PREFIX_HEADER</key>
@@ -10884,6 +10925,8 @@ BUNDLE_VERSION=$(($BUNDLE_VERSION + 1))
 		<dict>
 			<key>children</key>
 			<array>
+				<string>374DE2F91A6F0B610056D947</string>
+				<string>374DE2F01A6F0A5B0056D947</string>
 				<string>37FEEBDC15748BA7003F2B77</string>
 				<string>3790424719CBD49A00409D34</string>
 				<string>3772DE541933B0D1004B348D</string>
@@ -10894,7 +10937,6 @@ BUNDLE_VERSION=$(($BUNDLE_VERSION + 1))
 				<string>37FEEB9815745488003F2B77</string>
 				<string>3717968418A885FE004B2D08</string>
 				<string>379042B319CC646900409D34</string>
-				<string>379042BD19CC646B00409D34</string>
 				<string>372943ED19CF53FD00ABF006</string>
 				<string>378BFDF119E5E29B006B48DC</string>
 				<string>37076D41158AD0B1002566CD</string>
@@ -11050,9 +11092,9 @@ BUNDLE_VERSION=$(($BUNDLE_VERSION + 1))
 			<array>
 				<string>377E46D7174C396C00CE3813</string>
 				<string>37FEEB9715745488003F2B77</string>
+				<string>374DE2FA1A6F0B610056D947</string>
 				<string>372F891416755BF00073D0B6</string>
 				<string>371BCB0215772C0E00BDA996</string>
-				<string>37887D6A18C51F7D00A20B76</string>
 				<string>37FEEB9515745488003F2B77</string>
 				<string>FDFF49EA3A8BE3E27B7C4F28</string>
 				<string>37E329ED1629F82D00A6BC18</string>
@@ -11856,6 +11898,11 @@ BUNDLE_VERSION=$(($BUNDLE_VERSION + 1))
 				<string>Pushpin/Dev.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
 				<string>iPhone Developer: Daniel Loewenherz (32S53QJB5F)</string>
+				<key>FRAMEWORK_SEARCH_PATHS</key>
+				<array>
+					<string>$(inherited)</string>
+					<string>$(PROJECT_DIR)</string>
+				</array>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
 				<string>YES</string>
 				<key>GCC_PREFIX_HEADER</key>
@@ -11898,6 +11945,11 @@ BUNDLE_VERSION=$(($BUNDLE_VERSION + 1))
 				<string>Pushpin.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
 				<string>iPhone Distribution: Lionheart Software LLC (63553QQ62F)</string>
+				<key>FRAMEWORK_SEARCH_PATHS</key>
+				<array>
+					<string>$(inherited)</string>
+					<string>$(PROJECT_DIR)</string>
+				</array>
 				<key>GCC_PRECOMPILE_PREFIX_HEADER</key>
 				<string>YES</string>
 				<key>GCC_PREFIX_HEADER</key>
