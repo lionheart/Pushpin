@@ -4,8 +4,8 @@
 git config filter.xcode.clean "git_config/clean-project-file"
 git config filter.xcode.smudge cat
 
-git config filter.plist.clean "plutil -convert json -o - - | python -m json.tool"
-git config filter.plist.smudge "plutil -convert xml1 -o - -"
+git config filter.plist.clean "plutil -convert xml1 -o - -"
+git config filter.plist.smudge cat
 
 git config merge.bundleversion.name "bundle version merge driver"
 git config merge.bundleversion.driver "git_config/bundle-merge-driver %O %A %B"
