@@ -1,22 +1,22 @@
 PODS:
   - 1PasswordExtension (1.1)
-  - AFNetworking (2.2.4):
-    - AFNetworking/NSURLConnection
-    - AFNetworking/NSURLSession
+  - AFNetworking (2.2.0):
+    - AFNetworking/NSURLConnection (= 2.2.0)
+    - AFNetworking/NSURLSession (= 2.2.0)
+    - AFNetworking/Reachability (= 2.2.0)
+    - AFNetworking/Security (= 2.2.0)
+    - AFNetworking/Serialization (= 2.2.0)
+    - AFNetworking/UIKit (= 2.2.0)
+  - AFNetworking/NSURLConnection (2.2.0):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-    - AFNetworking/UIKit
-  - AFNetworking/NSURLConnection (2.2.4):
-    - AFNetworking/Reachability
-    - AFNetworking/Security
-    - AFNetworking/Serialization
-  - AFNetworking/NSURLSession (2.2.4):
+  - AFNetworking/NSURLSession (2.2.0):
     - AFNetworking/NSURLConnection
-  - AFNetworking/Reachability (2.2.4)
-  - AFNetworking/Security (2.2.4)
-  - AFNetworking/Serialization (2.2.4)
-  - AFNetworking/UIKit (2.2.4):
+  - AFNetworking/Reachability (2.2.0)
+  - AFNetworking/Security (2.2.0)
+  - AFNetworking/Serialization (2.2.0)
+  - AFNetworking/UIKit (2.2.0):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
   - ASPinboard (0.0.3):
@@ -24,7 +24,7 @@ PODS:
   - BugshotKit (0.1.0)
   - CrashlyticsFramework (2.2.5.2)
   - FMDB (2.4):
-    - FMDB/standard
+    - FMDB/standard (= 2.4)
   - FMDB/common (2.4)
   - FMDB/standard (2.4):
     - FMDB/common
@@ -40,12 +40,12 @@ PODS:
   - LHSKeyboardAdjusting (0.0.1)
   - LHSTableViewCells (0.0.1)
   - Mixpanel (2.6.2):
-    - Mixpanel/MPCategoryHelpers
+    - Mixpanel/MPCategoryHelpers (= 2.6.2)
   - Mixpanel/MPCategoryHelpers (2.6.2)
   - MWFeedParser (1.0.1):
-    - MWFeedParser/FeedParser
-    - MWFeedParser/NSDate+InternetDateTime
-    - MWFeedParser/NSString+HTML
+    - MWFeedParser/FeedParser (= 1.0.1)
+    - MWFeedParser/NSDate+InternetDateTime (= 1.0.1)
+    - MWFeedParser/NSString+HTML (= 1.0.1)
   - MWFeedParser/FeedParser (1.0.1):
     - MWFeedParser/NSDate+InternetDateTime
     - MWFeedParser/NSString+HTML
@@ -99,7 +99,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   1PasswordExtension: 37d1488cf049b8bc0811beb7b52a19f8f803f7c8
-  AFNetworking: ab63e259fe91eef4519b371ef0a4955af0e73e64
+  AFNetworking: 5f2538aa2d150b71d4e6cca3a420d796e1e1c374
   ASPinboard: 5e25e15c0984073d997301696865779a2b4d7953
   BugshotKit: 1c8bc57927dacc56e53c9ef628a4dc2df300887a
   CrashlyticsFramework: 4e91082f3019bea7e718e1b67b0a3b56729dbc5d
@@ -124,4 +124,4 @@ SPEC CHECKSUMS:
   XMLDictionary: 735e81b9a043e220b0d24e9d4f16719606f2e0fc
   YHRoundBorderedButton: 6b22ec3f6b160fe6ca9ce8c2057ab1dfe0afb283
 
-COCOAPODS: 0.34.4
+COCOAPODS: 0.35.0
