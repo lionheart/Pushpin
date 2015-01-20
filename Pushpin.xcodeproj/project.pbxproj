@@ -7396,8 +7396,8 @@
 			<string>2147483647</string>
 			<key>files</key>
 			<array>
-				<string>3711BC4A19EEDB7900DC129C</string>
 				<string>374DE2F21A6F0A5B0056D947</string>
+				<string>3711BC4A19EEDB7900DC129C</string>
 			</array>
 			<key>isa</key>
 			<string>PBXFrameworksBuildPhase</string>
@@ -10925,8 +10925,6 @@ BUNDLE_VERSION=$(($BUNDLE_VERSION + 1))
 		<dict>
 			<key>children</key>
 			<array>
-				<string>374DE2F91A6F0B610056D947</string>
-				<string>374DE2F01A6F0A5B0056D947</string>
 				<string>37FEEBDC15748BA7003F2B77</string>
 				<string>3790424719CBD49A00409D34</string>
 				<string>3772DE541933B0D1004B348D</string>
@@ -10940,7 +10938,9 @@ BUNDLE_VERSION=$(($BUNDLE_VERSION + 1))
 				<string>372943ED19CF53FD00ABF006</string>
 				<string>378BFDF119E5E29B006B48DC</string>
 				<string>37076D41158AD0B1002566CD</string>
+				<string>374DE2F91A6F0B610056D947</string>
 				<string>3772DE901933B0E0004B348D</string>
+				<string>374DE2F01A6F0A5B0056D947</string>
 				<string>370859F817F329D400270A9D</string>
 			</array>
 			<key>isa</key>
@@ -11092,9 +11092,9 @@ BUNDLE_VERSION=$(($BUNDLE_VERSION + 1))
 			<array>
 				<string>377E46D7174C396C00CE3813</string>
 				<string>37FEEB9715745488003F2B77</string>
-				<string>374DE2FA1A6F0B610056D947</string>
 				<string>372F891416755BF00073D0B6</string>
 				<string>371BCB0215772C0E00BDA996</string>
+				<string>374DE2FA1A6F0B610056D947</string>
 				<string>37FEEB9515745488003F2B77</string>
 				<string>FDFF49EA3A8BE3E27B7C4F28</string>
 				<string>37E329ED1629F82D00A6BC18</string>
