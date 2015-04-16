@@ -343,14 +343,17 @@
 
     // Copy over the database file to the shared container URL
     NSURL *containerURL = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:APP_GROUP];
-    NSURL *newDatabaseURL = [containerURL URLByAppendingPathComponent:@"shared.db"];
-    NSURL *databaseURL = [NSURL fileURLWithPath:[PPUtilities databasePath]];
-    NSError *error;
+    
+    if (containerURL) {
+        NSURL *newDatabaseURL = [containerURL URLByAppendingPathComponent:@"shared.db"];
+        NSURL *databaseURL = [NSURL fileURLWithPath:[PPUtilities databasePath]];
+        NSError *error;
 
-    [[NSFileManager defaultManager] removeItemAtURL:newDatabaseURL error:nil];
-    [[NSFileManager defaultManager] copyItemAtURL:databaseURL
-                                            toURL:newDatabaseURL
-                                            error:&error];
+        [[NSFileManager defaultManager] removeItemAtURL:newDatabaseURL error:nil];
+        [[NSFileManager defaultManager] copyItemAtURL:databaseURL
+                                                toURL:newDatabaseURL
+                                                error:&error];
+    }
 
     PPSettings *settings = [PPSettings sharedSettings];
     if (settings.isAuthenticated) {
