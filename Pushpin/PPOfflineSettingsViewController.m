@@ -294,11 +294,25 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
         }
             
         case PPOfflineSettingsSectionManualDownload: {
-            PPOfflineDownloadViewController *offlineDownloadViewController = [[PPOfflineDownloadViewController alloc] init];
-            PPNavigationController *navigation = [[PPNavigationController alloc] initWithRootViewController:offlineDownloadViewController];
-            navigation.modalPresentationStyle = UIModalPresentationFormSheet;
-            [self presentViewController:navigation animated:YES completion:nil];
-            break;
+            PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
+            
+            if (!delegate.connectionAvailable) {
+                UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Uh oh.", nil)
+                                                                             message:NSLocalizedString(@"You can't download anything without an internet connection.", nil)];
+                
+                [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
+                                        style:UIAlertActionStyleDefault
+                                      handler:nil];
+                
+                [self presentViewController:alert animated:YES completion:nil];
+            }
+            else {
+                PPOfflineDownloadViewController *offlineDownloadViewController = [[PPOfflineDownloadViewController alloc] init];
+                PPNavigationController *navigation = [[PPNavigationController alloc] initWithRootViewController:offlineDownloadViewController];
+                navigation.modalPresentationStyle = UIModalPresentationFormSheet;
+                [self presentViewController:navigation animated:YES completion:nil];
+                break;
+            }
         }
 
         case PPOfflineSettingsSectionClearCache: {
