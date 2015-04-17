@@ -150,6 +150,8 @@ static NSString *CellIdentifier = @"Cell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
 
     cell.textLabel.font = [PPTheme textLabelFont];
+    cell.detailTextLabel.text = nil;
+    cell.accessoryView = nil;
 
     switch (indexPath.section) {
         case 0: {
