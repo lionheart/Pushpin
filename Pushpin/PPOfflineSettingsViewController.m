@@ -158,7 +158,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
             
         case PPOfflineSettingsSectionManualDownload: {
             cell = [tableView dequeueReusableCellWithIdentifier:DefaultCellIdentifier forIndexPath:indexPath];
-            cell.textLabel.text = NSLocalizedString(@"Start Download", nil);
+            cell.textLabel.text = NSLocalizedString(@"Download Bookmarks", nil);
             UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
             UIColor *color = [button titleColorForState:UIControlStateNormal];
             cell.textLabel.textAlignment = NSTextAlignmentCenter;
