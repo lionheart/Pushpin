@@ -441,7 +441,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #ifdef PINBOARD
     PPPinboardSectionType sectionType = [self sectionTypeForSection:section];
     
-    if (tableView.allowsMultipleSelectionDuringEditing) {
+    if (tableView.editing) {
         switch (sectionType) {
             case PPPinboardSectionPersonal:
                 return PPPinboardPersonalRows;
@@ -1923,134 +1923,10 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             section--;
         }
     }
-    
-    [PPUtilities generateDiffForPrevious:previousFeedTitles
-                                 updated:updatedFeedTitles
-                                    hash:^NSString *(NSString *title) {
-                                        return title;
-                                    }
-                              completion:^(NSSet *inserted, NSSet *deleted) {
-                                  NSMutableArray *indexPathsToDelete = [NSMutableArray array];
-                                  NSMutableArray *indexPathsToInsert = [NSMutableArray array];
-                                  NSInteger row = 0;
 
-                                  for (NSString *feedTitle in deleted) {
-                                      row = [previousFeedTitles indexOfObject:feedTitle];
-                                      [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:row + offset
-                                                                                       inSection:section]];
-                                  }
-                                  
-                                  for (NSString *feedTitle in inserted) {
-                                      row = [updatedFeedTitles indexOfObject:feedTitle];
-                                      [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:row + offset
-                                                                                       inSection:section]];
-                                  }
-                                  
-                                  dispatch_async(dispatch_get_main_queue(), ^{
-                                      self.feeds = [updatedFeeds mutableCopy];
-                                      
-                                      @try {
-                                          // The number of sections contained in the table view after the update (3) must be equal to the number of sections contained in the table view before the update (3), plus or minus the number of sections inserted or deleted (1 inserted, 0 deleted).
-                                          [self.tableView beginUpdates];
-                                          if (self.tableView.editing) {
-                                              [self.tableView insertRowsAtIndexPaths:indexPathsToInsert
-                                                                    withRowAnimation:UITableViewRowAnimationFade];
-                                              [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete
-                                                                    withRowAnimation:UITableViewRowAnimationFade];
-                                          }
-                                          else {
-                                              if (previousFeedTitles.count == 0) {
-                                                  if (updatedFeedTitles.count > 0) {
-                                                      [self.tableView insertSections:[NSIndexSet indexSetWithIndex:section]
-                                                                    withRowAnimation:UITableViewRowAnimationFade];
-                                                  }
-                                              }
-                                              else {
-                                                  if (updatedFeedTitles.count == 0) {
-                                                      [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:section]
-                                                                    withRowAnimation:UITableViewRowAnimationFade];
-                                                  }
-                                                  else {
-                                                      [self.tableView insertRowsAtIndexPaths:indexPathsToInsert
-                                                                            withRowAnimation:UITableViewRowAnimationFade];
-                                                      [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete
-                                                                            withRowAnimation:UITableViewRowAnimationFade];
-                                                  }
-                                              }
-                                          }
-                                          [self.tableView endUpdates];
-                                      }
-                                      @catch (NSException *exception) {
-                                          [self.tableView reloadData];
-                                      }
-                                  });
-                              }];
-    
-    [PPUtilities generateDiffForPrevious:previousSearchNames
-                                 updated:updatedSearchNames
-                                    hash:^NSString *(NSString *title) {
-                                        return title;
-                                    }
-                              completion:^(NSSet *inserted, NSSet *deleted) {
-                                  NSMutableArray *indexPathsToDelete = [NSMutableArray array];
-                                  NSMutableArray *indexPathsToInsert = [NSMutableArray array];
-                                  NSInteger row = 0;
-
-                                  NSInteger searchSection = section;
-                                  if (updatedFeedTitles.count > 0) {
-                                      searchSection++;
-                                  }
-                                  
-                                  for (NSString *searchName in deleted) {
-                                      row = [previousSearchNames indexOfObject:searchName];
-                                      [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:row
-                                                                                       inSection:searchSection]];
-                                  }
-                                  
-                                  for (NSString *searchName in inserted) {
-                                      row = [updatedSearchNames indexOfObject:searchName];
-                                      [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:row
-                                                                                       inSection:searchSection]];
-                                  }
-
-                                  dispatch_async(dispatch_get_main_queue(), ^{
-                                      self.searches = [updatedSearches mutableCopy];
-                                      
-                                      @try {
-                                          [self.tableView beginUpdates];
-                                          if (self.tableView.editing) {
-                                              [self.tableView insertRowsAtIndexPaths:indexPathsToInsert
-                                                                    withRowAnimation:UITableViewRowAnimationFade];
-                                              [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete
-                                                                    withRowAnimation:UITableViewRowAnimationFade];
-                                          }
-                                          else {
-                                              if (previousSearchNames.count == 0) {
-                                                  if (updatedSearchNames.count > 0) {
-                                                      [self.tableView insertSections:[NSIndexSet indexSetWithIndex:searchSection]
-                                                                    withRowAnimation:UITableViewRowAnimationFade];
-                                                  }
-                                              }
-                                              else {
-                                                  if (updatedSearchNames.count == 0) {
-                                                      [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:searchSection]
-                                                                    withRowAnimation:UITableViewRowAnimationFade];
-                                                  }
-                                                  else {
-                                                      [self.tableView insertRowsAtIndexPaths:indexPathsToInsert
-                                                                            withRowAnimation:UITableViewRowAnimationFade];
-                                                      [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete
-                                                                            withRowAnimation:UITableViewRowAnimationFade];
-                                                  }
-                                              }
-                                          }
-                                          [self.tableView endUpdates];
-                                      }
-                                      @catch (NSException *exception) {
-                                          [self.tableView reloadData];
-                                      }
-                                  });
-                              }];
+    self.feeds = [updatedFeeds mutableCopy];
+    self.searches = [updatedSearches mutableCopy];
+    [self.tableView reloadData];
 }
 
 #endif
