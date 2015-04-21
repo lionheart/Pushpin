@@ -1382,6 +1382,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (void)rightBarButtonTouchUpInside:(id)sender {
+    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    activityIndicator.hidesWhenStopped = YES;
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:activityIndicator];
+    [activityIndicator startAnimating];
     if (self.isEditingTags) {
         self.isEditingTags = NO;
         self.tagTextField.userInteractionEnabled = NO;
