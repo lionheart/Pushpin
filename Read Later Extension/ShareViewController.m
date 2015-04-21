@@ -35,9 +35,7 @@
     Reachability *reach = [Reachability reachabilityForInternetConnection];
     if (reach.isReachable) {
         
-        double delayInSeconds = 0;
-        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        dispatch_async(dispatch_get_main_queue(), ^(void){
             NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
             NSString *token = [sharedDefaults objectForKey:@"token"];
             if (token.length > 0) {
