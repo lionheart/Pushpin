@@ -1443,18 +1443,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     dispatch_async(dispatch_get_main_queue(), ^{
                         UIViewController *shareViewController = self.parentViewController.presentingViewController;
                         [shareViewController dismissViewControllerAnimated:YES completion:^{
-                            UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Success!", nil)
-                                                                                         message:NSLocalizedString(@"Your bookmark was added.", nil)];
-
-                            [shareViewController presentViewController:alert animated:YES completion:^{
-                                double delayInSeconds = 0.5;
-                                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-                                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                                    [shareViewController dismissViewControllerAnimated:YES completion:^{
-                                        [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
-                                    }];
-                                });
-                            }];
+                            [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
                         }];
                     });
                 };

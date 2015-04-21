@@ -35,60 +35,7 @@
     Reachability *reach = [Reachability reachabilityForInternetConnection];
     if (reach.isReachable) {
         
-        UIViewController *activityViewController = [[UIViewController alloc] init];
-        activityViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-        activityViewController.view.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.4];
-        
-        UIView *containerView = [[UIView alloc] init];
-        containerView.translatesAutoresizingMaskIntoConstraints = NO;
-        containerView.layer.cornerRadius = 10;
-        containerView.backgroundColor = [UIColor whiteColor];
-        [activityViewController.view addSubview:containerView];
-        
-        UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        [activity startAnimating];
-        activity.translatesAutoresizingMaskIntoConstraints = NO;
-        [activityViewController.view addSubview:activity];
-        
-        [activityViewController.view addConstraint:[NSLayoutConstraint constraintWithItem:activity
-                                                                                attribute:NSLayoutAttributeBottom
-                                                                                relatedBy:NSLayoutRelationEqual
-                                                                                   toItem:containerView
-                                                                                attribute:NSLayoutAttributeBottom
-                                                                               multiplier:1
-                                                                                 constant:-30]];
-        
-        [activityViewController.view addConstraint:[NSLayoutConstraint constraintWithItem:activity
-                                                                                attribute:NSLayoutAttributeTop
-                                                                                relatedBy:NSLayoutRelationEqual
-                                                                                   toItem:containerView
-                                                                                attribute:NSLayoutAttributeTop
-                                                                               multiplier:1
-                                                                                 constant:30]];
-        
-        [activityViewController.view addConstraint:[NSLayoutConstraint constraintWithItem:activity
-                                                                                attribute:NSLayoutAttributeLeft
-                                                                                relatedBy:NSLayoutRelationEqual
-                                                                                   toItem:containerView
-                                                                                attribute:NSLayoutAttributeLeft
-                                                                               multiplier:1
-                                                                                 constant:30]];
-        
-        [activityViewController.view addConstraint:[NSLayoutConstraint constraintWithItem:activity
-                                                                                attribute:NSLayoutAttributeRight
-                                                                                relatedBy:NSLayoutRelationEqual
-                                                                                   toItem:containerView
-                                                                                attribute:NSLayoutAttributeRight
-                                                                               multiplier:1
-                                                                                 constant:-30]];
-        
-        
-        [activityViewController.view lhs_centerHorizontallyForView:containerView];
-        [activityViewController.view lhs_centerVerticallyForView:containerView];
-        
-        [self presentViewController:activityViewController animated:YES completion:nil];
-        
-        double delayInSeconds = 0.5;
+        double delayInSeconds = 0;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
             NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
@@ -141,7 +88,7 @@
                                                                                 preferredStyle:UIAlertControllerStyleAlert];
                         
                         [self presentViewController:alert animated:YES completion:^{
-                            double delayInSeconds = 1;
+                            double delayInSeconds = 0.5;
                             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
                             dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                                 [self dismissViewControllerAnimated:YES completion:^{
@@ -152,14 +99,7 @@
                     };
                     
                     void (^CompletionBlock)(NSString *title, NSString *message) = ^(NSString *title, NSString *message) {
-                        if (activityViewController.presentingViewController) {
-                            [activityViewController.presentingViewController dismissViewControllerAnimated:YES completion:^{
-                                CompletionBlockInner(title, message);
-                            }];
-                        }
-                        else {
-                            CompletionBlockInner(title, message);
-                        }
+                        CompletionBlockInner(title, message);
                     };
                     
                     NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
