@@ -3,15 +3,140 @@
 <plist version="1.0">
 <array>
 	<array>
+		<string>3.2.3</string>
+		<array>
+			<array>
+				<string>FIX</string>
+				<string>Speed up Bookmark and Read Later Extensions.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Add ability download bookmarks to view them while offline.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Allow searches to be saved by holding down the search title.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix crash that would occur while editing bookmark links.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Hide search bar by default in bookmark sections.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Switch off clipboard URL detection by default.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix gap between tags and url in bookmarks list.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix bug where reader view is toggled when long pressing a link.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix bug where tapping link in reader view opens original link instead of the link that was tapped.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Add dates to bookmark rows.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Prevent bookmarks from being added offline with reader extension.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Prevent bookmarks from being deleted when internet connection is lost or there is an error occurs.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Prevent tags with ampersands from being displayed improperly.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Add option to clear cache in app.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Prevent edit mode toolbar from covering last bookmark.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Add autotcorrect to share extension.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Add ability to select all bookmarks for multiple editing.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Display error if there's a server error when refreshing bookmarks.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Add commas to bookmark counts on main screen.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Prevent entire interface from moving to the left/right when swiping for edit buttons.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Add tag suggestions.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Differentiate a new bookmark from one that already exists in extension.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Allow descriptions to be made from highlighted text in extension.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Prevent Pushpin's theme from being overwritten by another app.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Prevent toolbar from disappearing in bookmark web view.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Add ability to turn off bookmark prompts in extensions.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix bug where an ellipsis is visible when swiping from a given page of tags back to the Browse screen.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Add saved searches to sidebar.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Automatic download of 'read later' items automatically in the background without opening the app.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix strange searchbar behaviour when rotating screen.</string>
+			</array>
+		</array>
+	</array>
+	<array>
 		<string>3.2.2</string>
 		<array>
 			<array>
 				<string>FIX</string>
-        <string>Add batch editing! Now, you can easily add or remove tags, change privacy, or update unread status for multiple bookmarks. Just tap "Edit" in the top right of the bookmark screen, select a few bookmarks, and tap the edit button on the middle of the bottom toolbar.</string>
+				<string>Add batch editing! Now, you can easily add or remove tags, change privacy, or update unread status for multiple bookmarks. Just tap &quot;Edit&quot; in the top right of the bookmark screen, select a few bookmarks, and tap the edit button on the middle of the bottom toolbar.</string>
 			</array>
 			<array>
 				<string>FIX</string>
-        <string>Add an option to hide the "Private" lock when browsing bookmarks.</string>
+				<string>Add an option to hide the &quot;Private&quot; lock when browsing bookmarks.</string>
 			</array>
 			<array>
 				<string>FIX</string>
@@ -19,7 +144,7 @@
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Make typing a space a shortcut for tapping the "Done" button when editing tags.</string>
+				<string>Make typing a space a shortcut for tapping the &quot;Done&quot; button when editing tags.</string>
 			</array>
 			<array>
 				<string>FIX</string>
@@ -27,7 +152,7 @@
 			</array>
 			<array>
 				<string>FIX</string>
-        <string>Make sure that tags and settings for public/private and read/unread are synced with the Share Extension.</string>
+				<string>Make sure that tags and settings for public/private and read/unread are synced with the Share Extension.</string>
 			</array>
 			<array>
 				<string>FIX</string>
