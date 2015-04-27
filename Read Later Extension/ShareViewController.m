@@ -151,17 +151,17 @@
                         CompletionBlock(NSLocalizedString(@"Uh oh.", nil), NSLocalizedString(@"You can't add a bookmark without a URL.", nil));
                     }
                 });
-            }
-            else {
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Invalid Token", nil)
-                                                                               message:NSLocalizedString(@"Please open Pushpin to refresh your credentials.", nil)
-                                                                        preferredStyle:UIAlertControllerStyleAlert];
-                [alert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                    [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
-                }];
-                [self presentViewController:alert animated:YES completion:nil];
-            }
-        });
+            });
+        }
+        else {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Invalid Token", nil)
+                                                                           message:NSLocalizedString(@"Please open Pushpin to refresh your credentials.", nil)
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
+            }];
+            [self presentViewController:alert animated:YES completion:nil];
+        }
     }
     else {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Error", nil)

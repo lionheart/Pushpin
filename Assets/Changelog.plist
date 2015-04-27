@@ -3,7 +3,7 @@
 <plist version="1.0">
 <array>
 	<array>
-		<string>3.2.3</string>
+		<string>4.0</string>
 		<array>
 			<array>
 				<string>FIX</string>
@@ -75,7 +75,7 @@
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Display error if there's a server error when refreshing bookmarks.</string>
+				<string>Display error if there&apos;s a server error when refreshing bookmarks.</string>
 			</array>
 			<array>
 				<string>FIX</string>
@@ -99,7 +99,7 @@
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Prevent Pushpin's theme from being overwritten by another app.</string>
+				<string>Prevent Pushpin&apos;s theme from being overwritten by another app.</string>
 			</array>
 			<array>
 				<string>FIX</string>
@@ -119,7 +119,7 @@
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Automatic download of 'read later' items automatically in the background without opening the app.</string>
+				<string>Automatic download of &apos;read later&apos; items automatically in the background without opening the app.</string>
 			</array>
 			<array>
 				<string>FIX</string>
