@@ -51,7 +51,8 @@
       enableOpenGLPerformanceAnalysisMode = "1"
       allowLocationSimulation = "NO"
       viewDebuggingEnabled = "No">
-      <BuildableProductRunnable>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "37FEEB8D15745488003F2B77"
@@ -74,7 +75,8 @@
       useCustomWorkingDirectory = "NO"
       buildConfiguration = "Pinboard Debug"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "37FEEB8D15745488003F2B77"

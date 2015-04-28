@@ -351,6 +351,9 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
     switch ((PPOfflineSettingsSectionType)section) {
         case PPOfflineSettingsSectionClearCache:
             return NSLocalizedString(@"This will delete any stored articles on your device.", nil);
+
+        case PPOfflineSettingsSectionManualDownload:
+            return NSLocalizedString(@"Pushpin will automatically download bookmarks matching fetch criteria in the background. If you don't want to wait, you can start a sync manually.", nil);
             
         default:
             return nil;
