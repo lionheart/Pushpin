@@ -44,7 +44,21 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>478</string>
+	<string>480</string>
+	<key>Fabric</key>
+	<dict>
+		<key>APIKey</key>
+		<string>ed1bff5018819b0c5dbb8dbb35edac18a8b1af02</string>
+		<key>Kits</key>
+		<array>
+			<dict>
+				<key>KitInfo</key>
+				<dict/>
+				<key>KitName</key>
+				<string>Crashlytics</string>
+			</dict>
+		</array>
+	</dict>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIAppFonts</key>
@@ -54,6 +68,10 @@
 		<string>LyonTextApp-Regular.ttf</string>
 		<string>Courier Prime.ttf</string>
 		<string>Charter Regular.ttf</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
 	</array>
 	<key>UIPrerenderedIcon</key>
 	<true/>
@@ -69,23 +87,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
-	</array>
-	<key>Fabric</key>
-	<dict>
-		<key>APIKey</key>
-		<string>ed1bff5018819b0c5dbb8dbb35edac18a8b1af02</string>
-		<key>Kits</key>
-		<array>
-			<dict>
-				<key>KitInfo</key>
-				<dict/>
-				<key>KitName</key>
-				<string>Crashlytics</string>
-			</dict>
-		</array>
-	</dict>
 </dict>
 </plist>

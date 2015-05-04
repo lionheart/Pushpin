@@ -3264,13 +3264,6 @@
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
-		<key>3747C75119CCDB1F00FAD488</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6D023C55193E8D280070C013</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
 		<key>3747C75419CCDB1F00FAD488</key>
 		<dict>
 			<key>fileRef</key>
@@ -5956,7 +5949,6 @@
 				<string>E80EEF86185A4D9B00979AA3</string>
 				<string>E80EEF70184E9AA000979AA3</string>
 				<string>E80EEF71184E9AA000979AA3</string>
-				<string>6D023C59193E8D280070C013</string>
 				<string>E804950E180EF6D700C5CA8B</string>
 			</array>
 			<key>isa</key>
@@ -6408,7 +6400,7 @@
 				<key>PRODUCT_NAME</key>
 				<string>Pushpin</string>
 				<key>PROVISIONING_PROFILE</key>
-				<string>e4501265-682c-4424-9db8-a3cd76af8c35</string>
+				<string>1a8e10b3-a32a-4e2e-8fae-6facfe097d90</string>
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
 				<key>SKIP_INSTALL</key>
@@ -6817,13 +6809,6 @@
 		<dict>
 			<key>fileRef</key>
 			<string>37561D9316AE0C7500D69CDE</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>3790426319CBDCDF00409D34</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6D023C52193E8D280070C013</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
@@ -7309,7 +7294,6 @@
 			<array>
 				<string>3790426119CBDCDF00409D34</string>
 				<string>3790426219CBDCDF00409D34</string>
-				<string>3790426319CBDCDF00409D34</string>
 				<string>3790426419CBDCDF00409D34</string>
 				<string>3790426519CBDCDF00409D34</string>
 				<string>3790426619CBDCDF00409D34</string>
@@ -11294,7 +11278,6 @@ BUNDLE_VERSION=$(($BUNDLE_VERSION + 1))
 				<string>3747C74C19CCDB1F00FAD488</string>
 				<string>3747C74D19CCDB1F00FAD488</string>
 				<string>3747C74E19CCDB1F00FAD488</string>
-				<string>3747C75119CCDB1F00FAD488</string>
 				<string>3747C75419CCDB1F00FAD488</string>
 			</array>
 			<key>isa</key>
@@ -11473,7 +11456,6 @@ BUNDLE_VERSION=$(($BUNDLE_VERSION + 1))
 				<string>3709354D1894C22700E3588E</string>
 				<string>376ABBBE1895892300132CFF</string>
 				<string>376ABBBD189588F100132CFF</string>
-				<string>6D023C51193E8D0A0070C013</string>
 				<string>37FEEB9915745488003F2B77</string>
 				<string>37516A03186C8AE200AEF7A6</string>
 				<string>37F78255198C34FE00C99139</string>
@@ -11963,7 +11945,7 @@ BUNDLE_VERSION=$(($BUNDLE_VERSION + 1))
 				<key>PRODUCT_NAME</key>
 				<string>$(TARGET_NAME)</string>
 				<key>PROVISIONING_PROFILE</key>
-				<string>ef758106-b962-43f8-ae7e-ddcb930b9c4d</string>
+				<string>83d22b2d-15f8-4faf-a6a6-b952b03e06d4</string>
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
@@ -12156,81 +12138,6 @@ fi
 </string>
 			<key>showEnvVarsInLog</key>
 			<string>0</string>
-		</dict>
-		<key>6D023C51193E8D0A0070C013</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>6D023C52193E8D280070C013</string>
-				<string>6D023C53193E8D280070C013</string>
-				<string>6D023C54193E8D280070C013</string>
-				<string>6D023C55193E8D280070C013</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Screenshot Automation</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6D023C52193E8D280070C013</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.javascript</string>
-			<key>path</key>
-			<string>capture.js</string>
-			<key>sourceTree</key>
-			<string>SOURCE_ROOT</string>
-		</dict>
-		<key>6D023C53193E8D280070C013</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.javascript</string>
-			<key>path</key>
-			<string>shoot_the_screens.js</string>
-			<key>sourceTree</key>
-			<string>SOURCE_ROOT</string>
-		</dict>
-		<key>6D023C54193E8D280070C013</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.script.sh</string>
-			<key>path</key>
-			<string>ui-screen-shooter.sh</string>
-			<key>sourceTree</key>
-			<string>SOURCE_ROOT</string>
-		</dict>
-		<key>6D023C55193E8D280070C013</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>text.script.sh</string>
-			<key>path</key>
-			<string>unix_instruments.sh</string>
-			<key>sourceTree</key>
-			<string>SOURCE_ROOT</string>
-		</dict>
-		<key>6D023C59193E8D280070C013</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6D023C55193E8D280070C013</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
 		</dict>
 		<key>76AA6F3724024611A19DE0CD</key>
 		<dict>

@@ -9,7 +9,7 @@ configs:
       code_sign_identity: "iPhone Developer: Daniel Loewenherz (32S53QJB5F)"
     pinboard_app_store:
       info: "Pushpin/PinboardAppStore.plist"
-      profile: "ef758106-b962-43f8-ae7e-ddcb930b9c4d"
+      profile: "83d22b2d-15f8-4faf-a6a6-b952b03e06d4"
       entitlements: "Pushpin.entitlements"
       code_sign_identity: "iPhone Distribution: Lionheart Software LLC (63553QQ62F)"
     pinboard_dev:
@@ -81,7 +81,7 @@ configs:
       code_sign_identity: "iPhone Developer: Daniel Loewenherz (32S53QJB5F)"
     pinboard_app_store:
       info: "Pinboard/Info-AppStore.plist"
-      profile: "e4501265-682c-4424-9db8-a3cd76af8c35"
+      profile: "1a8e10b3-a32a-4e2e-8fae-6facfe097d90"
       entitlements: "Pinboard/Share-AppStore.entitlements"
       code_sign_identity: "iPhone Distribution: Lionheart Software LLC (63553QQ62F)"
     pinboard_dev:
