@@ -231,7 +231,7 @@
     if (!_enableTagAutoCorrect) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         _enableTagAutoCorrect = [[defaults objectForKey:@"io.aurora.pinboard.EnableTagAutoCorrect"] boolValue];
-
+        
         if (!_enableTagAutoCorrect) {
             NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
             _enableTagAutoCorrect = [[sharedDefaults objectForKey:@"EnableTagAutoCorrect"] boolValue];
@@ -245,7 +245,7 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:@(enableTagAutoCorrect) forKey:@"io.aurora.pinboard.EnableTagAutoCorrect"];
     [defaults synchronize];
-
+    
     NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
     [sharedDefaults setObject:@(enableTagAutoCorrect) forKey:@"EnableTagAutoCorrect"];
 }
