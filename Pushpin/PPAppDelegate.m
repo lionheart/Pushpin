@@ -776,6 +776,9 @@
         @"io.aurora.pinboard.BrowseFontName": @"AvenirNext-Regular",
         @"io.aurora.pinboard.FontName": @"AvenirNext-Regular",
         @"io.aurora.pinboard.BoldFontName": @"AvenirNext-Medium",
+        @"io.aurora.pinboard.EnableAutoCapitalize": @(YES),
+        @"io.aurora.pinboard.EnableAutoCorrect": @(YES),
+        @"io.aurora.pinboard.EnableTagAutoCorrect": @(NO),
         
         // If a user decides not to add a bookmark when it's on the clipboard, don't ask again.
         @"io.aurora.pinboard.OnlyPromptToAddOnce": @(YES),

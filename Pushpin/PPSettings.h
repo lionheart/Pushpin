@@ -27,6 +27,7 @@
 @property (nonatomic) BOOL doubleTapToEdit;
 @property (nonatomic) BOOL enableAutoCapitalize;
 @property (nonatomic) BOOL enableAutoCorrect;
+@property (nonatomic) BOOL enableTagAutoCorrect;
 @property (nonatomic) BOOL markReadPosts;
 @property (nonatomic) BOOL openLinksWithMobilizer;
 @property (nonatomic) BOOL openLinksInApp;
@@ -64,5 +65,6 @@
 - (NSString *)defaultFeedDescription;
 - (UITextAutocapitalizationType)autoCapitalizationType;
 - (UITextAutocorrectionType)autoCorrectionType;
+- (UITextAutocorrectionType)tagAutoCorrectionType;
 
 @end

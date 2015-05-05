@@ -23,6 +23,7 @@
 @synthesize privateByDefault = _privateByDefault;
 @synthesize dimReadPosts = _dimReadPosts;
 @synthesize enableAutoCorrect = _enableAutoCorrect;
+@synthesize enableTagAutoCorrect = _enableTagAutoCorrect;
 @synthesize enableAutoCapitalize = _enableAutoCapitalize;
 @synthesize readByDefault = _readByDefault;
 @synthesize openLinksWithMobilizer = _openLinksWithMobilizer;
@@ -224,6 +225,29 @@
     
     NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
     [sharedDefaults setObject:@(enableAutoCorrect) forKey:@"EnableAutoCorrect"];
+}
+
+- (BOOL)enableTagAutoCorrect {
+    if (!_enableTagAutoCorrect) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _enableTagAutoCorrect = [[defaults objectForKey:@"io.aurora.pinboard.EnableTagAutoCorrect"] boolValue];
+
+        if (!_enableTagAutoCorrect) {
+            NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
+            _enableTagAutoCorrect = [[sharedDefaults objectForKey:@"EnableTagAutoCorrect"] boolValue];
+        }
+    }
+    return _enableTagAutoCorrect;
+}
+
+- (void)setEnableTagAutoCorrect:(BOOL)enableTagAutoCorrect {
+    _enableTagAutoCorrect = enableTagAutoCorrect;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(enableTagAutoCorrect) forKey:@"io.aurora.pinboard.EnableTagAutoCorrect"];
+    [defaults synchronize];
+
+    NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
+    [sharedDefaults setObject:@(enableTagAutoCorrect) forKey:@"EnableTagAutoCorrect"];
 }
 
 - (BOOL)enableAutoCapitalize {
@@ -616,6 +640,10 @@
 
 - (UITextAutocorrectionType)autoCorrectionType {
     return self.enableAutoCorrect ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo;
+}
+
+- (UITextAutocorrectionType)tagAutoCorrectionType {
+    return self.enableTagAutoCorrect ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo;
 }
 
 - (BOOL)purchasedPremiumFonts {
