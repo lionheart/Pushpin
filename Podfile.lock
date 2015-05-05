@@ -56,7 +56,7 @@ PODS:
   - RNCryptor (2.2)
   - TextExpander (3.0.5)
   - TTTAttributedLabel (1.13.0)
-  - uservoice-iphone-sdk (3.2.2)
+  - uservoice-iphone-sdk (3.2.3)
   - XMLDictionary (1.4)
   - YHRoundBorderedButton (0.1.0)
 
@@ -82,7 +82,7 @@ DEPENDENCIES:
   - RNCryptor (= 2.2)
   - TextExpander (= 3.0.5)
   - TTTAttributedLabel (= 1.13.0)
-  - uservoice-iphone-sdk (= 3.2.2)
+  - uservoice-iphone-sdk (= 3.2.3)
   - YHRoundBorderedButton (= 0.1.0)
 
 EXTERNAL SOURCES:
@@ -98,30 +98,30 @@ EXTERNAL SOURCES:
     :podspec: Specs/LHSFMDatabaseAdditions.podspec
 
 SPEC CHECKSUMS:
-  1PasswordExtension: 37d1488cf049b8bc0811beb7b52a19f8f803f7c8
-  AFNetworking: 5f2538aa2d150b71d4e6cca3a420d796e1e1c374
-  ASPinboard: 5e25e15c0984073d997301696865779a2b4d7953
-  BugshotKit: 1c8bc57927dacc56e53c9ef628a4dc2df300887a
-  CrashlyticsFramework: 4e91082f3019bea7e718e1b67b0a3b56729dbc5d
-  FMDB: 0b2fa25e5264ef177973c0cb8c02c711107979aa
-  hpple: f4eb7c21a8db83ec264e5d614ec7509e10e5adec
-  HTMLParser: cb83b00acd806cc24f0dd75998c51d20feeef95a
-  KeychainItemWrapper: 577e9e920185892873ded075b8ceb730bebdfd91
-  LHSCategoryCollection: d82650a35afbd4c9ca5ae2925f8f15462f6c427c
-  LHSDelicious: f504d944af93d22dc94628b3ee947d8a8892d1bf
-  LHSDiigo: 1ba2e8b3c56de11bef4054d57b5abf5b03bdd732
-  LHSFMDatabaseAdditions: 476a3baaf7af6583f258e672a59eb0f4e4ec639f
-  LHSKeyboardAdjusting: c73332bc21b4727aa8de7255da7d5f4b68f2deda
-  LHSTableViewCells: 8bef7749623c57e48286faa418d1ecaaa33d6723
-  Mixpanel: c075cedebda3328ce1ee29a18429e265ce967cd8
-  MWFeedParser: 003cbf5398e99a7f2057fbe9583054fd1b84be72
-  OpenInChrome: b7c73ddf8fe0a1788dc0549c3c4c70e3c84da578
-  Reachability: 1ef8adf5c4e3d362f96515d4278f68dad3c26930
-  RNCryptor: 4f562062c39f288b99601674f2c50dd44b68d58a
-  TextExpander: 7f72152af44ccbf6e67462dc28ef2a7872bbd67a
-  TTTAttributedLabel: a847b59a75c92d59f4eabc9cc1745704cff2dc36
-  uservoice-iphone-sdk: 9dc05d00656482f54bf03f793334a8f7ff070e46
-  XMLDictionary: 735e81b9a043e220b0d24e9d4f16719606f2e0fc
-  YHRoundBorderedButton: 6b22ec3f6b160fe6ca9ce8c2057ab1dfe0afb283
+  1PasswordExtension: 26d590105f83349cd4fe362921534f8244b8e67b
+  AFNetworking: cede923cb26fba5e6309616e91fa33fe2e4a1b7b
+  ASPinboard: 80ace27c6db2ac7681d2851b6ba9460d68243bd7
+  BugshotKit: 58fbc895fd67afb4c6ee3559ce013a4b4db8e59c
+  CrashlyticsFramework: c4476108c87948b72835a5a26db90e8d6249da62
+  FMDB: d274d9ff773415735022ac57bfba9f6002f9fed8
+  hpple: 3b765f96fc2cd56ad1a49aef6f7be5cb2aa64b57
+  HTMLParser: c33a7a9ddc1122b28ff7f38a65cf505ad76455e5
+  KeychainItemWrapper: 67a240172ed669842bc6bc13ed554dcd50469fa2
+  LHSCategoryCollection: 25ced9caf1f79d7e742a9c1da21e89fe54121e70
+  LHSDelicious: dc77b9307f4cd893c582493cdd33661068c6b5d1
+  LHSDiigo: 5ac06e91565fc3f126fb7f730e8bb809d3884416
+  LHSFMDatabaseAdditions: 7e5f79b48e2af951b8d20def78fe68c90d101fc8
+  LHSKeyboardAdjusting: d24fb1f05732db354a9d5f0348941a694bc6df4c
+  LHSTableViewCells: 47b4d33382cb4a09960371267e2142970afdfdd6
+  Mixpanel: e453f9abb7858742b1ab2b0434eac04f9f27c155
+  MWFeedParser: 2cf646014c1baf6ad1b08c480b40a08180079247
+  OpenInChrome: f1f3f9dec682216fe78a0d7fe0b5b263d6312c32
+  Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
+  RNCryptor: c68678461a2c7474a55db9a6a98834c22d51f535
+  TextExpander: 47f9792473ee583b519caf201f5896b5ffb7cdfb
+  TTTAttributedLabel: 8aeaf67481bb38970711e2641211cba912bd5239
+  uservoice-iphone-sdk: 349d9ef36d3c43939d28390b9e86bb32b65fe983
+  XMLDictionary: f9f51601ba76678b594ab485f2b00ec1fed23724
+  YHRoundBorderedButton: 2180f04094db264cace8db88eae977d78a3b4633
 
-COCOAPODS: 0.35.0
+COCOAPODS: 0.37.0
