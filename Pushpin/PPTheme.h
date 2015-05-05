@@ -20,6 +20,7 @@
 + (UIFont *)urlFont;
 + (UIFont *)tagFont;
 + (UIFont *)boldTextLabelFont;
++ (UIFont *)textLabelFontAlternate;
 + (UIFont *)textLabelFont;
 + (UIFont *)detailLabelFont;
 + (UIFont *)detailLabelFontAlternate1;

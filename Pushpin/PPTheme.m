@@ -50,6 +50,10 @@
     return [UIFont fontWithName:[PPTheme boldFontName] size:16];
 }
 
++ (UIFont *)textLabelFontAlternate {
+    return [UIFont fontWithName:[PPTheme fontName] size:17];
+}
+
 + (UIFont *)textLabelFont {
     return [UIFont fontWithName:[PPTheme fontName] size:16];
 }
@@ -121,7 +125,7 @@
 }
 
 + (void)customizeUIElements {
-    NSDictionary *normalAttributes = @{NSFontAttributeName: [PPTheme textLabelFont],
+    NSDictionary *normalAttributes = @{NSFontAttributeName: [PPTheme textLabelFontAlternate],
                                        NSForegroundColorAttributeName: [UIColor whiteColor] };
     [[UIBarButtonItem appearance] setTitleTextAttributes:normalAttributes
                                                 forState:UIControlStateNormal];
