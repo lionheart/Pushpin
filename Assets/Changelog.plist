@@ -19,6 +19,38 @@
 			</array>
 			<array>
 				<string>FIX</string>
+				<string>Add saved searches to sidebar.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Add dates to bookmark rows.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Add tag suggestions.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Add option to clear cache in app.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Add autotcorrect to share extension.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Allow descriptions to be made from highlighted text in extension.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Add ability to turn off bookmark prompts in extensions.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Automatic download of &apos;read later&apos; items automatically in the background without opening the app.</string>
+			</array>
+			<array>
+				<string>FIX</string>
 				<string>Fix crash that would occur while editing bookmark links.</string>
 			</array>
 			<array>
@@ -43,10 +75,6 @@
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Add dates to bookmark rows.</string>
-			</array>
-			<array>
-				<string>FIX</string>
 				<string>Prevent bookmarks from being added offline with reader extension.</string>
 			</array>
 			<array>
@@ -59,15 +87,7 @@
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Add option to clear cache in app.</string>
-			</array>
-			<array>
-				<string>FIX</string>
 				<string>Prevent edit mode toolbar from covering last bookmark.</string>
-			</array>
-			<array>
-				<string>FIX</string>
-				<string>Add autotcorrect to share extension.</string>
 			</array>
 			<array>
 				<string>FIX</string>
@@ -87,19 +107,11 @@
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Add tag suggestions.</string>
+				<string>Indicate whether bookmark has already been added in extension.</string>
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Differentiate a new bookmark from one that already exists in extension.</string>
-			</array>
-			<array>
-				<string>FIX</string>
-				<string>Allow descriptions to be made from highlighted text in extension.</string>
-			</array>
-			<array>
-				<string>FIX</string>
-				<string>Prevent Pushpin&apos;s theme from being overwritten by another app.</string>
+				<string>Prevent extension themes from being overwritten by other apps.</string>
 			</array>
 			<array>
 				<string>FIX</string>
@@ -107,19 +119,7 @@
 			</array>
 			<array>
 				<string>FIX</string>
-				<string>Add ability to turn off bookmark prompts in extensions.</string>
-			</array>
-			<array>
-				<string>FIX</string>
 				<string>Fix bug where an ellipsis is visible when swiping from a given page of tags back to the Browse screen.</string>
-			</array>
-			<array>
-				<string>FIX</string>
-				<string>Add saved searches to sidebar.</string>
-			</array>
-			<array>
-				<string>FIX</string>
-				<string>Automatic download of &apos;read later&apos; items automatically in the background without opening the app.</string>
 			</array>
 			<array>
 				<string>FIX</string>
