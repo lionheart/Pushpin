@@ -1120,7 +1120,7 @@
 				<key>CODE_SIGN_ENTITLEMENTS</key>
 				<string>Pinboard/Share-Dev.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
-				<string>iPhone Developer: Daniel Loewenherz (32S53QJB5F)</string>
+				<string></string>
 				<key>COPY_PHASE_STRIP</key>
 				<string>NO</string>
 				<key>ENABLE_STRICT_OBJC_MSGSEND</key>
@@ -1169,7 +1169,7 @@
 				<key>PRODUCT_NAME</key>
 				<string>Read Later</string>
 				<key>PROVISIONING_PROFILE</key>
-				<string>5312f80c-7253-49c0-86eb-a95adeaa41a1</string>
+				<string>82462149-c23d-41e4-b69a-d36b2ed0c78e</string>
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
 				<key>SKIP_INSTALL</key>
@@ -1302,7 +1302,7 @@
 				<key>CODE_SIGN_ENTITLEMENTS</key>
 				<string>Pinboard/Share-AppStore.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
-				<string>iPhone Distribution: Lionheart Software LLC (63553QQ62F)</string>
+				<string></string>
 				<key>COPY_PHASE_STRIP</key>
 				<string>YES</string>
 				<key>ENABLE_NS_ASSERTIONS</key>
@@ -1389,7 +1389,7 @@
 				<key>CODE_SIGN_ENTITLEMENTS</key>
 				<string>Pinboard/Share-AppStore.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
-				<string>iPhone Developer: Daniel Loewenherz (32S53QJB5F)</string>
+				<string></string>
 				<key>COPY_PHASE_STRIP</key>
 				<string>YES</string>
 				<key>ENABLE_NS_ASSERTIONS</key>
@@ -1561,7 +1561,7 @@
 				<key>CODE_SIGN_ENTITLEMENTS</key>
 				<string>Pinboard/Share-Beta.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
-				<string>iPhone Distribution: Lionheart Software LLC (63553QQ62F)</string>
+				<string></string>
 				<key>COPY_PHASE_STRIP</key>
 				<string>YES</string>
 				<key>ENABLE_NS_ASSERTIONS</key>
@@ -2048,7 +2048,7 @@
 				<key>CODE_SIGN_ENTITLEMENTS</key>
 				<string>Pushpin.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
-				<string>iPhone Developer: Daniel Loewenherz (32S53QJB5F)</string>
+				<string></string>
 				<key>COMPRESS_PNG_FILES</key>
 				<string>YES</string>
 				<key>COPY_PHASE_STRIP</key>
@@ -2151,7 +2151,7 @@
 				<key>CODE_SIGN_ENTITLEMENTS</key>
 				<string>Pushpin.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
-				<string>iPhone Developer: Daniel Loewenherz (32S53QJB5F)</string>
+				<string></string>
 				<key>FRAMEWORK_SEARCH_PATHS</key>
 				<array>
 					<string>$(inherited)</string>
@@ -4997,7 +4997,7 @@
 				<key>CODE_SIGN_ENTITLEMENTS</key>
 				<string>Pushpin/Beta.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
-				<string>iPhone Distribution: Lionheart Software LLC (63553QQ62F)</string>
+				<string></string>
 				<key>COMPRESS_PNG_FILES</key>
 				<string>YES</string>
 				<key>COPY_PHASE_STRIP</key>
@@ -5098,7 +5098,7 @@
 				<key>CODE_SIGN_ENTITLEMENTS</key>
 				<string>Pushpin/Beta.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
-				<string>iPhone Distribution: Lionheart Software LLC (63553QQ62F)</string>
+				<string></string>
 				<key>FRAMEWORK_SEARCH_PATHS</key>
 				<array>
 					<string>$(inherited)</string>
@@ -6169,7 +6169,7 @@
 				<key>CODE_SIGN_ENTITLEMENTS</key>
 				<string>Pinboard/Share-Dev.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
-				<string>iPhone Developer: Daniel Loewenherz (32S53QJB5F)</string>
+				<string></string>
 				<key>COPY_PHASE_STRIP</key>
 				<string>NO</string>
 				<key>ENABLE_STRICT_OBJC_MSGSEND</key>
@@ -6217,7 +6217,7 @@
 				<key>PRODUCT_NAME</key>
 				<string>Pushpin</string>
 				<key>PROVISIONING_PROFILE</key>
-				<string>f2b976cb-cc25-4f18-8b46-214657ebc7b3</string>
+				<string>b222c038-a362-43f1-8a76-98bcfa7f99a2</string>
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
 				<key>SKIP_INSTALL</key>
@@ -6357,7 +6357,7 @@
 				<key>CODE_SIGN_ENTITLEMENTS</key>
 				<string>Pinboard/Share-AppStore.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
-				<string>iPhone Distribution: Lionheart Software LLC (63553QQ62F)</string>
+				<string></string>
 				<key>COPY_PHASE_STRIP</key>
 				<string>YES</string>
 				<key>ENABLE_NS_ASSERTIONS</key>
@@ -6450,7 +6450,7 @@
 				<key>CODE_SIGN_ENTITLEMENTS</key>
 				<string>Pinboard/Share-AppStore.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
-				<string>iPhone Developer: Daniel Loewenherz (32S53QJB5F)</string>
+				<string></string>
 				<key>COPY_PHASE_STRIP</key>
 				<string>NO</string>
 				<key>ENABLE_NS_ASSERTIONS</key>
@@ -6635,7 +6635,7 @@
 				<key>CODE_SIGN_ENTITLEMENTS</key>
 				<string>Pinboard/Share-Beta.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
-				<string>iPhone Distribution: Lionheart Software LLC (63553QQ62F)</string>
+				<string></string>
 				<key>COPY_PHASE_STRIP</key>
 				<string>YES</string>
 				<key>ENABLE_NS_ASSERTIONS</key>
@@ -11635,7 +11635,7 @@ BUNDLE_VERSION=$(($BUNDLE_VERSION + 1))
 				<key>CODE_SIGN_ENTITLEMENTS</key>
 				<string>Pushpin/Dev.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
-				<string>iPhone Developer: Daniel Loewenherz (32S53QJB5F)</string>
+				<string></string>
 				<key>COMPRESS_PNG_FILES</key>
 				<string>YES</string>
 				<key>COPY_PHASE_STRIP</key>
@@ -11707,7 +11707,7 @@ BUNDLE_VERSION=$(($BUNDLE_VERSION + 1))
 					<string>-all_load</string>
 				</array>
 				<key>PROVISIONING_PROFILE</key>
-				<string>3a6325c1-3986-492c-ba77-5ff91e502cf0</string>
+				<string>d70cb10f-1a66-447e-8d52-de0b6c3a2d41</string>
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
 				<key>STRIP_INSTALLED_PRODUCT</key>
@@ -11757,7 +11757,7 @@ BUNDLE_VERSION=$(($BUNDLE_VERSION + 1))
 				<key>CODE_SIGN_ENTITLEMENTS</key>
 				<string>Pushpin.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
-				<string>iPhone Distribution: Lionheart Software LLC (63553QQ62F)</string>
+				<string></string>
 				<key>COMPRESS_PNG_FILES</key>
 				<string>YES</string>
 				<key>COPY_PHASE_STRIP</key>
@@ -11828,7 +11828,7 @@ BUNDLE_VERSION=$(($BUNDLE_VERSION + 1))
 					<string>-all_load</string>
 				</array>
 				<key>PROVISIONING_PROFILE</key>
-				<string>ef758106-b962-43f8-ae7e-ddcb930b9c4d</string>
+				<string>83d22b2d-15f8-4faf-a6a6-b952b03e06d4</string>
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
 				<key>STRIP_INSTALLED_PRODUCT</key>
@@ -11879,7 +11879,7 @@ BUNDLE_VERSION=$(($BUNDLE_VERSION + 1))
 				<key>CODE_SIGN_ENTITLEMENTS</key>
 				<string>Pushpin/Dev.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
-				<string>iPhone Developer: Daniel Loewenherz (32S53QJB5F)</string>
+				<string></string>
 				<key>FRAMEWORK_SEARCH_PATHS</key>
 				<array>
 					<string>$(inherited)</string>
@@ -11898,7 +11898,7 @@ BUNDLE_VERSION=$(($BUNDLE_VERSION + 1))
 				<key>PRODUCT_NAME</key>
 				<string>$(TARGET_NAME)</string>
 				<key>PROVISIONING_PROFILE</key>
-				<string>3a6325c1-3986-492c-ba77-5ff91e502cf0</string>
+				<string>d70cb10f-1a66-447e-8d52-de0b6c3a2d41</string>
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
 				<key>STRIP_INSTALLED_PRODUCT</key>
@@ -11926,7 +11926,7 @@ BUNDLE_VERSION=$(($BUNDLE_VERSION + 1))
 				<key>CODE_SIGN_ENTITLEMENTS</key>
 				<string>Pushpin.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
-				<string>iPhone Distribution: Lionheart Software LLC (63553QQ62F)</string>
+				<string></string>
 				<key>FRAMEWORK_SEARCH_PATHS</key>
 				<array>
 					<string>$(inherited)</string>
