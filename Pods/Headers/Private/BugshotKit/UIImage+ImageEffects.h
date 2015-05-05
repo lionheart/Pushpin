@@ -1,0 +1,1 @@
+../../../BugshotKit/BugshotKit/UIImage+ImageEffects.h

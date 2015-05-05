@@ -1,0 +1,25 @@
+{
+  "name": "LHSDiigo",
+  "version": "0.0.1",
+  "summary": "",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "Dan Loewenherz": "dan@lionheartsw.com"
+  },
+  "social_media_url": "http://twitter.com/dwlz",
+  "platforms": {
+    "ios": "7.0"
+  },
+  "source": {
+    "git": "http://github.com/lionheart/LHSDiigo.git",
+    "tag": "0.0.1"
+  },
+  "source_files": [
+    "LHSDiigo",
+    "LHSDiigo/*.{h,m}"
+  ],
+  "requires_arc": true
+}
