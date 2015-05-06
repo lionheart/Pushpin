@@ -21,7 +21,8 @@ typedef NS_ENUM(NSInteger, PPDisplaySettingsSectionType) {
 typedef NS_ENUM(NSInteger, PPEditSettingsRowType) {
     PPEditDefaultToPrivate,
     PPEditDefaultToRead,
-    PPEditAutocorrecTextRow,
+    PPEditAutocorrectTextRow,
+    PPEditAutocorrectTagsRow,
     PPEditAutocapitalizeRow,
     PPEditAutoMarkAsReadRow,
 

@@ -187,7 +187,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
         self.tagTextField = [[UITextField alloc] init];
         self.tagTextField.font = font;
-        self.tagTextField.autocapitalizationType = [settings autoCapitalizationType];
+        self.tagTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         self.tagTextField.autocorrectionType = [settings tagAutoCorrectionType];
         self.tagTextField.placeholder = NSLocalizedString(@"Tap to add tags.", nil);
         self.tagTextField.translatesAutoresizingMaskIntoConstraints = NO;

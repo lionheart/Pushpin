@@ -45,6 +45,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 @property (nonatomic, retain) UISwitch *doubleTapToEditSwitch;
 @property (nonatomic, retain) UISwitch *markReadSwitch;
 @property (nonatomic, retain) UISwitch *autoCorrectionSwitch;
+@property (nonatomic, retain) UISwitch *tagAutoCorrectionSwitch;
 @property (nonatomic, retain) UISwitch *autoCapitalizationSwitch;
 @property (nonatomic, retain) UISwitch *onlyPromptToAddOnceSwitch;
 @property (nonatomic, retain) UISwitch *alwaysShowAlertSwitch;
@@ -147,6 +148,10 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     self.autoCorrectionSwitch = [[UISwitch alloc] init];
     self.autoCorrectionSwitch.on = settings.enableAutoCorrect;
     [self.autoCorrectionSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
+
+    self.tagAutoCorrectionSwitch = [[UISwitch alloc] init];
+    self.tagAutoCorrectionSwitch.on = settings.enableTagAutoCorrect;
+    [self.tagAutoCorrectionSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
     
     self.onlyPromptToAddOnceSwitch = [[UISwitch alloc] init];
     self.onlyPromptToAddOnceSwitch.on = !settings.onlyPromptToAddOnce;
@@ -330,12 +335,20 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.accessoryView = self.markReadSwitch;
                     break;
 
-                case PPEditAutocorrecTextRow:
+                case PPEditAutocorrectTextRow:
                     cell.textLabel.text = NSLocalizedString(@"Autocorrect text", nil);
                     size = cell.frame.size;
                     switchSize = self.autoCorrectionSwitch.frame.size;
                     self.autoCorrectionSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
                     cell.accessoryView = self.autoCorrectionSwitch;
+                    break;
+
+                case PPEditAutocorrectTagsRow:
+                    cell.textLabel.text = NSLocalizedString(@"Autocorrect tags", nil);
+                    size = cell.frame.size;
+                    switchSize = self.tagAutoCorrectionSwitch.frame.size;
+                    self.tagAutoCorrectionSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
+                    cell.accessoryView = self.tagAutoCorrectionSwitch;
                     break;
 
                 case PPEditAutocapitalizeRow:
@@ -700,10 +713,13 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
         });
     }
     else if (sender == self.autoCorrectionSwitch) {
-        [settings setEnableAutoCorrect:self.autoCorrectionSwitch.on];
+        settings.enableAutoCorrect = self.autoCorrectionSwitch.on;
+    }
+    else if (sender == self.tagAutoCorrectionSwitch) {
+        settings.enableTagAutoCorrect = self.tagAutoCorrectionSwitch.on;
     }
     else if (sender == self.autoCapitalizationSwitch) {
-        [settings setEnableAutoCapitalize:self.autoCapitalizationSwitch.on];
+        settings.enableAutoCapitalize = self.autoCapitalizationSwitch.on;
     }
     else if (sender == self.alwaysShowAlertSwitch) {
         [settings setAlwaysShowClipboardNotification:self.alwaysShowAlertSwitch.on];
