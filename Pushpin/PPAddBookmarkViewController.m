@@ -1382,10 +1382,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (void)rightBarButtonTouchUpInside:(id)sender {
-    UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-    activityIndicator.hidesWhenStopped = YES;
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:activityIndicator];
-    [activityIndicator startAnimating];
     if (self.isEditingTags) {
         self.isEditingTags = NO;
         self.tagTextField.userInteractionEnabled = NO;
@@ -1413,103 +1409,110 @@ static NSString *CellIdentifier = @"CellIdentifier";
         self.navigationItem.leftBarButtonItem = self.cancelBarButtonItem;
         self.title = self.originalTitle;
     }
-    else if (self.presentedFromShareSheet) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if ([self.urlTextField.text isEqualToString:@""] || [self.titleTextField.text isEqualToString:@""]) {
-                UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Uh oh.", nil)
-                                                                               message:NSLocalizedString(@"You can't add a bookmark without a URL or title.", nil)];
-                [alert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
-                [self presentViewController:alert animated:YES completion:nil];
-                return;
-            }
-            
-            NSCharacterSet *characterSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
-            NSString *url = self.urlTextField.text;
-            if (!url) {
-                UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:nil
-                                                                               message:NSLocalizedString(@"Unable to add bookmark without a URL.", nil)];
-                [alert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
-                [self presentViewController:alert animated:YES completion:nil];
-                return;
-            }
-            
-            self.navigationItem.leftBarButtonItem.enabled = NO;
-            self.navigationItem.rightBarButtonItem.enabled = NO;
-
-            NSString *title = [self.titleTextField.text stringByTrimmingCharactersInSet:characterSet];
-            NSString *description = [self.postDescription stringByTrimmingCharactersInSet:characterSet];
-            NSString *tags = [[self existingTags] componentsJoinedByString:@" "];
-            BOOL private = self.setAsPrivate;
-            BOOL unread = !self.markAsRead;
-            
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                void (^BookmarkSuccessBlock)() = ^{
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        UIViewController *shareViewController = self.parentViewController.presentingViewController;
-                        [shareViewController dismissViewControllerAnimated:YES completion:^{
-                            [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
-                        }];
-                    });
-                };
-                
-                void (^BookmarkFailureBlock)(NSError *) = ^(NSError *error) {
-                    NSHTTPURLResponse *response = error.userInfo[ASPinboardHTTPURLResponseKey];
-                    NSString *title;
-                    NSString *message;
-                    if (response.statusCode == 401) {
-                        title = NSLocalizedString(@"Invalid Credentials", nil);
-                        message = NSLocalizedString(@"Your Pinboard credentials are currently out-of-date. Your auth token may have been reset. Please log out and back into Pushpin to continue syncing bookmarks.", nil);
-                    }
-                    else {
-                        title = NSLocalizedString(@"Uh oh.", nil);
-                        message = NSLocalizedString(@"There was an error adding your bookmark.", nil);
-                    }
-
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        self.navigationItem.leftBarButtonItem.enabled = YES;
-                        self.navigationItem.rightBarButtonItem.enabled = YES;
-
-                        UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:title
-                                                                                     message:message];
-                        [alert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
-                        [self presentViewController:alert animated:YES completion:nil];
-                    });
-                };
-                
-#ifdef DELICIOUS
-                LHSDelicious *delicious = [LHSDelicious sharedInstance];
-                [delicious addBookmarkWithURL:url
-                                        title:title
-                                  description:description
-                                         tags:tags
-                                       shared:!private
-                                   completion:^(NSError *error) {
-                                       if (error) {
-                                           BookmarkFailureBlock(error);
-                                       }
-                                       else {
-                                           BookmarkSuccessBlock();
-                                       }
-                                   }];
-#endif
-                
-#ifdef PINBOARD
-                ASPinboard *pinboard = [ASPinboard sharedInstance];
-                [pinboard addBookmarkWithURL:url
-                                       title:title
-                                 description:description
-                                        tags:tags
-                                      shared:!private
-                                      unread:unread
-                                     success:BookmarkSuccessBlock
-                                     failure:BookmarkFailureBlock];
-#endif
-                
-            });
-        });
-    }
     else {
-        [self addBookmark];
+        UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        activityIndicator.hidesWhenStopped = YES;
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:activityIndicator];
+        [activityIndicator startAnimating];
+
+        if (self.presentedFromShareSheet) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if ([self.urlTextField.text isEqualToString:@""] || [self.titleTextField.text isEqualToString:@""]) {
+                    UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Uh oh.", nil)
+                                                                                 message:NSLocalizedString(@"You can't add a bookmark without a URL or title.", nil)];
+                    [alert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+                    [self presentViewController:alert animated:YES completion:nil];
+                    return;
+                }
+
+                NSCharacterSet *characterSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+                NSString *url = self.urlTextField.text;
+                if (!url) {
+                    UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:nil
+                                                                                 message:NSLocalizedString(@"Unable to add bookmark without a URL.", nil)];
+                    [alert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+                    [self presentViewController:alert animated:YES completion:nil];
+                    return;
+                }
+
+                self.navigationItem.leftBarButtonItem.enabled = NO;
+                self.navigationItem.rightBarButtonItem.enabled = NO;
+
+                NSString *title = [self.titleTextField.text stringByTrimmingCharactersInSet:characterSet];
+                NSString *description = [self.postDescription stringByTrimmingCharactersInSet:characterSet];
+                NSString *tags = [[self existingTags] componentsJoinedByString:@" "];
+                BOOL private = self.setAsPrivate;
+                BOOL unread = !self.markAsRead;
+
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    void (^BookmarkSuccessBlock)() = ^{
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            UIViewController *shareViewController = self.parentViewController.presentingViewController;
+                            [shareViewController dismissViewControllerAnimated:YES completion:^{
+                                [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
+                            }];
+                        });
+                    };
+
+                    void (^BookmarkFailureBlock)(NSError *) = ^(NSError *error) {
+                        NSHTTPURLResponse *response = error.userInfo[ASPinboardHTTPURLResponseKey];
+                        NSString *title;
+                        NSString *message;
+                        if (response.statusCode == 401) {
+                            title = NSLocalizedString(@"Invalid Credentials", nil);
+                            message = NSLocalizedString(@"Your Pinboard credentials are currently out-of-date. Your auth token may have been reset. Please log out and back into Pushpin to continue syncing bookmarks.", nil);
+                        }
+                        else {
+                            title = NSLocalizedString(@"Uh oh.", nil);
+                            message = NSLocalizedString(@"There was an error adding your bookmark.", nil);
+                        }
+
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            self.navigationItem.leftBarButtonItem.enabled = YES;
+                            self.navigationItem.rightBarButtonItem.enabled = YES;
+
+                            UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:title
+                                                                                         message:message];
+                            [alert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+                            [self presentViewController:alert animated:YES completion:nil];
+                        });
+                    };
+
+#ifdef DELICIOUS
+                    LHSDelicious *delicious = [LHSDelicious sharedInstance];
+                    [delicious addBookmarkWithURL:url
+                                            title:title
+                                      description:description
+                                             tags:tags
+                                           shared:!private
+                                       completion:^(NSError *error) {
+                                           if (error) {
+                                               BookmarkFailureBlock(error);
+                                           }
+                                           else {
+                                               BookmarkSuccessBlock();
+                                           }
+                                       }];
+#endif
+
+#ifdef PINBOARD
+                    ASPinboard *pinboard = [ASPinboard sharedInstance];
+                    [pinboard addBookmarkWithURL:url
+                                           title:title
+                                     description:description
+                                            tags:tags
+                                          shared:!private
+                                          unread:unread
+                                         success:BookmarkSuccessBlock
+                                         failure:BookmarkFailureBlock];
+#endif
+
+                });
+            });
+        }
+        else {
+            [self addBookmark];
+        }
     }
 }
 
