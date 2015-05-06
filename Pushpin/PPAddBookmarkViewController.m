@@ -1281,7 +1281,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     self.navigationItem.rightBarButtonItem.enabled = YES;
 
                     UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Uh oh.", nil)
-                                                                                   message:NSLocalizedString(@"There was an error adding your bookmark.", nil)];
+                                                                                 message:NSLocalizedString(@"There was an error adding your bookmark.", nil)];
                     
                     [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
                                                               style:UIAlertActionStyleDefault
