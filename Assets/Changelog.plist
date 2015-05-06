@@ -39,6 +39,10 @@
 			</array>
 			<array>
 				<string>FIX</string>
+				<string>Add second autocorrect setting for tags.</string>
+			</array>
+			<array>
+				<string>FIX</string>
 				<string>Allow descriptions to be made from highlighted text in extension.</string>
 			</array>
 			<array>
