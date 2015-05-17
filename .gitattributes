@@ -1,4 +1,4 @@
-*.pbxproj text -crlf -diff -merge=union
+*.pbxproj filter=pbxproj
 # *.png diff=png filter=bigstore
 
 Pushpin/Beta-Info.plist merge=bundleversion
