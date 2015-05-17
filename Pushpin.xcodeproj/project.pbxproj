@@ -1122,7 +1122,7 @@
 				<key>CODE_SIGN_IDENTITY</key>
 				<string></string>
 				<key>COPY_PHASE_STRIP</key>
-				<string>NO</string>
+				<string>YES</string>
 				<key>ENABLE_STRICT_OBJC_MSGSEND</key>
 				<string>YES</string>
 				<key>GCC_C_LANGUAGE_STANDARD</key>
@@ -1174,6 +1174,8 @@
 				<string>iphoneos</string>
 				<key>SKIP_INSTALL</key>
 				<string>YES</string>
+				<key>STRIP_INSTALLED_PRODUCT</key>
+				<string>YES</string>
 			</dict>
 			<key>isa</key>
 			<string>XCBuildConfiguration</string>
@@ -1217,7 +1219,7 @@
 				<key>CODE_SIGN_IDENTITY</key>
 				<string>iPhone Developer: Daniel Loewenherz (32S53QJB5F)</string>
 				<key>COPY_PHASE_STRIP</key>
-				<string>NO</string>
+				<string>YES</string>
 				<key>ENABLE_NS_ASSERTIONS</key>
 				<string>NO</string>
 				<key>ENABLE_STRICT_OBJC_MSGSEND</key>
@@ -1256,6 +1258,8 @@
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
 				<key>SKIP_INSTALL</key>
+				<string>YES</string>
+				<key>STRIP_INSTALLED_PRODUCT</key>
 				<string>YES</string>
 				<key>VALIDATE_PRODUCT</key>
 				<string>YES</string>
@@ -1344,6 +1348,8 @@
 				<string>iphoneos</string>
 				<key>SKIP_INSTALL</key>
 				<string>YES</string>
+				<key>STRIP_INSTALLED_PRODUCT</key>
+				<string>YES</string>
 				<key>VALIDATE_PRODUCT</key>
 				<string>YES</string>
 			</dict>
@@ -1431,6 +1437,8 @@
 				<string>iphoneos</string>
 				<key>SKIP_INSTALL</key>
 				<string>YES</string>
+				<key>STRIP_INSTALLED_PRODUCT</key>
+				<string>YES</string>
 				<key>VALIDATE_PRODUCT</key>
 				<string>YES</string>
 			</dict>
@@ -1515,6 +1523,8 @@
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
 				<key>SKIP_INSTALL</key>
+				<string>YES</string>
+				<key>STRIP_INSTALLED_PRODUCT</key>
 				<string>YES</string>
 				<key>VALIDATE_PRODUCT</key>
 				<string>YES</string>
@@ -1603,6 +1613,8 @@
 				<string>iphoneos</string>
 				<key>SKIP_INSTALL</key>
 				<string>YES</string>
+				<key>STRIP_INSTALLED_PRODUCT</key>
+				<string>YES</string>
 				<key>VALIDATE_PRODUCT</key>
 				<string>YES</string>
 			</dict>
@@ -1689,6 +1701,8 @@
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
 				<key>SKIP_INSTALL</key>
+				<string>YES</string>
+				<key>STRIP_INSTALLED_PRODUCT</key>
 				<string>YES</string>
 				<key>VALIDATE_PRODUCT</key>
 				<string>YES</string>
@@ -2052,7 +2066,7 @@
 				<key>COMPRESS_PNG_FILES</key>
 				<string>YES</string>
 				<key>COPY_PHASE_STRIP</key>
-				<string>NO</string>
+				<string>YES</string>
 				<key>CURRENT_PROJECT_VERSION</key>
 				<string></string>
 				<key>DEPLOYMENT_POSTPROCESSING</key>
@@ -2123,7 +2137,7 @@
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
 				<key>STRIP_INSTALLED_PRODUCT</key>
-				<string>NO</string>
+				<string>YES</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
 				<key>USER_HEADER_SEARCH_PATHS</key>
@@ -2152,6 +2166,8 @@
 				<string>Pushpin.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
 				<string></string>
+				<key>COPY_PHASE_STRIP</key>
+				<string>YES</string>
 				<key>FRAMEWORK_SEARCH_PATHS</key>
 				<array>
 					<string>$(inherited)</string>
@@ -2175,6 +2191,8 @@
 				<string>e53d0bf9-2bca-48e3-bbc8-dcd071bd93d4</string>
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
+				<key>STRIP_INSTALLED_PRODUCT</key>
+				<string>YES</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
 				<key>WRAPPER_EXTENSION</key>
@@ -5001,7 +5019,7 @@
 				<key>COMPRESS_PNG_FILES</key>
 				<string>YES</string>
 				<key>COPY_PHASE_STRIP</key>
-				<string>NO</string>
+				<string>YES</string>
 				<key>CURRENT_PROJECT_VERSION</key>
 				<string></string>
 				<key>DEPLOYMENT_POSTPROCESSING</key>
@@ -5070,7 +5088,7 @@
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
 				<key>STRIP_INSTALLED_PRODUCT</key>
-				<string>NO</string>
+				<string>YES</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
 				<key>USER_HEADER_SEARCH_PATHS</key>
@@ -5099,6 +5117,8 @@
 				<string>Pushpin/Beta.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
 				<string></string>
+				<key>COPY_PHASE_STRIP</key>
+				<string>YES</string>
 				<key>FRAMEWORK_SEARCH_PATHS</key>
 				<array>
 					<string>$(inherited)</string>
@@ -5121,7 +5141,7 @@
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
 				<key>STRIP_INSTALLED_PRODUCT</key>
-				<string>NO</string>
+				<string>YES</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
 				<key>WRAPPER_EXTENSION</key>
@@ -6171,7 +6191,7 @@
 				<key>CODE_SIGN_IDENTITY</key>
 				<string></string>
 				<key>COPY_PHASE_STRIP</key>
-				<string>NO</string>
+				<string>YES</string>
 				<key>ENABLE_STRICT_OBJC_MSGSEND</key>
 				<string>YES</string>
 				<key>GCC_C_LANGUAGE_STANDARD</key>
@@ -6222,6 +6242,8 @@
 				<string>iphoneos</string>
 				<key>SKIP_INSTALL</key>
 				<string>YES</string>
+				<key>STRIP_INSTALLED_PRODUCT</key>
+				<string>YES</string>
 			</dict>
 			<key>isa</key>
 			<string>XCBuildConfiguration</string>
@@ -6265,7 +6287,7 @@
 				<key>CODE_SIGN_IDENTITY</key>
 				<string>iPhone Developer: Daniel Loewenherz (32S53QJB5F)</string>
 				<key>COPY_PHASE_STRIP</key>
-				<string>NO</string>
+				<string>YES</string>
 				<key>ENABLE_NS_ASSERTIONS</key>
 				<string>NO</string>
 				<key>ENABLE_STRICT_OBJC_MSGSEND</key>
@@ -6311,6 +6333,8 @@
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
 				<key>SKIP_INSTALL</key>
+				<string>YES</string>
+				<key>STRIP_INSTALLED_PRODUCT</key>
 				<string>YES</string>
 				<key>VALIDATE_PRODUCT</key>
 				<string>YES</string>
@@ -6405,6 +6429,8 @@
 				<string>iphoneos</string>
 				<key>SKIP_INSTALL</key>
 				<string>YES</string>
+				<key>STRIP_INSTALLED_PRODUCT</key>
+				<string>YES</string>
 				<key>VALIDATE_PRODUCT</key>
 				<string>YES</string>
 			</dict>
@@ -6452,7 +6478,7 @@
 				<key>CODE_SIGN_IDENTITY</key>
 				<string></string>
 				<key>COPY_PHASE_STRIP</key>
-				<string>NO</string>
+				<string>YES</string>
 				<key>ENABLE_NS_ASSERTIONS</key>
 				<string>NO</string>
 				<key>ENABLE_STRICT_OBJC_MSGSEND</key>
@@ -6497,6 +6523,8 @@
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
 				<key>SKIP_INSTALL</key>
+				<string>YES</string>
+				<key>STRIP_INSTALLED_PRODUCT</key>
 				<string>YES</string>
 				<key>VALIDATE_PRODUCT</key>
 				<string>YES</string>
@@ -6589,6 +6617,8 @@
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
 				<key>SKIP_INSTALL</key>
+				<string>YES</string>
+				<key>STRIP_INSTALLED_PRODUCT</key>
 				<string>YES</string>
 				<key>VALIDATE_PRODUCT</key>
 				<string>YES</string>
@@ -6683,6 +6713,8 @@
 				<string>iphoneos</string>
 				<key>SKIP_INSTALL</key>
 				<string>YES</string>
+				<key>STRIP_INSTALLED_PRODUCT</key>
+				<string>YES</string>
 				<key>VALIDATE_PRODUCT</key>
 				<string>YES</string>
 			</dict>
@@ -6776,6 +6808,8 @@
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
 				<key>SKIP_INSTALL</key>
+				<string>YES</string>
+				<key>STRIP_INSTALLED_PRODUCT</key>
 				<string>YES</string>
 				<key>VALIDATE_PRODUCT</key>
 				<string>YES</string>
@@ -7576,7 +7610,7 @@
 				<key>CODE_SIGN_IDENTITY</key>
 				<string>iPhone Developer: Daniel Loewenherz (32S53QJB5F)</string>
 				<key>COPY_PHASE_STRIP</key>
-				<string>NO</string>
+				<string>YES</string>
 				<key>CURRENT_PROJECT_VERSION</key>
 				<string>1</string>
 				<key>DEFINES_MODULE</key>
@@ -7647,7 +7681,7 @@
 				<key>SKIP_INSTALL</key>
 				<string>YES</string>
 				<key>STRIP_INSTALLED_PRODUCT</key>
-				<string>NO</string>
+				<string>YES</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
 				<key>VERSIONING_SYSTEM</key>
@@ -7755,6 +7789,8 @@
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
 				<key>SKIP_INSTALL</key>
+				<string>YES</string>
+				<key>STRIP_INSTALLED_PRODUCT</key>
 				<string>YES</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
@@ -7868,6 +7904,8 @@
 				<string>iphoneos</string>
 				<key>SKIP_INSTALL</key>
 				<string>YES</string>
+				<key>STRIP_INSTALLED_PRODUCT</key>
+				<string>YES</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
 				<key>VALIDATE_PRODUCT</key>
@@ -7980,6 +8018,8 @@
 				<string>iphoneos</string>
 				<key>SKIP_INSTALL</key>
 				<string>YES</string>
+				<key>STRIP_INSTALLED_PRODUCT</key>
+				<string>YES</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
 				<key>VALIDATE_PRODUCT</key>
@@ -8089,6 +8129,8 @@
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
 				<key>SKIP_INSTALL</key>
+				<string>YES</string>
+				<key>STRIP_INSTALLED_PRODUCT</key>
 				<string>YES</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
@@ -8202,6 +8244,8 @@
 				<string>iphoneos</string>
 				<key>SKIP_INSTALL</key>
 				<string>YES</string>
+				<key>STRIP_INSTALLED_PRODUCT</key>
+				<string>YES</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
 				<key>VALIDATE_PRODUCT</key>
@@ -8313,6 +8357,8 @@
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
 				<key>SKIP_INSTALL</key>
+				<string>YES</string>
+				<key>STRIP_INSTALLED_PRODUCT</key>
 				<string>YES</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
@@ -8650,7 +8696,7 @@
 				<key>COMPRESS_PNG_FILES</key>
 				<string>YES</string>
 				<key>COPY_PHASE_STRIP</key>
-				<string>NO</string>
+				<string>YES</string>
 				<key>CURRENT_PROJECT_VERSION</key>
 				<string></string>
 				<key>DEPLOYMENT_POSTPROCESSING</key>
@@ -8718,6 +8764,8 @@
 				<string>dd5ba893-f367-431a-895c-677065acf85d</string>
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
+				<key>STRIP_INSTALLED_PRODUCT</key>
+				<string>YES</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
 				<key>USER_HEADER_SEARCH_PATHS</key>
@@ -8746,6 +8794,8 @@
 				<string>Pushpin/Beta.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
 				<string>iPhone Distribution: Lionheart Software LLC (63553QQ62F)</string>
+				<key>COPY_PHASE_STRIP</key>
+				<string>YES</string>
 				<key>FRAMEWORK_SEARCH_PATHS</key>
 				<array>
 					<string>$(inherited)</string>
@@ -8768,7 +8818,7 @@
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
 				<key>STRIP_INSTALLED_PRODUCT</key>
-				<string>NO</string>
+				<string>YES</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
 				<key>WRAPPER_EXTENSION</key>
@@ -8886,6 +8936,8 @@
 				<string>29099fb1-0606-4967-884d-96f3d84d94b2</string>
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
+				<key>STRIP_INSTALLED_PRODUCT</key>
+				<string>YES</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
 				<key>USER_HEADER_SEARCH_PATHS</key>
@@ -8914,6 +8966,8 @@
 				<string>Pushpin.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
 				<string>iPhone Distribution: Lionheart Software LLC (63553QQ62F)</string>
+				<key>COPY_PHASE_STRIP</key>
+				<string>YES</string>
 				<key>FRAMEWORK_SEARCH_PATHS</key>
 				<array>
 					<string>$(inherited)</string>
@@ -8935,6 +8989,8 @@
 				<string>29099fb1-0606-4967-884d-96f3d84d94b2</string>
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
+				<key>STRIP_INSTALLED_PRODUCT</key>
+				<string>YES</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
 				<key>WRAPPER_EXTENSION</key>
@@ -8980,7 +9036,7 @@
 				<key>COMPRESS_PNG_FILES</key>
 				<string>YES</string>
 				<key>COPY_PHASE_STRIP</key>
-				<string>NO</string>
+				<string>YES</string>
 				<key>CURRENT_PROJECT_VERSION</key>
 				<string></string>
 				<key>DEPLOYMENT_POSTPROCESSING</key>
@@ -9050,7 +9106,7 @@
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
 				<key>STRIP_INSTALLED_PRODUCT</key>
-				<string>NO</string>
+				<string>YES</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
 				<key>USER_HEADER_SEARCH_PATHS</key>
@@ -9079,6 +9135,8 @@
 				<string>Pushpin/Dev.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
 				<string>iPhone Developer: Daniel Loewenherz (32S53QJB5F)</string>
+				<key>COPY_PHASE_STRIP</key>
+				<string>YES</string>
 				<key>FRAMEWORK_SEARCH_PATHS</key>
 				<array>
 					<string>$(inherited)</string>
@@ -9101,7 +9159,7 @@
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
 				<key>STRIP_INSTALLED_PRODUCT</key>
-				<string>NO</string>
+				<string>YES</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
 				<key>WRAPPER_EXTENSION</key>
@@ -11639,7 +11697,7 @@ BUNDLE_VERSION=$(($BUNDLE_VERSION + 1))
 				<key>COMPRESS_PNG_FILES</key>
 				<string>YES</string>
 				<key>COPY_PHASE_STRIP</key>
-				<string>NO</string>
+				<string>YES</string>
 				<key>CURRENT_PROJECT_VERSION</key>
 				<string></string>
 				<key>DEPLOYMENT_POSTPROCESSING</key>
@@ -11711,7 +11769,7 @@ BUNDLE_VERSION=$(($BUNDLE_VERSION + 1))
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
 				<key>STRIP_INSTALLED_PRODUCT</key>
-				<string>NO</string>
+				<string>YES</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
 				<key>USER_HEADER_SEARCH_PATHS</key>
@@ -11880,6 +11938,8 @@ BUNDLE_VERSION=$(($BUNDLE_VERSION + 1))
 				<string>Pushpin/Dev.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
 				<string></string>
+				<key>COPY_PHASE_STRIP</key>
+				<string>YES</string>
 				<key>FRAMEWORK_SEARCH_PATHS</key>
 				<array>
 					<string>$(inherited)</string>
@@ -11902,7 +11962,7 @@ BUNDLE_VERSION=$(($BUNDLE_VERSION + 1))
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
 				<key>STRIP_INSTALLED_PRODUCT</key>
-				<string>NO</string>
+				<string>YES</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
 				<key>WRAPPER_EXTENSION</key>
@@ -11927,6 +11987,8 @@ BUNDLE_VERSION=$(($BUNDLE_VERSION + 1))
 				<string>Pushpin.entitlements</string>
 				<key>CODE_SIGN_IDENTITY</key>
 				<string></string>
+				<key>COPY_PHASE_STRIP</key>
+				<string>YES</string>
 				<key>FRAMEWORK_SEARCH_PATHS</key>
 				<array>
 					<string>$(inherited)</string>
@@ -11948,6 +12010,8 @@ BUNDLE_VERSION=$(($BUNDLE_VERSION + 1))
 				<string>83d22b2d-15f8-4faf-a6a6-b952b03e06d4</string>
 				<key>SDKROOT</key>
 				<string>iphoneos</string>
+				<key>STRIP_INSTALLED_PRODUCT</key>
+				<string>YES</string>
 				<key>TARGETED_DEVICE_FAMILY</key>
 				<string>1,2</string>
 				<key>WRAPPER_EXTENSION</key>
