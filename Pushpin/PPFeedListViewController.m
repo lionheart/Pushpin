@@ -1926,7 +1926,9 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
     self.feeds = [updatedFeeds mutableCopy];
     self.searches = [updatedSearches mutableCopy];
-    [self.tableView reloadData];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableView reloadData];
+    });
 }
 
 #endif
