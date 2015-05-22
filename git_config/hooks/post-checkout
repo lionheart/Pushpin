@@ -6,5 +6,5 @@ else
   exit 1
 fi
 
-git_config/sort-Xcode-project-file-arg "Pushpin/project.pbxproj"
+git_config/sort-Xcode-project-file-arg "Pushpin.xcodeproj/project.pbxproj"
 
