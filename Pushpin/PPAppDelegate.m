@@ -790,7 +790,7 @@
         @"io.aurora.pinboard.OfflineFetchCriteria": @(PPOfflineFetchCriteriaUnread),
         @"io.aurora.pinboard.UseCellularDataForOffline": @(NO),
         @"io.aurora.pinboard.OfflineReadingEnabled": @(NO),
-        @"io.aurora.pinboard.DownloadFullWebpageForOffline": @(NO),
+        @"io.aurora.pinboard.DownloadFullWebpageForOffline": @(YES),
 #ifdef PINBOARD
         @"io.aurora.pinboard.PersonalFeedOrder": @[
                 @(PPPinboardPersonalFeedAll),
