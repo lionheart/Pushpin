@@ -550,20 +550,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             PPPinboardFeedDataSource *dataSource = [[PPPinboardFeedDataSource alloc] initWithComponents:feed[@"components"]];
             [dataSource removeDataSource:^{
                 [self.feeds removeObjectAtIndex:indexPath.row];
-                
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [tableView beginUpdates];
-                    
-                    if (self.feeds.count == 0) {
-                        [tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section]
-                                 withRowAnimation:UITableViewRowAnimationFade];
-                    }
-                    else {
-                        [tableView deleteRowsAtIndexPaths:@[indexPath]
-                                         withRowAnimation:UITableViewRowAnimationFade];
-                    }
-                    
-                    [tableView endUpdates];
+                    [tableView reloadData];
                 });
             }];
             break;
@@ -591,19 +579,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.searches removeObjectAtIndex:indexPath.row];
-
-                [tableView beginUpdates];
-                
-                if (self.searches.count == 0) {
-                    [tableView deleteSections:[NSIndexSet indexSetWithIndex:indexPath.section]
-                             withRowAnimation:UITableViewRowAnimationFade];
-                }
-                else {
-                    [tableView deleteRowsAtIndexPaths:@[indexPath]
-                                     withRowAnimation:UITableViewRowAnimationFade];
-                }
-                
-                [tableView endUpdates];
+                [tableView reloadData];
             });
             break;
         }
