@@ -21,6 +21,8 @@
 @interface PPShareViewController ()
 
 @property (nonatomic) BOOL hasToken;
+@property (nonatomic, strong) NSString *text;
+@property (nonatomic, strong) NSString *url;
 
 @end
 
@@ -110,6 +112,7 @@
                                                                                         @"private": @([post[@"shared"] isEqualToString:@"no"]),
                                                                                         @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
                                                                                         @"tags": post[@"tags"]};
+                                                             
                                                              UINavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark
                                                                                                                                                               update:@(YES)
                                                                                                                                                             callback:nil];
@@ -146,29 +149,28 @@
     };
 
     NSExtensionItem *item = self.extensionContext.inputItems.firstObject;
+
     for (NSItemProvider *itemProvider in item.attachments) {
         if ([itemProvider hasItemConformingToTypeIdentifier:(__bridge NSString *)kUTTypeURL]) {
             [itemProvider loadItemForTypeIdentifier:(__bridge NSString *)kUTTypeURL
                                             options:0
                                   completionHandler:^(NSURL *url, NSError *error) {
-                                      CompletionHandler(url.absoluteString, @"", @"");
+                                      self.url = url.absoluteString;
+                                      if (self.url && self.text) {
+                                          CompletionHandler(self.url, self.text, @"");
+                                      }
                                   }];
-            break;
         }
         
         if ([itemProvider hasItemConformingToTypeIdentifier:(__bridge NSString *)kUTTypePlainText]) {
             [itemProvider loadItemForTypeIdentifier:(__bridge NSString *)kUTTypePlainText
                                             options:0
                                   completionHandler:^(NSString *text, NSError *error) {
-                                      NSURL *url = [NSURL URLWithString:text];
-                                      if (url) {
-                                          CompletionHandler(text, @"", @"");
-                                      }
-                                      else {
-                                          CompletionHandler(@"", text, @"");
+                                      self.text = text;
+                                      if (self.url && self.text) {
+                                          CompletionHandler(self.url, self.text, @"");
                                       }
                                   }];
-            break;
         }
         
         if ([itemProvider hasItemConformingToTypeIdentifier:(__bridge NSString *)kUTTypePropertyList]) {
