@@ -47,11 +47,6 @@
 		3747C70319CCDB1F00FAD488 /* Changelog.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37B348CD175FFDCD00929E2E /* Changelog.plist */; };
 		3747C70419CCDB1F00FAD488 /* Charter Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 37DAAA8219A001F90050350D /* Charter Regular.ttf */; };
 		3747C70519CCDB1F00FAD488 /* Courier Prime.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 37DAAA8419A002380050350D /* Courier Prime.ttf */; };
-		3747C70619CCDB1F00FAD488 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C611E616377D5D008DB30B /* Default-568h@2x.png */; };
-		3747C70719CCDB1F00FAD488 /* Default@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 37ECBC5617739C24005AE740 /* Default@2x~ipad.png */; };
-		3747C70819CCDB1F00FAD488 /* Default@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C611E816377D5D008DB30B /* Default@2x~iphone.png */; };
-		3747C70919CCDB1F00FAD488 /* Default~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 37ECBC5717739C24005AE740 /* Default~ipad.png */; };
-		3747C70A19CCDB1F00FAD488 /* Default~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C611E716377D5D008DB30B /* Default~iphone.png */; };
 		3747C70B19CCDB1F00FAD488 /* Delete-Button-Light.png in Resources */ = {isa = PBXBuildFile; fileRef = 3798AD7818766DA3002D684B /* Delete-Button-Light.png */; };
 		3747C70C19CCDB1F00FAD488 /* Delete-Button-Light@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3798AD7918766DA3002D684B /* Delete-Button-Light@2x.png */; };
 		3747C70D19CCDB1F00FAD488 /* Delete-Button.png in Resources */ = {isa = PBXBuildFile; fileRef = 372C84071870E3B300BF520D /* Delete-Button.png */; };
@@ -269,9 +264,6 @@
 		37BC1BD5188641D80022020A /* readabilityInitializer.js in Resources */ = {isa = PBXBuildFile; fileRef = 37BC1BD3188641D80022020A /* readabilityInitializer.js */; };
 		37BC1BD6188641D80022020A /* JSDOMParser.js in Resources */ = {isa = PBXBuildFile; fileRef = 37BC1BD4188641D80022020A /* JSDOMParser.js */; };
 		37BC1BD8188642F90022020A /* readability.js in Resources */ = {isa = PBXBuildFile; fileRef = 37BC1BD7188642F90022020A /* readability.js */; };
-		37C611E916377D5D008DB30B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C611E616377D5D008DB30B /* Default-568h@2x.png */; };
-		37C611EA16377D5D008DB30B /* Default~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C611E716377D5D008DB30B /* Default~iphone.png */; };
-		37C611EB16377D5D008DB30B /* Default@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 37C611E816377D5D008DB30B /* Default@2x~iphone.png */; };
 		37CBB7411881B44B000F9C36 /* About.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7401881B44B000F9C36 /* About.plist */; };
 		37CBB74B1881B568000F9C36 /* mobilize-active.png in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7441881B568000F9C36 /* mobilize-active.png */; };
 		37CBB74C1881B568000F9C36 /* mobilize-active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7451881B568000F9C36 /* mobilize-active@2x.png */; };
@@ -285,8 +277,6 @@
 		37E312E51868CCD600B944F1 /* 56_Key-alt.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E312E31868CCD600B944F1 /* 56_Key-alt.png */; };
 		37E312E61868CCD600B944F1 /* 56_Key-alt@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E312E41868CCD600B944F1 /* 56_Key-alt@2x.png */; };
 		37E329ED1629F82D00A6BC18 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 37E329EC1629F82D00A6BC18 /* libsqlite3.dylib */; settings = {ATTRIBUTES = (Required, ); }; };
-		37ECBC5817739C24005AE740 /* Default@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 37ECBC5617739C24005AE740 /* Default@2x~ipad.png */; };
-		37ECBC5917739C24005AE740 /* Default~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 37ECBC5717739C24005AE740 /* Default~ipad.png */; };
 		37EE01751A07F34C00A03F3B /* PPCachingURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 37EE01731A07EA0600A03F3B /* PPCachingURLProtocol.m */; };
 		37EE01781A093F2B00A03F3B /* PPOfflineSettingsViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 37EE01761A093F2B00A03F3B /* PPOfflineSettingsViewController.h */; };
 		37EE01791A093F2B00A03F3B /* PPOfflineSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37EE01771A093F2B00A03F3B /* PPOfflineSettingsViewController.m */; };
@@ -301,6 +291,7 @@
 		37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9415745488003F2B77 /* Foundation.framework */; };
 		37FEEB9715745488003F2B77 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9615745488003F2B77 /* CoreGraphics.framework */; };
 		76AA6F3724024611A19DE0CD /* libPods-DebugPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37DB838287BA4DD2A778795D /* libPods-DebugPods.a */; };
+		B63698721B0FCC2700F15D42 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B63698711B0FCC2700F15D42 /* Launch Screen.xib */; };
 		E804950E180EF6D700C5CA8B /* webview-helpers.js in Resources */ = {isa = PBXBuildFile; fileRef = E804950C180EF20800C5CA8B /* webview-helpers.js */; };
 		E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E804950F18103DC700C5CA8B /* SafariServices.framework */; };
 		E80EEF6E184E9AA000979AA3 /* toolbar-checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF68184E9AA000979AA3 /* toolbar-checkmark.png */; };
@@ -712,9 +703,6 @@
 		37BC1BDA1889C6740022020A /* PPTwitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTwitter.m; sourceTree = "<group>"; };
 		37C012B71765423900938D81 /* PPMultipleEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPMultipleEditViewController.h; sourceTree = "<group>"; };
 		37C012B81765423A00938D81 /* PPMultipleEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPMultipleEditViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		37C611E616377D5D008DB30B /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "Assets/Default-568h@2x.png"; sourceTree = "<group>"; };
-		37C611E716377D5D008DB30B /* Default~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default~iphone.png"; path = "Assets/Default~iphone.png"; sourceTree = "<group>"; };
-		37C611E816377D5D008DB30B /* Default@2x~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x~iphone.png"; path = "Assets/Default@2x~iphone.png"; sourceTree = "<group>"; };
 		37CBB7401881B44B000F9C36 /* About.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = About.plist; path = Assets/About.plist; sourceTree = SOURCE_ROOT; };
 		37CBB7441881B568000F9C36 /* mobilize-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mobilize-active.png"; path = "Assets/mobilize-active.png"; sourceTree = "<group>"; };
 		37CBB7451881B568000F9C36 /* mobilize-active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mobilize-active@2x.png"; path = "Assets/mobilize-active@2x.png"; sourceTree = "<group>"; };
@@ -741,8 +729,6 @@
 		37E312E31868CCD600B944F1 /* 56_Key-alt.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "56_Key-alt.png"; path = "Assets/56_Key-alt.png"; sourceTree = "<group>"; };
 		37E312E41868CCD600B944F1 /* 56_Key-alt@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "56_Key-alt@2x.png"; path = "Assets/56_Key-alt@2x.png"; sourceTree = "<group>"; };
 		37E329EC1629F82D00A6BC18 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		37ECBC5617739C24005AE740 /* Default@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default@2x~ipad.png"; path = "Assets/Default@2x~ipad.png"; sourceTree = "<group>"; };
-		37ECBC5717739C24005AE740 /* Default~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default~ipad.png"; path = "Assets/Default~ipad.png"; sourceTree = "<group>"; };
 		37ED3E4C188C4A1F0039B344 /* PPActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPActivityViewController.h; sourceTree = "<group>"; };
 		37ED3E4D188C4A1F0039B344 /* PPActivityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPActivityViewController.m; sourceTree = "<group>"; };
 		37EE01721A07EA0600A03F3B /* PPCachingURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PPCachingURLProtocol.h; path = Pushpin/PPCachingURLProtocol.h; sourceTree = "<group>"; };
@@ -788,6 +774,7 @@
 		A4BD4E22DCF53E6AB2F2A51E /* Pods-DebugPods.pinboard beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DebugPods.pinboard beta.xcconfig"; path = "Pods/Target Support Files/Pods-DebugPods/Pods-DebugPods.pinboard beta.xcconfig"; sourceTree = "<group>"; };
 		AFF80364CC968E11C98B0720 /* Pods.pinboard app store debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods.pinboard app store debug.xcconfig"; path = "Pods/Target Support Files/Pods/Pods.pinboard app store debug.xcconfig"; sourceTree = "<group>"; };
 		B25462D5C303447F99AE829B /* libPods-Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B63698711B0FCC2700F15D42 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		C0D4BA105B9CC5CE33687390 /* Pods-DebugPods.delicious beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DebugPods.delicious beta.xcconfig"; path = "Pods/Target Support Files/Pods-DebugPods/Pods-DebugPods.delicious beta.xcconfig"; sourceTree = "<group>"; };
 		DC1363CDE8C539E824ED2832 /* Pods-DebugPods.pinboard app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DebugPods.pinboard app store.xcconfig"; path = "Pods/Target Support Files/Pods-DebugPods/Pods-DebugPods.pinboard app store.xcconfig"; sourceTree = "<group>"; };
 		E5C7E8CC60BD2B4D3B442364 /* Pods.pinboard beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods.pinboard beta.xcconfig"; path = "Pods/Target Support Files/Pods/Pods.pinboard beta.xcconfig"; sourceTree = "<group>"; };
@@ -1432,6 +1419,7 @@
 				378A24F4167D28AA00FB07EF /* ASStyleSheet.m */,
 				37AD159618A1352B005813CC /* Changelog-Delicious.plist */,
 				37B348CD175FFDCD00929E2E /* Changelog.plist */,
+				B63698711B0FCC2700F15D42 /* Launch Screen.xib */,
 				37FEEBA115745488003F2B77 /* PPAppDelegate.h */,
 				37FEEBA215745488003F2B77 /* PPAppDelegate.m */,
 				E89001F7183EA5B500C1F969 /* PPBadgeView.h */,
@@ -1510,11 +1498,6 @@
 				3784B0F51A50AD1500CD1435 /* 810-document-2@2x.png */,
 				3784B0F61A50AD1500CD1435 /* 874-newspaper.png */,
 				3784B0F71A50AD1500CD1435 /* 874-newspaper@2x.png */,
-				37C611E616377D5D008DB30B /* Default-568h@2x.png */,
-				37ECBC5617739C24005AE740 /* Default@2x~ipad.png */,
-				37C611E816377D5D008DB30B /* Default@2x~iphone.png */,
-				37ECBC5717739C24005AE740 /* Default~ipad.png */,
-				37C611E716377D5D008DB30B /* Default~iphone.png */,
 				3798AD7818766DA3002D684B /* Delete-Button-Light.png */,
 				3798AD7918766DA3002D684B /* Delete-Button-Light@2x.png */,
 				372C84071870E3B300BF520D /* Delete-Button.png */,
@@ -1928,11 +1911,6 @@
 				37B348CE175FFDCD00929E2E /* Changelog.plist in Resources */,
 				37DAAA8319A001F90050350D /* Charter Regular.ttf in Resources */,
 				37DAAA8519A002380050350D /* Courier Prime.ttf in Resources */,
-				37C611E916377D5D008DB30B /* Default-568h@2x.png in Resources */,
-				37ECBC5817739C24005AE740 /* Default@2x~ipad.png in Resources */,
-				37C611EB16377D5D008DB30B /* Default@2x~iphone.png in Resources */,
-				37ECBC5917739C24005AE740 /* Default~ipad.png in Resources */,
-				37C611EA16377D5D008DB30B /* Default~iphone.png in Resources */,
 				3798AD7A18766DA3002D684B /* Delete-Button-Light.png in Resources */,
 				3798AD7B18766DA3002D684B /* Delete-Button-Light@2x.png in Resources */,
 				372C84091870E3B300BF520D /* Delete-Button.png in Resources */,
@@ -2079,11 +2057,6 @@
 				3747C70319CCDB1F00FAD488 /* Changelog.plist in Resources */,
 				3747C70419CCDB1F00FAD488 /* Charter Regular.ttf in Resources */,
 				3747C70519CCDB1F00FAD488 /* Courier Prime.ttf in Resources */,
-				3747C70619CCDB1F00FAD488 /* Default-568h@2x.png in Resources */,
-				3747C70719CCDB1F00FAD488 /* Default@2x~ipad.png in Resources */,
-				3747C70819CCDB1F00FAD488 /* Default@2x~iphone.png in Resources */,
-				3747C70919CCDB1F00FAD488 /* Default~ipad.png in Resources */,
-				3747C70A19CCDB1F00FAD488 /* Default~iphone.png in Resources */,
 				3747C70B19CCDB1F00FAD488 /* Delete-Button-Light.png in Resources */,
 				3747C70C19CCDB1F00FAD488 /* Delete-Button-Light@2x.png in Resources */,
 				3747C70D19CCDB1F00FAD488 /* Delete-Button.png in Resources */,
@@ -2094,6 +2067,7 @@
 				3747C71619CCDB1F00FAD488 /* Images.xcassets in Resources */,
 				3747C71719CCDB1F00FAD488 /* InfoPlist.strings in Resources */,
 				3747C71819CCDB1F00FAD488 /* JSDOMParser.js in Resources */,
+				B63698721B0FCC2700F15D42 /* Launch Screen.xib in Resources */,
 				3747C71919CCDB1F00FAD488 /* LICENSE in Resources */,
 				3747C71A19CCDB1F00FAD488 /* Localizable.strings in Resources */,
 				3747C71B19CCDB1F00FAD488 /* LyonTextApp-Regular.ttf in Resources */,
@@ -2635,7 +2609,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = "Pinboard/Share-AppStore.entitlements";
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -2655,7 +2629,7 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "Read Later";
-				PROVISIONING_PROFILE = "ca571a44-4db4-4ce8-8bbf-1b2c0fa02201";
+				PROVISIONING_PROFILE = "e5496cc7-b67f-42d2-91c1-394d0f7b02a2";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
@@ -2819,7 +2793,7 @@
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = "";
@@ -2883,7 +2857,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2896,7 +2870,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "e53d0bf9-2bca-48e3-bbc8-dcd071bd93d4";
+				PROVISIONING_PROFILE = "4a2418b7-82c2-475c-99b4-0594cd875983";
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -3486,7 +3460,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = "Pinboard/Share-AppStore.entitlements";
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -3511,7 +3485,7 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = Pushpin;
-				PROVISIONING_PROFILE = "d9cc841f-ed81-4a78-a7c3-5afde420c4d2";
+				PROVISIONING_PROFILE = "acbd690c-7bc9-4975-9171-214033f0f205";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
@@ -3695,7 +3669,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = "";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Daniel Loewenherz (32S53QJB5F)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -3886,7 +3860,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = "";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Daniel Loewenherz (32S53QJB5F)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
