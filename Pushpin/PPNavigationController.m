@@ -90,7 +90,7 @@
         return UIInterfaceOrientationMaskPortrait;
     }
 
-    return UIInterfaceOrientationMaskLandscape | UIInterfaceOrientationMaskPortrait;
+    return UIInterfaceOrientationMaskLandscape | UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown;
 }
 
 #pragma mark - Key Commands
