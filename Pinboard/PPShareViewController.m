@@ -56,6 +56,7 @@
     NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
     NSString *token = [sharedDefaults objectForKey:@"token"];
     self.hasToken = token.length > 0;
+    self.text = @"";
     
     if (self.hasToken) {
         [[ASPinboard sharedInstance] setToken:token];
@@ -156,9 +157,7 @@
                                             options:0
                                   completionHandler:^(NSURL *url, NSError *error) {
                                       self.url = url.absoluteString;
-                                      if (self.url && self.text) {
-                                          CompletionHandler(self.url, self.text, @"");
-                                      }
+                                      CompletionHandler(self.url, self.text, @"");
                                   }];
         }
         
