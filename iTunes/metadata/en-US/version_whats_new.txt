@@ -1,0 +1,4 @@
+* Turn on "Download Full Webpage" by default
+* Fix crash when adding a new user tag or feed
+* Fix crash when deleting a saved feed
+* Fix bug where adding a url from Chrome would populate the wrong url
