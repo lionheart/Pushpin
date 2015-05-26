@@ -113,40 +113,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                                            style:UIAlertActionStyleCancel
                                          handler:nil];
 
-    self.supportActionSheet = [UIAlertController lhs_actionSheetWithTitle:NSLocalizedString(@"Contact Support", nil)];
-
-    [self.supportActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Request a feature", nil)
-                                              style:UIAlertActionStyleDefault
-                                            handler:^(UIAlertAction *action) {
-                                                UVConfig *config = [UVConfig configWithSite:@"lionheartsw.uservoice.com"
-                                                                                     andKey:@"9pBeLUHkDPLj3XhBG9jQ"
-                                                                                  andSecret:@"PaXdmNmtTAynLJ1MpuOFnVUUpfD2qA5obo7NxhsxP5A"];
-                                                
-                                                [UserVoice presentUserVoiceInterfaceForParentViewController:self andConfig:config];
-                                            }];
-    
-    [self.supportActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Report a bug", nil)
-                                              style:UIAlertActionStyleDefault
-                                            handler:nil];
-    
-    [self.supportActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Tweet us", nil)
-                                              style:UIAlertActionStyleDefault
-                                            handler:nil];
-    
-    [self.supportActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Email us", nil)
-                                              style:UIAlertActionStyleDefault
-                                            handler:^(UIAlertAction *action) {
-                                                MFMailComposeViewController *emailComposer = [[MFMailComposeViewController alloc] init];
-                                                emailComposer.mailComposeDelegate = self;
-                                                [emailComposer setSubject:NSLocalizedString(@"Support Email Subject", nil)];
-                                                [emailComposer setToRecipients:@[@"support@lionheartsw.com"]];
-                                                [self presentViewController:emailComposer animated:YES completion:nil];
-                                            }];
-    
-    [self.supportActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
-                                           style:UIAlertActionStyleCancel
-                                         handler:nil];
-
     if (!self.numberOfRatings) {
         NSURLSession *session = [NSURLSession sharedSession];
         NSURLSessionDataTask *task = [session dataTaskWithURL:[NSURL URLWithString:@"https://itunes.apple.com/lookup?id=548052590"]
@@ -418,7 +384,10 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                     UVConfig *config = [UVConfig configWithSite:@"lionheartsw.uservoice.com"
                                                          andKey:@"9pBeLUHkDPLj3XhBG9jQ"
                                                       andSecret:@"PaXdmNmtTAynLJ1MpuOFnVUUpfD2qA5obo7NxhsxP5A"];
-                    [ASStyleSheet applyStyles];
+                    
+                    [UVStyleSheet instance].navigationBarBackgroundColor = [UIColor colorWithRed:0 green:0.5863 blue:1 alpha:1];
+                    [UVStyleSheet instance].navigationBarTintColor = [UIColor whiteColor];
+                    [UVStyleSheet instance].navigationBarTextColor = [UIColor whiteColor];
                     [UserVoice presentUserVoiceInterfaceForParentViewController:self andConfig:config];
                     break;
                 }
