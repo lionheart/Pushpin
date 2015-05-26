@@ -374,6 +374,10 @@ static NSInteger PPBookmarkEditMaximum = 25;
             __weak id weakself = self;
             self.navigationController.interactivePopGestureRecognizer.delegate = weakself;
         }
+        else {
+            PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
+            self.hamburgerBarButtonItem = delegate.navigationController.splitViewControllerBarButtonItem;
+        }
 
         if (self.navigationController.navigationBarHidden) {
             [self.navigationController setNavigationBarHidden:NO animated:NO];
