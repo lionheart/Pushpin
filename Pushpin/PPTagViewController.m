@@ -349,10 +349,6 @@ static NSString *CellIdentifier = @"TagCell";
     pinboardDataSource.tags = @[tag];
     postViewController.postDataSource = pinboardDataSource;
 #endif
-    
-    if (self.searchController.active) {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    }
 
     // We need to switch this based on whether the user is on an iPad, due to the split view controller.
     if ([UIApplication isIPad]) {
