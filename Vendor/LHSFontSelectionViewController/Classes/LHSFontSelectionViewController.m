@@ -329,6 +329,9 @@ static NSString *CellIdentifier = @"Cell";
         }
         
         [self.sectionIndexTitles sortUsingSelector:@selector(compare:)];
+        for (NSString *sectionIndexTitle in self.sectionIndexTitles) {
+            [self.fontsForSectionIndex[sectionIndexTitle] sortUsingSelector:@selector(compare:)];
+        }
         [self.fonts sortUsingSelector:@selector(compare:)];
         
         if (self.preferredFontNames.count > 0) {
