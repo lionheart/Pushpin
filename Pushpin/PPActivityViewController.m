@@ -58,7 +58,6 @@
     if (self) {
         self.excludedActivityTypes = @[UIActivityTypePostToWeibo,
                                        UIActivityTypeAssignToContact,
-                                       UIActivityTypeAirDrop,
                                        UIActivityTypePostToVimeo];
     }
     return self;
