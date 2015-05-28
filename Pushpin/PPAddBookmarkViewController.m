@@ -1062,7 +1062,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     NSURL *url = [NSURL URLWithString:self.urlTextField.text];
     self.previousURLContents = self.urlTextField.text;
     
-    BOOL shouldPrefillDescription = [self.descriptionTextLabel.text isEqualToString:@"Tap to add a description."];
+    BOOL shouldPrefillDescription = [self.descriptionTextLabel.text isEqualToString:NSLocalizedString(@"Tap to add a description.", nil)];
     BOOL shouldPrefillTitle = !self.loadingTitle
     && (forceUpdate || self.titleTextField == nil || [self.titleTextField.text isEqualToString:@""])
     && [[UIApplication sharedApplication] canOpenURL:url]
