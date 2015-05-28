@@ -812,6 +812,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
 - (void)searchBarButtonItemTouchUpInside:(id)sender {
     PPGenericPostViewController *genericPostViewController = [[PPGenericPostViewController alloc] init];
+    [self.view endEditing:YES];
     
 #ifdef PINBOARD
     PPPinboardDataSource *dataSource = [[PPPinboardDataSource alloc] init];
