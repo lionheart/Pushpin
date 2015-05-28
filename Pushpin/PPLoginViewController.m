@@ -14,7 +14,6 @@
 #import "PPFeedListViewController.h"
 #import "PPTheme.h"
 #import "PPNavigationController.h"
-#import "ASStyleSheet.h"
 #import "PPTableViewTitleView.h"
 #import "PPDeliciousDataSource.h"
 #import "PPSettings.h"
@@ -810,7 +809,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                          andKey:@"9pBeLUHkDPLj3XhBG9jQ"
                                       andSecret:@"PaXdmNmtTAynLJ1MpuOFnVUUpfD2qA5obo7NxhsxP5A"];
     
-    [ASStyleSheet applyStyles];
     [UserVoice presentUserVoiceContactUsFormForParentViewController:self andConfig:config];
 }
 

@@ -11,7 +11,6 @@
 #import "PPAppDelegate.h"
 #import "PPSettingsViewController.h"
 #import "PPLoginViewController.h"
-#import "ASStyleSheet.h"
 #import "NSString+URLEncoding.h"
 #import "PPBrowserSettingsViewController.h"
 #import "PPDisplaySettingsViewController.h"
