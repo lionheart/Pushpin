@@ -1904,6 +1904,11 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     self.searches = [updatedSearches mutableCopy];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.tableView reloadData];
+        if (self.tableView.editing) {
+            for (NSIndexPath *indexPath in [self indexPathsForVisibleFeeds]) {
+                [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+            }
+        }
     });
 }
 
