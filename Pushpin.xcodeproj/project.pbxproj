@@ -164,7 +164,6 @@
 		378BFDEB19E59872006B48DC /* Share-Dev.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 374D91DC19CE26A700995DF1 /* Share-Dev.entitlements */; };
 		378DA45F1633B4B800831134 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 378DA45E1633B4B700831134 /* MessageUI.framework */; };
 		3790425119CBD49A00409D34 /* Pushpin.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 3790424619CBD49A00409D34 /* Pushpin.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		3790426119CBDCDF00409D34 /* ASStyleSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = 378A24F4167D28AA00FB07EF /* ASStyleSheet.m */; };
 		3790426219CBDCDF00409D34 /* BookmarkletInstallationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */; };
 		3790426419CBDCDF00409D34 /* FluidTableviewBehaviorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E84A8D9417FB1BCB003B4F50 /* FluidTableviewBehaviorManager.m */; };
 		3790426519CBDCDF00409D34 /* FluidTableviewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E84A8D9617FB1BCB003B4F50 /* FluidTableviewCell.m */; };
@@ -638,8 +637,6 @@
 		37887D6918C51F7D00A20B76 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		37889D4219981212002E245A /* PPSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSettings.h; sourceTree = "<group>"; };
 		37889D4319981212002E245A /* PPSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPSettings.m; sourceTree = "<group>"; };
-		378A24F3167D28AA00FB07EF /* ASStyleSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASStyleSheet.h; sourceTree = "<group>"; };
-		378A24F4167D28AA00FB07EF /* ASStyleSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASStyleSheet.m; sourceTree = "<group>"; };
 		378BFDF319E5E29B006B48DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		378BFDF419E5E29B006B48DC /* Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tests.m; sourceTree = "<group>"; };
 		378DA45E1633B4B700831134 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
@@ -1415,8 +1412,6 @@
 				37AD159418A13365005813CC /* About-Delicious.plist */,
 				37CBB7541881FFBC000F9C36 /* About.json */,
 				37CBB7401881B44B000F9C36 /* About.plist */,
-				378A24F3167D28AA00FB07EF /* ASStyleSheet.h */,
-				378A24F4167D28AA00FB07EF /* ASStyleSheet.m */,
 				37AD159618A1352B005813CC /* Changelog-Delicious.plist */,
 				37B348CD175FFDCD00929E2E /* Changelog.plist */,
 				B63698711B0FCC2700F15D42 /* Launch Screen.xib */,
@@ -2286,7 +2281,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3790426119CBDCDF00409D34 /* ASStyleSheet.m in Sources */,
 				3790426219CBDCDF00409D34 /* BookmarkletInstallationViewController.m in Sources */,
 				3790426419CBDCDF00409D34 /* FluidTableviewBehaviorManager.m in Sources */,
 				3790426519CBDCDF00409D34 /* FluidTableviewCell.m in Sources */,
@@ -2562,7 +2556,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = "Pinboard/Share-AppStore.entitlements";
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Lionheart Software LLC (63553QQ62F)";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -2582,7 +2576,7 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "Read Later";
-				PROVISIONING_PROFILE = "2a455488-c071-40b8-88d9-c723f244fb78";
+				PROVISIONING_PROFILE = "affe5501-248d-4bf6-be97-1ed5bf12e4c6";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
@@ -2722,7 +2716,7 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "Read Later";
-				PROVISIONING_PROFILE = "cadb8c0c-e002-4125-842f-08b58c4ba60e";
+				PROVISIONING_PROFILE = "ed7436ff-4ebe-4259-b520-475185d98442";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
@@ -3247,7 +3241,7 @@
 					"-ObjC",
 					"-all_load",
 				);
-				PROVISIONING_PROFILE = "b0b07efc-f391-43c5-98a3-c34aa5c2cd3e";
+				PROVISIONING_PROFILE = "83214e34-eacf-45d8-bb05-f89bbc9fb125";
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -3276,7 +3270,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "b0b07efc-f391-43c5-98a3-c34aa5c2cd3e";
+				PROVISIONING_PROFILE = "83214e34-eacf-45d8-bb05-f89bbc9fb125";
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -3564,7 +3558,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = "Pinboard/Share-Beta.entitlements";
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Lionheart Software LLC (63553QQ62F)";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -3589,7 +3583,7 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = Pushpin;
-				PROVISIONING_PROFILE = "66ceb745-aacb-49fd-af46-42ca9b4d5bd6";
+				PROVISIONING_PROFILE = "78e5b688-de7c-4fbd-8343-fc0aec173d77";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
@@ -4478,7 +4472,7 @@
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Lionheart Software LLC (63553QQ62F)";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = "";
