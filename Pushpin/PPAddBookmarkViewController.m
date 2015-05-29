@@ -1974,9 +1974,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)viewWillLayoutSubviews {
     if (self.yCoordinate == nil) {
-        self.yCoordinate = @(self.navigationController.navigationBar.frame.origin.y);
+        self.yCoordinate = @(20);
     }
-    else if (self.yCoordinate.intValue > @(self.navigationController.navigationBar.frame.origin.y).intValue) {
+    
+    if (self.yCoordinate.intValue > @(self.navigationController.navigationBar.frame.origin.y).intValue) {
         // Move display down
         CGRect downBar = (CGRect){{0.0, 10.0}, self.navigationController.navigationBar.frame.size};
         CGRect downView =  (CGRect){{0.0, 10.0}, self.navigationController.view.frame.size};
