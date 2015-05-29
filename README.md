@@ -9,3 +9,13 @@ $ git_config/configure.sh
 
 The above command will also ensure that any Git commands stay in sync if they're updated.
 
+Updating Screenshots
+====================
+
+```
+gem install deliver
+deliver init
+# wait a few minutes
+deliver
+```
+
