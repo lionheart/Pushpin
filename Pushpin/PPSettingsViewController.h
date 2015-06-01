@@ -42,7 +42,6 @@ enum : NSInteger {
 
 @interface PPSettingsViewController : PPTableViewController <UIWebViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate>
 
-@property (nonatomic, retain) UIAlertController *supportActionSheet;
 @property (nonatomic, strong) UIAlertController *twitterAccountActionSheet;
 @property (nonatomic, retain) NSMutableArray *readLaterServices;
 
