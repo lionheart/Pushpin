@@ -1061,7 +1061,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)prefillTitleAndForceUpdate:(BOOL)forceUpdate {
     NSURL *url = [NSURL URLWithString:self.urlTextField.text];
     self.previousURLContents = self.urlTextField.text;
-
+    
+    BOOL shouldPrefillDescription = [self.descriptionTextLabel.text isEqualToString:NSLocalizedString(@"Tap to add a description.", nil)];
     BOOL shouldPrefillTitle = !self.loadingTitle
     && (forceUpdate || self.titleTextField == nil || [self.titleTextField.text isEqualToString:@""])
     && [[UIApplication sharedApplication] canOpenURL:url]
@@ -1069,18 +1070,24 @@ static NSString *CellIdentifier = @"CellIdentifier";
     if (shouldPrefillTitle) {
         [self.urlTextField resignFirstResponder];
         self.loadingTitle = YES;
-
-        NSArray *indexPaths = @[[NSIndexPath indexPathForRow:0 inSection:0], [NSIndexPath indexPathForRow:1 inSection:0]];
+        
+        
+        NSMutableArray *indexPaths = [[NSMutableArray alloc] initWithArray:@[[NSIndexPath indexPathForRow:0 inSection:0]]];
+        if (shouldPrefillDescription) {
+            [indexPaths addObject:[NSIndexPath indexPathForRow:1 inSection:0]];
+        }
         [self.tableView beginUpdates];
         [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView endUpdates];
         [PPUtilities retrievePageTitle:url
                               callback:^(NSString *title, NSString *description) {
                                   self.titleTextField.text = title;
-                                  self.postDescription = description;
                                   
-                                  self.descriptionAttributes[NSForegroundColorAttributeName] = [UIColor blackColor];
-                                  self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:self.postDescription attributes:self.descriptionAttributes];
+                                  if (shouldPrefillDescription) {
+                                      self.postDescription = description;
+                                      self.descriptionAttributes[NSForegroundColorAttributeName] = [UIColor blackColor];
+                                      self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:self.postDescription attributes:self.descriptionAttributes];
+                                  }
                                   self.loadingTitle = NO;
                                   
                                   [self.tableView beginUpdates];
