@@ -83,7 +83,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 @property (nonatomic, strong) NSString *originalTitle;
 
-@property (nonatomic, strong) NSNumber *yCoordinate;
+@property (nonatomic, strong) NSNumber *topYCoordinateForView;
 
 - (NSArray *)indexPathsForPopularAndSuggestedRows;
 - (NSArray *)indexPathsForAutocompletedRows;
@@ -260,7 +260,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         self.readButton.translatesAutoresizingMaskIntoConstraints = NO;
         [self.readButton setImage:[[UIImage imageNamed:@"roundbutton-checkmark"] lhs_imageWithColor:HEX(0xd8dde4ff)] forState:UIControlStateNormal];
         [self.readButton setImage:[[UIImage imageNamed:@"roundbutton-checkmark"] lhs_imageWithColor:HEX(0xEF6034FF)] forState:UIControlStateSelected];
-        [self.readButton addTarget:self action:@selector(toggleRead:) forControlEvents:UIControlEventTouchUpInside];        
+        [self.readButton addTarget:self action:@selector(toggleRead:) forControlEvents:UIControlEventTouchUpInside];
     }
     return self;
 }
@@ -1973,31 +1973,33 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (void)viewWillLayoutSubviews {
-    if (self.yCoordinate == nil) {
-        self.yCoordinate = @(20);
+    if (self.topYCoordinateForView == nil) {
+        self.topYCoordinateForView = @(20);
     }
     
-    if (self.yCoordinate.intValue > @(self.navigationController.navigationBar.frame.origin.y).intValue) {
+    if (self.topYCoordinateForView.intValue > @(self.navigationController.navigationBar.frame.origin.y).intValue) {
         // Move display down
-        CGRect downBar = (CGRect){{0.0, 10.0}, self.navigationController.navigationBar.frame.size};
-        CGRect downView =  (CGRect){{0.0, 10.0}, self.navigationController.view.frame.size};
+        CGRect loweredNavigationBar = (CGRect){{0.0, 10.0}, self.navigationController.navigationBar.frame.size};
+        CGRect loweredView = (CGRect){{0.0, 10.0}, self.navigationController.view.frame.size};
         
         [UIView animateWithDuration:0.25 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-            self.navigationController.view.frame = downView;
-            self.navigationController.navigationBar.frame = downBar;
-        }completion:nil];
-        self.yCoordinate = @(self.navigationController.navigationBar.frame.origin.y);
+            self.navigationController.view.frame = loweredView;
+            self.navigationController.navigationBar.frame = loweredNavigationBar;
+        }
+                         completion:nil];
+        self.topYCoordinateForView = @(self.navigationController.navigationBar.frame.origin.y);
     }
-    else if (self.yCoordinate.intValue < @(self.navigationController.navigationBar.frame.origin.y).intValue) {
+    else if (self.topYCoordinateForView.intValue < @(self.navigationController.navigationBar.frame.origin.y).intValue) {
         // Move display up
-        CGRect upBar =  (CGRect){{0.0, -20.0}, self.navigationController.navigationBar.frame.size};
-        CGRect upView =  (CGRect){{0.0, 0.0}, self.navigationController.view.frame.size};
+        CGRect raisedNavigationBar = (CGRect){{0.0, -20.0}, self.navigationController.navigationBar.frame.size};
+        CGRect raisedView = (CGRect){{0.0, 0.0}, self.navigationController.view.frame.size};
         
         [UIView animateWithDuration:0.25 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-            self.navigationController.view.frame = upView;
-            self.navigationController.navigationBar.frame = upBar;
-        }completion:nil];
-        self.yCoordinate = @(self.navigationController.navigationBar.frame.origin.y);
+            self.navigationController.view.frame = raisedView;
+            self.navigationController.navigationBar.frame = raisedNavigationBar;
+        }
+                         completion:nil];
+        self.topYCoordinateForView = @(self.navigationController.navigationBar.frame.origin.y);
     }
     
     [super viewWillLayoutSubviews];
