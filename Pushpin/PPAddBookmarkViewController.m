@@ -83,6 +83,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 @property (nonatomic, strong) NSString *originalTitle;
 
+@property (nonatomic, strong) NSNumber *topYCoordinateForView;
+
 - (NSArray *)indexPathsForPopularAndSuggestedRows;
 - (NSArray *)indexPathsForAutocompletedRows;
 - (NSArray *)indexPathsForExistingRows;
@@ -1975,6 +1977,39 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.removeTagActionSheet.popoverPresentationController.sourceRect = [self.view convertRect:rect fromView:badge];
     self.removeTagActionSheet.popoverPresentationController.sourceView = self.view;
     [self presentViewController:self.removeTagActionSheet animated:YES completion:nil];
+}
+
+- (void)viewWillLayoutSubviews {
+    if (self.topYCoordinateForView == nil) {
+        self.topYCoordinateForView = @(20);
+    }
+    
+    if (self.topYCoordinateForView.intValue > self.navigationController.navigationBar.frame.origin.y) {
+        // Move display down
+        CGRect loweredNavigationBarRect = (CGRect){{0.0, 10.0}, self.navigationController.navigationBar.frame.size};
+        CGRect loweredViewRect = (CGRect){{0.0, 10.0}, self.navigationController.view.frame.size};
+        
+        [UIView animateWithDuration:0.25 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            self.navigationController.view.frame = loweredViewRect;
+            self.navigationController.navigationBar.frame = loweredNavigationBarRect;
+        }
+                         completion:nil];
+        self.topYCoordinateForView = @(self.navigationController.navigationBar.frame.origin.y);
+    }
+    else if (self.topYCoordinateForView.intValue < self.navigationController.navigationBar.frame.origin.y) {
+        // Move display up
+        CGRect raisedNavigationBarRect = (CGRect){{0.0, -20.0}, self.navigationController.navigationBar.frame.size};
+        CGRect raisedViewRect = (CGRect){{0.0, 0.0}, self.navigationController.view.frame.size};
+        
+        [UIView animateWithDuration:0.25 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+            self.navigationController.view.frame = raisedViewRect;
+            self.navigationController.navigationBar.frame = raisedNavigationBarRect;
+        }
+                         completion:nil];
+        self.topYCoordinateForView = @(self.navigationController.navigationBar.frame.origin.y);
+    }
+    
+    [super viewWillLayoutSubviews];
 }
 
 @end
