@@ -1977,26 +1977,26 @@ static NSString *CellIdentifier = @"CellIdentifier";
         self.topYCoordinateForView = @(20);
     }
     
-    if (self.topYCoordinateForView.intValue > @(self.navigationController.navigationBar.frame.origin.y).intValue) {
+    if (self.topYCoordinateForView.intValue > self.navigationController.navigationBar.frame.origin.y) {
         // Move display down
-        CGRect loweredNavigationBar = (CGRect){{0.0, 10.0}, self.navigationController.navigationBar.frame.size};
-        CGRect loweredView = (CGRect){{0.0, 10.0}, self.navigationController.view.frame.size};
+        CGRect loweredNavigationBarRect = (CGRect){{0.0, 10.0}, self.navigationController.navigationBar.frame.size};
+        CGRect loweredViewRect = (CGRect){{0.0, 10.0}, self.navigationController.view.frame.size};
         
         [UIView animateWithDuration:0.25 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-            self.navigationController.view.frame = loweredView;
-            self.navigationController.navigationBar.frame = loweredNavigationBar;
+            self.navigationController.view.frame = loweredViewRect;
+            self.navigationController.navigationBar.frame = loweredNavigationBarRect;
         }
                          completion:nil];
         self.topYCoordinateForView = @(self.navigationController.navigationBar.frame.origin.y);
     }
-    else if (self.topYCoordinateForView.intValue < @(self.navigationController.navigationBar.frame.origin.y).intValue) {
+    else if (self.topYCoordinateForView.intValue < self.navigationController.navigationBar.frame.origin.y) {
         // Move display up
-        CGRect raisedNavigationBar = (CGRect){{0.0, -20.0}, self.navigationController.navigationBar.frame.size};
-        CGRect raisedView = (CGRect){{0.0, 0.0}, self.navigationController.view.frame.size};
+        CGRect raisedNavigationBarRect = (CGRect){{0.0, -20.0}, self.navigationController.navigationBar.frame.size};
+        CGRect raisedViewRect = (CGRect){{0.0, 0.0}, self.navigationController.view.frame.size};
         
         [UIView animateWithDuration:0.25 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-            self.navigationController.view.frame = raisedView;
-            self.navigationController.navigationBar.frame = raisedNavigationBar;
+            self.navigationController.view.frame = raisedViewRect;
+            self.navigationController.navigationBar.frame = raisedNavigationBarRect;
         }
                          completion:nil];
         self.topYCoordinateForView = @(self.navigationController.navigationBar.frame.origin.y);
