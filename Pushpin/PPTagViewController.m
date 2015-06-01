@@ -91,7 +91,7 @@ static NSString *CellIdentifier = @"TagCell";
     self.tableView.sectionIndexColor = [UIColor darkGrayColor];
     [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
 
-    self.rightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(popViewController)];
+    self.rightSwipeGestureRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self.navigationController action:@selector(popViewControllerAnimated:)];
     self.rightSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
     self.rightSwipeGestureRecognizer.numberOfTouchesRequired = 1;
     self.rightSwipeGestureRecognizer.cancelsTouchesInView = YES;
