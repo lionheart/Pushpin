@@ -10,40 +10,28 @@
 	<string>Pushpin</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>56E411DC-59EB-41EC-9DEA-BCC9A33D600C</key>
-		<string>ssh://github.com/aurorasoftware/ASPinboard.git</string>
 		<key>9EE95AE564A8FA1EB03FB1B2D3BCDFB5090990E4</key>
-		<string>ssh://github.com/aurorasoftware/pushpin-localizations.git</string>
+		<string>github.com:lionheart/pushpin-localizations.git</string>
 		<key>CA1D079377A2BD66346D3AB72C980A5DB6CE1C06</key>
-		<string>ssh://github.com/aurorasoftware/Pushpin.git</string>
+		<string>https://github.com/lionheart/Pushpin.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>Pushpin.xcodeproj/project.xcworkspace</string>
+	<string>Pushpin.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>56E411DC-59EB-41EC-9DEA-BCC9A33D600C</key>
-		<string>../../Vendor/ASPinboard</string>
 		<key>9EE95AE564A8FA1EB03FB1B2D3BCDFB5090990E4</key>
-		<string>../../Localizations</string>
+		<string>../..Localizations/</string>
 		<key>CA1D079377A2BD66346D3AB72C980A5DB6CE1C06</key>
 		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>ssh://github.com/aurorasoftware/Pushpin.git</string>
+	<string>https://github.com/lionheart/Pushpin.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
 	<string>CA1D079377A2BD66346D3AB72C980A5DB6CE1C06</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
-		<dict>
-			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
-			<string>public.vcs.git</string>
-			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>56E411DC-59EB-41EC-9DEA-BCC9A33D600C</string>
-			<key>IDESourceControlWCCName</key>
-			<string>ASPinboard</string>
-		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>

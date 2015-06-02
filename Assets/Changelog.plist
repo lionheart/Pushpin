@@ -3,6 +3,51 @@
 <plist version="1.0">
 <array>
 	<array>
+		<string>4.0.1</string>
+		<array>
+			<array>
+				<string>FIX</string>
+				<string>Add support for upside-down orientation.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Prevent a bookmark's description from being overwritten by swiping to prefill.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix bug where adding a new saved feed would uncheck all of the other sidebar options.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix bug where Feedback and Support navigation bar wouldn't have any buttons or text.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix bug where panning back from the search tags screen would crash the app.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix bug where half of the screen would occasionally go dark on the advanced search screen.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix bug that would cause app to crash when deleting a saved feed.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix bug where tapping on a tag when searching in the tags wouldn't show a list of bookmarks with that tag.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix bug where share extension interface was not adjusting when a phone call was in progress.</string>
+			</array>
+			<array>
+				<string>FIX</string>
+				<string>Fix bug where extension would display the wrong URL to update when adding a bookmark from Chrome.</string>
+			</array>
+		</array>
+	</array>
+	<array>
 		<string>4.0</string>
 		<array>
 			<array>
