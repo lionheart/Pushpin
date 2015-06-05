@@ -105,39 +105,23 @@
                 }];
                 
                 if (count == 0) {
-                    [[ASPinboard sharedInstance] bookmarkWithURL:urlString
-                                                         success:^(NSDictionary *post) {
-                                                             NSDictionary *bookmark = @{@"title": post[@"description"],
-                                                                                        @"description": post[@"extended"],
-                                                                                        @"url": urlString,
-                                                                                        @"private": @([post[@"shared"] isEqualToString:@"no"]),
-                                                                                        @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
-                                                                                        @"tags": post[@"tags"]};
-                                                             
-                                                             UINavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark
-                                                                                                                                                              update:@(YES)
-                                                                                                                                                            callback:nil];
-                                                             PresentController(navigation);
-                                                         }
-                                                         failure:^(NSError *error) {
-                                                             BOOL readByDefault = [[sharedDefaults objectForKey:@"ReadByDefault"] boolValue];
-                                                             BOOL privateByDefault = [[sharedDefaults objectForKey:@"PrivateByDefault"] boolValue];
-
-                                                             PPNavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:@{@"title": title,
-                                                                                                                                                                       @"url": urlString,
-                                                                                                                                                                       @"description": description,
-                                                                                                                                                                       @"private": @(privateByDefault),
-                                                                                                                                                                       @"unread": @(!readByDefault) }
-                                                                                                                                                              update:@(NO)
-                                                                                                                                                            callback:nil];
-
-                                                             PPAddBookmarkViewController *addBookmarkViewController = (PPAddBookmarkViewController *)navigation.topViewController;
-
-                                                             if (!title && !description) {
-                                                                 [addBookmarkViewController prefillTitleAndForceUpdate:YES];
-                                                             }
-                                                             PresentController(navigation);
-                                                         }];
+                    BOOL readByDefault = [[sharedDefaults objectForKey:@"ReadByDefault"] boolValue];
+                    BOOL privateByDefault = [[sharedDefaults objectForKey:@"PrivateByDefault"] boolValue];
+                    
+                    PPNavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:@{@"title": title,
+                                                                                                                              @"url": urlString,
+                                                                                                                              @"description": description,
+                                                                                                                              @"private": @(privateByDefault),
+                                                                                                                              @"unread": @(!readByDefault) }
+                                                                                                                     update:@(NO)
+                                                                                                                   callback:nil];
+                    
+                    PPAddBookmarkViewController *addBookmarkViewController = (PPAddBookmarkViewController *)navigation.topViewController;
+                    
+                    if (!title && !description) {
+                        [addBookmarkViewController prefillTitleAndForceUpdate:YES];
+                    }
+                    PresentController(navigation);
                 }
                 else {
                     UINavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:post
