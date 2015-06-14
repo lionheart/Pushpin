@@ -641,8 +641,10 @@ static NSInteger PPBookmarkEditMaximum = 25;
         [self.view endEditing:YES];
         self.selectedPoint = [recognizer locationInView:self.tableView];
         self.selectedIndexPath = [self.tableView indexPathForRowAtPoint:self.selectedPoint];
-        self.selectedPost = [self.postDataSource postAtIndex:self.selectedIndexPath.row];
-        [self openActionSheetForSelectedPost];
+        if (self.selectedIndexPath) {
+            self.selectedPost = [self.postDataSource postAtIndex:self.selectedIndexPath.row];
+            [self openActionSheetForSelectedPost];
+        }
     }
     else if (recognizer == self.pinchGestureRecognizer) {
         if (recognizer.state != UIGestureRecognizerStateBegan) {
