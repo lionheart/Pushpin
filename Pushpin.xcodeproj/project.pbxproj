@@ -291,6 +291,7 @@
 		37FEEB9715745488003F2B77 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9615745488003F2B77 /* CoreGraphics.framework */; };
 		76AA6F3724024611A19DE0CD /* libPods-DebugPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37DB838287BA4DD2A778795D /* libPods-DebugPods.a */; };
 		B63698721B0FCC2700F15D42 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B63698711B0FCC2700F15D42 /* Launch Screen.xib */; };
+		B6E304131B3C7C9B00135CF1 /* PPMailChimp.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E304111B3C778A00135CF1 /* PPMailChimp.m */; };
 		E804950E180EF6D700C5CA8B /* webview-helpers.js in Resources */ = {isa = PBXBuildFile; fileRef = E804950C180EF20800C5CA8B /* webview-helpers.js */; };
 		E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E804950F18103DC700C5CA8B /* SafariServices.framework */; };
 		E80EEF6E184E9AA000979AA3 /* toolbar-checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF68184E9AA000979AA3 /* toolbar-checkmark.png */; };
@@ -772,6 +773,8 @@
 		AFF80364CC968E11C98B0720 /* Pods.pinboard app store debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods.pinboard app store debug.xcconfig"; path = "Pods/Target Support Files/Pods/Pods.pinboard app store debug.xcconfig"; sourceTree = "<group>"; };
 		B25462D5C303447F99AE829B /* libPods-Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B63698711B0FCC2700F15D42 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
+		B6E304101B3C778A00135CF1 /* PPMailChimp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPMailChimp.h; sourceTree = "<group>"; };
+		B6E304111B3C778A00135CF1 /* PPMailChimp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPMailChimp.m; sourceTree = "<group>"; };
 		C0D4BA105B9CC5CE33687390 /* Pods-DebugPods.delicious beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DebugPods.delicious beta.xcconfig"; path = "Pods/Target Support Files/Pods-DebugPods/Pods-DebugPods.delicious beta.xcconfig"; sourceTree = "<group>"; };
 		DC1363CDE8C539E824ED2832 /* Pods-DebugPods.pinboard app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DebugPods.pinboard app store.xcconfig"; path = "Pods/Target Support Files/Pods-DebugPods/Pods-DebugPods.pinboard app store.xcconfig"; sourceTree = "<group>"; };
 		E5C7E8CC60BD2B4D3B442364 /* Pods.pinboard beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods.pinboard beta.xcconfig"; path = "Pods/Target Support Files/Pods/Pods.pinboard beta.xcconfig"; sourceTree = "<group>"; };
@@ -1426,6 +1429,8 @@
 				373115EE18E23C310072A986 /* PPDataSource.h */,
 				376C9E7C1746FB4300A62CB5 /* PPLoadingView.h */,
 				376C9E7D1746FB4300A62CB5 /* PPLoadingView.m */,
+				B6E304101B3C778A00135CF1 /* PPMailChimp.h */,
+				B6E304111B3C778A00135CF1 /* PPMailChimp.m */,
 				3769A5741879BCAF00AC8C44 /* PPMobilizerUtility.h */,
 				3769A5751879BCAF00AC8C44 /* PPMobilizerUtility.m */,
 				E8DA7973183D2EC5002B1D0B /* PPNavigationBar.h */,
@@ -2317,6 +2322,7 @@
 				3790428219CBDCDF00409D34 /* PPGenericPostViewController.m in Sources */,
 				3790428319CBDCDF00409D34 /* PPLoadingView.m in Sources */,
 				3790428419CBDCDF00409D34 /* PPLoginViewController.m in Sources */,
+				B6E304131B3C7C9B00135CF1 /* PPMailChimp.m in Sources */,
 				3790428519CBDCDF00409D34 /* PPMobilizerUtility.m in Sources */,
 				3790428619CBDCDF00409D34 /* PPMultipleEditViewController.m in Sources */,
 				3790428719CBDCDF00409D34 /* PPNavigationBar.m in Sources */,

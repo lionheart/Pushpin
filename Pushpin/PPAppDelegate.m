@@ -783,6 +783,7 @@
         // If a user decides not to add a bookmark when it's on the clipboard, don't ask again.
         @"io.aurora.pinboard.OnlyPromptToAddOnce": @(YES),
         @"io.aurora.pinboard.TurnOffBookmarkPrompt": @(YES),
+        @"io.aurora.pinboard.TurnOffPushpinCloudPrompt": @(NO),
         @"io.aurora.pinboard.AlwaysShowClipboardNotification": @(YES),
         @"io.aurora.pinboard.HiddenFeedNames": @[],
         @"io.aurora.pinboard.FontAdjustment": @(PPFontAdjustmentMedium),
