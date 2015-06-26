@@ -22,6 +22,7 @@ PODS:
   - ASPinboard (0.0.3):
     - hpple (~> 0.2.0)
   - BugshotKit (0.1.0)
+  - ChimpKit (3.1.1)
   - CrashlyticsFramework (2.2.5.2)
   - FMDB (2.4):
     - FMDB/standard (= 2.4)
@@ -65,6 +66,7 @@ DEPENDENCIES:
   - AFNetworking (= 2.2.0)
   - ASPinboard (from `Vendor/ASPinboard`)
   - BugshotKit (= 0.1.0)
+  - ChimpKit
   - CrashlyticsFramework (= 2.2.5.2)
   - FMDB (= 2.4)
   - HTMLParser (from `Specs/HTMLParser.podspec`)
@@ -102,6 +104,7 @@ SPEC CHECKSUMS:
   AFNetworking: cede923cb26fba5e6309616e91fa33fe2e4a1b7b
   ASPinboard: 80ace27c6db2ac7681d2851b6ba9460d68243bd7
   BugshotKit: 58fbc895fd67afb4c6ee3559ce013a4b4db8e59c
+  ChimpKit: d020126089544daa349397a91f1489a3f271b791
   CrashlyticsFramework: c4476108c87948b72835a5a26db90e8d6249da62
   FMDB: d274d9ff773415735022ac57bfba9f6002f9fed8
   hpple: 3b765f96fc2cd56ad1a49aef6f7be5cb2aa64b57
@@ -124,4 +127,4 @@ SPEC CHECKSUMS:
   XMLDictionary: f9f51601ba76678b594ab485f2b00ec1fed23724
   YHRoundBorderedButton: 2180f04094db264cace8db88eae977d78a3b4633
 
-COCOAPODS: 0.37.0
+COCOAPODS: 0.36.3

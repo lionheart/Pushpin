@@ -26,6 +26,7 @@ pod 'LHSKeyboardAdjusting', '0.0.1'
 pod 'RNCryptor', '2.2'
 pod '1PasswordExtension', '1.1'
 pod 'YHRoundBorderedButton', '0.1.0'
+pod 'ChimpKit'
 
 target 'DebugPods', :exclusive => true do
   pod 'BugshotKit', '0.1.0'

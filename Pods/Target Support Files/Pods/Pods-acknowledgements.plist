@@ -89,6 +89,34 @@ limitations under the License.
 		</dict>
 		<dict>
 			<key>FooterText</key>
+			<string>Copyright (c) 2010-2014
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+</string>
+			<key>Title</key>
+			<string>ChimpKit</string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
+		<dict>
+			<key>FooterText</key>
 			<string>CRASHLYTICS, INC. TERMS OF SERVICE Last Updated: July 15th, 2014
 
 The following Crashlytics, Inc. Terms of Service (&#8220;Terms&#8221; or &#8220;Agreement&#8221;) constitutes a legal agreement between you (&#8220;you&#8221;, &#8220;your&#8221;, or &#8220;Developer(s)&#8221;, all used interchangeably except that when &#8220;Developer(s)&#8221; is used herein, it applies only to &#8220;Developer(s)&#8221; (as &#8220;Developer(s)&#8221; is defined in Section 1 below)) and, if applicable the Entity (as defined below) on whose behalf you are accessing and/or using the Services (as defined below) and Crashlytics, Inc., a wholly owned subsidiary of Twitter, Inc. and its affiliates (&#8220;Crashlytics&#8221;). Your use of the Crashlytics&#8217;s websites, including www.crashlytics.com, and the Crashlytics reporting and beta testing solution (collectively, the &#8220;Services,&#8221; as more fully described below) is subject to these Terms, so you should take the time to fully understand how these Terms govern your relationship with Crashlytics and your use of the Services. If you have questions regarding the Terms, please contact Crashlytics at support@crashlytics.com

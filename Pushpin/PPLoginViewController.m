@@ -15,7 +15,7 @@
 #import <LHSKeyboardAdjusting/UIViewController+LHSKeyboardAdjustment.h>
 #import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 #import <uservoice-iphone-sdk/UserVoice.h>
-//#import "PPMailChimp.h"
+#import "PPMailChimp.h"
 
 #import "PPPinboardLoginViewController.h"
 
@@ -131,10 +131,11 @@ static NSString * const CellIdentifier = @"CellIdentifier";
             break;
         }
             
-        case PPLoginPushpinRow:
-//            UIAlertController *alert = [PPMailChimp mailChimpSubscriptionAlertController];
-//            [self presentViewController:alert animated:YES completion:nil];
+        case PPLoginPushpinRow: {
+            UIAlertController *alert = [PPMailChimp mailChimpSubscriptionAlertController];
+            [self presentViewController:alert animated:YES completion:nil];
             break;
+        }
     }
 }
 

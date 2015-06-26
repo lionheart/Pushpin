@@ -296,6 +296,7 @@
 		B6E3041D1B3DC95500135CF1 /* pinboard.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = B6E304191B3DC95500135CF1 /* pinboard.jpeg */; };
 		B6E3041E1B3DC95500135CF1 /* pushpin-cloud-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E3041A1B3DC95500135CF1 /* pushpin-cloud-logo.png */; };
 		B6E3041F1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E3041B1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png */; };
+		B6E304131B3C7C9B00135CF1 /* PPMailChimp.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E304111B3C778A00135CF1 /* PPMailChimp.m */; };
 		E804950E180EF6D700C5CA8B /* webview-helpers.js in Resources */ = {isa = PBXBuildFile; fileRef = E804950C180EF20800C5CA8B /* webview-helpers.js */; };
 		E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E804950F18103DC700C5CA8B /* SafariServices.framework */; };
 		E80EEF6E184E9AA000979AA3 /* toolbar-checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF68184E9AA000979AA3 /* toolbar-checkmark.png */; };
@@ -783,6 +784,8 @@
 		B6E304191B3DC95500135CF1 /* pinboard.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = pinboard.jpeg; sourceTree = "<group>"; };
 		B6E3041A1B3DC95500135CF1 /* pushpin-cloud-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pushpin-cloud-logo.png"; sourceTree = "<group>"; };
 		B6E3041B1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pushpin-cloud-logo@2x.png"; sourceTree = "<group>"; };
+		B6E304101B3C778A00135CF1 /* PPMailChimp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPMailChimp.h; sourceTree = "<group>"; };
+		B6E304111B3C778A00135CF1 /* PPMailChimp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPMailChimp.m; sourceTree = "<group>"; };
 		C0D4BA105B9CC5CE33687390 /* Pods-DebugPods.delicious beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DebugPods.delicious beta.xcconfig"; path = "Pods/Target Support Files/Pods-DebugPods/Pods-DebugPods.delicious beta.xcconfig"; sourceTree = "<group>"; };
 		DC1363CDE8C539E824ED2832 /* Pods-DebugPods.pinboard app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DebugPods.pinboard app store.xcconfig"; path = "Pods/Target Support Files/Pods-DebugPods/Pods-DebugPods.pinboard app store.xcconfig"; sourceTree = "<group>"; };
 		E5C7E8CC60BD2B4D3B442364 /* Pods.pinboard beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods.pinboard beta.xcconfig"; path = "Pods/Target Support Files/Pods/Pods.pinboard beta.xcconfig"; sourceTree = "<group>"; };
@@ -1439,6 +1442,8 @@
 				373115EE18E23C310072A986 /* PPDataSource.h */,
 				376C9E7C1746FB4300A62CB5 /* PPLoadingView.h */,
 				376C9E7D1746FB4300A62CB5 /* PPLoadingView.m */,
+				B6E304101B3C778A00135CF1 /* PPMailChimp.h */,
+				B6E304111B3C778A00135CF1 /* PPMailChimp.m */,
 				3769A5741879BCAF00AC8C44 /* PPMobilizerUtility.h */,
 				3769A5751879BCAF00AC8C44 /* PPMobilizerUtility.m */,
 				E8DA7973183D2EC5002B1D0B /* PPNavigationBar.h */,
@@ -2338,6 +2343,7 @@
 				3790428219CBDCDF00409D34 /* PPGenericPostViewController.m in Sources */,
 				3790428319CBDCDF00409D34 /* PPLoadingView.m in Sources */,
 				B6E304171B3DB04000135CF1 /* PPLoginViewController.m in Sources */,
+				B6E304131B3C7C9B00135CF1 /* PPMailChimp.m in Sources */,
 				3790428519CBDCDF00409D34 /* PPMobilizerUtility.m in Sources */,
 				3790428619CBDCDF00409D34 /* PPMultipleEditViewController.m in Sources */,
 				3790428719CBDCDF00409D34 /* PPNavigationBar.m in Sources */,

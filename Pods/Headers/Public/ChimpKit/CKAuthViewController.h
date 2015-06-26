@@ -1,0 +1,1 @@
+../../../ChimpKit/ChimpKit3/Helper Objects/CKAuthViewController.h

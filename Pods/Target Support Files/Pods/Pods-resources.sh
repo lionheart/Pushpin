@@ -6,13 +6,7 @@ mkdir -p "${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}"
 RESOURCES_TO_COPY=${PODS_ROOT}/resources-to-copy-${TARGETNAME}.txt
 > "$RESOURCES_TO_COPY"
 
-XCASSET_FILES=()
-
-realpath() {
-  DIRECTORY=$(cd "${1%/*}" && pwd)
-  FILENAME="${1##*/}"
-  echo "$DIRECTORY/$FILENAME"
-}
+XCASSET_FILES=""
 
 install_resource()
 {
@@ -44,8 +38,7 @@ install_resource()
       xcrun mapc "${PODS_ROOT}/$1" "${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/`basename "$1" .xcmappingmodel`.cdm"
       ;;
     *.xcassets)
-      ABSOLUTE_XCASSET_FILE=$(realpath "${PODS_ROOT}/$1")
-      XCASSET_FILES+=("$ABSOLUTE_XCASSET_FILE")
+      XCASSET_FILES="$XCASSET_FILES '${PODS_ROOT}/$1'"
       ;;
     /*)
       echo "$1"
@@ -59,6 +52,7 @@ install_resource()
 }
 if [[ "$CONFIGURATION" == "Pinboard Debug" ]]; then
   install_resource "1PasswordExtension/1Password.xcassets"
+  install_resource "ChimpKit/ChimpKit3/Helper Objects/CKAuthViewController.xib"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft.png"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft@2x.png"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowRight.imageset/MPArrowRight.png"
@@ -79,6 +73,7 @@ if [[ "$CONFIGURATION" == "Pinboard Debug" ]]; then
 fi
 if [[ "$CONFIGURATION" == "Delicious Debug" ]]; then
   install_resource "1PasswordExtension/1Password.xcassets"
+  install_resource "ChimpKit/ChimpKit3/Helper Objects/CKAuthViewController.xib"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft.png"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft@2x.png"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowRight.imageset/MPArrowRight.png"
@@ -99,6 +94,7 @@ if [[ "$CONFIGURATION" == "Delicious Debug" ]]; then
 fi
 if [[ "$CONFIGURATION" == "Pinboard App Store" ]]; then
   install_resource "1PasswordExtension/1Password.xcassets"
+  install_resource "ChimpKit/ChimpKit3/Helper Objects/CKAuthViewController.xib"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft.png"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft@2x.png"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowRight.imageset/MPArrowRight.png"
@@ -119,6 +115,7 @@ if [[ "$CONFIGURATION" == "Pinboard App Store" ]]; then
 fi
 if [[ "$CONFIGURATION" == "Pinboard App Store Debug" ]]; then
   install_resource "1PasswordExtension/1Password.xcassets"
+  install_resource "ChimpKit/ChimpKit3/Helper Objects/CKAuthViewController.xib"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft.png"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft@2x.png"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowRight.imageset/MPArrowRight.png"
@@ -139,6 +136,7 @@ if [[ "$CONFIGURATION" == "Pinboard App Store Debug" ]]; then
 fi
 if [[ "$CONFIGURATION" == "Delicious App Store" ]]; then
   install_resource "1PasswordExtension/1Password.xcassets"
+  install_resource "ChimpKit/ChimpKit3/Helper Objects/CKAuthViewController.xib"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft.png"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft@2x.png"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowRight.imageset/MPArrowRight.png"
@@ -159,6 +157,7 @@ if [[ "$CONFIGURATION" == "Delicious App Store" ]]; then
 fi
 if [[ "$CONFIGURATION" == "Pinboard Beta" ]]; then
   install_resource "1PasswordExtension/1Password.xcassets"
+  install_resource "ChimpKit/ChimpKit3/Helper Objects/CKAuthViewController.xib"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft.png"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft@2x.png"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowRight.imageset/MPArrowRight.png"
@@ -179,6 +178,7 @@ if [[ "$CONFIGURATION" == "Pinboard Beta" ]]; then
 fi
 if [[ "$CONFIGURATION" == "Delicious Beta" ]]; then
   install_resource "1PasswordExtension/1Password.xcassets"
+  install_resource "ChimpKit/ChimpKit3/Helper Objects/CKAuthViewController.xib"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft.png"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft@2x.png"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowRight.imageset/MPArrowRight.png"
@@ -220,14 +220,6 @@ then
       TARGET_DEVICE_ARGS="--target-device mac"
       ;;
   esac
-
-  # Find all other xcassets (this unfortunately includes those of path pods and other targets).
-  OTHER_XCASSETS=$(find "$PWD" -iname "*.xcassets" -type d)
-  while read line; do
-    if [[ $line != "`realpath $PODS_ROOT`*" ]]; then
-      XCASSET_FILES+=("$line")
-    fi
-  done <<<"$OTHER_XCASSETS"
-
-  printf "%s\0" "${XCASSET_FILES[@]}" | xargs -0 xcrun actool --output-format human-readable-text --notices --warnings --platform "${PLATFORM_NAME}" --minimum-deployment-target "${IPHONEOS_DEPLOYMENT_TARGET}" ${TARGET_DEVICE_ARGS} --compress-pngs --compile "${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}"
+  while read line; do XCASSET_FILES="$XCASSET_FILES '$line'"; done <<<$(find "$PWD" -name "*.xcassets" | egrep -v "^$PODS_ROOT")
+  echo $XCASSET_FILES | xargs actool --output-format human-readable-text --notices --warnings --platform "${PLATFORM_NAME}" --minimum-deployment-target "${IPHONEOS_DEPLOYMENT_TARGET}" ${TARGET_DEVICE_ARGS} --compress-pngs --compile "${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}"
 fi
