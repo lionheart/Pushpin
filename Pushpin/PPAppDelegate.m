@@ -40,6 +40,7 @@
 #import <LHSDiigo/LHSDiigoClient.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
 #import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
+#import <ChimpKit/ChimpKit.h>
 
 @interface PPAppDelegate ()
 
@@ -745,6 +746,7 @@
     
     [Fabric with:@[CrashlyticsKit]];
     [Crashlytics startWithAPIKey:@"ed1bff5018819b0c5dbb8dbb35edac18a8b1af02"];
+    [[ChimpKit sharedKit] setApiKey:@"f3bfc69f8d267252c14d76664432f968-us7"];
 
     [self becomeFirstResponder];
     self.bookmarksUpdated = NO;
@@ -783,6 +785,7 @@
         // If a user decides not to add a bookmark when it's on the clipboard, don't ask again.
         @"io.aurora.pinboard.OnlyPromptToAddOnce": @(YES),
         @"io.aurora.pinboard.TurnOffBookmarkPrompt": @(YES),
+        @"io.aurora.pinboard.TurnOffPushpinCloudPrompt": @(NO),
         @"io.aurora.pinboard.AlwaysShowClipboardNotification": @(YES),
         @"io.aurora.pinboard.HiddenFeedNames": @[],
         @"io.aurora.pinboard.FontAdjustment": @(PPFontAdjustmentMedium),

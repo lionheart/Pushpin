@@ -50,6 +50,7 @@
 @synthesize offlineUsageLimit = _offlineUsageLimit;
 @synthesize downloadFullWebpageForOfflineCache = _downloadFullWebpageForOfflineCache;
 @synthesize turnOffBookmarkPrompt = _turnOffBookmarkPrompt;
+@synthesize turnOffPushpinCloudPrompt = _turnOffPushpinCloudPrompt;
 
 #ifdef PINBOARD
 @synthesize communityFeedOrder = _communityFeedOrder;
@@ -174,10 +175,25 @@
     [defaults synchronize];
 }
 
+- (BOOL)turnOffPushpinCloudPrompt {
+    if (!_turnOffPushpinCloudPrompt) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _turnOffPushpinCloudPrompt = [[defaults objectForKey:@"io.aurora.pinboard.TurnOffPushpinCloudPrompt"] boolValue];
+    }
+    return _turnOffPushpinCloudPrompt;
+}
+
+- (void)setTurnOffPushpinCloudPrompt:(BOOL)turnOffPushpinCloudPrompt {
+    _turnOffPushpinCloudPrompt = turnOffPushpinCloudPrompt;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@(turnOffPushpinCloudPrompt) forKey:@"io.aurora.pinboard.TurnOffBookmarkPrompt"];
+    [defaults synchronize];
+}
+
 - (BOOL)onlyPromptToAddOnce {
     if (!_onlyPromptToAddOnce) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _onlyPromptToAddOnce = [[defaults objectForKey:@"io.aurora.pinboard.OnlyPromptToAddOnce"] boolValue];
+        _onlyPromptToAddOnce = [[defaults objectForKey:@"io.aurora.pinboard.TurnOffPushpinCloudPrompt"] boolValue];
     }
     return _onlyPromptToAddOnce;
 }
