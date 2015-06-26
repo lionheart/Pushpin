@@ -9,7 +9,7 @@
 @import UIKit;
 @import MessageUI.MFMailComposeViewController;
 
-#import "PPLoginViewController.h"
+#import "PPPinboardLoginViewController.h"
 #import "PPConstants.h"
 #import "PPURLCache.h"
 

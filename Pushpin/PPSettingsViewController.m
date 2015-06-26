@@ -10,7 +10,7 @@
 
 #import "PPAppDelegate.h"
 #import "PPSettingsViewController.h"
-#import "PPLoginViewController.h"
+#import "PPPinboardLoginViewController.h"
 #import "NSString+URLEncoding.h"
 #import "PPBrowserSettingsViewController.h"
 #import "PPDisplaySettingsViewController.h"

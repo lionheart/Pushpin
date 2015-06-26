@@ -197,7 +197,7 @@
 		3790428119CBDCDF00409D34 /* PPFeedListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A638916C0CB0800665CA1 /* PPFeedListViewController.m */; };
 		3790428219CBDCDF00409D34 /* PPGenericPostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733251E16E155A2002E2AB0 /* PPGenericPostViewController.m */; };
 		3790428319CBDCDF00409D34 /* PPLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 376C9E7D1746FB4300A62CB5 /* PPLoadingView.m */; };
-		3790428419CBDCDF00409D34 /* PPLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37919F1D16091DF5007708EF /* PPLoginViewController.m */; };
+		3790428419CBDCDF00409D34 /* PPPinboardLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37919F1D16091DF5007708EF /* PPPinboardLoginViewController.m */; };
 		3790428519CBDCDF00409D34 /* PPMobilizerUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 3769A5751879BCAF00AC8C44 /* PPMobilizerUtility.m */; };
 		3790428619CBDCDF00409D34 /* PPMultipleEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37C012B81765423A00938D81 /* PPMultipleEditViewController.m */; };
 		3790428719CBDCDF00409D34 /* PPNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = E8DA7974183D2EC5002B1D0B /* PPNavigationBar.m */; };
@@ -291,6 +291,11 @@
 		37FEEB9715745488003F2B77 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9615745488003F2B77 /* CoreGraphics.framework */; };
 		76AA6F3724024611A19DE0CD /* libPods-DebugPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37DB838287BA4DD2A778795D /* libPods-DebugPods.a */; };
 		B63698721B0FCC2700F15D42 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B63698711B0FCC2700F15D42 /* Launch Screen.xib */; };
+		B6E304171B3DB04000135CF1 /* PPLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E304151B3DAAF700135CF1 /* PPLoginViewController.m */; };
+		B6E3041C1B3DC95500135CF1 /* pinboard-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E304181B3DC95500135CF1 /* pinboard-logo@2x.png */; };
+		B6E3041D1B3DC95500135CF1 /* pinboard.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = B6E304191B3DC95500135CF1 /* pinboard.jpeg */; };
+		B6E3041E1B3DC95500135CF1 /* pushpin-cloud-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E3041A1B3DC95500135CF1 /* pushpin-cloud-logo.png */; };
+		B6E3041F1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E3041B1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png */; };
 		E804950E180EF6D700C5CA8B /* webview-helpers.js in Resources */ = {isa = PBXBuildFile; fileRef = E804950C180EF20800C5CA8B /* webview-helpers.js */; };
 		E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E804950F18103DC700C5CA8B /* SafariServices.framework */; };
 		E80EEF6E184E9AA000979AA3 /* toolbar-checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF68184E9AA000979AA3 /* toolbar-checkmark.png */; };
@@ -651,8 +656,8 @@
 		3790437119CC67FC00409D34 /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "Pods/build/Pinboard Debug-iphoneos/libPods.a"; sourceTree = "<group>"; };
 		3790437619CC97AD00409D34 /* PPShareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPShareViewController.h; sourceTree = "<group>"; };
 		3790437719CC97AD00409D34 /* PPShareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPShareViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		37919F1C16091DF5007708EF /* PPLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPLoginViewController.h; sourceTree = "<group>"; };
-		37919F1D16091DF5007708EF /* PPLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPLoginViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		37919F1C16091DF5007708EF /* PPPinboardLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPPinboardLoginViewController.h; sourceTree = "<group>"; };
+		37919F1D16091DF5007708EF /* PPPinboardLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPPinboardLoginViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37919F1F16092198007708EF /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		3794AE9F176D33D100250909 /* PSPDFUIKitMainThreadGuard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSPDFUIKitMainThreadGuard.m; sourceTree = "<group>"; };
 		3798AD7818766DA3002D684B /* Delete-Button-Light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Delete-Button-Light.png"; path = "Assets/Delete-Button-Light.png"; sourceTree = "<group>"; };
@@ -772,6 +777,12 @@
 		AFF80364CC968E11C98B0720 /* Pods.pinboard app store debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods.pinboard app store debug.xcconfig"; path = "Pods/Target Support Files/Pods/Pods.pinboard app store debug.xcconfig"; sourceTree = "<group>"; };
 		B25462D5C303447F99AE829B /* libPods-Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B63698711B0FCC2700F15D42 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
+		B6E304141B3DAAF700135CF1 /* PPLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPLoginViewController.h; sourceTree = "<group>"; };
+		B6E304151B3DAAF700135CF1 /* PPLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPLoginViewController.m; sourceTree = "<group>"; };
+		B6E304181B3DC95500135CF1 /* pinboard-logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pinboard-logo@2x.png"; sourceTree = "<group>"; };
+		B6E304191B3DC95500135CF1 /* pinboard.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = pinboard.jpeg; sourceTree = "<group>"; };
+		B6E3041A1B3DC95500135CF1 /* pushpin-cloud-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pushpin-cloud-logo.png"; sourceTree = "<group>"; };
+		B6E3041B1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pushpin-cloud-logo@2x.png"; sourceTree = "<group>"; };
 		C0D4BA105B9CC5CE33687390 /* Pods-DebugPods.delicious beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DebugPods.delicious beta.xcconfig"; path = "Pods/Target Support Files/Pods-DebugPods/Pods-DebugPods.delicious beta.xcconfig"; sourceTree = "<group>"; };
 		DC1363CDE8C539E824ED2832 /* Pods-DebugPods.pinboard app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DebugPods.pinboard app store.xcconfig"; path = "Pods/Target Support Files/Pods-DebugPods/Pods-DebugPods.pinboard app store.xcconfig"; sourceTree = "<group>"; };
 		E5C7E8CC60BD2B4D3B442364 /* Pods.pinboard beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods.pinboard beta.xcconfig"; path = "Pods/Target Support Files/Pods/Pods.pinboard beta.xcconfig"; sourceTree = "<group>"; };
@@ -1066,8 +1077,8 @@
 				375A638916C0CB0800665CA1 /* PPFeedListViewController.m */,
 				3733251D16E155A2002E2AB0 /* PPGenericPostViewController.h */,
 				3733251E16E155A2002E2AB0 /* PPGenericPostViewController.m */,
-				37919F1C16091DF5007708EF /* PPLoginViewController.h */,
-				37919F1D16091DF5007708EF /* PPLoginViewController.m */,
+				B6E304141B3DAAF700135CF1 /* PPLoginViewController.h */,
+				B6E304151B3DAAF700135CF1 /* PPLoginViewController.m */,
 				37C012B71765423900938D81 /* PPMultipleEditViewController.h */,
 				37C012B81765423A00938D81 /* PPMultipleEditViewController.m */,
 				37F91F3C177AB1D500683D46 /* PPNavigationController.h */,
@@ -1078,6 +1089,8 @@
 				3762CAC61A55A59600301C97 /* PPOfflineDownloadViewController.m */,
 				37EE01761A093F2B00A03F3B /* PPOfflineSettingsViewController.h */,
 				37EE01771A093F2B00A03F3B /* PPOfflineSettingsViewController.m */,
+				37919F1C16091DF5007708EF /* PPPinboardLoginViewController.h */,
+				37919F1D16091DF5007708EF /* PPPinboardLoginViewController.m */,
 				37CBB7511881F31C000F9C36 /* PPPlainTextViewController.h */,
 				37CBB7521881F31C000F9C36 /* PPPlainTextViewController.m */,
 				37A2B4A0199E6D8D005B7671 /* PPReaderSettingsViewController.h */,
@@ -1508,6 +1521,10 @@
 				376C9E8317488B8500A62CB5 /* NotificationBackground@2x.png */,
 				376C9E8617488F2300A62CB5 /* NotificationX.png */,
 				376C9E8717488F2300A62CB5 /* NotificationX@2x.png */,
+				B6E304181B3DC95500135CF1 /* pinboard-logo@2x.png */,
+				B6E304191B3DC95500135CF1 /* pinboard.jpeg */,
+				B6E3041A1B3DC95500135CF1 /* pushpin-cloud-logo.png */,
+				B6E3041B1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png */,
 				37BC1BD7188642F90022020A /* readability.js */,
 				37BC1BD3188641D80022020A /* readabilityInitializer.js */,
 				370BBE011901ABBB004FA557 /* safari-callback.html */,
@@ -2121,6 +2138,10 @@
 				3747C72819CCDB1F00FAD488 /* NotificationBackground@2x.png in Resources */,
 				3747C72919CCDB1F00FAD488 /* NotificationX.png in Resources */,
 				3747C72A19CCDB1F00FAD488 /* NotificationX@2x.png in Resources */,
+				B6E3041C1B3DC95500135CF1 /* pinboard-logo@2x.png in Resources */,
+				B6E3041D1B3DC95500135CF1 /* pinboard.jpeg in Resources */,
+				B6E3041E1B3DC95500135CF1 /* pushpin-cloud-logo.png in Resources */,
+				B6E3041F1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png in Resources */,
 				3747C72B19CCDB1F00FAD488 /* readability.css in Resources */,
 				3747C72C19CCDB1F00FAD488 /* readability.js in Resources */,
 				3747C72D19CCDB1F00FAD488 /* readabilityInitializer.js in Resources */,
@@ -2316,7 +2337,7 @@
 				3790428119CBDCDF00409D34 /* PPFeedListViewController.m in Sources */,
 				3790428219CBDCDF00409D34 /* PPGenericPostViewController.m in Sources */,
 				3790428319CBDCDF00409D34 /* PPLoadingView.m in Sources */,
-				3790428419CBDCDF00409D34 /* PPLoginViewController.m in Sources */,
+				B6E304171B3DB04000135CF1 /* PPLoginViewController.m in Sources */,
 				3790428519CBDCDF00409D34 /* PPMobilizerUtility.m in Sources */,
 				3790428619CBDCDF00409D34 /* PPMultipleEditViewController.m in Sources */,
 				3790428719CBDCDF00409D34 /* PPNavigationBar.m in Sources */,
@@ -2327,6 +2348,7 @@
 				37EE01791A093F2B00A03F3B /* PPOfflineSettingsViewController.m in Sources */,
 				3790428B19CBDCDF00409D34 /* PPPinboardDataSource.m in Sources */,
 				3790428C19CBDCDF00409D34 /* PPPinboardFeedDataSource.m in Sources */,
+				3790428419CBDCDF00409D34 /* PPPinboardLoginViewController.m in Sources */,
 				3790428D19CBDCDF00409D34 /* PPPinboardMetadataCache.m in Sources */,
 				3790428E19CBDCDF00409D34 /* PPPinboardNotesDataSource.m in Sources */,
 				3790428F19CBDCDF00409D34 /* PPPlainTextViewController.m in Sources */,
