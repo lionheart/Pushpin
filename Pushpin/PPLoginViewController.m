@@ -39,7 +39,7 @@ static NSString * const CellIdentifier = @"CellIdentifier";
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    [self.tableView registerClass:[LHSTableViewCellDefault class] forCellReuseIdentifier:CellIdentifier];
+    [self.tableView registerClass:[LHSTableViewCellSubtitle class] forCellReuseIdentifier:CellIdentifier];
 
     NSDictionary *views = @{@"top": self.topLayoutGuide,
                             @"table": self.tableView};
@@ -100,13 +100,14 @@ static NSString * const CellIdentifier = @"CellIdentifier";
     switch ((PPLoginServiceRowType)indexPath.row) {
         case PPLoginPinboardRow:
             cell.textLabel.text = @"Pinboard.in";
+            cell.imageView.image = [UIImage imageNamed:@"pinboard-logo"];
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             break;
 
         case PPLoginPushpinRow:
             cell.textLabel.text = @"Pushpin Cloud";
-            cell.textLabel.textColor = [UIColor lightGrayColor];
-            cell.userInteractionEnabled = NO;
+            cell.detailTextLabel.text = @"Coming Soon. Click here to sign up!";
+            cell.imageView.image = [UIImage imageNamed:@"pushpin-cloud-logo"];
             break;
     }
 
@@ -115,10 +116,6 @@ static NSString * const CellIdentifier = @"CellIdentifier";
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     return @"Choose your service";
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-    return @"Tap to sign up";
 }
 
 #pragma mark - UITableViewDelegate

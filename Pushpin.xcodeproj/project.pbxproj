@@ -292,6 +292,10 @@
 		76AA6F3724024611A19DE0CD /* libPods-DebugPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37DB838287BA4DD2A778795D /* libPods-DebugPods.a */; };
 		B63698721B0FCC2700F15D42 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B63698711B0FCC2700F15D42 /* Launch Screen.xib */; };
 		B6E304171B3DB04000135CF1 /* PPLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E304151B3DAAF700135CF1 /* PPLoginViewController.m */; };
+		B6E3041C1B3DC95500135CF1 /* pinboard-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E304181B3DC95500135CF1 /* pinboard-logo@2x.png */; };
+		B6E3041D1B3DC95500135CF1 /* pinboard.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = B6E304191B3DC95500135CF1 /* pinboard.jpeg */; };
+		B6E3041E1B3DC95500135CF1 /* pushpin-cloud-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E3041A1B3DC95500135CF1 /* pushpin-cloud-logo.png */; };
+		B6E3041F1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E3041B1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png */; };
 		E804950E180EF6D700C5CA8B /* webview-helpers.js in Resources */ = {isa = PBXBuildFile; fileRef = E804950C180EF20800C5CA8B /* webview-helpers.js */; };
 		E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E804950F18103DC700C5CA8B /* SafariServices.framework */; };
 		E80EEF6E184E9AA000979AA3 /* toolbar-checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF68184E9AA000979AA3 /* toolbar-checkmark.png */; };
@@ -775,6 +779,10 @@
 		B63698711B0FCC2700F15D42 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		B6E304141B3DAAF700135CF1 /* PPLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPLoginViewController.h; sourceTree = "<group>"; };
 		B6E304151B3DAAF700135CF1 /* PPLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPLoginViewController.m; sourceTree = "<group>"; };
+		B6E304181B3DC95500135CF1 /* pinboard-logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pinboard-logo@2x.png"; sourceTree = "<group>"; };
+		B6E304191B3DC95500135CF1 /* pinboard.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = pinboard.jpeg; sourceTree = "<group>"; };
+		B6E3041A1B3DC95500135CF1 /* pushpin-cloud-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pushpin-cloud-logo.png"; sourceTree = "<group>"; };
+		B6E3041B1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pushpin-cloud-logo@2x.png"; sourceTree = "<group>"; };
 		C0D4BA105B9CC5CE33687390 /* Pods-DebugPods.delicious beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DebugPods.delicious beta.xcconfig"; path = "Pods/Target Support Files/Pods-DebugPods/Pods-DebugPods.delicious beta.xcconfig"; sourceTree = "<group>"; };
 		DC1363CDE8C539E824ED2832 /* Pods-DebugPods.pinboard app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DebugPods.pinboard app store.xcconfig"; path = "Pods/Target Support Files/Pods-DebugPods/Pods-DebugPods.pinboard app store.xcconfig"; sourceTree = "<group>"; };
 		E5C7E8CC60BD2B4D3B442364 /* Pods.pinboard beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods.pinboard beta.xcconfig"; path = "Pods/Target Support Files/Pods/Pods.pinboard beta.xcconfig"; sourceTree = "<group>"; };
@@ -1513,6 +1521,10 @@
 				376C9E8317488B8500A62CB5 /* NotificationBackground@2x.png */,
 				376C9E8617488F2300A62CB5 /* NotificationX.png */,
 				376C9E8717488F2300A62CB5 /* NotificationX@2x.png */,
+				B6E304181B3DC95500135CF1 /* pinboard-logo@2x.png */,
+				B6E304191B3DC95500135CF1 /* pinboard.jpeg */,
+				B6E3041A1B3DC95500135CF1 /* pushpin-cloud-logo.png */,
+				B6E3041B1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png */,
 				37BC1BD7188642F90022020A /* readability.js */,
 				37BC1BD3188641D80022020A /* readabilityInitializer.js */,
 				370BBE011901ABBB004FA557 /* safari-callback.html */,
@@ -2126,6 +2138,10 @@
 				3747C72819CCDB1F00FAD488 /* NotificationBackground@2x.png in Resources */,
 				3747C72919CCDB1F00FAD488 /* NotificationX.png in Resources */,
 				3747C72A19CCDB1F00FAD488 /* NotificationX@2x.png in Resources */,
+				B6E3041C1B3DC95500135CF1 /* pinboard-logo@2x.png in Resources */,
+				B6E3041D1B3DC95500135CF1 /* pinboard.jpeg in Resources */,
+				B6E3041E1B3DC95500135CF1 /* pushpin-cloud-logo.png in Resources */,
+				B6E3041F1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png in Resources */,
 				3747C72B19CCDB1F00FAD488 /* readability.css in Resources */,
 				3747C72C19CCDB1F00FAD488 /* readability.js in Resources */,
 				3747C72D19CCDB1F00FAD488 /* readabilityInitializer.js in Resources */,
