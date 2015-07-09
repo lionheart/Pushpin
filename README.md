@@ -9,6 +9,14 @@ $ git_config/configure.sh
 
 The above command will also ensure that any Git commands stay in sync if they're updated.
 
+There are also a few git submodules you're going to need. To set them up, just run:
+
+```
+$ git submodule init
+$ git submodule update
+$ git submodule -q foreach git pull -q origin master
+```
+
 Updating Screenshots
 ====================
 
