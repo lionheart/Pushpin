@@ -165,9 +165,6 @@
 		378DA45F1633B4B800831134 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 378DA45E1633B4B700831134 /* MessageUI.framework */; };
 		3790425119CBD49A00409D34 /* Pushpin.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 3790424619CBD49A00409D34 /* Pushpin.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3790426219CBDCDF00409D34 /* BookmarkletInstallationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */; };
-		3790426419CBDCDF00409D34 /* FluidTableviewBehaviorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E84A8D9417FB1BCB003B4F50 /* FluidTableviewBehaviorManager.m */; };
-		3790426519CBDCDF00409D34 /* FluidTableviewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E84A8D9617FB1BCB003B4F50 /* FluidTableviewCell.m */; };
-		3790426619CBDCDF00409D34 /* FluidTableviewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = E84A8D9817FB1BCB003B4F50 /* FluidTableviewFlowLayout.m */; };
 		3790426719CBDCDF00409D34 /* LHSBooleanTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 37171A2E18B1714E007FF164 /* LHSBooleanTableViewCell.m */; };
 		3790426819CBDCDF00409D34 /* LHSFontSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F6D7E819A1111E004016DB /* LHSFontSelectionViewController.m */; };
 		3790426919CBDCDF00409D34 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEB9E15745488003F2B77 /* main.m */; };
@@ -815,12 +812,6 @@
 		E80EEF92185F5BCF00979AA3 /* badge-favorite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "badge-favorite@2x.png"; path = "Assets/badge-favorite@2x.png"; sourceTree = "<group>"; };
 		E80EEF93185F5BCF00979AA3 /* badge-private.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "badge-private.png"; path = "Assets/badge-private.png"; sourceTree = "<group>"; };
 		E80EEF94185F5BCF00979AA3 /* badge-private@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "badge-private@2x.png"; path = "Assets/badge-private@2x.png"; sourceTree = "<group>"; };
-		E84A8D9317FB1BCB003B4F50 /* FluidTableviewBehaviorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FluidTableviewBehaviorManager.h; sourceTree = "<group>"; };
-		E84A8D9417FB1BCB003B4F50 /* FluidTableviewBehaviorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FluidTableviewBehaviorManager.m; sourceTree = "<group>"; };
-		E84A8D9517FB1BCB003B4F50 /* FluidTableviewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FluidTableviewCell.h; sourceTree = "<group>"; };
-		E84A8D9617FB1BCB003B4F50 /* FluidTableviewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FluidTableviewCell.m; sourceTree = "<group>"; };
-		E84A8D9717FB1BCB003B4F50 /* FluidTableviewFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FluidTableviewFlowLayout.h; sourceTree = "<group>"; };
-		E84A8D9817FB1BCB003B4F50 /* FluidTableviewFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FluidTableviewFlowLayout.m; sourceTree = "<group>"; };
 		E8734239180DAC8800CF9E5F /* activity-browser-chrome.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "activity-browser-chrome.png"; path = "Assets/activity-browser-chrome.png"; sourceTree = "<group>"; };
 		E873423A180DAC8800CF9E5F /* activity-browser-chrome@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "activity-browser-chrome@2x.png"; path = "Assets/activity-browser-chrome@2x.png"; sourceTree = "<group>"; };
 		E89001F4183EA43E00C1F969 /* PPBadgeWrapperView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBadgeWrapperView.h; sourceTree = "<group>"; };
@@ -960,7 +951,6 @@
 		37076D41158AD0B1002566CD /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
-				E84A8D9217FB1BCB003B4F50 /* FluidTableview */,
 				37F6D7E519A1111E004016DB /* LHSFontSelectionViewController */,
 				37D2351C16B8DDD0007541DC /* NSString+URLEncoding2.h */,
 				37D2351D16B8DDD0007541DC /* NSString+URLEncoding2.m */,
@@ -1541,20 +1531,6 @@
 				E804950C180EF20800C5CA8B /* webview-helpers.js */,
 			);
 			name = Assets;
-			sourceTree = "<group>";
-		};
-		E84A8D9217FB1BCB003B4F50 /* FluidTableview */ = {
-			isa = PBXGroup;
-			children = (
-				E84A8D9317FB1BCB003B4F50 /* FluidTableviewBehaviorManager.h */,
-				E84A8D9417FB1BCB003B4F50 /* FluidTableviewBehaviorManager.m */,
-				E84A8D9517FB1BCB003B4F50 /* FluidTableviewCell.h */,
-				E84A8D9617FB1BCB003B4F50 /* FluidTableviewCell.m */,
-				E84A8D9717FB1BCB003B4F50 /* FluidTableviewFlowLayout.h */,
-				E84A8D9817FB1BCB003B4F50 /* FluidTableviewFlowLayout.m */,
-			);
-			name = FluidTableview;
-			path = Vendor/FluidTableview;
 			sourceTree = "<group>";
 		};
 		E8734228180DAA4B00CF9E5F /* Activities */ = {
@@ -2308,9 +2284,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				3790426219CBDCDF00409D34 /* BookmarkletInstallationViewController.m in Sources */,
-				3790426419CBDCDF00409D34 /* FluidTableviewBehaviorManager.m in Sources */,
-				3790426519CBDCDF00409D34 /* FluidTableviewCell.m in Sources */,
-				3790426619CBDCDF00409D34 /* FluidTableviewFlowLayout.m in Sources */,
 				3790426719CBDCDF00409D34 /* LHSBooleanTableViewCell.m in Sources */,
 				3790426819CBDCDF00409D34 /* LHSFontSelectionViewController.m in Sources */,
 				3790426919CBDCDF00409D34 /* main.m in Sources */,

@@ -1,0 +1,51 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "CA1D079377A2BD66346D3AB72C980A5DB6CE1C06",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "130FD3C47D2A93A5E97A58123B57C5301A9BE388" : 0,
+    "4E6E450F604063387457184D53D2497C56CE77E7" : 0,
+    "E6859DA0812311656A43A32F3151A87A21D7B5A4" : 0,
+    "9EE95AE564A8FA1EB03FB1B2D3BCDFB5090990E4" : 0,
+    "CA1D079377A2BD66346D3AB72C980A5DB6CE1C06" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "495CE4D2-4A2E-42CF-B54A-4D44856B6E85",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "130FD3C47D2A93A5E97A58123B57C5301A9BE388" : "PushpinVendor\/LHSDiigo",
+    "4E6E450F604063387457184D53D2497C56CE77E7" : "PushpinVendor\/ASPinboard",
+    "E6859DA0812311656A43A32F3151A87A21D7B5A4" : "PushpinVendor\/LHSDelicious",
+    "9EE95AE564A8FA1EB03FB1B2D3BCDFB5090990E4" : "PushpinLocalizations",
+    "CA1D079377A2BD66346D3AB72C980A5DB6CE1C06" : "Pushpin"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Pushpin",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 203,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Pushpin.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:lionheart\/LHSDiigo",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "130FD3C47D2A93A5E97A58123B57C5301A9BE388"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:aurorasoftware\/ASPinboard.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "4E6E450F604063387457184D53D2497C56CE77E7"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:aurorasoftware\/pushpin-localizations.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "9EE95AE564A8FA1EB03FB1B2D3BCDFB5090990E4"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:lionheart\/Pushpin.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "CA1D079377A2BD66346D3AB72C980A5DB6CE1C06"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:lionheart\/LHSDelicious",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "E6859DA0812311656A43A32F3151A87A21D7B5A4"
+    }
+  ]
+}
