@@ -1,2 +1,0 @@
-PODS_TEXTEXPANDER_FRAMEWORK_SEARCH_PATHS = $(PODS_ROOT)/TextExpander
-PODS_TEXTEXPANDER_OTHER_LDFLAGS = -framework "AudioToolbox" -framework "EventKit" -framework "TextExpander"
