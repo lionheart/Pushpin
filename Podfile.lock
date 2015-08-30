@@ -23,7 +23,10 @@ PODS:
     - hpple (~> 0.2.0)
   - BugshotKit (0.1.0)
   - ChimpKit (3.1.1)
-  - CrashlyticsFramework (2.2.5.2)
+  - Crashlytics (3.1.1)
+  - Fabric (1.4.0):
+    - Fabric/Base (= 1.4.0)
+  - Fabric/Base (1.4.0)
   - FMDB (2.4):
     - FMDB/standard (= 2.4)
   - FMDB/common (2.4)
@@ -67,7 +70,8 @@ DEPENDENCIES:
   - ASPinboard (from `Vendor/ASPinboard`)
   - BugshotKit (= 0.1.0)
   - ChimpKit
-  - CrashlyticsFramework (= 2.2.5.2)
+  - Crashlytics
+  - Fabric
   - FMDB (= 2.4)
   - HTMLParser (from `Specs/HTMLParser.podspec`)
   - KeychainItemWrapper (= 1.2)
@@ -99,13 +103,22 @@ EXTERNAL SOURCES:
   LHSFMDatabaseAdditions:
     :podspec: Specs/LHSFMDatabaseAdditions.podspec
 
+CHECKOUT OPTIONS:
+  HTMLParser:
+    :commit: 8d417e2d0233ec0276db9e0f47df5b99a4e881dd
+    :git: https://github.com/zootreeves/Objective-C-HMTL-Parser
+  LHSFMDatabaseAdditions:
+    :commit: b8abb5e9303b0b7c8a309c2f2d706bb0a7534bf5
+    :git: https://github.com/lionheart/LHSFMDatabaseAdditions.git
+
 SPEC CHECKSUMS:
   1PasswordExtension: 26d590105f83349cd4fe362921534f8244b8e67b
   AFNetworking: cede923cb26fba5e6309616e91fa33fe2e4a1b7b
   ASPinboard: 80ace27c6db2ac7681d2851b6ba9460d68243bd7
   BugshotKit: 58fbc895fd67afb4c6ee3559ce013a4b4db8e59c
   ChimpKit: d020126089544daa349397a91f1489a3f271b791
-  CrashlyticsFramework: c4476108c87948b72835a5a26db90e8d6249da62
+  Crashlytics: 39ab395565bc03c29cdecd2b9d103ebf30930c10
+  Fabric: 6d1d1c1eaf7ebc76fc3307e2c0259456411baf26
   FMDB: d274d9ff773415735022ac57bfba9f6002f9fed8
   hpple: 3b765f96fc2cd56ad1a49aef6f7be5cb2aa64b57
   HTMLParser: c33a7a9ddc1122b28ff7f38a65cf505ad76455e5
@@ -127,4 +140,4 @@ SPEC CHECKSUMS:
   XMLDictionary: f9f51601ba76678b594ab485f2b00ec1fed23724
   YHRoundBorderedButton: 2180f04094db264cace8db88eae977d78a3b4633
 
-COCOAPODS: 0.36.3
+COCOAPODS: 0.38.2

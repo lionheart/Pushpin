@@ -20,13 +20,15 @@ pod 'TextExpander', '3.0.5'
 pod 'MWFeedParser', '1.0.1'
 pod 'ASPinboard', :local => 'Vendor/ASPinboard'
 pod 'OpenInChrome', '0.0.1'
-pod 'CrashlyticsFramework', '2.2.5.2'
 pod 'AFNetworking', '2.2.0'
 pod 'LHSKeyboardAdjusting', '0.0.1'
 pod 'RNCryptor', '2.2'
 pod '1PasswordExtension', '1.1'
 pod 'YHRoundBorderedButton', '0.1.0'
 pod 'ChimpKit'
+
+pod 'Fabric'
+pod 'Crashlytics'
 
 target 'DebugPods', :exclusive => true do
   pod 'BugshotKit', '0.1.0'
