@@ -19,7 +19,7 @@ configs:
       code_sign_identity: ""
     pinboard_beta:
       info: "Pushpin/Beta-Info.plist"
-      profile: "b0b07efc-f391-43c5-98a3-c34aa5c2cd3e"
+      profile: "bb2aa8a0-2ee3-4c17-88c0-70e31e1e8a97"
       entitlements: "Pushpin/Beta.entitlements"
       code_sign_identity: ""
     delicious_app_store:
@@ -55,7 +55,7 @@ configs:
       code_sign_identity: ""
     pinboard_beta:
       info: "Read Later Extension/Beta-Info.plist"
-      profile: "cadb8c0c-e002-4125-842f-08b58c4ba60e"
+      profile: "134759b9-5d5f-412a-a292-c5bad5fbb77a"
       entitlements: "Pinboard/Share-Beta.entitlements"
       code_sign_identity: ""
     delicious_app_store:
@@ -91,7 +91,7 @@ configs:
       code_sign_identity: ""
     pinboard_beta:
       info: "Pinboard/Info-Beta.plist"
-      profile: "66ceb745-aacb-49fd-af46-42ca9b4d5bd6"
+      profile: "66962d6b-1872-471f-9dab-077db895d09b"
       entitlements: "Pinboard/Share-Beta.entitlements"
       code_sign_identity: ""
     delicious_app_store:
