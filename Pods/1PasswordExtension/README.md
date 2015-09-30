@@ -4,7 +4,7 @@ Welcome! With just a few lines of code, your app can add 1Password support, enab
 
 1. Access their 1Password Logins to automatically fill your login page.
 2. Use the Strong Password Generator to create unique passwords during registration, and save the new Login within 1Password.
-3. Quickly fill 1Password Logins directly into web views.
+3. Quickly fill 1Password Logins, Credit Cards and Identities directly into web views.
 
 Empowering your users to use strong, unique passwords has never been easier. Let's get started!
 
@@ -15,14 +15,14 @@ Empowering your users to use strong, unique passwords has never been easier. Let
 
 ## Just Give Me the Code (TL;DR)
 
-You might be looking at this 13 KB README and think integrating with 1Password is very complicated. Nothing could be further from the truth!
+You might be looking at this 22 KB README and think integrating with 1Password is very complicated. Nothing could be further from the truth!
 
 If you're the type that just wants the code, here it is:
 
 * [OnePasswordExtension.h](https://raw.githubusercontent.com/AgileBits/onepassword-app-extension/master/OnePasswordExtension.h?token=110676__eyJzY29wZSI6IlJhd0Jsb2I6QWdpbGVCaXRzL29uZXBhc3N3b3JkLWFwcC1leHRlbnNpb24vbWFzdGVyL09uZVBhc3N3b3JkRXh0ZW5zaW9uLmgiLCJleHBpcmVzIjoxNDA3Mjg0MTMwfQ%3D%3D--3867c64b22a5923bead5948001ce2ff048892799)
 * [OnePasswordExtension.m](https://raw.githubusercontent.com/AgileBits/onepassword-app-extension/master/OnePasswordExtension.m?token=110676__eyJzY29wZSI6IlJhd0Jsb2I6QWdpbGVCaXRzL29uZXBhc3N3b3JkLWFwcC1leHRlbnNpb24vbWFzdGVyL09uZVBhc3N3b3JkRXh0ZW5zaW9uLm0iLCJleHBpcmVzIjoxNDA3Mjg0MTA5fQ%3D%3D--05c6ea9c73d0afb9f30e53a31d81df00b7c02077)
 
-Simply include these two files in your project, add a button with a [1Password login image](https://github.com/AgileBits/onepassword-app-extension/tree/master/1Password.xcassets) on it to your view, set the button's action to call the appropriate OnePasswordExtension method, and you're all set!
+Simply include these two files in your project, add a button with a [1Password login image](https://github.com/AgileBits/onepassword-app-extension/tree/master/1Password.xcassets) on it to your view, set the button's action to call the appropriate `OnePasswordExtension` method, and you're all set!
 
 
 ## Running the Sample Apps
@@ -32,15 +32,17 @@ Adding 1Password support to your app is easy. To demonstrate how it works, we ha
 
 ### Step 1: Download the Source Code and Sample Apps
 
-To get started, download the 1Password Extension project from https://github.com/AgileBits/onepassword-app-extension/archive/master.zip, or [clone it from GitHub](https://github.com/AgileBits/onepassword-app-extension).
+To get started, download the [zip version](https://github.com/AgileBits/onepassword-app-extension/archive/master.zip) of the1Password App Extension API project or [clone it from GitHub](https://github.com/AgileBits/onepassword-app-extension).
 
 Inside the downloaded folder, you'll find the resources needed to integrate with 1Password, such as images and sample code. The sample code includes two apps from ACME Corporation: one that demonstrates how to integrate the 1Password Login and Registration features, as well as a web browser that showcases the web view Filling feature.
 
-The 1Password extension is also available via cocoapods, simply add `pod '1PasswordExtension', '~> 1.0.0'` to your Podfile, run `pod install` from your project directory and you're ready to go.
+The 1Password App Extension API is also available via CocoaPods, simply add `pod '1PasswordExtension', '~> 1.6.1'` (for the latest stable release) or `pod '1PasswordExtension', :git => 'https://github.com/AgileBits/onepassword-app-extension.git', :branch => 'master'` (for the latest nightly) to your Podfile, run `pod install` from your project directory and you're ready to go.
+
+The 1Password App Extension API is available via Carthage as well. Simply add `github "AgileBits/onepassword-extension" "add-framework-support"` to your Cartfile, then run `carthage update` and add it to your project.
 
 ### Step 2: Install the Latest versions of 1Password & Xcode
 
-The sample project depends upon having the latest version of Xcode 6, as well as the latest version of 1Password installed on your iOS device.
+The sample project depends upon having the latest version of Xcode, as well as the latest version of 1Password installed on your iOS device.
 
 <!---
 If you are developing for OS X, you can enable betas within the 1Password > Preferences > Updates window (as shown [here](i.agilebits.com/Preferences_197C0C6B.png)) and enabling the _Include beta builds_ checkbox. Mac App Store users should [download the web store version](https://agilebits.com/downloads) in order to enable betas.
@@ -53,13 +55,13 @@ Let us know that you're an app developer and planning to add 1Password support b
 
 ### Step 3: Run the Apps
 
-Open `1Password Extension Demos` Xcode workspace from within the `Demos` folder with Xcode 6, and then select the `ACME` target and set it to run your iOS device:
+Open `1Password Extension Demos` Xcode workspace from within the `Demos` folder with Xcode, and then select the `ACME` target and set it to run your iOS device:
 
 <img src="http://i.agilebits.com/dt/Menubar_and_SignInViewController_m_and_README_md_—_onepassword-extension__git__master__197DEA31.png" width="342" height="150">
 
 Since you will not have 1Password running within your iOS Simulator, it is important that you run on your device.
 
-If all goes well, The ACME app will launch and you'll be able to test the 1Password App Extension. The first time you attempt to access the 1Password extension you will need to enable it by tapping on the _More_ button in the activity sheet and then enable the _1Password_ item in the _Activities_ list. If the 1Password icons are missing, it likely means you do not have 1Password installed.
+If all goes well, The ACME app will launch and you'll be able to test the 1Password App Extension. The first time you attempt to access the 1Password extension you will need to enable it by tapping on the _More_ button in the share sheet and then enable the _1Password_ item in the _Activities_ list. If the 1Password icons are missing, it likely means you do not have 1Password installed.
 
 Back in Xcode you can change the scheme to ACME Browser to test the web view filling feature.
 
@@ -78,7 +80,7 @@ Add the `OnePasswordExtension.h`, `OnePasswordExtension.m`, and `1Password.xcass
 
 ### Use Case #1: Native App Login
 
-In this use case we'll learn how to enable your existing users to fill their credentials into your native app's login form. If your application is using a web view to login (i.e. OAuth), you'll want to follow the web view integration steps in Use Case #3.
+In this use case we'll learn how to enable your existing users to fill their credentials into your native app's login form. If your application is using a web view to login (i.e. OAuth), you'll want to follow the web view integration steps in [Use Case #4: Web View Filling](https://github.com/AgileBits/onepassword-app-extension#use-case-4-web-view-filling-support).
 
 The first step is to add a UIButton to your login page. Use an existing 1Password image from the _1Password.xcassets_ catalog so users recognize the button.
 
@@ -93,29 +95,33 @@ You'll need to hide this button (or educate users on the benefits of strong, uni
 
 Note that `isAppExtensionAvailable` looks to see if any app is installed that supports the generic `org-appextension-feature-password-management` feature. Any application that supports password management actions can be used.
 
+**Important:** `isAppExtensionAvailable` uses `- [UIApplication canOpenURL:]`. Since iOS 9 it is recommended that you add the custom URL scheme, `org-appextension-feature-password-management`, in your target's `info.plist` as follows:
+
+<img src="https://www.evernote.com/l/AVQvX8E3k-RFGaA-k2VnquPhoPI5V-zZby8B/image.png" width="640">
+
+For more information about URL schemes in iOS 9, please refer to the [Privacy and Your Apps session](https://developer.apple.com/videos/wwdc/2015/?id=703) from WWDC 2015 at around the the 9th minute mark.
+
 Next we need to wire up the action for this button to this method in your UIViewController:
 
 ```objective-c
 - (IBAction)findLoginFrom1Password:(id)sender {
-	__weak typeof (self) miniMe = self;
-	[[OnePasswordExtension sharedExtension] findLoginForURLString:@"https://www.acme.com" forViewController:self sender:sender completion:^(NSDictionary *loginDict, NSError *error) {
-		if (!loginDict) {
+	[[OnePasswordExtension sharedExtension] findLoginForURLString:@"https://www.acme.com" forViewController:self sender:sender completion:^(NSDictionary *loginDictionary, NSError *error) {
+		if (loginDictionary.count == 0) {
 			if (error.code != AppExtensionErrorCodeCancelledByUser) {
 				NSLog(@"Error invoking 1Password App Extension for find login: %@", error);
 			}
 			return;
 		}
 		
-		__strong typeof(self) strongMe = miniMe;
-		strongMe.usernameTextField.text = loginDict[AppExtensionUsernameKey];
-		strongMe.passwordTextField.text = loginDict[AppExtensionPasswordKey];
+		self.usernameTextField.text = loginDictionary[AppExtensionUsernameKey];
+		self.passwordTextField.text = loginDictionary[AppExtensionPasswordKey];
 	}];
 }
 ```
 
-Aside from the [weak/strong self dance](http://dhoerl.wordpress.com/2013/04/23/i-finally-figured-out-weakself-and-strongself/), this code is pretty straight forward:
+This code is pretty straight forward:
 
-1. Provide a `URLString` that uniquely identifies your service. For example, if your app required a Twitter login, you would pass in `@"https://twitter.com"`. See _Best Practices_ for details.
+1. Provide a `URLString` that uniquely identifies your service. For example, if your app required a Twitter login, you would pass in `@"https://twitter.com"`. See [Best Practices](https://github.com/AgileBits/onepassword-app-extension#best-practices) for details.
 2. Pass in the `UIViewController` that you want the share sheet to be presented upon.
 3. Provide a completion block that will be called when the user finishes their selection. This block is guaranteed to be called on the main thread.
 4. Extract the needed information from the login dictionary and update your UI elements.
@@ -130,41 +136,52 @@ Adding 1Password to your registration screen is very similar to adding 1Password
 ```objective-c
 - (IBAction)saveLoginTo1Password:(id)sender {
 	NSDictionary *newLoginDetails = @{
-		AppExtensionTitleKey: @"ACME",
-		AppExtensionUsernameKey: self.usernameTextField.text ? : @"",
-		AppExtensionPasswordKey: self.passwordTextField.text ? : @"",
-		AppExtensionNotesKey: @"Saved with the ACME app",
-		AppExtensionSectionTitleKey: @"ACME Browser",
-		AppExtensionFieldsKey: @{
-			  @"firstname" : self.firstnameTextField.text ? : @"",
-			  @"lastname" : self.lastnameTextField.text ? : @""
-			  // Add as many string fields as you please.
-		}
-	};
-	
-	// Password generation options are optional, but are very handy in case you have strict rules about password lengths
+									  AppExtensionTitleKey: @"ACME",
+									  AppExtensionUsernameKey: self.usernameTextField.text ? : @"",
+									  AppExtensionPasswordKey: self.passwordTextField.text ? : @"",
+									  AppExtensionNotesKey: @"Saved with the ACME app",
+									  AppExtensionSectionTitleKey: @"ACME Browser",
+									  AppExtensionFieldsKey: @{
+											  @"firstname" : self.firstnameTextField.text ? : @"",
+											  @"lastname" : self.lastnameTextField.text ? : @""
+											  // Add as many string fields as you please.
+											  }
+									  };
+
+	// The password generation options are optional, but are very handy in case you have strict rules about password lengths, symbols and digits.
 	NSDictionary *passwordGenerationOptions = @{
-		AppExtensionGeneratedPasswordMinLengthKey: @(6),
-		AppExtensionGeneratedPasswordMaxLengthKey: @(50)
-	};
+												// The minimum password length can be 4 or more.
+												AppExtensionGeneratedPasswordMinLengthKey: @(8),
+												
+												// The maximum password length can be 50 or less.
+												AppExtensionGeneratedPasswordMaxLengthKey: @(30),
 
-	__weak typeof (self) miniMe = self;
+												// If YES, the 1Password will guarantee that the generated password will contain at least one digit (number between 0 and 9). Passing NO will not exclude digits from the generated password.
+												AppExtensionGeneratedPasswordRequireDigitsKey: @(YES),
 
-	[[OnePasswordExtension sharedExtension] storeLoginForURLString:@"https://www.acme.com" loginDetails:newLoginDetails passwordGenerationOptions:passwordGenerationOptions forViewController:self sender:sender completion:^(NSDictionary *loginDict, NSError *error) {
+												// If YES, the 1Password will guarantee that the generated password will contain at least one symbol (See the list bellow). Passing NO with will exclude symbols from the generated password.
+												AppExtensionGeneratedPasswordRequireSymbolsKey: @(YES),
 
-		if (!loginDict) {
+												// Here are all the symbols available in the the 1Password Password Generator:
+												// !@#$%^&*()_-+=|[]{}'\";.,>?/~`
+												// The string for AppExtensionGeneratedPasswordForbiddenCharactersKey should contain the symbols and characters that you wish 1Password to exclude from the generated password.
+
+												AppExtensionGeneratedPasswordForbiddenCharactersKey: @"!@#$%/0lIO"
+												};
+
+	[[OnePasswordExtension sharedExtension] storeLoginForURLString:@"https://www.acme.com" loginDetails:newLoginDetails passwordGenerationOptions:passwordGenerationOptions forViewController:self sender:sender completion:^(NSDictionary *loginDictionary, NSError *error) {
+
+		if (loginDictionary.count == 0) {
 			if (error.code != AppExtensionErrorCodeCancelledByUser) {
 				NSLog(@"Failed to use 1Password App Extension to save a new Login: %@", error);
 			}
 			return;
 		}
 
-		__strong typeof(self) strongMe = miniMe;
-
-		strongMe.usernameTextField.text = loginDict[AppExtensionUsernameKey] ? : @"";
-		strongMe.passwordTextField.text = loginDict[AppExtensionPasswordKey] ? : @"";
-		strongMe.firstnameTextField.text = loginDict[AppExtensionReturnedFieldsKey][@"firstname"] ? : @"";
-		strongMe.lastnameTextField.text = loginDict[AppExtensionReturnedFieldsKey][@"lastname"] ? : @"";
+		self.usernameTextField.text = loginDictionary[AppExtensionUsernameKey] ? : @"";
+		self.passwordTextField.text = loginDictionary[AppExtensionPasswordKey] ? : @"";
+		self.firstnameTextField.text = loginDictionary[AppExtensionReturnedFieldsKey][@"firstname"] ? : @"";
+		self.lastnameTextField.text = loginDictionary[AppExtensionReturnedFieldsKey][@"lastname"] ? : @"";
 		// retrieve any additional fields that were passed in newLoginDetails dictionary
 	}];
 }
@@ -172,7 +189,7 @@ Adding 1Password to your registration screen is very similar to adding 1Password
 
 You'll notice that we're passing a lot more information into 1Password than just the `URLString` key used in the sign in example. This is because at the end of the password generation process, 1Password will create a brand new login and save it. It's not possible for 1Password to ask your app for additional information later on, so we pass in everything we can before showing the password generator screen.
 
-An important thing to notice is the `AppExtensionURLStringKey` is set to the exact same value we used in the login scenario. This allows users to quickly find the login they saved for your app the next time they need to sign in.
+An important thing to notice is that the `URLString` is set to the exact same value we used in the login scenario. This allows users to quickly find the login they saved for your app the next time they need to sign in.
 
 ### Use Case #3: Change Password
 
@@ -184,41 +201,65 @@ Adding 1Password to your change password screen is very similar to adding 1Passw
 - (IBAction)changePasswordIn1Password:(id)sender {
 	NSString *changedPassword = self.freshPasswordTextField.text ? : @"";
 	NSString *oldPassword = self.oldPasswordTextField.text ? : @"";
-	NSString *username = [LoginInformation sharedLoginInformation].username ? : @"";
+	NSString *confirmationPassword = self.confirmPasswordTextField.text ? : @"";
 
+	// Validate that the new password and the old password are not the same.
+	if (oldPassword.length > 0 && [oldPassword isEqualToString:changedPassword]) {
+		[self showChangePasswordFailedAlertWithMessage:@"The old and the new password must not be the same"];
+		return;
+	}
+
+	// Validate that the new and confirmation passwords match.
+	if (NO == [changedPassword isEqualToString:confirmationPassword]) {
+		[self showChangePasswordFailedAlertWithMessage:@"The new passwords and the confirmation password must match"];
+		return;
+	}
+	
 	NSDictionary *loginDetails = @{
-									  AppExtensionTitleKey: @"ACME",
-									  AppExtensionUsernameKey: username, // 1Password will prompt the user to create a new item if no matching logins are found with this username.
+									  AppExtensionTitleKey: @"ACME", // Optional, used for the third schenario only
+									  AppExtensionUsernameKey: @"aUsername", // Optional, used for the third schenario only
 									  AppExtensionPasswordKey: changedPassword,
 									  AppExtensionOldPasswordKey: oldPassword,
-									  AppExtensionNotesKey: @"Saved with the ACME app",
+									  AppExtensionNotesKey: @"Saved with the ACME app", // Optional, used for the third schenario only
 									};
 
-	// Password generation options are optional, but are very handy in case you have strict rules about password lengths
+	// The password generation options are optional, but are very handy in case you have strict rules about password lengths, symbols and digits.
 	NSDictionary *passwordGenerationOptions = @{
-		AppExtensionGeneratedPasswordMinLengthKey: @(6),
-		AppExtensionGeneratedPasswordMaxLengthKey: @(50)
-	};
+												// The minimum password length can be 4 or more.
+												AppExtensionGeneratedPasswordMinLengthKey: @(8),
 
-	__weak typeof (self) miniMe = self;
+												// The maximum password length can be 50 or less.
+												AppExtensionGeneratedPasswordMaxLengthKey: @(30),
 
-	[[OnePasswordExtension sharedExtension] changePasswordForLoginForURLString:@"https://www.acme.com" loginDetails:loginDetails passwordGenerationOptions:passwordGenerationOptions forViewController:self sender:sender completion:^(NSDictionary *loginDict, NSError *error) {
-		if (!loginDict) {
+												// If YES, the 1Password will guarantee that the generated password will contain at least one digit (number between 0 and 9). Passing NO will not exclude digits from the generated password.
+												AppExtensionGeneratedPasswordRequireDigitsKey: @(YES),
+
+												// If YES, the 1Password will guarantee that the generated password will contain at least one symbol (See the list bellow). Passing NO with will exclude symbols from the generated password.
+												AppExtensionGeneratedPasswordRequireSymbolsKey: @(YES),
+
+												// Here are all the symbols available in the the 1Password Password Generator:
+												// !@#$%^&*()_-+=|[]{}'\";.,>?/~`
+												// The string for AppExtensionGeneratedPasswordForbiddenCharactersKey should contain the symbols and characters that you wish 1Password to exclude from the generated password.
+
+												AppExtensionGeneratedPasswordForbiddenCharactersKey: @"!@#$%/0lIO"
+												};
+
+	[[OnePasswordExtension sharedExtension] changePasswordForLoginForURLString:@"https://www.acme.com" loginDetails:loginDetails passwordGenerationOptions:passwordGenerationOptions forViewController:self sender:sender completion:^(NSDictionary *loginDictionary, NSError *error) {
+		if (loginDictionary.count == 0) {
 			if (error.code != AppExtensionErrorCodeCancelledByUser) {
 				NSLog(@"Error invoking 1Password App Extension for find login: %@", error);
 			}
 			return;
 		}
 
-		__strong typeof(self) strongMe = miniMe;
-		strongMe.oldPasswordTextField.text = loginDict[AppExtensionOldPasswordKey];
-		strongMe.freshPasswordTextField.text = loginDict[AppExtensionPasswordKey];
-		strongMe.confirmPasswordTextField.text = loginDict[AppExtensionPasswordKey];
+		self.oldPasswordTextField.text = loginDictionary[AppExtensionOldPasswordKey];
+		self.freshPasswordTextField.text = loginDictionary[AppExtensionPasswordKey];
+		self.confirmPasswordTextField.text = loginDictionary[AppExtensionPasswordKey];
 	}];
 }
 ```
 
-### Use Case #4: Web View Support
+### Use Case #4: Web View Filling
 
 The 1Password App Extension is not limited to filling native UIs. With just a little bit of extra effort, users can fill `UIWebView`s and `WKWebView`s within your application as well.
 
@@ -226,9 +267,9 @@ Simply add a button to your UI with its action assigned to this method in your w
 
 ```objective-c
 - (IBAction)fillUsing1Password:(id)sender {
-	[[OnePasswordExtension sharedExtension] fillLoginIntoWebView:self.webView forViewController:self sender:sender completion:^(BOOL success, NSError *error) {
+	[[OnePasswordExtension sharedExtension] fillItemIntoWebView:self.webView forViewController:self sender:sender showOnlyLogins:NO completion:^(BOOL success, NSError *error) {
 		if (!success) {
-			NSLog(@"Failed to fill login in webview: <%@>", error);
+			NSLog(@"Failed to fill into webview: <%@>", error);
 		}
 	}];
 }
@@ -236,23 +277,30 @@ Simply add a button to your UI with its action assigned to this method in your w
 
 1Password will take care of all the details of collecting information about the currently displayed page, allow the user to select the desired login, and then fill the web form details within the page.
 
+If you use a web view to login (i.e. OAuth) and you do not want other activities to show up in the share sheet and other item categories (Credit Cards and Identities) to show up in the 1Password Extension, you need to pass `YES` for `showOnlyLogins`. 
 
 ## Projects supporting iOS 7.1 and earlier
 
-If your project's Deployment Target is earlier than iOS 8.0, please make sure that you link to the `MobileCoreServices` and `WebKit` frameworks.
+If your project's Deployment Target is earlier than iOS 8.0, please make sure that you link to the `WebKit` framework.
 
-<a href="https://vimeo.com/102142106" target="_blank"><img src="https://www.evernote.com/shard/s340/sh/7547419d-6c49-4b45-bdb1-575c28678164/49cb7e0c1f508d1f67f5cf0361d58d3a/deep/0/WebView-Demo-for-iOS.xcodeproj.png" width="640"></a>
+<a href="https://vimeo.com/102142106" target="_blank"><img src="https://www.evernote.com/l/AVTlW927xn9ACbJ4nPcFhYrDKHDCSSmIYIYB/image.png" width="640"></a>
+
+#### WKWebView support for projects with iOS 7.1 or earler as the Deployment Target
+
+If the **Deployment Target** is `7.1` or earlier in your project or target and you are using `WKWebViews` (runtime checks for iOS 8 deveices), you simply need to add `ONE_PASSWORD_EXTENSION_ENABLE_WK_WEB_VIEW=1` to your `Preprocessor Macros`.
+
+<a href="https://vimeo.com/102142106" target="_blank"><img src="https://www.evernote.com/l/AVTawUykz6dHea_aKawqBwTCza2zvJYbeVMB/image.png" width="640"></a>
 
 ## Best Practices
 
 * Use the same `URLString` during Registration and Login.
 * Ensure your `URLString` is set to your actual service so your users can easily find their logins within the main 1Password app.
 * You should only ask for the login information of your own service or one specific to your app. Giving a URL for a service which you do not own or support may seriously break the customer's trust in your service/app.
-* If you don't have a website for your app you should specify your bundle identifier as the `URLString`, like so: app://bundleIdentifier (e.g. app://com.acme.awesome-app).
+* If you don't have a website for your app you should specify your bundle identifier as the `URLString`, like so: `app://bundleIdentifier` (e.g. `app://com.acme.awesome-app`).
 * [Send us an icon](mailto:support+appex@agilebits.com) to use for our Rich Icon service so the user can see your lovely icon while creating new items.
 * Use the icons provided in the `1Password.xcassets` asset catalog so users are familiar with what it will do. Contact us if you'd like additional sizes or have other special requirements.
 * Enable users to set 1Password as their default browser for external web links.
-* On your registration page, pre-validate fields before calling 1Password. For example, display a message if the username is not available so the user can fix it before activating 1Password.
+* On your registration page, pre-validate fields before calling 1Password. For example, display a message if the username is not available so the user can fix it before calling the 1Password extension.
 
 
 ## References
@@ -265,6 +313,8 @@ If you open up OnePasswordExtension.m and start poking around, you'll be interes
 
 ## Contact Us
 
-Contact us, please! We'd love to hear from you about how you integrated 1Password within your app, how we can further improve things, and add your app to [apps that integrate with 1Password](http://blog.agilebits.com/2013/04/03/ios-apps-1password-integrated-support/).
+Contact us, please! We'd love to hear from you about how you integrated 1Password within your app, how we can further improve things, and add your app to [apps that integrate with 1Password](https://blog.agilebits.com/1password-apps/).
 
-You can reach us at support+appex@agilebits.com, or if you prefer, [@1PasswordBeta](https://twitter.com/1PasswordBeta) on Twitter.
+You can reach us at support+appex@agilebits.com, or if you prefer, [@1Password](https://twitter.com/1Password) on Twitter.
+
+You can also [subscribe to our 1Password App Extension Developers newsletter](https://blog.agilebits.com/1password-extension-developers-newsletter/). We’ll send you an occasional newsletter containing 1Password App Extension news, updates, and tricks, to help you realize the full potential of the 1Password Extension API in your iOS apps.

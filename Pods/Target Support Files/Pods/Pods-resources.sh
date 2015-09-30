@@ -58,7 +58,6 @@ install_resource()
   esac
 }
 if [[ "$CONFIGURATION" == "Pinboard Debug" ]]; then
-  install_resource "1PasswordExtension/1Password.xcassets"
   install_resource "ChimpKit/ChimpKit3/Helper Objects/CKAuthViewController.xib"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft.png"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft@2x.png"
@@ -76,10 +75,10 @@ if [[ "$CONFIGURATION" == "Pinboard Debug" ]]; then
   install_resource "Mixpanel/Mixpanel/MPCloseBtn@2x.png"
   install_resource "Mixpanel/Mixpanel/MPNotification.storyboard"
   install_resource "Mixpanel/Mixpanel/MPSurvey.storyboard"
+  install_resource "${BUILT_PRODUCTS_DIR}/OnePasswordExtensionResources.bundle"
   install_resource "${BUILT_PRODUCTS_DIR}/UserVoice.bundle"
 fi
 if [[ "$CONFIGURATION" == "Delicious Debug" ]]; then
-  install_resource "1PasswordExtension/1Password.xcassets"
   install_resource "ChimpKit/ChimpKit3/Helper Objects/CKAuthViewController.xib"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft.png"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft@2x.png"
@@ -97,10 +96,10 @@ if [[ "$CONFIGURATION" == "Delicious Debug" ]]; then
   install_resource "Mixpanel/Mixpanel/MPCloseBtn@2x.png"
   install_resource "Mixpanel/Mixpanel/MPNotification.storyboard"
   install_resource "Mixpanel/Mixpanel/MPSurvey.storyboard"
+  install_resource "${BUILT_PRODUCTS_DIR}/OnePasswordExtensionResources.bundle"
   install_resource "${BUILT_PRODUCTS_DIR}/UserVoice.bundle"
 fi
 if [[ "$CONFIGURATION" == "Pinboard App Store" ]]; then
-  install_resource "1PasswordExtension/1Password.xcassets"
   install_resource "ChimpKit/ChimpKit3/Helper Objects/CKAuthViewController.xib"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft.png"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft@2x.png"
@@ -118,10 +117,10 @@ if [[ "$CONFIGURATION" == "Pinboard App Store" ]]; then
   install_resource "Mixpanel/Mixpanel/MPCloseBtn@2x.png"
   install_resource "Mixpanel/Mixpanel/MPNotification.storyboard"
   install_resource "Mixpanel/Mixpanel/MPSurvey.storyboard"
+  install_resource "${BUILT_PRODUCTS_DIR}/OnePasswordExtensionResources.bundle"
   install_resource "${BUILT_PRODUCTS_DIR}/UserVoice.bundle"
 fi
 if [[ "$CONFIGURATION" == "Pinboard App Store Debug" ]]; then
-  install_resource "1PasswordExtension/1Password.xcassets"
   install_resource "ChimpKit/ChimpKit3/Helper Objects/CKAuthViewController.xib"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft.png"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft@2x.png"
@@ -139,10 +138,10 @@ if [[ "$CONFIGURATION" == "Pinboard App Store Debug" ]]; then
   install_resource "Mixpanel/Mixpanel/MPCloseBtn@2x.png"
   install_resource "Mixpanel/Mixpanel/MPNotification.storyboard"
   install_resource "Mixpanel/Mixpanel/MPSurvey.storyboard"
+  install_resource "${BUILT_PRODUCTS_DIR}/OnePasswordExtensionResources.bundle"
   install_resource "${BUILT_PRODUCTS_DIR}/UserVoice.bundle"
 fi
 if [[ "$CONFIGURATION" == "Delicious App Store" ]]; then
-  install_resource "1PasswordExtension/1Password.xcassets"
   install_resource "ChimpKit/ChimpKit3/Helper Objects/CKAuthViewController.xib"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft.png"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft@2x.png"
@@ -160,10 +159,10 @@ if [[ "$CONFIGURATION" == "Delicious App Store" ]]; then
   install_resource "Mixpanel/Mixpanel/MPCloseBtn@2x.png"
   install_resource "Mixpanel/Mixpanel/MPNotification.storyboard"
   install_resource "Mixpanel/Mixpanel/MPSurvey.storyboard"
+  install_resource "${BUILT_PRODUCTS_DIR}/OnePasswordExtensionResources.bundle"
   install_resource "${BUILT_PRODUCTS_DIR}/UserVoice.bundle"
 fi
 if [[ "$CONFIGURATION" == "Pinboard Beta" ]]; then
-  install_resource "1PasswordExtension/1Password.xcassets"
   install_resource "ChimpKit/ChimpKit3/Helper Objects/CKAuthViewController.xib"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft.png"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft@2x.png"
@@ -181,10 +180,10 @@ if [[ "$CONFIGURATION" == "Pinboard Beta" ]]; then
   install_resource "Mixpanel/Mixpanel/MPCloseBtn@2x.png"
   install_resource "Mixpanel/Mixpanel/MPNotification.storyboard"
   install_resource "Mixpanel/Mixpanel/MPSurvey.storyboard"
+  install_resource "${BUILT_PRODUCTS_DIR}/OnePasswordExtensionResources.bundle"
   install_resource "${BUILT_PRODUCTS_DIR}/UserVoice.bundle"
 fi
 if [[ "$CONFIGURATION" == "Delicious Beta" ]]; then
-  install_resource "1PasswordExtension/1Password.xcassets"
   install_resource "ChimpKit/ChimpKit3/Helper Objects/CKAuthViewController.xib"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft.png"
   install_resource "Mixpanel/Mixpanel/Media.xcassets/MPArrowLeft.imageset/MPArrowLeft@2x.png"
@@ -202,6 +201,7 @@ if [[ "$CONFIGURATION" == "Delicious Beta" ]]; then
   install_resource "Mixpanel/Mixpanel/MPCloseBtn@2x.png"
   install_resource "Mixpanel/Mixpanel/MPNotification.storyboard"
   install_resource "Mixpanel/Mixpanel/MPSurvey.storyboard"
+  install_resource "${BUILT_PRODUCTS_DIR}/OnePasswordExtensionResources.bundle"
   install_resource "${BUILT_PRODUCTS_DIR}/UserVoice.bundle"
 fi
 
