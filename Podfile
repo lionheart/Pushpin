@@ -23,7 +23,7 @@ pod 'OpenInChrome', '0.0.1'
 pod 'AFNetworking', '2.2.0'
 pod 'LHSKeyboardAdjusting', '0.0.1'
 pod 'RNCryptor', '2.2'
-pod '1PasswordExtension', '1.1'
+pod '1PasswordExtension', '1.6.1'
 pod 'YHRoundBorderedButton', '0.1.0'
 pod 'ChimpKit'
 
