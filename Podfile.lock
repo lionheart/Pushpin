@@ -1,5 +1,5 @@
 PODS:
-  - 1PasswordExtension (1.1)
+  - 1PasswordExtension (1.6.1)
   - AFNetworking (2.2.0):
     - AFNetworking/NSURLConnection (= 2.2.0)
     - AFNetworking/NSURLSession (= 2.2.0)
@@ -65,7 +65,7 @@ PODS:
   - YHRoundBorderedButton (0.1.0)
 
 DEPENDENCIES:
-  - 1PasswordExtension (= 1.1)
+  - 1PasswordExtension (= 1.6.1)
   - AFNetworking (= 2.2.0)
   - ASPinboard (from `Vendor/ASPinboard`)
   - BugshotKit (= 0.1.0)
@@ -112,7 +112,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/lionheart/LHSFMDatabaseAdditions.git
 
 SPEC CHECKSUMS:
-  1PasswordExtension: 26d590105f83349cd4fe362921534f8244b8e67b
+  1PasswordExtension: 42b79b7ac6d8e7468b22b7a651fc0b445bcdbd3e
   AFNetworking: cede923cb26fba5e6309616e91fa33fe2e4a1b7b
   ASPinboard: 80ace27c6db2ac7681d2851b6ba9460d68243bd7
   BugshotKit: 58fbc895fd67afb4c6ee3559ce013a4b4db8e59c
