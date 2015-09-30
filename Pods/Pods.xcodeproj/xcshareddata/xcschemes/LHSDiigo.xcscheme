@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B7BDE254C6CD3FBC145F907F"
+               BlueprintIdentifier = "73F1573B9A4EF245322E416B"
                BuildableName = "libLHSDiigo.a"
                BlueprintName = "LHSDiigo"
                ReferencedContainer = "container:Pods.xcodeproj">
