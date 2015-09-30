@@ -2854,6 +2854,7 @@
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
 				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = YES;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -2893,6 +2894,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer: Daniel Loewenherz (32S53QJB5F)";
 				COPY_PHASE_STRIP = YES;
 				DSTROOT = /tmp/DebugPods.dst;
+				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -2936,6 +2938,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer: Daniel Loewenherz (32S53QJB5F)";
 				COPY_PHASE_STRIP = NO;
 				DSTROOT = /tmp/DebugPods.dst;
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -2985,6 +2988,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer: Daniel Loewenherz (32S53QJB5F)";
 				COPY_PHASE_STRIP = YES;
 				DSTROOT = /tmp/DebugPods.dst;
+				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -3028,6 +3032,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Lionheart Software LLC (63553QQ62F)";
 				COPY_PHASE_STRIP = YES;
 				DSTROOT = /tmp/DebugPods.dst;
+				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -3071,6 +3076,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Lionheart Software LLC (63553QQ62F)";
 				COPY_PHASE_STRIP = YES;
 				DSTROOT = /tmp/DebugPods.dst;
+				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -3114,6 +3120,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Lionheart Software LLC (63553QQ62F)";
 				COPY_PHASE_STRIP = YES;
 				DSTROOT = /tmp/DebugPods.dst;
+				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -3157,6 +3164,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Lionheart Software LLC (63553QQ62F)";
 				COPY_PHASE_STRIP = YES;
 				DSTROOT = /tmp/DebugPods.dst;
+				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -3261,6 +3269,7 @@
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Beta.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -4164,6 +4173,7 @@
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Beta.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Lionheart Software LLC (63553QQ62F)";
 				COPY_PHASE_STRIP = YES;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -4265,6 +4275,7 @@
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Lionheart Software LLC (63553QQ62F)";
 				COPY_PHASE_STRIP = YES;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -4364,6 +4375,7 @@
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Dev.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Daniel Loewenherz (32S53QJB5F)";
 				COPY_PHASE_STRIP = YES;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -4539,6 +4551,7 @@
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Dev.entitlements;
 				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = YES;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -4566,6 +4579,7 @@
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
