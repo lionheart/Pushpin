@@ -734,9 +734,9 @@
 
 - (PPNavigationController *)loginViewController {
     if (!_loginViewController) {
-        PPLoginViewController *loginViewController = [[PPLoginViewController alloc] init];
+        PPPinboardLoginViewController *pinboardLoginViewController = [[PPPinboardLoginViewController alloc] init];
         
-        PPNavigationController *controller = [[PPNavigationController alloc] initWithRootViewController:loginViewController];
+        PPNavigationController *controller = [[PPNavigationController alloc] initWithRootViewController:pinboardLoginViewController];
         controller.navigationBar.translucent = NO;
         
         _loginViewController = controller;
