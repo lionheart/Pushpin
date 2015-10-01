@@ -333,10 +333,12 @@
     NSURL *databaseURL = [NSURL fileURLWithPath:[PPUtilities databasePath]];
     NSError *error;
 
-    [[NSFileManager defaultManager] removeItemAtURL:newDatabaseURL error:nil];
-    [[NSFileManager defaultManager] copyItemAtURL:databaseURL
-                                            toURL:newDatabaseURL
-                                            error:&error];
+    if (newDatabaseURL) {
+        [[NSFileManager defaultManager] removeItemAtURL:newDatabaseURL error:nil];
+        [[NSFileManager defaultManager] copyItemAtURL:databaseURL
+                                                toURL:newDatabaseURL
+                                                error:&error];
+    }
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
