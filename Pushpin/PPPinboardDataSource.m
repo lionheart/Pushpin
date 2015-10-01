@@ -6,6 +6,9 @@
 //
 //
 
+@import CoreSpotlight;
+@import MobileCoreServices;
+
 #import "PPPinboardDataSource.h"
 #import "PPAddBookmarkViewController.h"
 #import "PPTheme.h"
@@ -1026,6 +1029,38 @@ static BOOL kPinboardSyncInProgress = NO;
         ASPinboard *pinboard = [ASPinboard sharedInstance];
         Mixpanel *mixpanel = [Mixpanel sharedInstance];
         
+        void (^UpdateSpotlightSearchIndex)() = ^{
+            [[PPUtilities databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
+                CSSearchableIndex *index = [CSSearchableIndex defaultSearchableIndex];
+                NSMutableArray <CSSearchableItem *> *items = [NSMutableArray array];
+                FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE searchable_in_spotlight=0"];
+                while ([results next]) {
+                    NSDictionary *bookmark = [PPUtilities dictionaryFromResultSet:results];
+                    NSString *title = bookmark[@"title"];
+                    NSString *description = bookmark[@"description"];
+                    NSURL *url = [NSURL URLWithString:bookmark[@"url"]];
+                    NSDate *createdAt = bookmark[@"created_at"];
+
+                    CSSearchableItemAttributeSet* attributeSet = [[CSSearchableItemAttributeSet alloc] initWithItemContentType:(NSString *)kUTTypeText];
+                    attributeSet.title = title;
+                    attributeSet.originalSource = @"Pushpin";
+                    attributeSet.contentURL = url;
+                    attributeSet.contentDescription = description;
+                    attributeSet.contentCreationDate = createdAt;
+
+                    NSString *uniqueIdentifier = url.absoluteString;
+                    CSSearchableItem *item = [[CSSearchableItem alloc] initWithUniqueIdentifier:uniqueIdentifier
+                                                                               domainIdentifier:@"io.aurora.Pushpin.search"
+                                                                                   attributeSet:attributeSet];
+                    [items addObject:item];
+
+                    [db executeUpdate:@"UPDATE bookmark SET searchable_in_spotlight=1 WHERE url=?" withArgumentsInArray:@[url]];
+                }
+
+                [index indexSearchableItems:items completionHandler:nil];
+            }];
+        };
+
         void (^BookmarksSuccessBlock)(NSArray *, NSDictionary *) = ^(NSArray *posts, NSDictionary *constraints) {
             DLog(@"%@ - Received data", [NSDate date]);
             NSDate *startDate = [NSDate date];
@@ -1224,10 +1259,12 @@ static BOOL kPinboardSyncInProgress = NO;
                                           BOOL updatesMade = addCount > 0 || updateCount > 0 || deleteCount > 0;
                                           if (skipStarred) {
                                               completion(updatesMade, nil);
+                                              UpdateSpotlightSearchIndex();
                                           }
                                           else {
                                               [self updateStarredPostsWithCompletion:^(NSError *error) {
                                                   completion(updatesMade, error);
+                                                  UpdateSpotlightSearchIndex();
                                               }];
                                           }
                                       }];
@@ -1267,6 +1304,7 @@ static BOOL kPinboardSyncInProgress = NO;
                     kPinboardSyncInProgress = NO;
                     [self updateStarredPostsWithCompletion:^(NSError *error) {
                         completion(NO, error);
+                        UpdateSpotlightSearchIndex();
                     }];
                 }
             });

@@ -608,6 +608,11 @@
                         [db executeUpdate:@"PRAGMA user_version=12;"];
                     }
 
+                    case 12: {
+                        [db executeUpdate:@"ALTER TABLE bookmark ADD COLUMN searchable_in_spotlight BOOL DEFAULT 0;"];
+                        [db executeUpdate:@"PRAGMA user_version=12;"];
+                    }
+
                     default:
                         break;
 #endif

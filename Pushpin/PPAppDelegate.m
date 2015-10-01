@@ -7,6 +7,7 @@
 //
 
 @import QuartzCore;
+@import CoreSpotlight;
 
 #import "PPAppDelegate.h"
 #import "PPLoginViewController.h"
@@ -1053,6 +1054,19 @@
 - (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)())completionHandler {
     self.urlCache.backgroundURLSessionCompletionHandlers[identifier] = completionHandler;
     completionHandler();
+}
+
+#pragma mark - Core Spotlight
+
+- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void(^)(NSArray *restorableObjects))restorationHandler {
+    if ([[userActivity activityType] isEqualToString:CSSearchableItemActionType]) {
+        // This activity represents an item indexed using Core Spotlight, so restore the context related to the unique identifier.
+        // The unique identifier of the Core Spotlight item is set in the activity’s userInfo for the key CSSearchableItemActivityIdentifier.
+        NSString *urlString = userActivity.userInfo[CSSearchableItemActivityIdentifier];
+        [application openURL:[NSURL URLWithString:urlString]];
+    }
+
+    return YES;
 }
 
 @end
