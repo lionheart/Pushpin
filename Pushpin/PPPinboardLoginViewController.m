@@ -24,6 +24,7 @@
 #import <ASPinboard/ASPinboard.h>
 #import <LHSDelicious/LHSDelicious.h>
 #import <OnePasswordExtension.h>
+#import <uservoice-iphone-sdk/UserVoice.h>
 
 @interface PPPinboardLoginViewController ()
 
@@ -66,6 +67,11 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     self.title = @"Pinboard";
 #endif
     self.loginInProgress = NO;
+
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Help", nil)
+                                                                             style:UIBarButtonItemStyleDone
+                                                                            target:self
+                                                                            action:@selector(showContactForm)];
 
     self.tableView.backgroundColor = HEX(0xeeeeeeff);
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:LoginTableCellIdentifier];
@@ -811,6 +817,16 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             
 - (BOOL)authTokenProvided {
     return self.authTokenTextField.text.length > 0;
+}
+
+#pragma mark - Utils
+
+- (void)showContactForm {
+    UVConfig *config = [UVConfig configWithSite:@"lionheartsw.uservoice.com"
+                                         andKey:@"9pBeLUHkDPLj3XhBG9jQ"
+                                      andSecret:@"PaXdmNmtTAynLJ1MpuOFnVUUpfD2qA5obo7NxhsxP5A"];
+
+    [UserVoice presentUserVoiceContactUsFormForParentViewController:self andConfig:config];
 }
 
 @end
