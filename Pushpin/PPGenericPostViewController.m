@@ -324,9 +324,9 @@ static NSInteger PPBookmarkEditMaximum = 25;
     [self.tableView registerClass:[PPBookmarkCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
     PPSettings *settings = [PPSettings sharedSettings];
     
+#if 0
     if (!settings.turnOffPushpinCloudPrompt) {
         UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:@"Pushpin Cloud Signup" message:@"\nIf you're interested in a Pushpin Mac Application or standalone web application, subscribe for updates on our progress."];
-        
         
         [alert lhs_addActionWithTitle:@"Sign Up"
                                 style:UIAlertActionStyleCancel
@@ -344,6 +344,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
         
         [self presentViewController:alert animated:YES completion:nil];
     }
+#endif
 }
 
 - (void)viewWillAppear:(BOOL)animated {
