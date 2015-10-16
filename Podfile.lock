@@ -23,10 +23,6 @@ PODS:
     - hpple (~> 0.2.0)
   - BugshotKit (0.1.0)
   - ChimpKit (3.1.1)
-  - Crashlytics (3.3.1)
-  - Fabric (1.5.1):
-    - Fabric/Base (= 1.5.1)
-  - Fabric/Base (1.5.1)
   - FMDB (2.4):
     - FMDB/standard (= 2.4)
   - FMDB/common (2.4)
@@ -70,8 +66,6 @@ DEPENDENCIES:
   - ASPinboard (from `Vendor/ASPinboard`)
   - BugshotKit (= 0.1.0)
   - ChimpKit
-  - Crashlytics
-  - Fabric
   - FMDB (= 2.4)
   - HTMLParser (from `Specs/HTMLParser.podspec`)
   - KeychainItemWrapper (= 1.2)
@@ -117,8 +111,6 @@ SPEC CHECKSUMS:
   ASPinboard: 80ace27c6db2ac7681d2851b6ba9460d68243bd7
   BugshotKit: 58fbc895fd67afb4c6ee3559ce013a4b4db8e59c
   ChimpKit: d020126089544daa349397a91f1489a3f271b791
-  Crashlytics: 0e61bdda9def51f1e99720f804eebe94865442b2
-  Fabric: 03c3b3fe77e11a2bc31421b989a9c7adaa4779a5
   FMDB: d274d9ff773415735022ac57bfba9f6002f9fed8
   hpple: 3b765f96fc2cd56ad1a49aef6f7be5cb2aa64b57
   HTMLParser: c33a7a9ddc1122b28ff7f38a65cf505ad76455e5
