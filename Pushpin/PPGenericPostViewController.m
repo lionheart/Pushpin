@@ -35,7 +35,6 @@
 #import <LHSCategoryCollection/UIScreen+LHSAdditions.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <Fabric/Fabric.h>
-#import <Crashlytics/Crashlytics.h>
 #import "PPMailChimp.h"
 
 static NSString *BookmarkCellIdentifier = @"BookmarkCellIdentifier";

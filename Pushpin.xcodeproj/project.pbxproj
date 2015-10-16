@@ -114,8 +114,6 @@
 		374D91E219CE26A700995DF1 /* Share-Dev.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 374D91DC19CE26A700995DF1 /* Share-Dev.entitlements */; };
 		374D91E519CE26A700995DF1 /* AppExtensionHelper.js in Resources */ = {isa = PBXBuildFile; fileRef = 374D91DF19CE26A700995DF1 /* AppExtensionHelper.js */; };
 		374D91E619CE26A700995DF1 /* Share-AppStore.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 374D91E019CE26A700995DF1 /* Share-AppStore.entitlements */; };
-		374DE2F21A6F0A5B0056D947 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 374DE2F01A6F0A5B0056D947 /* Fabric.framework */; };
-		374DE2FA1A6F0B610056D947 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 374DE2F91A6F0B610056D947 /* Crashlytics.framework */; };
 		3751D18218346C0200E0A42A /* mobilize.png in Resources */ = {isa = PBXBuildFile; fileRef = 3751D17E18346C0200E0A42A /* mobilize.png */; };
 		3751D18318346C0200E0A42A /* mobilize@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3751D17F18346C0200E0A42A /* mobilize@2x.png */; };
 		3751D18418346C0200E0A42A /* mobilized.png in Resources */ = {isa = PBXBuildFile; fileRef = 3751D18018346C0200E0A42A /* mobilized.png */; };
@@ -558,8 +556,6 @@
 		374D91DE19CE26A700995DF1 /* Info-AppStore.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-AppStore.plist"; sourceTree = "<group>"; };
 		374D91DF19CE26A700995DF1 /* AppExtensionHelper.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = AppExtensionHelper.js; sourceTree = "<group>"; };
 		374D91E019CE26A700995DF1 /* Share-AppStore.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Share-AppStore.entitlements"; sourceTree = "<group>"; };
-		374DE2F01A6F0A5B0056D947 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
-		374DE2F91A6F0B610056D947 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		374E59FE197DADEF00B6EDF1 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		37516A04186C8AF700AEF7A6 /* PPBookmarkCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBookmarkCell.h; sourceTree = "<group>"; };
 		37516A05186C8AF700AEF7A6 /* PPBookmarkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPBookmarkCell.m; sourceTree = "<group>"; };
@@ -914,7 +910,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				374DE2F21A6F0A5B0056D947 /* Fabric.framework in Frameworks */,
 				3711BC4A19EEDB7900DC129C /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -927,7 +922,6 @@
 				37FEEB9715745488003F2B77 /* CoreGraphics.framework in Frameworks */,
 				372F891416755BF00073D0B6 /* CoreTelephony.framework in Frameworks */,
 				371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */,
-				374DE2FA1A6F0B610056D947 /* Crashlytics.framework in Frameworks */,
 				37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */,
 				FDFF49EA3A8BE3E27B7C4F28 /* libPods.a in Frameworks */,
 				37E329ED1629F82D00A6BC18 /* libsqlite3.dylib in Frameworks */,
@@ -1346,9 +1340,7 @@
 				372943ED19CF53FD00ABF006 /* Read Later Extension */,
 				378BFDF119E5E29B006B48DC /* Tests */,
 				37076D41158AD0B1002566CD /* Vendor */,
-				374DE2F91A6F0B610056D947 /* Crashlytics.framework */,
 				3772DE901933B0E0004B348D /* DebugPodsTests copy-Info.plist */,
-				374DE2F01A6F0A5B0056D947 /* Fabric.framework */,
 				370859F817F329D400270A9D /* Images.xcassets */,
 			);
 			sourceTree = "<group>";
@@ -1779,7 +1771,6 @@
 				37FEEB8B15745488003F2B77 /* Frameworks */,
 				37FEEB8C15745488003F2B77 /* Resources */,
 				A6F1C6EA2C074EC083104155 /* Copy Pods Resources */,
-				37887D6818C51F1A00A20B76 /* Fabric */,
 				3790420B19CBCFF700409D34 /* Embed App Extensions */,
 				379042D419CC663300409D34 /* CopyFiles */,
 			);
@@ -2164,20 +2155,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		37887D6818C51F1A00A20B76 /* Fabric */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 12;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = Fabric;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "./Fabric.framework/run ed1bff5018819b0c5dbb8dbb35edac18a8b1af02 88e35b37b1eaaf8d61020be6151a57f269bfe58aa5ce7690b61e19ab18453f3a";
-		};
 		37B65FDA1672D0270041DA8C /* Sync Bundle and Version Strings */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 12;

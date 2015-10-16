@@ -19,7 +19,6 @@
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <Fabric/Fabric.h>
 #import <ASPinboard/ASPinboard.h>
-#import <Crashlytics/Crashlytics.h>
 
 @interface PPPinboardNotesDataSource ()
 
