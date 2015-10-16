@@ -27,9 +27,6 @@ pod '1PasswordExtension', '1.6.1'
 pod 'YHRoundBorderedButton', '0.1.0'
 pod 'ChimpKit'
 
-pod 'Fabric'
-pod 'Crashlytics'
-
 target 'DebugPods', :exclusive => true do
   pod 'BugshotKit', '0.1.0'
 end
