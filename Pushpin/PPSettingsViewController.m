@@ -118,20 +118,22 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                                             completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                                                 NSDictionary *object = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
                                                 
-                                                NSDictionary *app = object[@"results"][0];
-                                                
-                                                NSNumber *rating = app[@"userRatingCountForCurrentVersion"];
-                                                if (rating) {
-                                                    self.numberOfRatings = [app[@"userRatingCountForCurrentVersion"] integerValue];
-                                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                                        [self.tableView beginUpdates];
-                                                        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPOtherRatePushpin inSection:1]]
-                                                                              withRowAnimation:UITableViewRowAnimationNone];
-                                                        [self.tableView endUpdates];
-                                                    });
-                                                }
-                                                else {
-                                                    self.numberOfRatings = 0;
+                                                NSDictionary *app = [object[@"results"] firstObject];
+
+                                                if (app) {
+                                                    NSNumber *rating = app[@"userRatingCountForCurrentVersion"];
+                                                    if (rating) {
+                                                        self.numberOfRatings = [app[@"userRatingCountForCurrentVersion"] integerValue];
+                                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                                            [self.tableView beginUpdates];
+                                                            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPOtherRatePushpin inSection:1]]
+                                                                                  withRowAnimation:UITableViewRowAnimationNone];
+                                                            [self.tableView endUpdates];
+                                                        });
+                                                    }
+                                                    else {
+                                                        self.numberOfRatings = 0;
+                                                    }
                                                 }
                                             }];
         [task resume];
