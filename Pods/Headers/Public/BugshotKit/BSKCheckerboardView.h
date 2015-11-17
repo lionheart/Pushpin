@@ -1,1 +1,0 @@
-../../../BugshotKit/BugshotKit/BSKCheckerboardView.h
