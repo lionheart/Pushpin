@@ -1,4 +1,4 @@
-platform :ios, '8.0'
+platform :ios, '9.0'
 
 source 'https://github.com/CocoaPods/Specs.git'
 
@@ -26,10 +26,6 @@ pod 'RNCryptor', '2.2'
 pod '1PasswordExtension', '1.6.4'
 pod 'YHRoundBorderedButton', '0.1.0'
 pod 'ChimpKit'
-
-target 'DebugPods', :exclusive => true do
-  pod 'BugshotKit', '0.1.0'
-end
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
