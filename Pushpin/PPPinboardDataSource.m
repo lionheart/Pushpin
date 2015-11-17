@@ -1038,7 +1038,9 @@ static BOOL kPinboardSyncInProgress = NO;
                     NSDictionary *bookmark = [PPUtilities dictionaryFromResultSet:results];
                     NSString *title = bookmark[@"title"];
                     NSString *description = bookmark[@"description"];
-                    NSURL *url = [NSURL URLWithString:bookmark[@"url"]];
+
+                    NSString *urlString = [bookmark[@"url"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+                    NSURL *url = [NSURL URLWithString:urlString];
                     NSDate *createdAt = bookmark[@"created_at"];
 
                     CSSearchableItemAttributeSet* attributeSet = [[CSSearchableItemAttributeSet alloc] initWithItemContentType:(NSString *)kUTTypeText];
@@ -1054,7 +1056,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                                                                    attributeSet:attributeSet];
                     [items addObject:item];
 
-                    [db executeUpdate:@"UPDATE bookmark SET searchable_in_spotlight=1 WHERE url=?" withArgumentsInArray:@[url]];
+                    [db executeUpdate:@"UPDATE bookmark SET searchable_in_spotlight=1 WHERE url=?" withArgumentsInArray:@[bookmark[@"url"]]];
                 }
 
                 [index indexSearchableItems:items completionHandler:nil];
