@@ -89,21 +89,13 @@ EXTERNAL SOURCES:
   ASPinboard:
     :local: Vendor/ASPinboard
   HTMLParser:
-    :podspec: Specs/HTMLParser.podspec
+    :local: Specs/HTMLParser.podspec
   LHSDelicious:
     :local: Vendor/LHSDelicious
   LHSDiigo:
     :local: Vendor/LHSDiigo
   LHSFMDatabaseAdditions:
-    :podspec: Specs/LHSFMDatabaseAdditions.podspec
-
-CHECKOUT OPTIONS:
-  HTMLParser:
-    :commit: 8d417e2d0233ec0276db9e0f47df5b99a4e881dd
-    :git: https://github.com/zootreeves/Objective-C-HMTL-Parser
-  LHSFMDatabaseAdditions:
-    :commit: b8abb5e9303b0b7c8a309c2f2d706bb0a7534bf5
-    :git: https://github.com/lionheart/LHSFMDatabaseAdditions.git
+    :local: Specs/LHSFMDatabaseAdditions.podspec
 
 SPEC CHECKSUMS:
   1PasswordExtension: 9f471645d378283cb88c6d4bf502e4381a42c0ad
@@ -132,4 +124,4 @@ SPEC CHECKSUMS:
   XMLDictionary: f9f51601ba76678b594ab485f2b00ec1fed23724
   YHRoundBorderedButton: 2180f04094db264cace8db88eae977d78a3b4633
 
-COCOAPODS: 0.39.0
+COCOAPODS: 0.38.2
