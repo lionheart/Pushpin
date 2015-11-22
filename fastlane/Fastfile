@@ -1,0 +1,29 @@
+update_fastlane
+
+fastlane_version "1.39.0"
+
+default_platform :ios
+
+platform :ios do
+  before_all do
+    cocoapods
+# increment_build_number
+  end
+
+  desc "Submit a new Beta Build to Apple TestFlight"
+  desc "This will also make sure the profile is up to date"
+  lane :beta do
+    sigh
+    gym(scheme: "Pushpin for Pinboard")
+    pilot
+  end
+
+  desc "Deploy a new version to the App Store"
+  lane :deploy do
+    # snapshot
+    sigh
+    gym(scheme: "Pushpin for Pinboard") # Build your app - more options available
+    deliver(force: true)
+    # frameit
+  end
+end
