@@ -100,7 +100,7 @@
       buildConfiguration = "Pinboard Debug">
    </AnalyzeAction>
    <ArchiveAction
-      buildConfiguration = "Pinboard App Store"
+      buildConfiguration = "Pinboard Beta"
       customArchiveName = "Pushpin"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
