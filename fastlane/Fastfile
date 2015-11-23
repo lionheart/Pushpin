@@ -7,8 +7,8 @@ platform :ios do
     ensure_git_status_clean
     cocoapods
     increment_build_number
-    increment_version_number “4.1.1”
-    version = prompt(text: "Marketing version: ")
+    increment_version_number "4.1.1"
+# version = prompt(text: "Marketing version: ")
   end
 
   desc "Submit a new Beta Build to Apple TestFlight"
