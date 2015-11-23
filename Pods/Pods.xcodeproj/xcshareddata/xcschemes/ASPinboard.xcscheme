@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "09850E5B2E461BAB555BC113"
+               BlueprintIdentifier = "84D6C37B5F8925F2022A349F"
                BuildableName = "libASPinboard.a"
                BlueprintName = "ASPinboard"
                ReferencedContainer = "container:Pods.xcodeproj">
