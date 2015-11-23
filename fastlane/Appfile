@@ -1,11 +1,15 @@
-app_identifier "io.aurora.pushpinbeta" # The bundle identifier of your app
-apple_id "dan@lionheartsw.com" # Your Apple email address
+app_identifier "io.aurora.pushpin"
+apple_id "dan@lionheartsw.com"
 
-# You can uncomment any of the lines below and add your own
-# team selection in case you're in multiple teams
-# team_name "Felix Krause"
-# team_id "Q2CBPJ58CA"
+for_platform :ios do
+  team_id "Lionheart Software LLC"
+  team_id "Q2CBPJ58CA"
 
+  for_lane :beta do
+    app_identifier 'io.aurora.pushpinbeta'
+  end
 
-# you can even provide different app identifiers, Apple IDs and team names per lane:
-# https://github.com/KrauseFx/fastlane/blob/master/docs/Appfile.md
+  for_lane :appstore do
+    app_identifier 'io.aurora.pushpin'
+  end
+end

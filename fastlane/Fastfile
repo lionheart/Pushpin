@@ -1,13 +1,14 @@
-update_fastlane
-
 fastlane_version "1.39.0"
 
 default_platform :ios
 
 platform :ios do
   before_all do
+    ensure_git_status_clean
     cocoapods
-# increment_build_number
+    increment_build_number
+    increment_version_number “4.1.1”
+    version = prompt(text: "Marketing version: ")
   end
 
   desc "Submit a new Beta Build to Apple TestFlight"
@@ -19,11 +20,8 @@ platform :ios do
   end
 
   desc "Deploy a new version to the App Store"
-  lane :deploy do
-    # snapshot
-    sigh
-    gym(scheme: "Pushpin for Pinboard") # Build your app - more options available
+  lane :appstore do
+    gym(scheme: "Pushpin for Pinboard")
     deliver(force: true)
-    # frameit
   end
 end
