@@ -121,28 +121,16 @@
                         
 #warning XXX
                         if (note[@"updated_at"]) {
-#if !DEBUG
-                            CLS_LOG(@"updated_at: %@", note[@"updated_at"]);
-#endif
                         }
                         else {
                             date = [NSDate date];
                         }
                         
                         if (title) {
-#if !DEBUG
-                            CLS_LOG(@"title: %@", note[@"title"]);
-#endif
                         }
                         else {
                             title = @"Untitled";
                         }
-                        
-#if !DEBUG
-                        if (noteID) {
-                            CLS_LOG(@"noteID: %@", noteID);
-                        }
-#endif
                         
                         [newNotesUnsorted addObject:@{
                                                       @"updated_at": date,
