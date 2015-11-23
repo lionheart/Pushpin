@@ -26,3 +26,4 @@ build/
 ghi.token
 Crashlytics.framework
 Preview.html
+fastlane/report.xml
