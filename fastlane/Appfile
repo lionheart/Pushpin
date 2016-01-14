@@ -2,7 +2,7 @@ app_identifier "io.aurora.pushpin"
 apple_id "dan@lionheartsw.com"
 
 for_platform :ios do
-  team_id "Lionheart Software LLC"
+  team_name "Lionheart Software LLC"
   team_id "Q2CBPJ58CA"
 
   for_lane :beta do
