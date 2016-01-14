@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "FE4687500CB8A3CEE46B4827"
+               BlueprintIdentifier = "608DD19E123F66B08FD060C9"
                BuildableName = "libLHSDelicious.a"
                BlueprintName = "LHSDelicious"
                ReferencedContainer = "container:Pods.xcodeproj">
