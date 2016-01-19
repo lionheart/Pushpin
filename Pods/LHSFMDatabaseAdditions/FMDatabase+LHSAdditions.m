@@ -9,7 +9,7 @@
 
 @implementation FMDatabase (LHSAdditions)
 
-- (void)executeUpdateFromFileWithPath:(NSString *)path {
+- (void)lhs_executeUpdateFromFileWithPath:(NSString *)path {
     NSFileHandle *handle = [NSFileHandle fileHandleForReadingAtPath:path];
     NSData *data = [handle readDataToEndOfFile];
     [handle closeFile];

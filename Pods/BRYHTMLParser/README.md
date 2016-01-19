@@ -1,9 +1,23 @@
-1. Open Your project in XCode and drag and drop all .h & .m Files into an appropriate folder
-2. In the project settings add "/usr/include/libxml2" to the "header search paths" field
-3. Ctrl Click the Frameworks group choose Add -> Existing Frameworks and from the list choose libxml2.dylib
+# BRYHTMLParser
 
-Example Usage
-=============
+A fork of Ben Reeves’ [Objective-C HTML Parser](https://github.com/zootreeves/Objective-C-HMTL-Parser), containing some slight improvements and CocoaPods support.
+
+## Installation
+
+### CocoaPods
+
+```bash
+pod install BRYHTMLParser
+```
+
+### Manual
+
+1. Open Your project in Xcode and drag and drop all `.h`/`.m` files into an appropriate folder
+2. In the project settings add `/usr/include/libxml2` to the “Header search paths” field
+3. Ctrl-Click the Frameworks group choose “Add -> Existing Frameworks” and from the list choose `libxml2.dylib`
+
+## Usage
+
 ```objc
 NSError *error = nil;
 NSString *html =
