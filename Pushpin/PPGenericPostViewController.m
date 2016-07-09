@@ -243,13 +243,9 @@ static NSInteger PPBookmarkEditMaximum = 25;
         self.searchController.searchBar.searchBarStyle = UISearchBarStyleProminent;
         self.searchController.searchBar.isAccessibilityElement = YES;
         self.searchController.searchBar.accessibilityLabel = NSLocalizedString(@"Search Bar", nil);
-#ifdef DELICIOUS
-        self.searchController.searchBar.scopeButtonTitles = @[@"All", @"Title", @"Desc.", @"Tags"];
-#endif
         
-#ifdef PINBOARD
+
         self.searchController.searchBar.scopeButtonTitles = @[NSLocalizedString(@"All", nil), NSLocalizedString(@"Title", nil), NSLocalizedString(@"Desc.", nil), NSLocalizedString(@"Tags", nil), NSLocalizedString(@"Full Text", nil)];
-#endif
         
         self.searchPostDataSource = [self.postDataSource searchDataSource];
         if ([self.searchPostDataSource respondsToSelector:@selector(searchPlaceholder)]) {
@@ -792,14 +788,13 @@ static NSInteger PPBookmarkEditMaximum = 25;
 }
 
 - (void)updateSearchResultsForSearchPerformedAtTime:(NSDate *)time {
-#ifdef PINBOARD
+
     if (self.searchController.searchBar.selectedScopeButtonIndex == PPSearchScopeFullText) {
         [(PPPinboardDataSource *)self.searchPostDataSource setSearchScope:ASPinboardSearchScopeFullText];
     }
     else {
         [(PPPinboardDataSource *)self.searchPostDataSource setSearchScope:ASPinboardSearchScopeNone];
     }
-#endif
     
     [self.searchPostDataSource filterWithQuery:self.formattedSearchString];
     [self updateFromLocalDatabaseWithCallback:nil time:time];
@@ -1956,11 +1951,10 @@ static NSInteger PPBookmarkEditMaximum = 25;
         
         BOOL shouldSearchFullText = NO;
         
-#ifdef PINBOARD
+
         if ([self.searchPostDataSource respondsToSelector:@selector(shouldSearchFullText)]) {
             shouldSearchFullText = self.searchController.searchBar.selectedScopeButtonIndex == PPSearchScopeFullText;
         }
-#endif
         
         self.latestSearchTime = [NSDate date];
         if (shouldSearchFullText) {

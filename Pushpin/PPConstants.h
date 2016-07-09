@@ -23,29 +23,8 @@ typedef enum PPProviders : NSInteger {
     PPProviderDelicious
 } PPProviderType;
 
-#ifdef DELICIOUS
-static NSString *PPTwitterUsername = @"PushpinDel";
 
-typedef enum : NSInteger {
-    PPDeliciousPersonalFeedAll,
-    PPDeliciousPersonalFeedPrivate,
-    PPDeliciousPersonalFeedPublic,
-    PPDeliciousPersonalFeedUnread,
-    PPDeliciousPersonalFeedUntagged
-} PPDeliciousPersonalFeedType;
 
-typedef enum : NSInteger {
-    PPDeliciousSectionPersonal,
-} PPDeliciousSectionType;
-
-static NSInteger PPProviderDeliciousSections = PPDeliciousSectionPersonal + 1;
-
-typedef enum : NSInteger {
-    PPDeliciousPersonalRows = PPDeliciousPersonalFeedUntagged + 1,
-} PPDeliciousRowCounts;
-#endif
-
-#ifdef PINBOARD
 static NSString *PPTwitterUsername = @"Pushpin_app";
 
 typedef enum : NSInteger {
@@ -79,7 +58,6 @@ typedef enum : NSInteger {
 } PPPinboardRowCounts;
 
 static NSInteger PPProviderPinboardSections = PPPinboardSectionSearches + 1;
-#endif
 
 typedef NS_ENUM(NSInteger, PPOfflineFetchCriteriaType) {
     PPOfflineFetchCriteriaUnread,
@@ -179,27 +157,8 @@ static NSArray *PPOfflineFetchCriterias() {
     return @[@"Unread", @"Recent", @"Unread and Recent", @"Everything"];
 }
 
-#ifdef DELICIOUS
-static NSString *PPTestFlightToken = @"da69c1e2-d02e-4e26-9e8b-189503ae410b";
-static NSString *PPMixpanelToken = @"c9c119f24aa8b5d17311be35ecf2310e";
-static NSString *PPPocketIPhoneToken = @"23110-401de8502cbf573a2e115c2a";
-static NSString *PPPocketIPadToken = @"23110-86247a432b99945a85a44846";
-static PPProviderType PPProvider __unused = PPProviderDelicious;
 
-static NSArray *PPSections() {
-    return @[@"personal"];
-}
 
-static NSArray *PPPersonalFeeds() {
-    return @[@"all", @"private", @"public", @"unread", @"untagged"];
-}
-
-static NSArray *PPCommunityFeeds() {
-    return @[];
-}
-#endif
-
-#ifdef PINBOARD
 static NSString *PPTestFlightToken = @"575d650a-43d5-4e99-a3bb-2b7bbae29a6c";
 static NSString *PPMixpanelToken = @"045e859e70632363c4809784b13c5e98";
 static NSString *PPPocketIPhoneToken = @"11122-03068da9a8951bec2dcc93f3";
@@ -222,7 +181,6 @@ static NSArray *PPCommunityFeeds() {
     });
     return feeds;
 }
-#endif
 
 @interface PPConstants : NSObject
 

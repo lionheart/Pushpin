@@ -84,13 +84,9 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                                              settings.lastUpdated = nil;
                                              [delegate logout];
                                              
-#ifdef DELICIOUS
-                                             [[LHSDelicious sharedInstance] resetAuthentication];
-#endif
                                              
-#ifdef PINBOARD
+
                                              [[ASPinboard sharedInstance] resetAuthentication];
-#endif
                                              
                                              [delegate setLoginViewController:nil];
                                              [delegate setNavigationController:nil];
@@ -365,13 +361,9 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
         case PPSectionOtherSettings: {
             switch ((PPOtherSettingsRowType)indexPath.row) {
                 case PPOtherRatePushpin:
-#ifdef DELICIOUS
-                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=806918542&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software"]];
-#endif
                     
-#ifdef PINBOARD
+
                     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=548052590&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software"]];
-#endif
                     break;
                     
                 case PPOtherFollow: {

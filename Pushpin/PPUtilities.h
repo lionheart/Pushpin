@@ -7,8 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <FMDB/FMDatabaseQueue.h>
-#import <FMDB/FMDatabase.h>
+#import <FMDB/FMDB.h>
 
 #import "PPConstants.h"
 

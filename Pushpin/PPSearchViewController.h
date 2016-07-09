@@ -9,7 +9,7 @@
 #import "PPTableViewController.h"
 #import <LHSKeyboardAdjusting/LHSKeyboardAdjusting.h>
 
-#ifdef PINBOARD
+
 typedef NS_ENUM(NSInteger, PPSearchScopeType) {
     PPSearchScopeMine,
     PPSearchScopePinboard,
@@ -34,35 +34,7 @@ typedef NS_ENUM(NSInteger, PPSearchSectionType) {
 static NSArray *PPSearchScopes() {
     return @[@"Pushpin", @"Pinboard Servers"];
 }
-#endif
 
-#ifdef DELICIOUS
-typedef NS_ENUM(NSInteger, PPSearchScopeType) {
-    PPSearchScopeMine,
-    PPSearchScopeNetwork,
-    PPSearchScopeEveryone,
-    
-    // Unused
-    PPSearchScopePinboard,
-};
-
-typedef NS_ENUM(NSInteger, PPSearchFilterRowType) {
-    PPSearchFilterPrivate,
-    PPSearchFilterUnread,
-    PPSearchFilterUntagged
-};
-
-typedef NS_ENUM(NSInteger, PPSearchSectionType) {
-    PPSearchSectionQuery,
-    PPSearchSectionScope,
-    PPSearchSectionFilters,
-    PPSearchSectionSave
-};
-
-static NSArray *PPSearchScopes() {
-    return @[];
-}
-#endif
 
 typedef NS_ENUM(NSInteger, PPSearchQueryRowType) {
     PPSearchQueryRow

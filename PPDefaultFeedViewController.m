@@ -64,7 +64,7 @@ static NSString *CellIdentifier = @"Cell";
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-#ifdef PINBOARD
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
             [self.savedFeeds removeAllObjects];
@@ -137,16 +137,12 @@ static NSString *CellIdentifier = @"Cell";
             [self.tableView reloadData];
         });
     });
-#endif
 }
 
 #pragma mark - UITableView data source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-#ifdef DELICIOUS
-    return PPProviderDeliciousSections;
-#endif
     
-#ifdef PINBOARD
+
     NSInteger sections = PPProviderPinboardSections;
     if (self.savedFeeds.count == 0) {
         sections--;
@@ -157,21 +153,11 @@ static NSString *CellIdentifier = @"Cell";
     }
     
     return sections;
-#endif
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-#ifdef DELICIOUS
-    switch ((PPDeliciousSectionType)section) {
-        case PPDeliciousSectionPersonal:
-            return PPDeliciousPersonalRows;
-            
-        default:
-            return 0;
-    }
-#endif
     
-#ifdef PINBOARD
+
     PPPinboardSectionType sectionType = [self sectionForSectionIndex:section];
     switch (sectionType) {
         case PPPinboardSectionPersonal:
@@ -186,21 +172,11 @@ static NSString *CellIdentifier = @"Cell";
         case PPPinboardSectionSearches:
             return self.searches.count;
     }
-#endif
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-#ifdef DELICIOUS
-    switch ((PPDeliciousSectionType)section) {
-        case PPDeliciousSectionPersonal:
-            return [PPTableViewTitleView heightWithText:NSLocalizedString(@"Personal", nil)] + 10;
-            
-        default:
-            return 0;
-    }
-#endif
 
-#ifdef PINBOARD
+
     PPPinboardSectionType sectionType = [self sectionForSectionIndex:section];
     switch (sectionType) {
         case PPPinboardSectionPersonal:
@@ -216,21 +192,11 @@ static NSString *CellIdentifier = @"Cell";
             return [PPTableViewTitleView heightWithText:NSLocalizedString(@"Searches", nil)];
     }
     return 0;
-#endif
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-#ifdef DELICIOUS
-    switch ((PPDeliciousSectionType)section) {
-        case PPDeliciousSectionPersonal:
-            return NSLocalizedString(@"Personal", nil);
-            
-        default:
-            return nil;
-    }
-#endif
     
-#ifdef PINBOARD
+
     PPPinboardSectionType sectionType = [self sectionForSectionIndex:section];
     switch (sectionType) {
         case PPPinboardSectionPersonal:
@@ -245,44 +211,14 @@ static NSString *CellIdentifier = @"Cell";
         case PPPinboardSectionSearches:
             return NSLocalizedString(@"Searches", nil);
     }
-#endif
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     cell.textLabel.font = [PPTheme textLabelFont];
     
-#ifdef DELICIOUS
-    switch ((PPDeliciousSectionType)indexPath.section) {
-        case PPDeliciousSectionPersonal: {
-            switch ((PPDeliciousPersonalFeedType)indexPath.row) {
-                case PPDeliciousPersonalFeedAll:
-                    cell.textLabel.text = NSLocalizedString(@"All", nil);
-                    break;
 
-                case PPDeliciousPersonalFeedPrivate:
-                    cell.textLabel.text = NSLocalizedString(@"Private Bookmarks", nil);
-                    break;
 
-                case PPDeliciousPersonalFeedPublic:
-                    cell.textLabel.text = NSLocalizedString(@"Public", nil);
-                    break;
-
-                case PPDeliciousPersonalFeedUnread:
-                    cell.textLabel.text = NSLocalizedString(@"Unread", nil);
-                    break;
-
-                case PPDeliciousPersonalFeedUntagged:
-                    cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
-                    break;
-            }
-            
-            break;
-        }
-    }
-#endif
-
-#ifdef PINBOARD
     PPPinboardSectionType section = [self sectionForSectionIndex:indexPath.section];
     switch (section) {
         case PPPinboardSectionPersonal: {
@@ -399,7 +335,6 @@ static NSString *CellIdentifier = @"Cell";
             break;
         }
     }
-#endif
     
     if ([indexPath isEqual:self.defaultIndexPath]) {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
@@ -429,37 +364,8 @@ static NSString *CellIdentifier = @"Cell";
         // Build our new default view string
         NSString *defaultFeed = @"personal-all";
 
-#ifdef DELICIOUS
-        PPDeliciousSectionType sectionType = (PPDeliciousSectionType)indexPath.section;
         
-        switch (sectionType) {
-            case PPDeliciousSectionPersonal:
-                switch ((PPDeliciousPersonalFeedType)indexPath.row) {
-                    case PPDeliciousPersonalFeedAll:
-                        defaultFeed = @"personal-all";
-                        break;
-                        
-                    case PPDeliciousPersonalFeedPrivate:
-                        defaultFeed = @"personal-private";
-                        break;
-                        
-                    case PPDeliciousPersonalFeedPublic:
-                        defaultFeed = @"personal-public";
-                        break;
-                        
-                    case PPDeliciousPersonalFeedUnread:
-                        defaultFeed = @"personal-unread";
-                        break;
-                        
-                    case PPDeliciousPersonalFeedUntagged:
-                        defaultFeed = @"personal-untagged";
-                        break;
-                }
-                break;
-        }
-#endif
-        
-#ifdef PINBOARD
+
         PPPinboardSectionType section = [self sectionForSectionIndex:indexPath.section];
         switch (section) {
             case PPPinboardSectionPersonal:
@@ -529,7 +435,6 @@ static NSString *CellIdentifier = @"Cell";
             default:
                 break;
         }
-#endif
         
         // Update the default feed and pop the view
         [[PPSettings sharedSettings] setDefaultFeed:defaultFeed];

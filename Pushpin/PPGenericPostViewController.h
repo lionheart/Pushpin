@@ -37,9 +37,8 @@ typedef enum : NSInteger {
     PPSearchScopeDescriptions,
     PPSearchScopeTags,
     
-#ifdef PINBOARD
+
     PPSearchScopeFullText,
-#endif
 
     PPSearchScopePublic,
 } PPSearchBarScopeType;

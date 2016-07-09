@@ -554,27 +554,8 @@
     PPSettings *settings = [PPSettings sharedSettings];
 
     if (!_navigationController) {
-#ifdef DELICIOUS
-        PPDeliciousDataSource *deliciousDataSource = [[PPDeliciousDataSource alloc] init];
-        deliciousDataSource.limit = 100;
-        deliciousDataSource.orderBy = @"created_at DESC";
+        
 
-        PPGenericPostViewController *deliciousViewController = [[PPGenericPostViewController alloc] init];
-        deliciousViewController.postDataSource = deliciousDataSource;
-
-        _navigationController = [[PPNavigationController alloc] init];
-        
-        if ([UIApplication isIPad]) {
-            _navigationController.viewControllers = @[deliciousViewController];
-        }
-        else {
-            _navigationController.viewControllers = @[self.feedListViewController, deliciousViewController];
-        }
-        
-        [_navigationController popToViewController:deliciousViewController animated:NO];
-#endif
-        
-#ifdef PINBOARD
         PPPinboardDataSource *pinboardDataSource = [[PPPinboardDataSource alloc] init];
         pinboardDataSource.limit = 100;
         pinboardDataSource.orderBy = @"created_at DESC";
@@ -725,7 +706,6 @@
         }
 
         [_navigationController popToViewController:pinboardViewController animated:NO];
-#endif
     }
     return _navigationController;
 }
@@ -793,7 +773,7 @@
         @"io.aurora.pinboard.UseCellularDataForOffline": @(NO),
         @"io.aurora.pinboard.OfflineReadingEnabled": @(NO),
         @"io.aurora.pinboard.DownloadFullWebpageForOffline": @(YES),
-#ifdef PINBOARD
+
         @"io.aurora.pinboard.PersonalFeedOrder": @[
                 @(PPPinboardPersonalFeedAll),
                 @(PPPinboardPersonalFeedPrivate),
@@ -810,17 +790,7 @@
                 @(PPPinboardCommunityFeedJapan),
                 @(PPPinboardCommunityFeedRecent),
             ],
-#endif
         
-#ifdef DELICIOUS
-        @"io.aurora.pinboard.PersonalFeedOrder": @[
-                @(PPDeliciousPersonalFeedAll),
-                @(PPDeliciousPersonalFeedPrivate),
-                @(PPDeliciousPersonalFeedPublic),
-                @(PPDeliciousPersonalFeedUnread),
-                @(PPDeliciousPersonalFeedUntagged),
-            ],
-#endif
         }];
 
     [PPURLCache migrateDatabase];
@@ -857,18 +827,8 @@
     [NSURLProtocol registerClass:[PPCachingURLProtocol class]];
 #endif
     
-#ifdef DELICIOUS
-    LHSDelicious *delicious = [LHSDelicious sharedInstance];
-    [delicious setRequestCompletedCallback:^{
-        [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
-    }];
 
-    [delicious setRequestStartedCallback:^{
-        [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];
-    }];
-#endif
 
-#ifdef PINBOARD
     ASPinboard *pinboard = [ASPinboard sharedInstance];
     [pinboard setRequestCompletedCallback:^{
         [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
@@ -876,19 +836,13 @@
     [pinboard setRequestStartedCallback:^{
         [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];
     }];
-#endif
 
     [application setStatusBarStyle:UIStatusBarStyleLightContent];
 
     if (settings.isAuthenticated) {
-#ifdef PINBOARD
+
         pinboard.token = settings.token;
-#endif
         
-#ifdef DELICIOUS
-        delicious.username = settings.username;
-        delicious.password = settings.password;
-#endif
         [mixpanel identify:settings.username];
         [mixpanel.people set:@"$username" to:settings.username];
         
@@ -939,13 +893,9 @@
     [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalNever];
     [self.urlCache removeAllCachedResponses];
 
-#ifdef DELICIOUS
-    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"DeliciousCredentials" accessGroup:nil];
-#endif
     
-#ifdef PINBOARD
+
     KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"PinboardCredentials" accessGroup:nil];
-#endif
 
     [PPUtilities resetDatabase];
 
@@ -955,17 +905,8 @@
     PPSettings *settings = [PPSettings sharedSettings];
     settings.hiddenFeedNames = @[];
 
-#ifdef DELICIOUS
-    settings.personalFeedOrder = @[
-                               @(PPDeliciousPersonalFeedAll),
-                               @(PPDeliciousPersonalFeedPrivate),
-                               @(PPDeliciousPersonalFeedPublic),
-                               @(PPDeliciousPersonalFeedUnread),
-                               @(PPDeliciousPersonalFeedUntagged),
-                           ];
-#endif
 
-#ifdef PINBOARD
+
     settings.personalFeedOrder = @[
                                @(PPPinboardPersonalFeedAll),
                                @(PPPinboardPersonalFeedPrivate),
@@ -985,7 +926,6 @@
                             ];
     
     settings.hiddenFeedNames = @[];
-#endif
     
     [keychain resetKeychainItem];
     settings.token = nil;

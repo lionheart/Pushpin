@@ -52,9 +52,8 @@
 @synthesize turnOffBookmarkPrompt = _turnOffBookmarkPrompt;
 @synthesize turnOffPushpinCloudPrompt = _turnOffPushpinCloudPrompt;
 
-#ifdef PINBOARD
+
 @synthesize communityFeedOrder = _communityFeedOrder;
-#endif
 
 + (instancetype)sharedSettings {
     static PPSettings *settings;
@@ -404,7 +403,7 @@
     [defaults synchronize];
 }
 
-#ifdef PINBOARD
+
 
 - (NSArray *)communityFeedOrder {
     if (!_communityFeedOrder) {
@@ -421,7 +420,6 @@
     [defaults synchronize];
 }
 
-#endif
 
 - (void)setPrivateByDefault:(BOOL)privateByDefault {
     _privateByDefault = privateByDefault;
@@ -560,18 +558,9 @@
 }
 
 - (NSString *)username {
-#ifdef DELICIOUS
-    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"DeliciousCredentials" accessGroup:nil];
-    NSString *key = [keychain objectForKey:(__bridge id)kSecAttrAccount];
-    if ([key isEqualToString:@""]) {
-        return nil;
-    }
-    return key;
-#endif
     
-#ifdef PINBOARD
+
     return [self.token componentsSeparatedByString:@":"][0];
-#endif
 }
 
 - (void)setUsername:(NSString *)username {
@@ -579,13 +568,9 @@
 }
 
 - (NSString *)password {
-#ifdef DELICIOUS
-    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"DeliciousCredentials" accessGroup:nil];
-#endif
     
-#ifdef PINBOARD
+
     KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"PinboardCredentials" accessGroup:nil];
-#endif
     
     NSString *key = [keychain objectForKey:(__bridge id)kSecValueData];
     if ([key isEqualToString:@""]) {
@@ -599,13 +584,9 @@
 }
 
 - (void)setUsername:(NSString *)username password:(NSString *)password {
-#ifdef DELICIOUS
-    KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"DeliciousCredentials" accessGroup:nil];
-#endif
     
-#ifdef PINBOARD
+
     KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"PinboardCredentials" accessGroup:nil];
-#endif
     
     if (username) {
         [keychain setObject:username forKey:(__bridge id)kSecAttrAccount];
@@ -617,13 +598,9 @@
 }
 
 - (BOOL)isAuthenticated {
-#ifdef DELICIOUS
-    return self.username != nil && self.password != nil;
-#endif
     
-#ifdef PINBOARD
+
     return self.token != nil;
-#endif
 }
 
 - (NSString *)defaultFeedDescription {

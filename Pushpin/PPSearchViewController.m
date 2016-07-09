@@ -51,9 +51,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 @property (nonatomic) kPushpinFilterType tagged;
 @property (nonatomic) PPSearchScopeType searchScope;
 
-#ifdef PINBOARD
+
 @property (nonatomic) ASPinboardSearchScopeType pinboardSearchScope;
-#endif
 
 - (void)searchBarButtonItemTouchUpInside:(id)sender;
 - (void)cancelBarButtonItemTouchUpInside:(id)sender;
@@ -95,9 +94,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                                                                  style:UIAlertActionStyleDefault
                                                                handler:nil];
     
-#ifdef PINBOARD
+
     self.pinboardSearchScope = ASPinboardSearchScopeNone;
-#endif
     
     UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:16];
     self.searchTextField = [[UITextField alloc] init];
@@ -359,7 +357,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-#ifdef PINBOARD
+
     switch (self.searchScope) {
         case PPSearchScopeMine:
             return 4;
@@ -373,17 +371,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
         case PPSearchScopePinboard:
             return 3;
     }
-#endif
     
-#ifdef DELICIOUS
-    switch (self.searchScope) {
-        case PPSearchScopeMine:
-            return 2;
-            
-        default:
-            return 0;
-    }
-#endif
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
@@ -466,7 +454,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                     cell.textLabel.text = NSLocalizedString(@"Search Full-Text", nil);
                     cell.detailTextLabel.text = NSLocalizedString(@"For archival accounts only.", nil);
 
-#ifdef PINBOARD
+
                     switch (self.pinboardSearchScope) {
                         case ASPinboardSearchScopeFullText: {
                             cell.accessoryType = UITableViewCellAccessoryCheckmark;
@@ -480,7 +468,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                         default:
                             break;
                     }
-#endif
                     break;
                 }
 
@@ -523,7 +510,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                             }
                             break;
                             
-#ifdef PINBOARD
+
                         case PPSearchFilterStarred:
                             filter = self.starred;
                             
@@ -542,7 +529,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                                     break;
                             }
                             break;
-#endif
                             
                         case PPSearchFilterUnread:
                             filter = self.read;
@@ -685,7 +671,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
         case PPSearchSectionFilters:
             switch (self.searchScope) {
                 case PPSearchScopePinboard:
-#ifdef PINBOARD
+
                     switch (self.pinboardSearchScope) {
                         case ASPinboardSearchScopeFullText: {
                             // Check if the user has no username or password set.
@@ -706,7 +692,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                         default:
                             break;
                     }
-#endif
                     break;
 
                 case PPSearchScopeMine:
@@ -762,7 +747,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                             
                             break;
                             
-#ifdef PINBOARD
+
                         case PPSearchFilterStarred:
                             switch (self.starred) {
                                 case kPushpinFilterTrue:
@@ -779,7 +764,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                             }
                             
                             break;
-#endif
                     }
                     break;
                     
@@ -814,7 +798,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
     PPGenericPostViewController *genericPostViewController = [[PPGenericPostViewController alloc] init];
     [self.view endEditing:YES];
     
-#ifdef PINBOARD
+
     PPPinboardDataSource *dataSource = [[PPPinboardDataSource alloc] init];
     
     if (self.searchTextField.text && ![self.searchTextField.text isEqualToString:@""]) {
@@ -860,45 +844,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
             break;
     }
 
-#endif
     
-#ifdef DELICIOUS
-    PPDeliciousDataSource *dataSource = [[PPDeliciousDataSource alloc] init];
-    
-    if (self.searchTextField.text && ![self.searchTextField.text isEqualToString:@""]) {
-        dataSource.searchQuery = self.searchTextField.text;
-    }
-    
-    dataSource.isPrivate = self.isPrivate;
-    
-    switch (self.read) {
-        case kPushpinFilterTrue:
-            dataSource.unread = kPushpinFilterFalse;
-            break;
-            
-        case kPushpinFilterFalse:
-            dataSource.unread = kPushpinFilterTrue;
-            break;
-            
-        case kPushpinFilterNone:
-            dataSource.unread = kPushpinFilterNone;
-            break;
-    }
-    
-    switch (self.tagged) {
-        case kPushpinFilterTrue:
-            dataSource.untagged = kPushpinFilterFalse;
-            break;
-            
-        case kPushpinFilterFalse:
-            dataSource.untagged = kPushpinFilterTrue;
-            break;
-            
-        case kPushpinFilterNone:
-            dataSource.untagged = kPushpinFilterNone;
-            break;
-    }
-#endif
 
     genericPostViewController.postDataSource = dataSource;
     

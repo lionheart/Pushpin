@@ -49,17 +49,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-#ifdef DELICIOUS
-    NSString *title = @"Pushpin for Delicious";
-    NSString* aboutPlist = [[NSBundle mainBundle] pathForResource:@"About-Delicious" ofType:@"plist"];
-#endif
     
-#ifdef PINBOARD
+
     NSBundle *bundle = [NSBundle mainBundle];
     NSDictionary *info = [bundle infoDictionary];
     NSString *title = [NSString stringWithFormat:@"Pushpin %@ (%@)", info[@"CFBundleShortVersionString"], info[@"CFBundleVersion"]];
     NSString* aboutPlist = [[NSBundle mainBundle] pathForResource:@"About" ofType:@"plist"];
-#endif
 
     PPTitleButton *titleView = [PPTitleButton button];
     [titleView setTitle:title imageName:nil];

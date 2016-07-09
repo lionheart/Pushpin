@@ -28,10 +28,9 @@
 
 @interface PPPinboardLoginViewController ()
 
-#ifdef PINBOARD
+
 @property (nonatomic, strong) UITextField *authTokenTextField;
 @property (nonatomic, strong) UITextView *authTokenFooterTextView;
-#endif
 
 @property (nonatomic) BOOL loginInProgress;
 @property (nonatomic, strong) UITextField *passwordTextField;
@@ -59,13 +58,9 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-#ifdef DELICIOUS
-    self.title = @"Pushpin for Delicious";
-#endif
     
-#ifdef PINBOARD
+
     self.title = @"Pinboard";
-#endif
     self.loginInProgress = NO;
 
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Help", nil)
@@ -82,7 +77,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
     self.textViewAttributes = @{NSFontAttributeName: [PPTheme detailLabelFontAlternate1]};
     
-#ifdef PINBOARD
+
     self.authTokenFooterTextView = [[UITextView alloc] init];
     self.authTokenFooterTextView.translatesAutoresizingMaskIntoConstraints = NO;
     self.authTokenFooterTextView.attributedText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Note: Logging in with your API token will prevent Pushpin from accessing Pinboard's full-text search feature.", nil)
@@ -105,7 +100,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     self.authTokenTextField.returnKeyType = UIReturnKeyDone;
     self.authTokenTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     self.authTokenTextField.placeholder = NSLocalizedString(@"username:NNNNNN", nil);
-#endif
 
     self.textView = [[UITextView alloc] init];
     self.textView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -152,13 +146,9 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 - (void)resetLoginScreen {
     self.loginInProgress = NO;
 
-#ifdef PINBOARD
+
     NSString *textViewText = NSLocalizedString(@"Enter your Pinboard credentials above. Email support@lionheartsw.com if you have any issues.", nil);
-#endif
     
-#ifdef DELICIOUS
-    NSString *textViewText = NSLocalizedString(@"Enter your Delicious credentials above. Email support@lionheartsw.com if you have any issues.", nil);
-#endif
     self.textView.attributedText = [[NSAttributedString alloc] initWithString:textViewText
                                                                    attributes:self.textViewAttributes];
     self.textView.hidden = YES;
@@ -210,9 +200,8 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     if (!self.loginInProgress) {
         self.loginInProgress = YES;
 
-#ifdef PINBOARD
+
         BOOL authTokenProvided = [self authTokenProvided];
-#endif
 
         BOOL usernameAndPasswordProvided = self.usernameTextField.text.length > 0 && self.passwordTextField.text.length > 0;
 #ifdef PINBOARD
@@ -222,13 +211,9 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 #endif
 
         if (!validCredentialsProvided) {
-#ifdef DELICIOUS
-            NSString *message = NSLocalizedString(@"Please enter both a username and password to sign into Delicious.", nil);
-#endif
 
-#ifdef PINBOARD
+
             NSString *message = NSLocalizedString(@"Please enter both a username and password to sign into Pinboard.", nil);
-#endif
 
             UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:nil
                                                                            message:message];
@@ -263,17 +248,14 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             
             [self.tableView beginUpdates];
             
-#ifdef PINBOARD
+
             if (authTokenProvided) {
                 [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPLoginCredentialSection] withRowAnimation:UITableViewRowAnimationFade];
             }
             else {
                 [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPLoginAuthTokenSection] withRowAnimation:UITableViewRowAnimationFade];
             }
-#endif
             
-#ifdef DELICIOUS
-#endif
 
             if ([self is1PasswordAvailable]) {
                 [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPLogin1PasswordSection] withRowAnimation:UITableViewRowAnimationFade];
@@ -324,13 +306,9 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                             break;
                             
                         case PinboardErrorTimeout: {
-#ifdef DELICIOUS
-                            NSString *message = NSLocalizedString(@"Delicious is currently down. Please try logging in later.", nil);
-#endif
                             
-#ifdef PINBOARD
+
                             NSString *message = NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil);
-#endif
                             
                             UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:nil
                                                                                          message:message];
@@ -350,14 +328,13 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                     
                     [self.tableView beginUpdates];
 
-#ifdef PINBOARD
+
                     if (authTokenProvided) {
                         [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPLoginCredentialSection] withRowAnimation:UITableViewRowAnimationFade];
                     }
                     else {
                         [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPLoginAuthTokenSection] withRowAnimation:UITableViewRowAnimationFade];
                     }
-#endif
 
                     if ([self is1PasswordAvailable]) {
                         [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPLogin1PasswordSection] withRowAnimation:UITableViewRowAnimationFade];
@@ -407,43 +384,8 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
             [PPUtilities resetDatabase];
             [PPUtilities migrateDatabase];
-#ifdef DELICIOUS
 
-            LHSDelicious *delicious = [LHSDelicious sharedInstance];
-            [delicious authenticateWithUsername:self.usernameTextField.text
-                                       password:self.passwordTextField.text
-                                     completion:^(NSError *error) {
-                                         if (error) {
-                                             LoginFailureBlock(error);
-                                         }
-                                         else {
-                                             settings.username = self.usernameTextField.text;
-                                             settings.password = self.passwordTextField.text;
-                                             
-                                             dispatch_async(dispatch_get_main_queue(), ^{
-                                                 LoginSuccessBlock();
-                                                 
-                                                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                     PPDeliciousDataSource *dataSource = [[PPDeliciousDataSource alloc] init];
-                                                     
-                                                     [dataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
-                                                         if (!error) {
-                                                             SyncCompletedBlock();
-                                                         }
-                                                     } progress:UpdateProgressBlock];
-                                                     
-                                                     Mixpanel *mixpanel = [Mixpanel sharedInstance];
-                                                     [mixpanel identify:settings.username];
-                                                     [mixpanel.people set:@"$created" to:[NSDate date]];
-                                                     [mixpanel.people set:@"$username" to:[delegate username]];
-                                                     [mixpanel.people set:@"Browser" to:@"Webview"];
-                                                 });
-                                             });
-                                         }
-                                     }];
-#endif
 
-#ifdef PINBOARD
             ASPinboard *pinboard = [ASPinboard sharedInstance];
             
             void (^PinboardAuthenticationSuccessBlock)() = ^{
@@ -491,7 +433,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                            }
                                            failure:LoginFailureBlock];
             }
-#endif
         });
     }
 }
@@ -539,13 +480,9 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     switch ((PPLoginSectionType)section) {
         case PPLoginCredentialSection:
             if (self.progressView.hidden) {
-#ifdef DELICIOUS
-                return @"Delicious Login";
-#endif
                 
-#ifdef PINBOARD
+
                 return @"Pinboard Login";
-#endif
             }
             break;
             
@@ -624,7 +561,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                 }
             }
             
-#ifdef PINBOARD
+
         case PPLoginAuthTokenSection: {
             CGFloat width = CGRectGetWidth(tableView.frame) - 20;
             CGRect rect = [self.authTokenFooterTextView.attributedText boundingRectWithSize:CGSizeMake(width, CGFLOAT_MAX)
@@ -632,7 +569,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                                                     context:nil];
             return CGRectGetHeight(rect) + 30;
         }
-#endif
 
         default:
             return 0;
@@ -659,7 +595,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
             break;
             
-#ifdef PINBOARD
+
         case PPLoginAuthTokenSection:
             if (self.authTokenFooterTextView.hidden) {
                 return nil;
@@ -675,7 +611,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                 return view;
             }
             break;
-#endif
             
         default:
             return nil;
@@ -721,7 +656,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             }
             break;
             
-#ifdef PINBOARD
+
         case PPLoginAuthTokenSection: {
             NSDictionary *views = @{@"view": self.authTokenTextField };
             [cell.contentView addSubview:self.authTokenTextField];
@@ -729,7 +664,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             [cell.contentView lhs_addConstraints:@"V:|-5-[view]-5-|" views:views];
             break;
         }
-#endif
             
         case PPLogin1PasswordSection: {
             cell.selectionStyle = UITableViewCellSelectionStyleGray;
@@ -769,11 +703,10 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
             break;
 
-#ifdef PINBOARD
+
         case PPLoginAuthTokenSection:
             [self.authTokenTextField becomeFirstResponder];
             break;
-#endif
 
         case PPLogin1PasswordSection: {
             __weak typeof (self) weakself = self;
@@ -805,13 +738,9 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 #pragma mark - Utils
 
 - (BOOL)is1PasswordAvailable {
-#ifdef PINBOARD
+
     NSString *searchTerm = @"pinboard";
-#endif
     
-#ifdef DELICIOUS
-    NSString *searchTerm = @"delicious";
-#endif
     return [[OnePasswordExtension sharedExtension] isAppExtensionAvailable];
 }
             

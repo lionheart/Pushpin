@@ -460,13 +460,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 return kBookmarkTagRow + 1;
                 
             case kBookmarkBottomSection:
-#ifdef DELICIOUS
-                return 1;
-#endif
                 
-#ifdef PINBOARD
+
                 return 2;
-#endif
                 
             default:
                 return 0;
@@ -1167,9 +1163,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                                                                                       @"unread": @(unread),
                                                                                                       @"private": @(private),
                                                                                                       
-#ifdef PINBOARD
+
                                                                                                       @"starred": @(NO)
-#endif
                                                                                                       }];
                         BOOL hashExists = hash && ![hash isEqual:[NSNull null]];
                         
@@ -1182,13 +1177,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                 [params removeObjectForKey:@"url"];
                                 params[@"hash"] = hash;
                                 
-#ifdef DELICIOUS
-                                [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, meta=random() WHERE hash=:hash" withParameterDictionary:params];
-#endif
                                 
-#ifdef PINBOARD
+
                                 [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, starred=:starred, meta=random() WHERE hash=:hash" withParameterDictionary:params];
-#endif
                                 [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
                                 for (NSString *tagName in [tags componentsSeparatedByString:@" "]) {
                                     [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
@@ -1198,13 +1189,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
                             else {
 #warning The bookmark doesn't yet have a hash
                                 
-#ifdef DELICIOUS
-                                [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, meta=random() WHERE url=:url" withParameterDictionary:params];
-#endif
                                 
-#ifdef PINBOARD
+
                                 [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, starred=:starred, meta=random() WHERE url=:url" withParameterDictionary:params];
-#endif
                             }
                             bookmarkAdded = NO;
                         }
@@ -1213,13 +1200,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
                             params[@"created_at"] = [NSDate date];
                             [mixpanel track:@"Added bookmark" properties:@{@"Private": @(private), @"Read": @(!unread)}];
                             
-#ifdef DELICIOUS
-                            [db executeUpdate:@"INSERT INTO bookmark (meta, title, description, url, private, unread, tags, created_at) VALUES (random(), :title, :description, :url, :private, :unread, :tags, :created_at);" withParameterDictionary:params];
-#endif
                             
-#ifdef PINBOARD
+
                             [db executeUpdate:@"INSERT INTO bookmark (meta, title, description, url, private, unread, starred, tags, created_at) VALUES (random(), :title, :description, :url, :private, :unread, :starred, :tags, :created_at);" withParameterDictionary:params];
-#endif
                             
                             bookmarkAdded = YES;
                         }
@@ -1227,12 +1210,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
                         [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
                         
-#ifdef PINBOARD
+
                         FMResultSet *resultSet = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[url]];
                         [resultSet next];
                         post = [PPPinboardDataSource postFromResultSet:resultSet];
                         [resultSet close];
-#endif
                     }];
                     
                     PPBookmarkEventType eventType;
@@ -1244,13 +1226,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     }
 
                     if (self.callback) {
-#ifdef PINBOARD
+
                         self.callback(post);
-#endif
                         
-#ifdef DELICIOUS
-                        self.callback(@{});
-#endif
 
                         dispatch_async(dispatch_get_main_queue(), ^{
 #warning This used to be "NO". Why?
@@ -1300,26 +1278,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 });
             };
             
-#ifdef DELICIOUS 
-            dispatch_async(dispatch_get_main_queue(), ^{
-                LHSDelicious *delicious = [LHSDelicious sharedInstance];
-                [delicious addBookmarkWithURL:url
-                                        title:title
-                                  description:description
-                                         tags:tags
-                                       shared:!private
-                                   completion:^(NSError *error) {
-                                       if (error) {
-                                           BookmarkFailureBlock(error);
-                                       }
-                                       else {
-                                           BookmarkSuccessBlock();
-                                       }
-                                   }];
-            });
-#endif
 
-#ifdef PINBOARD
+
             ASPinboard *pinboard = [ASPinboard sharedInstance];
             [pinboard addBookmarkWithURL:url
                                    title:title
@@ -1329,7 +1289,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                   unread:unread
                                  success:BookmarkSuccessBlock
                                  failure:BookmarkFailureBlock];
-#endif
 
         });
     });
@@ -1487,24 +1446,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         });
                     };
 
-#ifdef DELICIOUS
-                    LHSDelicious *delicious = [LHSDelicious sharedInstance];
-                    [delicious addBookmarkWithURL:url
-                                            title:title
-                                      description:description
-                                             tags:tags
-                                           shared:!private
-                                       completion:^(NSError *error) {
-                                           if (error) {
-                                               BookmarkFailureBlock(error);
-                                           }
-                                           else {
-                                               BookmarkSuccessBlock();
-                                           }
-                                       }];
-#endif
 
-#ifdef PINBOARD
+
                     ASPinboard *pinboard = [ASPinboard sharedInstance];
                     [pinboard addBookmarkWithURL:url
                                            title:title
@@ -1514,7 +1457,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                           unread:unread
                                          success:BookmarkSuccessBlock
                                          failure:BookmarkFailureBlock];
-#endif
 
                 });
             });

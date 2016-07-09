@@ -122,7 +122,7 @@
 }
 
 + (NSDictionary *)dictionaryFromResultSet:(id)resultSet {
-#ifdef PINBOARD
+
     NSNumber *starred = @([resultSet boolForColumn:@"starred"]);
     if (!starred) {
         starred = @(NO);
@@ -137,31 +137,7 @@
              @"created_at": [resultSet dateForColumn:@"created_at"],
              @"starred": starred
          };
-#endif
 
-#ifdef DELICIOUS
-    NSString *title = [resultSet stringForColumn:@"title"];
-    
-    if ([title isEqualToString:@""]) {
-        title = @"untitled";
-    }
-    
-    NSString *hash = [resultSet stringForColumn:@"hash"];
-    if (!hash) {
-        hash = @"";
-    }
-
-    return @{
-             @"title": title,
-             @"description": [resultSet stringForColumn:@"description"],
-             @"unread": @([resultSet boolForColumn:@"unread"]),
-             @"url": [resultSet stringForColumn:@"url"],
-             @"tags": [resultSet stringForColumn:@"tags"],
-             @"created_at": [resultSet dateForColumn:@"created_at"],
-             @"hash": hash,
-             @"meta": [resultSet stringForColumn:@"meta"],
-             };
-#endif
 }
 
 + (NSMutableSet *)staticAssetURLsForHTML:(NSString *)html {
@@ -247,13 +223,9 @@
 }
 
 + (NSString *)databasePath {
-#ifdef DELICIOUS
-    NSString *pathComponent = @"/delicious.db";
-#endif
     
-#ifdef PINBOARD
+
     NSString *pathComponent = @"/pinboard.db";
-#endif
     
 #if TARGET_IPHONE_SIMULATOR
     return [@"/tmp" stringByAppendingString:pathComponent];
@@ -311,76 +283,8 @@
                 [db beginTransaction];
                 
                 switch (version) {
-#ifdef DELICIOUS
-                    case 0:
-                        [db executeUpdate:
-                         @"CREATE TABLE feeds("
-                         "components TEXT UNIQUE,"
-                         "created_at DATETIME DEFAULT CURRENT_TIMESTAMP"
-                         ");"];
                         
-                        [db executeUpdate:
-                         @"CREATE TABLE rejected_bookmark("
-                         "url TEXT UNIQUE CHECK(length(url) < 2000),"
-                         "created_at DATETIME DEFAULT CURRENT_TIMESTAMP"
-                         ");"];
-                        [db executeUpdate:@"CREATE INDEX rejected_bookmark_url_idx ON rejected_bookmark (url);"];
-                        
-                        [db executeUpdate:
-                         @"CREATE TABLE bookmark("
-                         "title TEXT,"
-                         "description TEXT,"
-                         "tags TEXT,"
-                         "url TEXT,"
-                         "count INTEGER,"
-                         "private BOOL,"
-                         "unread BOOL,"
-                         "hash VARCHAR(32) UNIQUE,"
-                         "meta VARCHAR(32),"
-                         "created_at DATETIME"
-                         ");" ];
-                        
-                        [db executeUpdate:@"CREATE INDEX bookmark_created_at_idx ON bookmark (created_at);"];
-                        [db executeUpdate:@"CREATE INDEX bookmark_private_idx ON bookmark (private);"];
-                        [db executeUpdate:@"CREATE INDEX bookmark_unread_idx ON bookmark (unread);"];
-                        [db executeUpdate:@"CREATE INDEX bookmark_url_idx ON bookmark (url);"];
-                        [db executeUpdate:@"CREATE INDEX bookmark_hash_idx ON bookmark (hash);"];
-                        
-                        [db executeUpdate:@"CREATE VIRTUAL TABLE bookmark_fts USING fts4(hash, title, description, tags, url, prefix='2,3,4,5,6');"];
-                        [db executeUpdate:@"CREATE VIRTUAL TABLE tag_fts USING fts4(id, name, prefix='2,3,4,5');"];
-                        
-                        [db executeUpdate:@"CREATE TRIGGER bookmark_fts_insert_trigger AFTER INSERT ON bookmark BEGIN INSERT INTO bookmark_fts (hash, title, description, tags, url) VALUES(new.hash, new.title, new.description, new.tags, new.url); END;"];
-                        [db executeUpdate:@"CREATE TRIGGER bookmark_fts_update_trigger AFTER UPDATE ON bookmark BEGIN UPDATE bookmark_fts SET title=new.title, description=new.description, tags=new.tags, url=new.url WHERE hash=new.hash AND old.meta != new.meta; END;"];
-                        [db executeUpdate:@"CREATE TRIGGER bookmark_fts_delete_trigger AFTER DELETE ON bookmark BEGIN DELETE FROM bookmark_fts WHERE hash=old.hash; END;"];
-                        
-                        // Tagging
-                        [db executeUpdate:
-                         @"CREATE TABLE tag("
-                         "name TEXT UNIQUE,"
-                         "count INTEGER"
-                         ");" ];
-                        
-                        [db executeUpdate:@"CREATE INDEX tag_name_idx ON tag (name);"];
-                        
-                        [db executeUpdate:
-                         @"CREATE TABLE tagging("
-                         "tag_name TEXT,"
-                         "bookmark_hash TEXT"
-                         ");" ];
-                        
-                        [db executeUpdate:@"CREATE INDEX tagging_tag_name_idx ON tagging (tag_name);"];
-                        [db executeUpdate:@"CREATE INDEX tagging_bookmark_hash_idx ON tagging (bookmark_hash);"];
-                        
-                        [db executeUpdate:@"CREATE TRIGGER tag_fts_insert_trigger AFTER INSERT ON tag BEGIN INSERT INTO tag_fts (name) VALUES(new.name); END;"];
-                        [db executeUpdate:@"CREATE TRIGGER tag_fts_delete_trigger AFTER DELETE ON tag BEGIN DELETE FROM tag_fts WHERE name=old.name; END;"];
-                        
-                        [db executeUpdate:@"PRAGMA user_version=1;"];
-                        
-                    default:
-                        break;
-#endif
-                        
-#ifdef PINBOARD
+
                     case 0:
                         [db executeUpdate:
                          @"CREATE TABLE bookmark("
@@ -615,7 +519,6 @@
 
                     default:
                         break;
-#endif
                 }
                 
                 [db commit];

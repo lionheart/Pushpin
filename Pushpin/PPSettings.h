@@ -53,9 +53,8 @@
 
 @property (nonatomic) BOOL purchasedPremiumFonts;
 
-#ifdef PINBOARD
+
 @property (nonatomic, strong) NSArray *communityFeedOrder;
-#endif
 
 + (instancetype)sharedSettings;
 

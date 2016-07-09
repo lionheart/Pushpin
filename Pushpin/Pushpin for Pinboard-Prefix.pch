@@ -15,7 +15,7 @@
 #ifdef __OBJC__
     @import UIKit;
     @import Foundation;
-    #import <Mixpanel.h>
+    #import "Mixpanel.h"
     #import "PPSettings.h"
     #import "PPConstants.h"
     #import "PPNotification.h"

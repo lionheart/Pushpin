@@ -1250,9 +1250,8 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 }
 
 - (void)markAsReadButtonTouchUpInside:(id)sender {
-#ifdef PINBOARD
+
     id<PPDataSource> dataSource = [[PPPinboardDataSource alloc] init];
-#endif
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         __block NSDictionary *post;

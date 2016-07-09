@@ -304,7 +304,7 @@ static NSString *CellIdentifier = @"TagCell";
 #pragma mark - UITableViewDelegate
 
 // Only let users delete tags with Pinboard (for now)
-#ifdef PINBOARD
+
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     self.tagToDelete = [self tagForIndexPath:indexPath];
     NSArray *duplicates = self.duplicates[self.tagToDelete];
@@ -315,7 +315,6 @@ static NSString *CellIdentifier = @"TagCell";
         [self showDeleteConfirmationAlertView];
     }
 }
-#endif
 
 - (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
     return @"Delete";
@@ -338,17 +337,11 @@ static NSString *CellIdentifier = @"TagCell";
 
     PPGenericPostViewController *postViewController = [[PPGenericPostViewController alloc] init];
     
-#ifdef DELICIOUS
-    PPDeliciousDataSource *deliciousDataSource = [[PPDeliciousDataSource alloc] init];
-    deliciousDataSource.tags = @[tag];
-    postViewController.postDataSource = deliciousDataSource;
-#endif
     
-#ifdef PINBOARD
+
     PPPinboardDataSource *pinboardDataSource = [[PPPinboardDataSource alloc] init];
     pinboardDataSource.tags = @[tag];
     postViewController.postDataSource = pinboardDataSource;
-#endif
 
     // We need to switch this based on whether the user is on an iPad, due to the split view controller.
     if ([UIApplication isIPad]) {

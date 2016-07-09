@@ -846,13 +846,9 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 
 - (void)turnOnTextExpander {
     SMTEDelegateController *teDelegate = [PPAppDelegate sharedDelegate].textExpander;
-#ifdef DELICIOUS
-    teDelegate.getSnippetsScheme = @"pushpindelicious";
-#endif
     
-#ifdef PINBOARD
+
     teDelegate.getSnippetsScheme = @"pushpin";
-#endif
     teDelegate.clientAppName = @"Pushpin";
     [teDelegate getSnippets];
 }
