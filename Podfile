@@ -4,9 +4,9 @@ source 'https://github.com/CocoaPods/Specs.git'
 project 'Pushpin.xcodeproj'
 
 inhibit_all_warnings!
-# use_frameworks!
+use_frameworks!
 
-target 'Pushpin' do
+target 'PushpinFramework' do
   pod 'Reachability', '3.2'
   pod 'FMDB', '~> 2.4'
   pod 'KeychainItemWrapper', '1.2'
@@ -23,8 +23,8 @@ target 'Pushpin' do
   pod 'OpenInChrome', '0.0.1'
   pod 'AFNetworking', '2.2.0'
   pod 'LHSKeyboardAdjusting', '0.0.1'
-  pod 'RNCryptor', '2.2'
-  pod '1PasswordExtension', '1.6.4'
+  pod 'RNCryptor', '~> 4.0'
+  pod '1PasswordExtension', '~> 1.8'
   pod 'YHRoundBorderedButton', '0.1.0'
   pod 'ChimpKit'
 end

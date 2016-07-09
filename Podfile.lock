@@ -1,5 +1,5 @@
 PODS:
-  - 1PasswordExtension (1.6.4)
+  - 1PasswordExtension (1.8.2)
   - AFNetworking (2.2.0):
     - AFNetworking/NSURLConnection (= 2.2.0)
     - AFNetworking/NSURLSession (= 2.2.0)
@@ -47,14 +47,14 @@ PODS:
   - MWFeedParser/NSString+HTML (1.0.1)
   - OpenInChrome (0.0.1)
   - Reachability (3.2)
-  - RNCryptor (2.2)
+  - RNCryptor (4.0.0)
   - TextExpander (3.0.5)
   - TTTAttributedLabel (1.13.0)
   - uservoice-iphone-sdk (3.2.3)
   - YHRoundBorderedButton (0.1.0)
 
 DEPENDENCIES:
-  - 1PasswordExtension (= 1.6.4)
+  - 1PasswordExtension (~> 1.8)
   - AFNetworking (= 2.2.0)
   - ASPinboard (from `Vendor/ASPinboard`)
   - BRYHTMLParser
@@ -69,7 +69,7 @@ DEPENDENCIES:
   - MWFeedParser (= 1.0.1)
   - OpenInChrome (= 0.0.1)
   - Reachability (= 3.2)
-  - RNCryptor (= 2.2)
+  - RNCryptor (~> 4.0)
   - TextExpander (= 3.0.5)
   - TTTAttributedLabel (= 1.13.0)
   - uservoice-iphone-sdk (= 3.2.3)
@@ -80,7 +80,7 @@ EXTERNAL SOURCES:
     :path: Vendor/ASPinboard
 
 SPEC CHECKSUMS:
-  1PasswordExtension: 9f471645d378283cb88c6d4bf502e4381a42c0ad
+  1PasswordExtension: 303f2b7bbf6dc19ede3090bd6b5987530648d687
   AFNetworking: cede923cb26fba5e6309616e91fa33fe2e4a1b7b
   ASPinboard: 80ace27c6db2ac7681d2851b6ba9460d68243bd7
   BRYHTMLParser: f26cabad255a7115842d7b9c1cad8f612cf66deb
@@ -96,12 +96,12 @@ SPEC CHECKSUMS:
   MWFeedParser: 2cf646014c1baf6ad1b08c480b40a08180079247
   OpenInChrome: f1f3f9dec682216fe78a0d7fe0b5b263d6312c32
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  RNCryptor: c68678461a2c7474a55db9a6a98834c22d51f535
+  RNCryptor: 59d6483908115af5c12b884db23392024e52a5fe
   TextExpander: 47f9792473ee583b519caf201f5896b5ffb7cdfb
   TTTAttributedLabel: 8aeaf67481bb38970711e2641211cba912bd5239
   uservoice-iphone-sdk: 349d9ef36d3c43939d28390b9e86bb32b65fe983
   YHRoundBorderedButton: 2180f04094db264cace8db88eae977d78a3b4633
 
-PODFILE CHECKSUM: d2f20f37ada7c4afa9a0542f450051fee9e60eab
+PODFILE CHECKSUM: 16ce6373be1ba886cb778a4d2210a37fab0ada35
 
 COCOAPODS: 1.0.1
