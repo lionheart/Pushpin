@@ -183,7 +183,6 @@
 		3790427919CBDCDF00409D34 /* PPChangelogViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B348CB175FF9D500929E2E /* PPChangelogViewController.m */; };
 		3790427A19CBDCDF00409D34 /* PPConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 3769A5781879C50D00AC8C44 /* PPConstants.m */; };
 		3790427B19CBDCDF00409D34 /* PPDefaultFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E804951A1810597A00C5CA8B /* PPDefaultFeedViewController.m */; };
-		3790427C19CBDCDF00409D34 /* PPDeliciousDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3709354B1894C22100E3588E /* PPDeliciousDataSource.m */; };
 		3790427D19CBDCDF00409D34 /* PPDisplaySettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B348C8175EFAFA00929E2E /* PPDisplaySettingsViewController.m */; };
 		3790427E19CBDCDF00409D34 /* PPEditDescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3728CF3F1872880A00155791 /* PPEditDescriptionViewController.m */; };
 		3790427F19CBDCDF00409D34 /* PPFadeAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 3780219D199130E000CE269A /* PPFadeAnimator.m */; };
@@ -283,7 +282,6 @@
 		37F6D7EF19A1111E004016DB /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 37F6D7EC19A1111E004016DB /* README.md */; };
 		37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9415745488003F2B77 /* Foundation.framework */; };
 		37FEEB9715745488003F2B77 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9615745488003F2B77 /* CoreGraphics.framework */; };
-		58AB0751863C33F7FA793F20 /* libPods-Pushpin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FB6FF8C7FBC05D320B2E5A5D /* libPods-Pushpin.a */; };
 		B63698721B0FCC2700F15D42 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B63698711B0FCC2700F15D42 /* Launch Screen.xib */; };
 		B6E304131B3C7C9B00135CF1 /* PPMailChimp.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E304111B3C778A00135CF1 /* PPMailChimp.m */; };
 		B6E304171B3DB04000135CF1 /* PPLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E304151B3DAAF700135CF1 /* PPLoginViewController.m */; };
@@ -291,6 +289,7 @@
 		B6E3041D1B3DC95500135CF1 /* pinboard.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = B6E304191B3DC95500135CF1 /* pinboard.jpeg */; };
 		B6E3041E1B3DC95500135CF1 /* pushpin-cloud-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E3041A1B3DC95500135CF1 /* pushpin-cloud-logo.png */; };
 		B6E3041F1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E3041B1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png */; };
+		B8EB5F24708070B7A7376ABD /* Pods_PushpinFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7487BC16C8A1BCCDCA6AF515 /* Pods_PushpinFramework.framework */; };
 		E804950E180EF6D700C5CA8B /* webview-helpers.js in Resources */ = {isa = PBXBuildFile; fileRef = E804950C180EF20800C5CA8B /* webview-helpers.js */; };
 		E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E804950F18103DC700C5CA8B /* SafariServices.framework */; };
 		E80EEF6E184E9AA000979AA3 /* toolbar-checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF68184E9AA000979AA3 /* toolbar-checkmark.png */; };
@@ -460,14 +459,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1630230E73D0EDCDE25C5DEB /* Pods-Pushpin.delicious beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.delicious beta.xcconfig"; path = "Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin.delicious beta.xcconfig"; sourceTree = "<group>"; };
+		00E92B0CEC6B2D55AED1A871 /* Pods-PushpinFramework.pinboard app store debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PushpinFramework.pinboard app store debug.xcconfig"; path = "Pods/Target Support Files/Pods-PushpinFramework/Pods-PushpinFramework.pinboard app store debug.xcconfig"; sourceTree = "<group>"; };
+		273BA3D422BC51D1C705428E /* Pods-PushpinFramework.pinboard beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PushpinFramework.pinboard beta.xcconfig"; path = "Pods/Target Support Files/Pods-PushpinFramework/Pods-PushpinFramework.pinboard beta.xcconfig"; sourceTree = "<group>"; };
 		37018CE3180E3C0B00226408 /* PPBrowserActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBrowserActivity.h; sourceTree = "<group>"; };
 		37018CE4180E3C0B00226408 /* PPBrowserActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPBrowserActivity.m; sourceTree = "<group>"; };
 		370859F817F329D400270A9D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Pushpin/Images.xcassets; sourceTree = SOURCE_ROOT; };
 		370935461894BF4F00E3588E /* DeliciousBeta.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DeliciousBeta.plist; sourceTree = "<group>"; };
 		370935481894BF6100E3588E /* DeliciousDebug.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DeliciousDebug.plist; sourceTree = "<group>"; };
-		3709354A1894C22100E3588E /* PPDeliciousDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPDeliciousDataSource.h; sourceTree = "<group>"; };
-		3709354B1894C22100E3588E /* PPDeliciousDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPDeliciousDataSource.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		370B1B771864FADC00319A20 /* PPTitleButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTitleButton.h; sourceTree = "<group>"; };
 		370B1B781864FADC00319A20 /* PPTitleButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTitleButton.m; sourceTree = "<group>"; };
 		370BBE011901ABBB004FA557 /* safari-callback.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "safari-callback.html"; path = "Assets/safari-callback.html"; sourceTree = "<group>"; };
@@ -757,11 +755,12 @@
 		37FEEBA215745488003F2B77 /* PPAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPAppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37FF412F187D95CF00F2D481 /* PPSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSplitViewController.h; sourceTree = "<group>"; };
 		37FF4130187D95CF00F2D481 /* PPSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPSplitViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		3989D5395870391A25D6E4A7 /* Pods-Pushpin.pinboard app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.pinboard app store.xcconfig"; path = "Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin.pinboard app store.xcconfig"; sourceTree = "<group>"; };
-		4246566BB8905F748221683A /* Pods-Pushpin.delicious debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.delicious debug.xcconfig"; path = "Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin.delicious debug.xcconfig"; sourceTree = "<group>"; };
-		59CFD1981DFF6349636CACE7 /* Pods-Pushpin.pinboard debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.pinboard debug.xcconfig"; path = "Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin.pinboard debug.xcconfig"; sourceTree = "<group>"; };
-		6E493DF5DD023A0E32F32EEA /* Pods-Pushpin.pinboard beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.pinboard beta.xcconfig"; path = "Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin.pinboard beta.xcconfig"; sourceTree = "<group>"; };
-		76F1B1FB6C148BDFC79A7968 /* Pods-Pushpin.delicious app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.delicious app store.xcconfig"; path = "Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin.delicious app store.xcconfig"; sourceTree = "<group>"; };
+		3AA258F8D7633B89234D0271 /* Pods-PushpinFramework.delicious debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PushpinFramework.delicious debug.xcconfig"; path = "Pods/Target Support Files/Pods-PushpinFramework/Pods-PushpinFramework.delicious debug.xcconfig"; sourceTree = "<group>"; };
+		3DE08AB82CB8DD84B68DB04D /* Pods-PushpinFramework.delicious app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PushpinFramework.delicious app store.xcconfig"; path = "Pods/Target Support Files/Pods-PushpinFramework/Pods-PushpinFramework.delicious app store.xcconfig"; sourceTree = "<group>"; };
+		589093BF5706772FE08D3690 /* Pods_Pushpin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Pushpin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7487BC16C8A1BCCDCA6AF515 /* Pods_PushpinFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PushpinFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		853A24731CEBF45F6439F2BE /* Pods-PushpinFramework.delicious beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PushpinFramework.delicious beta.xcconfig"; path = "Pods/Target Support Files/Pods-PushpinFramework/Pods-PushpinFramework.delicious beta.xcconfig"; sourceTree = "<group>"; };
+		AEC8AFB6099C37F9FF2323DF /* Pods-PushpinFramework.pinboard debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PushpinFramework.pinboard debug.xcconfig"; path = "Pods/Target Support Files/Pods-PushpinFramework/Pods-PushpinFramework.pinboard debug.xcconfig"; sourceTree = "<group>"; };
 		B63698711B0FCC2700F15D42 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		B6E304101B3C778A00135CF1 /* PPMailChimp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPMailChimp.h; sourceTree = "<group>"; };
 		B6E304111B3C778A00135CF1 /* PPMailChimp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPMailChimp.m; sourceTree = "<group>"; };
@@ -771,7 +770,7 @@
 		B6E304191B3DC95500135CF1 /* pinboard.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = pinboard.jpeg; sourceTree = "<group>"; };
 		B6E3041A1B3DC95500135CF1 /* pushpin-cloud-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pushpin-cloud-logo.png"; sourceTree = "<group>"; };
 		B6E3041B1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pushpin-cloud-logo@2x.png"; sourceTree = "<group>"; };
-		E24536704462D0FB0CD1218B /* Pods-Pushpin.pinboard app store debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.pinboard app store debug.xcconfig"; path = "Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin.pinboard app store debug.xcconfig"; sourceTree = "<group>"; };
+		BE0A0D82FD9E1AAF5138A313 /* Pods-PushpinFramework.pinboard app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PushpinFramework.pinboard app store.xcconfig"; path = "Pods/Target Support Files/Pods-PushpinFramework/Pods-PushpinFramework.pinboard app store.xcconfig"; sourceTree = "<group>"; };
 		E804950C180EF20800C5CA8B /* webview-helpers.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "webview-helpers.js"; path = "Assets/webview-helpers.js"; sourceTree = "<group>"; };
 		E804950F18103DC700C5CA8B /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
 		E80495191810597A00C5CA8B /* PPDefaultFeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PPDefaultFeedViewController.h; path = ../PPDefaultFeedViewController.h; sourceTree = "<group>"; };
@@ -866,7 +865,6 @@
 		E8F987DD183E796900EF976D /* browse-unread.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-unread.png"; path = "Assets/browse-unread.png"; sourceTree = "<group>"; };
 		E8F987DE183E796900EF976D /* browse-untagged.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-untagged.png"; path = "Assets/browse-untagged.png"; sourceTree = "<group>"; };
 		E8F987DF183E796900EF976D /* browse-wikipedia.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-wikipedia.png"; path = "Assets/browse-wikipedia.png"; sourceTree = "<group>"; };
-		FB6FF8C7FBC05D320B2E5A5D /* libPods-Pushpin.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Pushpin.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -898,6 +896,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B8EB5F24708070B7A7376ABD /* Pods_PushpinFramework.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -922,7 +921,6 @@
 				37800E9A162D5264009FCB17 /* SystemConfiguration.framework in Frameworks */,
 				37B5F4E51773864C005687DA /* Twitter.framework in Frameworks */,
 				3709354F1894C7DA00E3588E /* UIKit.framework in Frameworks */,
-				58AB0751863C33F7FA793F20 /* libPods-Pushpin.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -947,8 +945,6 @@
 			children = (
 				37405C6518620BCB0052213A /* PostMetadata.h */,
 				37405C6618620BCB0052213A /* PostMetadata.m */,
-				3709354A1894C22100E3588E /* PPDeliciousDataSource.h */,
-				3709354B1894C22100E3588E /* PPDeliciousDataSource.m */,
 				3733252616E15D6A002E2AB0 /* PPPinboardDataSource.h */,
 				3733252716E15D6A002E2AB0 /* PPPinboardDataSource.m */,
 				3722155D16FCDB430036AA20 /* PPPinboardFeedDataSource.h */,
@@ -1375,7 +1371,8 @@
 				37B5F4E41773864C005687DA /* Twitter.framework */,
 				37FEEB9215745488003F2B77 /* UIKit.framework */,
 				3717966618A8857F004B2D08 /* XCTest.framework */,
-				FB6FF8C7FBC05D320B2E5A5D /* libPods-Pushpin.a */,
+				589093BF5706772FE08D3690 /* Pods_Pushpin.framework */,
+				7487BC16C8A1BCCDCA6AF515 /* Pods_PushpinFramework.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1513,13 +1510,13 @@
 		D751AC1C9912186E664F32E5 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				59CFD1981DFF6349636CACE7 /* Pods-Pushpin.pinboard debug.xcconfig */,
-				4246566BB8905F748221683A /* Pods-Pushpin.delicious debug.xcconfig */,
-				3989D5395870391A25D6E4A7 /* Pods-Pushpin.pinboard app store.xcconfig */,
-				E24536704462D0FB0CD1218B /* Pods-Pushpin.pinboard app store debug.xcconfig */,
-				76F1B1FB6C148BDFC79A7968 /* Pods-Pushpin.delicious app store.xcconfig */,
-				6E493DF5DD023A0E32F32EEA /* Pods-Pushpin.pinboard beta.xcconfig */,
-				1630230E73D0EDCDE25C5DEB /* Pods-Pushpin.delicious beta.xcconfig */,
+				AEC8AFB6099C37F9FF2323DF /* Pods-PushpinFramework.pinboard debug.xcconfig */,
+				3AA258F8D7633B89234D0271 /* Pods-PushpinFramework.delicious debug.xcconfig */,
+				BE0A0D82FD9E1AAF5138A313 /* Pods-PushpinFramework.pinboard app store.xcconfig */,
+				00E92B0CEC6B2D55AED1A871 /* Pods-PushpinFramework.pinboard app store debug.xcconfig */,
+				3DE08AB82CB8DD84B68DB04D /* Pods-PushpinFramework.delicious app store.xcconfig */,
+				273BA3D422BC51D1C705428E /* Pods-PushpinFramework.pinboard beta.xcconfig */,
+				853A24731CEBF45F6439F2BE /* Pods-PushpinFramework.delicious beta.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -1723,10 +1720,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 379042C219CC646B00409D34 /* Build configuration list for PBXNativeTarget "PushpinFramework" */;
 			buildPhases = (
+				47B6FB3777030947D5381F4E /* [CP] Check Pods Manifest.lock */,
 				379042AD19CC646700409D34 /* Sources */,
 				379042AE19CC646700409D34 /* Frameworks */,
 				379042AF19CC646700409D34 /* Headers */,
 				379042B019CC646700409D34 /* Resources */,
+				AC2AD9DB75B8779818ADA329 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -2146,6 +2145,21 @@
 			shellPath = /bin/sh;
 			shellScript = "SHORT_VERSION_STRING=`/usr/libexec/PlistBuddy -c 'print :CFBundleShortVersionString' \"Pushpin/PinboardAppStore.plist\"`\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $SHORT_VERSION_STRING\" \"Pushpin/Beta-Info.plist\"\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $SHORT_VERSION_STRING\" \"Pushpin/Dev-Info.plist\"\n\nSHORT_VERSION_STRING=`/usr/libexec/PlistBuddy -c 'print :CFBundleShortVersionString' \"Pushpin/DeliciousAppStore.plist\"`\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $SHORT_VERSION_STRING\" \"Pushpin/DeliciousBeta.plist\"\n/usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $SHORT_VERSION_STRING\" \"Pushpin/DeliciousDebug.plist\"\n\n";
 		};
+		47B6FB3777030947D5381F4E /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
 		815840068D3A0C49637E6519 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2189,6 +2203,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AC2AD9DB75B8779818ADA329 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PushpinFramework/Pods-PushpinFramework-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -2246,7 +2275,6 @@
 				3790427919CBDCDF00409D34 /* PPChangelogViewController.m in Sources */,
 				3790427A19CBDCDF00409D34 /* PPConstants.m in Sources */,
 				3790427B19CBDCDF00409D34 /* PPDefaultFeedViewController.m in Sources */,
-				3790427C19CBDCDF00409D34 /* PPDeliciousDataSource.m in Sources */,
 				3790427D19CBDCDF00409D34 /* PPDisplaySettingsViewController.m in Sources */,
 				3790427E19CBDCDF00409D34 /* PPEditDescriptionViewController.m in Sources */,
 				3790427F19CBDCDF00409D34 /* PPFadeAnimator.m in Sources */,
@@ -2788,7 +2816,6 @@
 		};
 		37374CB719A259F000C4DC9A /* Pinboard App Store Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E24536704462D0FB0CD1218B /* Pods-Pushpin.pinboard app store debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -3196,7 +3223,6 @@
 		};
 		37800E9C162D576E009FCB17 /* Pinboard Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6E493DF5DD023A0E32F32EEA /* Pods-Pushpin.pinboard beta.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = PinboardBeta;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -3592,6 +3618,7 @@
 		};
 		379042C319CC646B00409D34 /* Pinboard Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AEC8AFB6099C37F9FF2323DF /* Pods-PushpinFramework.pinboard debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -3660,6 +3687,7 @@
 		};
 		379042C419CC646B00409D34 /* Delicious Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3AA258F8D7633B89234D0271 /* Pods-PushpinFramework.delicious debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -3722,6 +3750,7 @@
 		};
 		379042C519CC646B00409D34 /* Pinboard App Store */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BE0A0D82FD9E1AAF5138A313 /* Pods-PushpinFramework.pinboard app store.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -3784,6 +3813,7 @@
 		};
 		379042C619CC646B00409D34 /* Pinboard App Store Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 00E92B0CEC6B2D55AED1A871 /* Pods-PushpinFramework.pinboard app store debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -3846,6 +3876,7 @@
 		};
 		379042C719CC646B00409D34 /* Delicious App Store */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3DE08AB82CB8DD84B68DB04D /* Pods-PushpinFramework.delicious app store.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -3908,6 +3939,7 @@
 		};
 		379042C819CC646B00409D34 /* Pinboard Beta */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 273BA3D422BC51D1C705428E /* Pods-PushpinFramework.pinboard beta.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -3970,6 +4002,7 @@
 		};
 		379042C919CC646B00409D34 /* Delicious Beta */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 853A24731CEBF45F6439F2BE /* Pods-PushpinFramework.delicious beta.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -4104,7 +4137,6 @@
 		};
 		379C3C1A1894B948003A02FF /* Delicious Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1630230E73D0EDCDE25C5DEB /* Pods-Pushpin.delicious beta.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = DeliciousBeta;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -4206,7 +4238,6 @@
 		};
 		379C3C1C1894B959003A02FF /* Delicious App Store */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 76F1B1FB6C148BDFC79A7968 /* Pods-Pushpin.delicious app store.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Delicious;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -4306,7 +4337,6 @@
 		};
 		379C3C1E1894B9B8003A02FF /* Delicious Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4246566BB8905F748221683A /* Pods-Pushpin.delicious debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = DeliciousDev;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -4482,7 +4512,6 @@
 		};
 		37FEEBA715745488003F2B77 /* Pinboard Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 59CFD1981DFF6349636CACE7 /* Pods-Pushpin.pinboard debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = PinboardDev;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -4510,7 +4539,6 @@
 		};
 		37FEEBA815745488003F2B77 /* Pinboard App Store */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3989D5395870391A25D6E4A7 /* Pods-Pushpin.pinboard app store.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
