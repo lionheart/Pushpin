@@ -5,7 +5,7 @@
 
 @implementation MPPropertySelectorParameterDescription
 
-- (id)initWithDictionary:(NSDictionary *)dictionary
+- (instancetype)initWithDictionary:(NSDictionary *)dictionary
 {
     NSParameterAssert(dictionary[@"name"] != nil);
     NSParameterAssert(dictionary[@"type"] != nil);
@@ -23,7 +23,7 @@
 
 @implementation MPPropertySelectorDescription
 
-- (id)initWithDictionary:(NSDictionary *)dictionary
+- (instancetype)initWithDictionary:(NSDictionary *)dictionary
 {
     NSParameterAssert(dictionary[@"selector"] != nil);
     NSParameterAssert(dictionary[@"parameters"] != nil);
@@ -31,7 +31,7 @@
     self = [super init];
     if (self) {
         _selectorName = [dictionary[@"selector"] copy];
-        NSMutableArray *parameters = [[NSMutableArray alloc] initWithCapacity:[dictionary[@"parameters"] count]];
+        NSMutableArray *parameters = [NSMutableArray arrayWithCapacity:[dictionary[@"parameters"] count]];
         for (NSDictionary *parameter in dictionary[@"parameters"]) {
             [parameters addObject:[[MPPropertySelectorParameterDescription alloc] initWithDictionary:parameter]];
         }
@@ -69,7 +69,7 @@
     return [NSValueTransformer valueTransformerForName:@"MPPassThroughValueTransformer"];
 }
 
-- (id)initWithDictionary:(NSDictionary *)dictionary
+- (instancetype)initWithDictionary:(NSDictionary *)dictionary
 {
     NSParameterAssert(dictionary[@"name"] != nil);
 
@@ -89,10 +89,10 @@
         if (get == nil) {
             NSParameterAssert(dictionary[@"type"] != nil);
             get = @{
-                    @"selector" : _name,
-                    @"result" : @{
-                            @"type" : dictionary[@"type"],
-                            @"name" : @"value"
+                    @"selector": _name,
+                    @"result": @{
+                            @"type": dictionary[@"type"],
+                            @"name": @"value"
                     },
                     @"parameters": @[]
             };
@@ -102,11 +102,11 @@
         if (set == nil && _readonly == NO) {
             NSParameterAssert(dictionary[@"type"] != nil);
             set = @{
-                    @"selector" : [NSString stringWithFormat:@"set%@:", [_name capitalizedString]],
-                    @"parameters" : @[
+                    @"selector": [NSString stringWithFormat:@"set%@:", _name.capitalizedString],
+                    @"parameters": @[
                             @{
-                                    @"name" : @"value",
-                                    @"type" : dictionary[@"type"]
+                                    @"name": @"value",
+                                    @"type": dictionary[@"type"]
                             }
                     ]
             };
@@ -121,8 +121,8 @@
 
         BOOL useKVC = (dictionary[@"use_kvc"] == nil ? YES : [dictionary[@"use_kvc"] boolValue]) && _useInstanceVariableAccess == NO;
         _useKeyValueCoding = useKVC &&
-                [_getSelectorDescription.parameters count] == 0 &&
-                (_setSelectorDescription == nil || [_setSelectorDescription.parameters count] == 1);
+                _getSelectorDescription.parameters.count == 0 &&
+                (_setSelectorDescription == nil || _setSelectorDescription.parameters.count == 1);
     }
 
     return self;

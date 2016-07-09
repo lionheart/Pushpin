@@ -17,7 +17,7 @@
 
 + (instancetype)sharedInstance
 {
-  static MPTweakStore *sharedInstance = nil;
+  static MPTweakStore *sharedInstance;
 
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
@@ -30,8 +30,8 @@
 - (instancetype)init
 {
   if ((self = [super init])) {
-    _orderedTweaks = [[NSMutableArray alloc] initWithCapacity:16];
-    _namedTweaks = [[NSMutableDictionary alloc] initWithCapacity:16];
+    _orderedTweaks = [NSMutableArray arrayWithCapacity:16];
+    _namedTweaks = [NSMutableDictionary dictionaryWithCapacity:16];
   }
 
   return self;
@@ -49,13 +49,13 @@
 
 - (void)addTweak:(MPTweak *)tweak
 {
-  [_namedTweaks setObject:tweak forKey:tweak.name];
+  _namedTweaks[tweak.name] = tweak;
   [_orderedTweaks addObject:tweak];
 }
 
 - (void)removeTweak:(MPTweak *)tweak
 {
-  [_namedTweaks removeObjectForKey:tweak.name];
+  _namedTweaks[tweak.name] = nil;
   [_orderedTweaks removeObject:tweak];
 }
 

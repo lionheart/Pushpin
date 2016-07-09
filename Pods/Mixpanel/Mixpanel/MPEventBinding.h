@@ -12,9 +12,9 @@
 @interface MPEventBinding : NSObject <NSCoding>
 
 @property (nonatomic) NSUInteger ID;
-@property (nonatomic) NSString *name;
-@property (nonatomic) MPObjectSelector *path;
-@property (nonatomic) NSString *eventName;
+@property (nonatomic, copy) NSString *name;
+@property (nonatomic, strong) MPObjectSelector *path;
+@property (nonatomic, copy) NSString *eventName;
 
 @property (nonatomic, assign) Class swizzleClass;
 
@@ -30,10 +30,10 @@
  */
 @property (nonatomic) BOOL running;
 
-+ (id)bindngWithJSONObject:(id)object;
++ (id)bindingWithJSONObject:(id)object;
 
 - (instancetype)init __unavailable;
-- (id)initWithEventName:(NSString *)eventName onPath:(NSString *)path;
+- (instancetype)initWithEventName:(NSString *)eventName onPath:(NSString *)path;
 
 /*!
  Intercepts track calls and adds a property indicating the track event

@@ -1,10 +1,7 @@
-#if ! __has_feature(objc_arc)
-#error This file must be compiled with ARC. Either turn on ARC for the project or use -fobjc-arc flag on this file.
-#endif
-
 #import <QuartzCore/QuartzCore.h>
 #import "MPLogger.h"
 #import "MPSurveyQuestionViewController.h"
+#import "MPFoundation.h"
 
 @interface MPSurveyQuestionViewController ()
 
@@ -74,38 +71,18 @@ typedef NS_ENUM(NSInteger, MPSurveyTableViewCellPosition) {
 {
     // Can't use _prompt.bounds here cause it hasn't been calculated yet.
     CGFloat promptWidth = self.view.bounds.size.width - 30; // 2x 15 point horizontal padding on prompt
-    CGFloat promptHeight = UIDeviceOrientationIsPortrait([UIApplication sharedApplication].statusBarOrientation) ? 72 : 48;
+    CGFloat promptHeight = UIInterfaceOrientationIsPortrait([UIApplication sharedApplication].statusBarOrientation) ? 72 : 48;
     UIFont *font = _prompt.font;
     CGSize constraintSize = CGSizeMake(promptWidth, CGFLOAT_MAX);
 
     // Lower prompt font size until it fits (or hits min of 9 points).
     for (CGFloat size = 20; size >= 9; size--) {
         font = [font fontWithSize:size];
-        CGSize sizeToFit;
-
-        // Use boundingRectWithSize for iOS 7 and above, sizeWithFont otherwise.
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
-        if ([[[UIDevice currentDevice] systemVersion] compare:@"7.0" options:NSNumericSearch] != NSOrderedAscending) {
-            sizeToFit = [_prompt.text boundingRectWithSize:constraintSize
-                                                       options:NSStringDrawingUsesLineFragmentOrigin
-                                                    attributes:@{NSFontAttributeName: font}
-                                                       context:nil].size;
-        } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated"
-
-            sizeToFit = [_prompt.text sizeWithFont:font
-                                 constrainedToSize:constraintSize
-                                     lineBreakMode:_prompt.lineBreakMode];
-
-#pragma clang diagnostic pop
-        }
-#else
-        sizeToFit = [_prompt.text sizeWithFont:font
-                             constrainedToSize:constraintSize
-                                 lineBreakMode:_prompt.lineBreakMode];
-#endif
-
+        CGSize sizeToFit = [_prompt.text boundingRectWithSize:constraintSize
+                                                      options:NSStringDrawingUsesLineFragmentOrigin
+                                                   attributes:@{NSFontAttributeName: font}
+                                                      context:nil].size;
+        
         if (sizeToFit.height <= promptHeight) {
             promptHeight = sizeToFit.height;
             break;
@@ -135,7 +112,7 @@ typedef NS_ENUM(NSInteger, MPSurveyTableViewCellPosition) {
     if (_position == MPSurveyTableViewCellPositionTop) {
         corners = UIRectCornerTopLeft | UIRectCornerTopRight;
     } else if (_position == MPSurveyTableViewCellPositionMiddle) {
-        corners = 0;
+        corners = (UIRectCorner)0;
     } else if (_position == MPSurveyTableViewCellPositionBottom) {
         corners = UIRectCornerBottomLeft | UIRectCornerBottomRight;
     } else {
@@ -221,6 +198,10 @@ typedef NS_ENUM(NSInteger, MPSurveyTableViewCellPosition) {
 
 @implementation MPSurveyMultipleChoiceQuestionViewController
 
+// Since question is declared as a different class in superclass MPSurveyQuestionViewController,
+// indicate dynamic to use parent accessors.
+@dynamic question;
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -248,7 +229,7 @@ typedef NS_ENUM(NSInteger, MPSurveyTableViewCellPosition) {
         label = value;
     } else if ([value isKindOfClass:[NSNumber class]]) {
         int i = [value intValue];
-        if (CFNumberGetType((CFNumberRef)value) == kCFNumberCharType && (i == 0 || i == 1)) {
+        if (CFNumberGetType((__bridge CFNumberRef)value) == kCFNumberCharType && (i == 0 || i == 1)) {
             label = i ? @"Yes" : @"No";
         } else {
             NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
@@ -266,13 +247,13 @@ typedef NS_ENUM(NSInteger, MPSurveyTableViewCellPosition) {
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return (NSInteger)[self.question.choices count];
+    return (NSInteger)self.question.choices.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     MPSurveyTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MPSurveyTableViewCell"];
-    NSString *text = [self labelForValue:(self.question.choices)[(NSUInteger)indexPath.row]];
+    NSString *text = [self labelForValue:self.question.choices[(NSUInteger)indexPath.row]];
     cell.label.text = text;
     cell.selectedLabel.text = text;
     UIColor *strokeColor = [UIColor colorWithWhite:1 alpha:0.5];
@@ -283,12 +264,12 @@ typedef NS_ENUM(NSInteger, MPSurveyTableViewCellPosition) {
     cell.customSelectedBackgroundView.fillColor = [self.highlightColor colorWithAlphaComponent:0.3f];
     MPSurveyTableViewCellPosition position;
     if (indexPath.row == 0) {
-        if ([self.question.choices count] == 1) {
+        if (self.question.choices.count == 1) {
             position = MPSurveyTableViewCellPositionSingle;
         } else {
             position = MPSurveyTableViewCellPositionTop;
         }
-    } else if (indexPath.row == (NSInteger)([self.question.choices count] - 1)) {
+    } else if (indexPath.row == (NSInteger)(self.question.choices.count - 1)) {
         position = MPSurveyTableViewCellPositionBottom;
     } else {
         position = MPSurveyTableViewCellPositionMiddle;
@@ -308,7 +289,7 @@ typedef NS_ENUM(NSInteger, MPSurveyTableViewCellPosition) {
     MPSurveyTableViewCell *cell = (MPSurveyTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
     if (!cell.isChecked) {
         [cell setChecked:YES animatedWithCompletion:^(BOOL finished){
-            id value = (self.question.choices)[(NSUInteger)indexPath.row];
+            id value = self.question.choices[(NSUInteger)indexPath.row];
             __strong id<MPSurveyQuestionViewControllerDelegate> strongDelegate = self.delegate;
             if (strongDelegate != nil) {
                 [strongDelegate questionController:self didReceiveAnswerProperties:@{@"$value": value}];
@@ -329,6 +310,10 @@ typedef NS_ENUM(NSInteger, MPSurveyTableViewCellPosition) {
 
 @implementation MPSurveyTextQuestionViewController
 
+// Since question is declared as a different class in superclass MPSurveyQuestionViewController,
+// indicate dynamic to use parent accessors.
+@dynamic question;
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -344,7 +329,7 @@ typedef NS_ENUM(NSInteger, MPSurveyTableViewCellPosition) {
 {
     [super viewWillAppear:animated];
     [self registerForKeyboardNotifications];
-    if (UIDeviceOrientationIsPortrait([UIApplication sharedApplication].statusBarOrientation)) {
+    if (UIInterfaceOrientationIsPortrait([UIApplication sharedApplication].statusBarOrientation)) {
         [self.textView becomeFirstResponder];
     }
 }
@@ -360,7 +345,7 @@ typedef NS_ENUM(NSInteger, MPSurveyTableViewCellPosition) {
 {
     [super viewWillLayoutSubviews];
     self.keyboardAccessoryWidth.constant = self.view.bounds.size.width;
-    self.textViewHeight.constant = UIDeviceOrientationIsPortrait([UIApplication sharedApplication].statusBarOrientation) ? 72 : 48;
+    self.textViewHeight.constant = UIInterfaceOrientationIsPortrait([UIApplication sharedApplication].statusBarOrientation) ? 72 : 48;
 }
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
@@ -374,7 +359,7 @@ typedef NS_ENUM(NSInteger, MPSurveyTableViewCellPosition) {
             [strongDelegate questionController:self didReceiveAnswerProperties:@{@"$value": textView.text}];
         }
     } else {
-        NSUInteger newLength = [textView.text length] + ([text length] - range.length);
+        NSUInteger newLength = textView.text.length + (text.length - range.length);
         shouldChange = newLength <= 255;
         if (shouldChange) {
             [UIView animateWithDuration:0.3 animations:^{
@@ -399,11 +384,11 @@ typedef NS_ENUM(NSInteger, MPSurveyTableViewCellPosition) {
 
 - (void)keyboardWillShow:(NSNotification *)note
 {
-    NSDictionary* info = [note userInfo];
+    NSDictionary *info = note.userInfo;
     NSTimeInterval duration = [info[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     UIViewAnimationOptions curve = [info[UIKeyboardAnimationDurationUserInfoKey] unsignedIntegerValue];
     CGFloat promptTopSpace, promptAlpha;
-    if (UIDeviceOrientationIsPortrait(([UIApplication sharedApplication].statusBarOrientation))) {
+    if (UIInterfaceOrientationIsPortrait(([UIApplication sharedApplication].statusBarOrientation))) {
         promptTopSpace = 15;
         promptAlpha = 1;
     } else {
@@ -423,7 +408,7 @@ typedef NS_ENUM(NSInteger, MPSurveyTableViewCellPosition) {
 
 - (void)keyboardWillHide:(NSNotification *)note
 {
-    NSDictionary* info = [note userInfo];
+    NSDictionary *info = note.userInfo;
     NSTimeInterval duration = [info[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
     UIViewAnimationOptions curve = [info[UIKeyboardAnimationDurationUserInfoKey] unsignedIntegerValue];
     self.promptTopSpace.constant = 15;

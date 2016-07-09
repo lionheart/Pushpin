@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Mixpanel. All rights reserved.
 //
 
+#import <UIKit/UIKit.h>
 #import "MPEventBinding.h"
 
 @interface MPUIControlBinding : MPEventBinding
@@ -14,9 +15,9 @@
 @property (nonatomic, readonly) UIControlEvents verifyEvent;
 
 - (instancetype)init __unavailable;
-- (id)initWithEventName:(NSString *)eventName
-                 onPath:(NSString *)path
-       withControlEvent:(UIControlEvents)controlEvent
-         andVerifyEvent:(UIControlEvents)verifyEvent;
+- (instancetype)initWithEventName:(NSString *)eventName
+                           onPath:(NSString *)path
+                 withControlEvent:(UIControlEvents)controlEvent
+                   andVerifyEvent:(UIControlEvents)verifyEvent;
 
 @end

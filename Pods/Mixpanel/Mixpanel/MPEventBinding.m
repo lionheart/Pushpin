@@ -13,41 +13,46 @@
 
 @implementation MPEventBinding
 
-+ (MPEventBinding *)bindngWithJSONObject:(NSDictionary *)object
++ (MPEventBinding *)bindingWithJSONObject:(NSDictionary *)object
 {
     if (object == nil) {
         NSLog(@"must supply an JSON object to initialize from");
         return nil;
     }
 
-    NSString *bindingType = [object objectForKey:@"event_type"];
+    NSString *bindingType = object[@"event_type"];
     Class klass = [self subclassFromString:bindingType];
-    return [klass bindngWithJSONObject:object];
+    return [klass bindingWithJSONObject:object];
+}
+
++ (MPEventBinding *)bindngWithJSONObject:(NSDictionary *)object
+{
+    return [self bindingWithJSONObject:object];
 }
 
 + (Class)subclassFromString:(NSString *)bindingType
 {
     NSDictionary *classTypeMap = @{
-                                   [MPUIControlBinding typeName] : [MPUIControlBinding class],
-                                   [MPUITableViewBinding typeName] : [MPUITableViewBinding class]
+                                   [MPUIControlBinding typeName]: [MPUIControlBinding class],
+                                   [MPUITableViewBinding typeName]: [MPUITableViewBinding class]
                                    };
     return[classTypeMap valueForKey:bindingType] ?: [MPUIControlBinding class];
 }
 
 + (void)track:(NSString *)event properties:(NSDictionary *)properties
 {
-    NSMutableDictionary *bindingProperties = [[NSMutableDictionary alloc] initWithObjectsAndKeys: @YES, @"$from_binding", nil];
+    NSMutableDictionary *bindingProperties = [NSMutableDictionary dictionaryWithObjectsAndKeys: @YES, @"$from_binding", nil];
     [bindingProperties addEntriesFromDictionary:properties];
     [[Mixpanel sharedInstance] track:event properties:bindingProperties];
 }
 
-- (id)initWithEventName:(NSString *)eventName onPath:(NSString *)path
+- (instancetype)initWithEventName:(NSString *)eventName onPath:(NSString *)path
 {
     if (self = [super init]) {
         self.eventName = eventName;
         self.path = [[MPObjectSelector alloc] initWithString:path];
         self.name = [[NSUUID UUID] UUIDString];
-        self.running = false;
+        self.running = NO;
     }
     return self;
 }
@@ -82,7 +87,7 @@
 
 #pragma mark -- NSCoder
 
-- (id)initWithCoder:(NSCoder *)aDecoder
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
     NSString *path = [aDecoder decodeObjectForKey:@"path"];
     NSString *eventName = [aDecoder decodeObjectForKey:@"eventName"];
@@ -96,11 +101,25 @@
 
 - (void)encodeWithCoder:(NSCoder *)aCoder
 {
-    [aCoder encodeObject:[NSNumber numberWithUnsignedLong:_ID] forKey:@"ID"];
+    [aCoder encodeObject:@(_ID) forKey:@"ID"];
     [aCoder encodeObject:_name forKey:@"name"];
     [aCoder encodeObject:_path.string forKey:@"path"];
     [aCoder encodeObject:_eventName forKey:@"eventName"];
     [aCoder encodeObject:NSStringFromClass(_swizzleClass) forKey:@"swizzleClass"];
+}
+
+- (BOOL)isEqual:(id)other {
+    if (other == self) {
+        return YES;
+    } else if (![other isKindOfClass:[MPEventBinding class]]) {
+        return NO;
+    } else {
+        return [self.eventName isEqual:((MPEventBinding *)other).eventName] && [self.path isEqual:((MPEventBinding *)other).path];
+    }
+}
+
+- (NSUInteger)hash {
+    return [self.eventName hash] ^ [self.path hash];
 }
 
 @end

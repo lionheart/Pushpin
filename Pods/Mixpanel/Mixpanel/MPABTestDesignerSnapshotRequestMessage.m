@@ -22,14 +22,7 @@ static NSString * const kObjectIdentityProviderKey = @"object_identity_provider"
 
 - (MPObjectSerializerConfig *)configuration
 {
-    NSDictionary *config =
-#if 1
-    [self payloadObjectForKey:@"config"];
-#else
-    [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfURL:[[NSBundle mainBundle] URLForResource:@"snapshot_config" withExtension:@"json"]]
-                                    options:0 error:nil];
-#endif
-
+    NSDictionary *config = [self payloadObjectForKey:@"config"];
     return config ? [[MPObjectSerializerConfig alloc] initWithDictionary:config] : nil;
 }
 
@@ -45,9 +38,12 @@ static NSString * const kObjectIdentityProviderKey = @"object_identity_provider"
         // Update the class descriptions in the connection session if provided as part of the message.
         if (serializerConfig) {
             [connection setSessionObject:serializerConfig forKey:kSnapshotSerializerConfigKey];
-        } else {
+        } else if ([connection sessionObjectForKey:kSnapshotSerializerConfigKey]) {
             // Get the class descriptions from the connection session store.
             serializerConfig = [connection sessionObjectForKey:kSnapshotSerializerConfigKey];
+        } else {
+            // If neither place has a config, this is probably a stale message and we can't create a snapshot.
+            return;
         }
 
         // Get the object identity provider from the connection's session store or create one if there is none already.
@@ -70,7 +66,7 @@ static NSString * const kObjectIdentityProviderKey = @"object_identity_provider"
         });
         snapshotMessage.screenshot = screenshot;
 
-        if (imageHash && [imageHash isEqualToString:snapshotMessage.imageHash]) {
+        if ([imageHash isEqualToString:snapshotMessage.imageHash]) {
             serializedObjects = [connection sessionObjectForKey:@"snapshot_hierarchy"];
         } else {
             dispatch_sync(dispatch_get_main_queue(), ^{

@@ -17,13 +17,14 @@
 #import "MPSwizzler.h"
 
 NSString * const kSessionVariantKey = @"session_variant";
+static NSString * const kStartLoadingAnimationKey = @"MPConnectivityBarLoadingAnimation";
+static NSString * const kFinishLoadingAnimationKey = @"MPConnectivityBarFinishLoadingAnimation";
 
 @interface MPABTestDesignerConnection () <MPWebSocketDelegate>
-
+@property (strong, nonatomic) UIWindow *connectivityIndicatorWindow;
 @end
 
 @implementation MPABTestDesignerConnection
-
 {
     /* The difference between _open and _connected is that open
      is set when the socket is open, and _connected is set when
@@ -34,17 +35,19 @@ NSString * const kSessionVariantKey = @"session_variant";
      */
     BOOL _open;
     BOOL _connected;
+
     NSURL *_url;
     NSMutableDictionary *_session;
     NSDictionary *_typeToMessageClassMap;
     MPWebSocket *_webSocket;
     NSOperationQueue *_commandQueue;
     UIView *_recordingView;
+    CALayer *_indeterminateLayer;
     void (^_connectCallback)();
     void (^_disconnectCallback)();
 }
 
-- (id)initWithURL:(NSURL *)url connectCallback:(void (^)())connectCallback disconnectCallback:(void (^)())disconnectCallback
+- (instancetype)initWithURL:(NSURL *)url keepTrying:(BOOL)keepTrying connectCallback:(void (^)())connectCallback disconnectCallback:(void (^)())disconnectCallback
 {
     self = [super init];
     if (self) {
@@ -55,13 +58,13 @@ NSString * const kSessionVariantKey = @"session_variant";
             MPABTestDesignerTweakRequestMessageType      : [MPABTestDesignerTweakRequestMessage class],
             MPABTestDesignerClearRequestMessageType      : [MPABTestDesignerClearRequestMessage class],
             MPABTestDesignerDisconnectMessageType        : [MPABTestDesignerDisconnectMessage class],
-            MPDesignerEventBindingRequestMessageType     : [MPDesignerEventBindingRequestMesssage class],
+            MPDesignerEventBindingRequestMessageType     : [MPDesignerEventBindingRequestMessage class],
         };
 
         _open = NO;
         _connected = NO;
         _sessionEnded = NO;
-        _session = [[NSMutableDictionary alloc] init];
+        _session = [NSMutableDictionary dictionary];
         _url = url;
         _connectCallback = connectCallback;
         _disconnectCallback = disconnectCallback;
@@ -70,30 +73,57 @@ NSString * const kSessionVariantKey = @"session_variant";
         _commandQueue.maxConcurrentOperationCount = 1;
         _commandQueue.suspended = YES;
 
-        [self open];
+        if (keepTrying) {
+            [self open:YES maxInterval:30 maxRetries:40];
+        } else {
+            [self open:YES maxInterval:0 maxRetries:0];
+        }
     }
 
     return self;
 }
 
-- (id)initWithURL:(NSURL *)url
+- (instancetype)initWithURL:(NSURL *)url
 {
-    return [self initWithURL:url connectCallback:nil disconnectCallback:nil];
+    return [self initWithURL:url keepTrying:NO connectCallback:nil disconnectCallback:nil];
 }
 
-- (void)open
+
+- (void)open:(BOOL)initiate maxInterval:(int)maxInterval maxRetries:(int)maxRetries
 {
-    MessagingDebug(@"Attempting to open WebSocket to: %@", _url);
-    _webSocket = [[MPWebSocket alloc] initWithURL:_url];
-    _webSocket.delegate = self;
-    [_webSocket open];
+    static int retries = 0;
+    BOOL inRetryLoop = retries > 0;
+
+    MessagingDebug(@"In open. initiate = %d, retries = %d, maxRetries = %d, maxInterval = %d, connected = %d", initiate, retries, maxRetries, maxInterval, _connected);
+
+    if (self.sessionEnded || _connected || (inRetryLoop && retries >= maxRetries) ) {
+        // break out of retry loop if any of the success conditions are met.
+        retries = 0;
+    } else if (initiate ^ inRetryLoop) {
+        // If we are initiating a new connection, or we are already in a
+        // retry loop (but not both). Then open a socket.
+        if (!_open) {
+            MessagingDebug(@"Attempting to open WebSocket to: %@, try %d/%d ", _url, retries, maxRetries);
+            _open = YES;
+            _webSocket = [[MPWebSocket alloc] initWithURL:_url];
+            _webSocket.delegate = self;
+            [_webSocket open];
+        }
+        if (retries < maxRetries) {
+            __weak MPABTestDesignerConnection *weakSelf = self;
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(MIN(pow(1.4, retries), maxInterval) * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                MPABTestDesignerConnection *strongSelf = weakSelf;
+                [strongSelf open:NO maxInterval:maxInterval maxRetries:maxRetries];
+            });
+            retries++;
+        }
+    }
 }
 
 - (void)close
 {
     [_webSocket close];
-    for (NSString *key in [_session keyEnumerator]) {
-        id value = [_session valueForKey:key];
+    for (id value in _session.allValues) {
         if ([value conformsToProtocol:@protocol(MPDesignerSessionCollection)]) {
             [value cleanup];
         }
@@ -150,7 +180,7 @@ NSString * const kSessionVariantKey = @"session_variant";
     NSData *jsonData = [message isKindOfClass:[NSString class]] ? [(NSString *)message dataUsingEncoding:NSUTF8StringEncoding] : message;
 
     NSError *error = nil;
-    id jsonObject = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&error];
+    id jsonObject = [NSJSONSerialization JSONObjectWithData:jsonData options:(NSJSONReadingOptions)0 error:&error];
     if ([jsonObject isKindOfClass:[NSDictionary class]]) {
         NSDictionary *messageDictionary = (NSDictionary *)jsonObject;
         NSString *type = messageDictionary[@"type"];
@@ -170,14 +200,13 @@ NSString * const kSessionVariantKey = @"session_variant";
 {
     if (!_connected) {
         _connected = YES;
-        [self showConnectedView];
+        [self showConnectedViewWithLoading:NO];
         if (_connectCallback) {
             _connectCallback();
         }
     }
     id<MPABTestDesignerMessage> designerMessage = [self designerMessageForMessage:message];
     MessagingDebug(@"WebSocket received message: %@", [designerMessage debugDescription]);
-
     NSOperation *commandOperation = [designerMessage responseCommandWithConnection:self];
 
     if (commandOperation) {
@@ -187,9 +216,9 @@ NSString * const kSessionVariantKey = @"session_variant";
 
 - (void)webSocketDidOpen:(MPWebSocket *)webSocket
 {
-    _open = YES;
-    MessagingDebug(@"WebSocket did open.");
+    MessagingDebug(@"WebSocket %@ did open.", webSocket);
     _commandQueue.suspended = NO;
+    [self showConnectedViewWithLoading:YES];
 }
 
 - (void)webSocket:(MPWebSocket *)webSocket didFailWithError:(NSError *)error
@@ -201,7 +230,7 @@ NSString * const kSessionVariantKey = @"session_variant";
     _open = NO;
     if (_connected) {
         _connected = NO;
-        [self reconnect:YES];
+        [self open:YES maxInterval:10 maxRetries:10];
         if (_disconnectCallback) {
             _disconnectCallback();
         }
@@ -218,53 +247,68 @@ NSString * const kSessionVariantKey = @"session_variant";
     _open = NO;
     if (_connected) {
         _connected = NO;
-        [self reconnect:YES];
+        [self open:YES maxInterval:10 maxRetries:10];
         if (_disconnectCallback) {
             _disconnectCallback();
         }
     }
 }
 
-- (void)reconnect:(BOOL)initiate
-{
-    static int retries = 0;
-    if (self.sessionEnded || _connected || retries >= 10) {
-        // If we deliberately closed the connection, or are already connected
-        // or we tried too many times, then stop retrying.
-        retries = 0;
-    } else if(initiate ^ (retries > 0)) {
-        // If we are initiating a reconnect, or we are already in a
-        // reconnect cycle (but not both). Then continue trying.
-        MessagingDebug(@"Attempting to reconnect, attempt %d", retries);
-        if (!_open) {
-            [self open];
-        }
-        __weak MPABTestDesignerConnection *weakSelf = self;
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(MIN(pow(2, retries),10) * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            MPABTestDesignerConnection *strongSelf = weakSelf;
-            [strongSelf reconnect:NO];
-        });
-        retries++;
-    }
-}
-
-- (void)showConnectedView
-{
-    if(!_recordingView) {
+- (void)showConnectedViewWithLoading:(BOOL)isLoading {
+    if (!self.connectivityIndicatorWindow) {
         UIWindow *mainWindow = [[UIApplication sharedApplication] delegate].window;
-        _recordingView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, mainWindow.frame.size.width, 1.0)];
-        _recordingView.backgroundColor = [UIColor colorWithRed:4/255.0f green:180/255.0f blue:4/255.0f alpha:1.0];
-        [mainWindow addSubview:_recordingView];
-        [mainWindow bringSubviewToFront:_recordingView];
+        self.connectivityIndicatorWindow = [[UIWindow alloc] initWithFrame:CGRectMake(0, 0, mainWindow.frame.size.width, 4.f)];
+        self.connectivityIndicatorWindow.backgroundColor = [UIColor clearColor];
+        self.connectivityIndicatorWindow.windowLevel = UIWindowLevelAlert;
+        self.connectivityIndicatorWindow.alpha = 0;
+        self.connectivityIndicatorWindow.hidden = NO;
+        
+        _recordingView = [[UIView alloc] initWithFrame:self.connectivityIndicatorWindow.frame];
+        _recordingView.backgroundColor = [UIColor clearColor];
+        _indeterminateLayer = [CALayer layer];
+        _indeterminateLayer.backgroundColor = [UIColor colorWithRed:1/255.0 green:179/255.0 blue:109/255.0 alpha:1.0].CGColor;
+        _indeterminateLayer.frame = CGRectMake(0, 0, 0, 4.0f);
+        [_recordingView.layer addSublayer:_indeterminateLayer];
+        [self.connectivityIndicatorWindow addSubview:_recordingView];
+        [self.connectivityIndicatorWindow bringSubviewToFront:_recordingView];
+        
+        [UIView animateWithDuration:0.3 animations:^{
+            self.connectivityIndicatorWindow.alpha = 1;
+        }];
+    }
+    [self animateConnecting:isLoading];
+}
+
+- (void)animateConnecting:(BOOL)isLoading {
+    if (isLoading) {
+        CABasicAnimation* myAnimation = [CABasicAnimation animationWithKeyPath:@"bounds.size.width"];
+        myAnimation.duration = 10.f;
+        myAnimation.fromValue = @0;
+        myAnimation.toValue = @(_connectivityIndicatorWindow.bounds.size.width * 1.9f);
+        myAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
+        myAnimation.fillMode = kCAFillModeForwards;
+        myAnimation.removedOnCompletion = NO;
+        [_indeterminateLayer addAnimation:myAnimation forKey:kStartLoadingAnimationKey];
+    } else {
+        [_indeterminateLayer removeAnimationForKey:kStartLoadingAnimationKey];
+        CABasicAnimation* myAnimation = [CABasicAnimation animationWithKeyPath:@"bounds.size.width"];
+        myAnimation.duration = 0.4f;
+        myAnimation.fromValue = @([[_indeterminateLayer.presentationLayer valueForKeyPath: @"bounds.size.width"] floatValue]);
+        myAnimation.toValue = @(_connectivityIndicatorWindow.bounds.size.width * 2.f);
+        myAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
+        myAnimation.fillMode = kCAFillModeForwards;
+        myAnimation.removedOnCompletion = NO;
+        [_indeterminateLayer addAnimation:myAnimation forKey:kFinishLoadingAnimationKey];
     }
 }
 
-- (void)hideConnectedView
-{
-    if (_recordingView) {
+- (void)hideConnectedView {
+    if (self.connectivityIndicatorWindow) {
+        [_indeterminateLayer removeFromSuperlayer];
         [_recordingView removeFromSuperview];
+        self.connectivityIndicatorWindow.hidden = YES;
     }
-    _recordingView = nil;
+    self.connectivityIndicatorWindow = nil;
 }
 
 @end
