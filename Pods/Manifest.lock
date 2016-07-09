@@ -34,9 +34,9 @@ PODS:
     - FMDB
   - LHSKeyboardAdjusting (0.0.1)
   - LHSTableViewCells (0.0.1)
-  - Mixpanel (2.6.2):
-    - Mixpanel/MPCategoryHelpers (= 2.6.2)
-  - Mixpanel/MPCategoryHelpers (2.6.2)
+  - Mixpanel (3.0.0):
+    - Mixpanel/Mixpanel (= 3.0.0)
+  - Mixpanel/Mixpanel (3.0.0)
   - MWFeedParser (1.0.1):
     - MWFeedParser/FeedParser (= 1.0.1)
     - MWFeedParser/NSDate+InternetDateTime (= 1.0.1)
@@ -60,14 +60,14 @@ DEPENDENCIES:
   - ASPinboard (from `Vendor/ASPinboard`)
   - BRYHTMLParser
   - ChimpKit
-  - FMDB (~> 2.4)
+  - FMDB
   - HTMLParser
   - KeychainItemWrapper (= 1.2)
   - LHSCategoryCollection (= 0.0.17)
   - LHSFMDatabaseAdditions (= 0.0.3)
   - LHSKeyboardAdjusting (= 0.0.1)
   - LHSTableViewCells
-  - Mixpanel (= 2.6.2)
+  - Mixpanel
   - MWFeedParser (= 1.0.1)
   - OpenInChrome (= 0.0.1)
   - Reachability (= 3.2)
@@ -95,7 +95,7 @@ SPEC CHECKSUMS:
   LHSFMDatabaseAdditions: aba229cb0db6aea013a64c3be1542cd13b0a069e
   LHSKeyboardAdjusting: d24fb1f05732db354a9d5f0348941a694bc6df4c
   LHSTableViewCells: 47b4d33382cb4a09960371267e2142970afdfdd6
-  Mixpanel: e453f9abb7858742b1ab2b0434eac04f9f27c155
+  Mixpanel: ac92056ee35a961362513ba11049e67cffcaa1f1
   MWFeedParser: 2cf646014c1baf6ad1b08c480b40a08180079247
   OpenInChrome: f1f3f9dec682216fe78a0d7fe0b5b263d6312c32
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
@@ -105,6 +105,6 @@ SPEC CHECKSUMS:
   uservoice-iphone-sdk: 349d9ef36d3c43939d28390b9e86bb32b65fe983
   YHRoundBorderedButton: 2180f04094db264cace8db88eae977d78a3b4633
 
-PODFILE CHECKSUM: fd80f2c40f3bc146909c1167606ec635f51c51a5
+PODFILE CHECKSUM: 75d53192c8e87e5dfff29893d3e6343c093166c2
 
 COCOAPODS: 1.0.1
