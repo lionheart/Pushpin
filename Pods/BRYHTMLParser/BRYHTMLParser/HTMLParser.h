@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "HTMLNode.h"
 
 @interface HTMLParser : NSObject
 
