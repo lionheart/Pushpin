@@ -1,0 +1,6 @@
+framework module LHSKeyboardAdjusting {
+  umbrella header "LHSKeyboardAdjusting-umbrella.h"
+
+  export *
+  module * { export * }
+}
