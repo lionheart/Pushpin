@@ -1,0 +1,6 @@
+framework module HTMLParser {
+  umbrella header "HTMLParser-umbrella.h"
+
+  export *
+  module * { export * }
+}
