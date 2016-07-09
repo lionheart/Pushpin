@@ -7,6 +7,7 @@
 //
 
 @import QuartzCore;
+@import Mixpanel;
 
 #import "PPGenericPostViewController.h"
 #import "NSAttributedString+Attributes.h"

@@ -6,6 +6,8 @@
 //  Copyright (c) 2014 Lionheart Software. All rights reserved.
 //
 
+@import Mixpanel;
+
 #import "PPReaderSettingsViewController.h"
 #import "PPTitleButton.h"
 #import "PPTheme.h"

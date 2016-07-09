@@ -7,6 +7,7 @@
 //
 
 @import QuartzCore;
+@import Mixpanel;
 
 #import "PPBrowserSettingsViewController.h"
 #import "BookmarkletInstallationViewController.h"

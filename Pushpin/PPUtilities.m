@@ -6,14 +6,17 @@
 //
 //
 
+@import FMDB;
+
 #import "PPUtilities.h"
 
 #import <SafariServices/SafariServices.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-#import <HTMLParser/HTMLParser.h>
 #import <MWFeedParser/NSString+HTML.h>
 #import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 #import <LHSCategoryCollection/UIViewController+LHSAdditions.h>
+
+@import BRYHTMLParser;
 
 @implementation PPUtilities
 
@@ -201,11 +204,11 @@
                                    
                                    if (!error) {
                                        NSCharacterSet *whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
-                                       
-                                       HTMLNode *root = [parser head];
-                                       HTMLNode *titleTag = [root findChildTag:@"title"];
+
+                                       id<HTMLNode> root = [parser head];
+                                       id<HTMLNode> titleTag = [root findChildTag:@"title"];
                                        NSArray *metaTags = [root findChildTags:@"meta"];
-                                       for (HTMLNode *tag in metaTags) {
+                                       for (id<HTMLNode> tag in metaTags) {
                                            if ([[tag getAttributeNamed:@"name"] isEqualToString:@"description"]) {
                                                description = [[tag getAttributeNamed:@"content"] stringByTrimmingCharactersInSet:whitespace];
                                                break;

@@ -10,6 +10,7 @@
 @import Accounts;
 @import Social;
 @import StoreKit;
+@import Mixpanel;
 
 #import "PPAboutViewController.h"
 #import "PPChangelogViewController.h"

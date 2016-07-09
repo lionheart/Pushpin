@@ -13,8 +13,8 @@
 #import "NSString+Additions.h"
 #import "NSString+URLEncoding2.h"
 #import <FMDB/FMDatabaseQueue.h>
-#import <RNCryptor/RNDecryptor.h>
-#import <RNCryptor/RNCryptor.h>
+
+@import RNCryptor;
 #import <LHSCategoryCollection/NSURLSession+LHSAdditions.h>
 
 @interface PPURLCache ()
@@ -624,11 +624,11 @@
         if (isReaderURL) {
             NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
             NSData *encodedData = [[NSData alloc] initWithBase64EncodedString:string options:NSDataBase64DecodingIgnoreUnknownCharacters];
-            
+
 #warning EXC_BAD_ACCESS on encodedData (somehow it becomes null)
-            NSData *decryptedData = [RNDecryptor decryptData:encodedData
-                                                withPassword:@"Isabelle and Dante"
-                                                       error:nil];
+            NSData *decryptedData = [RNCryptor decryptData:encodedData
+                                                  password:@"Isabelle and Dante"
+                                                     error:nil];
             id article = [NSJSONSerialization JSONObjectWithData:decryptedData
                                                          options:NSJSONReadingAllowFragments
                                                            error:nil];

@@ -8,6 +8,7 @@
 
 @import CoreSpotlight;
 @import MobileCoreServices;
+@import Mixpanel;
 
 #import "PPPinboardDataSource.h"
 #import "PPAddBookmarkViewController.h"

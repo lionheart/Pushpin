@@ -11,6 +11,7 @@
 @import QuartzCore;
 @import Twitter;
 @import SafariServices;
+@import Mixpanel;
 
 #import "PPWebViewController.h"
 #import "PPAddBookmarkViewController.h"
@@ -24,20 +25,16 @@
 #import "NSData+AES256.h"
 #import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 #import "PPCachingURLProtocol.h"
-
-#ifdef PINBOARD
 #import "PPPinboardDataSource.h"
-#endif
 
 #import <JavaScriptCore/JavaScriptCore.h>
 #import "NSString+URLEncoding2.h"
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-#import <UIView+LHSAdditions.h>
+#import "UIView+LHSAdditions.h"
 #import <FMDB/FMDatabase.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
-#import <RNCryptor/RNDecryptor.h>
-#import <RNCryptor/RNCryptor.h>
+@import RNCryptor;
 
 #define HIDE_STATUS_BAR_WHILE_SCROLLING NO
 
@@ -352,7 +349,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 }
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer {
-    if (recognizer == self.longPressGestureRecognizer || recognizer == self.readerLongPressGestureRecognizer && !self.selectedActionSheet) {
+    if (recognizer == self.longPressGestureRecognizer || (recognizer == self.readerLongPressGestureRecognizer && !self.selectedActionSheet)) {
         UIWebView *webView = (UIWebView *)recognizer.view;
 
         // Get the coordinates of the selected element
@@ -1187,9 +1184,9 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                                                 if ([[(NSHTTPURLResponse *)response MIMEType] isEqualToString:@"text/plain"]) {
                                                     NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                                                     NSData *encodedData = [[NSData alloc] initWithBase64EncodedString:string options:NSDataBase64DecodingIgnoreUnknownCharacters];
-                                                    NSData *decryptedData = [RNDecryptor decryptData:encodedData
-                                                                                        withPassword:@"Isabelle and Dante"
-                                                                                               error:nil];
+                                                    NSData *decryptedData = [RNCryptor decryptData:encodedData
+                                                                                          password:@"Isabelle and Dante"
+                                                                                             error:nil];
                                                     id article = [NSJSONSerialization JSONObjectWithData:decryptedData
                                                                                                  options:NSJSONReadingAllowFragments
                                                                                                    error:nil];

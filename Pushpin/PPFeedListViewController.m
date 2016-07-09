@@ -8,6 +8,7 @@
 
 @import QuartzCore;
 @import CoreMotion;
+@import Mixpanel;
 
 #import "PPFeedListViewController.h"
 #import "PPAppDelegate.h"
@@ -22,7 +23,6 @@
 #import "PPNavigationController.h"
 #import "PPTitleButton.h"
 #import "PPTableViewTitleView.h"
-#import "PPDeliciousDataSource.h"
 #import "PPAddSavedFeedViewController.h"
 #import "PPSearchViewController.h"
 #import "PPSettings.h"

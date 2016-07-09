@@ -6,12 +6,9 @@
 //
 //
 
-#import <Foundation/Foundation.h>
 #import <FMDB/FMDB.h>
-
+#import <Foundation/Foundation.h>
 #import "PPConstants.h"
-
-@class FMResultSet;
 
 @interface PPUtilities : NSObject
 

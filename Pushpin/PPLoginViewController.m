@@ -14,7 +14,7 @@
 #import <LHSTableViewCells/LHSTableViewCellValue1.h>
 #import <LHSKeyboardAdjusting/UIViewController+LHSKeyboardAdjustment.h>
 #import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
-#import <uservoice-iphone-sdk/UserVoice.h>
+@import uservoice_iphone_sdk;
 #import "PPMailChimp.h"
 
 #import "PPPinboardLoginViewController.h"

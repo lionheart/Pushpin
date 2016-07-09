@@ -14,7 +14,6 @@
 #import "PPTitleButton.h"
 #import "PPAppDelegate.h"
 #import "PPFeedListViewController.h"
-#import "PPDeliciousDataSource.h"
 #import "PPSettings.h"
 #import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 

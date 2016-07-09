@@ -7,11 +7,12 @@
 //
 
 @import QuartzCore;
+@import Mixpanel;
 
 #import "PPAppDelegate.h"
 #import "PPSettingsViewController.h"
 #import "PPPinboardLoginViewController.h"
-#import "NSString+URLEncoding.h"
+//#import "NSString+URLEncoding.h"
 #import "PPBrowserSettingsViewController.h"
 #import "PPDisplaySettingsViewController.h"
 #import "PPAboutViewController.h"
@@ -27,16 +28,15 @@
 #import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 
 #import <ASPinboard/ASPinboard.h>
-#import <uservoice-iphone-sdk/UserVoice.h>
-#import <uservoice-iphone-sdk/UVStyleSheet.h>
 #import <FMDB/FMDatabase.h>
 #import <KeychainItemWrapper/KeychainItemWrapper.h>
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <LHSCategoryCollection/UIView+LHSAdditions.h>
-#import <LHSDelicious/LHSDelicious.h>
 #import <LHSTableViewCells/LHSTableViewCellValue1.h>
 #import <LHSTableViewCells/LHSTableViewCellSubtitle.h>
-#import <OnePasswordExtension.h>
+
+@import uservoice_iphone_sdk;
+@import OnePasswordExtension;
 
 static NSString *CellIdentifier = @"CellIdentifier";
 static NSString *DeleteCellIdentifier = @"DeleteCellIdentifier";

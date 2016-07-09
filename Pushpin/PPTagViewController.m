@@ -7,6 +7,7 @@
 //
 
 @import QuartzCore;
+@import Mixpanel;
 
 #import "PPTagViewController.h"
 #import "FMDatabase.h"
@@ -17,7 +18,6 @@
 #import "PPTheme.h"
 #import "PPTableViewTitleView.h"
 #import "PPFeedListViewController.h"
-#import "PPDeliciousDataSource.h"
 #import "PPUtilities.h"
 #import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 
