@@ -8,10 +8,10 @@ use_frameworks!
 
 target 'PushpinFramework' do
   pod 'Reachability', '3.2'
-  pod 'FMDB', '~> 2.4'
+  pod 'FMDB'
   pod 'KeychainItemWrapper', '1.2'
   pod 'TTTAttributedLabel', '1.13.0'
-  pod 'Mixpanel', '2.6.2'
+  pod 'Mixpanel'
   pod 'uservoice-iphone-sdk', '3.2.3'
   pod 'LHSCategoryCollection', '0.0.17'
   pod 'LHSFMDatabaseAdditions', '0.0.3'
