@@ -20,6 +20,7 @@ target 'PushpinFramework' do
   pod 'TextExpander', '3.0.5'
   pod 'MWFeedParser', '1.0.1'
   pod 'ASPinboard', :path => 'Vendor/ASPinboard'
+  pod 'HTMLParser'
   pod 'OpenInChrome', '0.0.1'
   pod 'AFNetworking', '2.2.0'
   pod 'LHSKeyboardAdjusting', '0.0.1'
