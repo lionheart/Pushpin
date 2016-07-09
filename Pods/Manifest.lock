@@ -27,6 +27,7 @@ PODS:
     - FMDB/standard (= 2.6.2)
   - FMDB/standard (2.6.2)
   - hpple (0.2.0)
+  - HTMLParser (0.1.2)
   - KeychainItemWrapper (1.2)
   - LHSCategoryCollection (0.0.17)
   - LHSFMDatabaseAdditions (0.0.3):
@@ -60,6 +61,7 @@ DEPENDENCIES:
   - BRYHTMLParser
   - ChimpKit
   - FMDB (~> 2.4)
+  - HTMLParser
   - KeychainItemWrapper (= 1.2)
   - LHSCategoryCollection (= 0.0.17)
   - LHSFMDatabaseAdditions (= 0.0.3)
@@ -87,6 +89,7 @@ SPEC CHECKSUMS:
   ChimpKit: d020126089544daa349397a91f1489a3f271b791
   FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
   hpple: 3b765f96fc2cd56ad1a49aef6f7be5cb2aa64b57
+  HTMLParser: 0aff2823b285cfe41996d55d1ae742a27ff89305
   KeychainItemWrapper: 67a240172ed669842bc6bc13ed554dcd50469fa2
   LHSCategoryCollection: 25ced9caf1f79d7e742a9c1da21e89fe54121e70
   LHSFMDatabaseAdditions: aba229cb0db6aea013a64c3be1542cd13b0a069e
@@ -102,6 +105,6 @@ SPEC CHECKSUMS:
   uservoice-iphone-sdk: 349d9ef36d3c43939d28390b9e86bb32b65fe983
   YHRoundBorderedButton: 2180f04094db264cace8db88eae977d78a3b4633
 
-PODFILE CHECKSUM: 16ce6373be1ba886cb778a4d2210a37fab0ada35
+PODFILE CHECKSUM: fd80f2c40f3bc146909c1167606ec635f51c51a5
 
 COCOAPODS: 1.0.1
