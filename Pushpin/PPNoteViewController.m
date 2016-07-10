@@ -8,6 +8,8 @@
 
 #import "PPNoteViewController.h"
 
+@import LHSCategoryCollection;
+
 #import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import <ASPinboard/ASPinboard.h>
 

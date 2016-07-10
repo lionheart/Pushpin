@@ -7,6 +7,7 @@
 //
 
 @import QuartzCore;
+@import LHSCategoryCollection;
 
 #import "PPAppDelegate.h"
 #import "BookmarkletInstallationViewController.h"
@@ -14,8 +15,6 @@
 #import "PPTitleButton.h"
 #import "PPTableViewTitleView.h"
 #import "PPNotification.h"
-
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 static NSString *CellIdentifier = @"Cell";
 

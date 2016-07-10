@@ -6,6 +6,30 @@ project 'Pushpin.xcodeproj'
 inhibit_all_warnings!
 use_frameworks!
 
+target 'Pushpin' do
+  pod 'Reachability', '3.2'
+  pod 'KeychainItemWrapper', '1.2'
+  pod 'TTTAttributedLabel', '1.13.0'
+  pod 'BRYHTMLParser'
+  pod 'MWFeedParser', '1.0.1'
+  pod 'ASPinboard', :path => 'Vendor/ASPinboard'
+  pod 'HTMLParser'
+  pod 'AFNetworking', '~> 3.0'
+  pod 'RNCryptor', '~> 4.0'
+  pod '1PasswordExtension', '~> 1.8'
+  pod 'YHRoundBorderedButton', '0.1.0'
+  pod 'LHSCategoryCollection', :path => '../LHSCategoryCollection'
+  pod 'LHSKeyboardAdjusting', :path => '../LHSKeyboardAdjusting'
+  pod 'LHSFMDatabaseAdditions', '0.0.3'
+  pod 'LHSTableViewCells'
+  pod 'FMDB'
+
+  pod 'ChimpKit'
+  pod 'uservoice-iphone-sdk', '3.2.3'
+  pod 'OpenInChrome', '0.0.1'
+  pod 'Mixpanel'
+end
+
 target 'SharedSafe' do
   pod 'Reachability', '3.2'
   pod 'KeychainItemWrapper', '1.2'
@@ -22,15 +46,7 @@ target 'SharedSafe' do
   pod 'LHSKeyboardAdjusting', :path => '../LHSKeyboardAdjusting'
   pod 'LHSFMDatabaseAdditions', '0.0.3'
   pod 'LHSTableViewCells'
-
-  target 'Shared' do
-    inherit! :search_paths
-
-    pod 'ChimpKit'
-    pod 'uservoice-iphone-sdk', '3.2.3'
-    pod 'OpenInChrome', '0.0.1'
-    pod 'Mixpanel'
-  end
+  pod 'FMDB'
 
   target 'BookmarkExtension' do
     inherit! :search_paths

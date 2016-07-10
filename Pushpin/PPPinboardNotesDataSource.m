@@ -7,18 +7,18 @@
 //
 
 #import "PPPinboardNotesDataSource.h"
+
+@import ASPinboard;
+@import LHSCategoryCollection;
+
 #import "PPTheme.h"
 #import "PPConstants.h"
-#import "PostMetadata.h"
 #import "PPPlainTextViewController.h"
 #import "PPNoteViewController.h"
 #import "PPSettings.h"
+#import "PostMetadata.h"
 
 #import "NSAttributedString+Attributes.h"
-
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-#import <Fabric/Fabric.h>
-#import <ASPinboard/ASPinboard.h>
 
 @interface PPPinboardNotesDataSource ()
 

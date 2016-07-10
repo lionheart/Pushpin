@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		15F29DE162BFFE2A1D52093A /* Pods_ReadLaterExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AFE28264AFC24CAEB0032656 /* Pods_ReadLaterExtension.framework */; };
+		082FF0C6FD12E442413DBF38 /* Pods_SharedSafe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1FC2E4A5F425F723D5721F2 /* Pods_SharedSafe.framework */; };
+		10EB342A35A18AD912E19457 /* Pods_BookmarkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D830063BA00918C676CBD39 /* Pods_BookmarkExtension.framework */; };
 		371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371BCB0115772C0E00BDA996 /* CoreText.framework */; };
 		372943E719CF3AFF00ABF006 /* PPUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B4FFE21923AD18002F8558 /* PPUtilities.m */; };
 		372F891416755BF00073D0B6 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 372F891216755B950073D0B6 /* CoreTelephony.framework */; };
@@ -91,19 +92,6 @@
 		3747C74D19CCDB1F00FAD488 /* toolbar-trash.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF6A184E9AA000979AA3 /* toolbar-trash.png */; };
 		3747C74E19CCDB1F00FAD488 /* toolbar-trash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF6B184E9AA000979AA3 /* toolbar-trash@2x.png */; };
 		3747C75419CCDB1F00FAD488 /* webview-helpers.js in Resources */ = {isa = PBXBuildFile; fileRef = E804950C180EF20800C5CA8B /* webview-helpers.js */; };
-		37587B101D32AC58005665DC /* SharedSafe.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 379042B219CC646700409D34 /* SharedSafe.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		37587B321D32B5B0005665DC /* Shared.h in Headers */ = {isa = PBXBuildFile; fileRef = 37587B311D32B5B0005665DC /* Shared.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		37587B3D1D32B5C5005665DC /* SharedSafe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 379042B219CC646700409D34 /* SharedSafe.framework */; };
-		37587B3E1D32B5E1005665DC /* BookmarkletInstallationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */; };
-		37587B3F1D32B5E7005665DC /* PPActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37ED3E4D188C4A1F0039B344 /* PPActivityViewController.m */; };
-		37587B411D32B5F6005665DC /* PPBrowserSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 377E46DD174C73DD00CE3813 /* PPBrowserSettingsViewController.m */; };
-		37587B431D32B5FE005665DC /* PPBrowserActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 37018CE4180E3C0B00226408 /* PPBrowserActivity.m */; };
-		37587B451D32B613005665DC /* PPWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 377E46E1174C85C500CE3813 /* PPWebViewController.m */; };
-		37587B461D32B616005665DC /* PPSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E40162B2EDA009FCB17 /* PPSettingsViewController.m */; };
-		37587B471D32B618005665DC /* PPOfflineSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37EE01771A093F2B00A03F3B /* PPOfflineSettingsViewController.m */; };
-		37587B481D32B61C005665DC /* PPPinboardLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37919F1D16091DF5007708EF /* PPPinboardLoginViewController.m */; };
-		37587B491D32B61E005665DC /* PPSearchExamplesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3778CE5218B1C97D004113DC /* PPSearchExamplesViewController.m */; };
-		37587B4A1D32B625005665DC /* PPTagEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3728CF3C18726EC900155791 /* PPTagEditViewController.m */; };
 		375B62321A4DA9240045AFE7 /* PPURLCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 375B62301A4DA9240045AFE7 /* PPURLCache.m */; };
 		3762CAD01A59D04700301C97 /* NSString+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 3762CACE1A59D04700301C97 /* NSString+Additions.m */; };
 		376E0A80175AA9EC004CCDEE /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 376E0A7F175AA9EC004CCDEE /* StoreKit.framework */; };
@@ -180,73 +168,79 @@
 		37BC1E0C1D32893900AC4607 /* AppExtensionHelper.js in Resources */ = {isa = PBXBuildFile; fileRef = 374D91DF19CE26A700995DF1 /* AppExtensionHelper.js */; };
 		37CBB7411881B44B000F9C36 /* About.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7401881B44B000F9C36 /* About.plist */; };
 		37CBB7551881FFBC000F9C36 /* About.json in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7541881FFBC000F9C36 /* About.json */; };
-		37D2DB7E1D32EA5500167322 /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D2DB6F1D32EA4E00167322 /* FMDatabase.m */; };
-		37D2DB7F1D32EA5800167322 /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D2DB711D32EA4E00167322 /* FMDatabaseAdditions.m */; };
-		37D2DB801D32EA5A00167322 /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D2DB731D32EA4E00167322 /* FMDatabasePool.m */; };
-		37D2DB811D32EA5C00167322 /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D2DB751D32EA4E00167322 /* FMDatabaseQueue.m */; };
-		37D2DB821D32EA6000167322 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D2DB781D32EA4E00167322 /* FMResultSet.m */; };
-		37D2DB851D32EB8C00167322 /* FMDB.h in Headers */ = {isa = PBXBuildFile; fileRef = 37D2DB761D32EA4E00167322 /* FMDB.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		37DE5AAA174EF8AF0073A2F4 /* back_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 37DE5AA0174EF8AE0073A2F4 /* back_icon.png */; };
 		37DE5AAB174EF8AF0073A2F4 /* back_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37DE5AA1174EF8AE0073A2F4 /* back_icon@2x.png */; };
-		37E9965C1D32EC3500659E82 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 37E9965B1D32EC3500659E82 /* libsqlite3.tbd */; };
 		37E9965D1D32EC9C00659E82 /* NSString+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 3762CACD1A59D04700301C97 /* NSString+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		37F1E1BA18C617940032B22B /* navigation-recent.png in Resources */ = {isa = PBXBuildFile; fileRef = 37F1E1B618C617940032B22B /* navigation-recent.png */; };
 		37F1E1BB18C617940032B22B /* navigation-recent@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37F1E1B718C617940032B22B /* navigation-recent@2x.png */; };
 		37F1E1BC18C617940032B22B /* navigation-search.png in Resources */ = {isa = PBXBuildFile; fileRef = 37F1E1B818C617940032B22B /* navigation-search.png */; };
 		37F1E1BD18C617940032B22B /* navigation-search@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37F1E1B918C617940032B22B /* navigation-search@2x.png */; };
-		37F95BEB1D32BB7B00422DD6 /* PPLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E304151B3DAAF700135CF1 /* PPLoginViewController.m */; };
-		37F95BEC1D32BB8600422DD6 /* PPReaderSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A2B4A1199E6D8D005B7671 /* PPReaderSettingsViewController.m */; };
-		37F95BED1D32BB8C00422DD6 /* PPFeedListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A638916C0CB0800665CA1 /* PPFeedListViewController.m */; };
-		37F95BEE1D32BB9500422DD6 /* PPMailChimp.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E304111B3C778A00135CF1 /* PPMailChimp.m */; };
-		37F95BF61D32BD2000422DD6 /* PPTagViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3727558B161A66A2001A857B /* PPTagViewController.m */; };
-		37F95BFF1D32BE5800422DD6 /* PPMultipleEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37C012B81765423A00938D81 /* PPMultipleEditViewController.m */; };
-		37F95C001D32BE6F00422DD6 /* PPPinboardFeedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3722155E16FCDB430036AA20 /* PPPinboardFeedDataSource.m */; };
-		37F95C011D32BE7300422DD6 /* PPPinboardNotesDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3714DB7417556FC600B23F4F /* PPPinboardNotesDataSource.m */; };
-		37F95C021D32BEA100422DD6 /* PPSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37171A2B18B16C77007FF164 /* PPSearchViewController.m */; };
-		37F95C041D32CDE200422DD6 /* PPSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FF4130187D95CF00F2D481 /* PPSplitViewController.m */; };
-		37F95C061D32CDF100422DD6 /* PPTwitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 37BC1BDA1889C6740022020A /* PPTwitter.m */; };
-		37F95C071D32CE0D00422DD6 /* LHSFontSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F6D7E819A1111E004016DB /* LHSFontSelectionViewController.m */; };
-		37F95C081D32CE1D00422DD6 /* PPOfflineDownloadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3762CAC61A55A59600301C97 /* PPOfflineDownloadViewController.m */; };
-		37F95C091D32CE2B00422DD6 /* PPSavedFeedsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3714DB7717558A2000B23F4F /* PPSavedFeedsViewController.m */; };
-		37F95C0A1D32CE3200422DD6 /* PPStatusBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D4B001188325B000E07EB3 /* PPStatusBar.m */; };
-		37F95C0B1D32CE4D00422DD6 /* PPDisplaySettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B348C8175EFAFA00929E2E /* PPDisplaySettingsViewController.m */; };
-		37F95C0C1D32CE5300422DD6 /* PPAddSavedFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3714DB8E1757D81E00B23F4F /* PPAddSavedFeedViewController.m */; };
-		37F95C0E1D32CE7D00422DD6 /* PPCachingURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 37EE01731A07EA0600A03F3B /* PPCachingURLProtocol.m */; };
-		37F95C0F1D32CEA200422DD6 /* PPBookmarkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 37516A05186C8AF700AEF7A6 /* PPBookmarkCell.m */; };
 		37F95C111D32CEAC00422DD6 /* LHSBooleanTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 37171A2E18B1714E007FF164 /* LHSBooleanTableViewCell.m */; };
-		37F95C1B1D32D1DA00422DD6 /* PPAddBookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E44162B389B009FCB17 /* PPAddBookmarkViewController.m */; };
 		37F95C1C1D32D1DB00422DD6 /* PPAddBookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E44162B389B009FCB17 /* PPAddBookmarkViewController.m */; };
 		37F95C1D1D32D1DB00422DD6 /* PPAddBookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E44162B389B009FCB17 /* PPAddBookmarkViewController.m */; };
 		37F95C1F1D32D37E00422DD6 /* PPSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 37889D4319981212002E245A /* PPSettings.m */; };
-		37F95C211D32D8B900422DD6 /* PPChangelogViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B348CB175FF9D500929E2E /* PPChangelogViewController.m */; };
-		37F95C241D32D93E00422DD6 /* PPAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3732DF9C175957F000978A68 /* PPAboutViewController.m */; };
-		37F95C281D32D9F700422DD6 /* PPNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 374698BF174B33CF00407345 /* PPNotification.m */; };
 		37F95C291D32D9F700422DD6 /* PPNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 374698BF174B33CF00407345 /* PPNotification.m */; };
 		37F95C2A1D32D9F800422DD6 /* PPNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 374698BF174B33CF00407345 /* PPNotification.m */; };
 		37F95C2B1D32DA1300422DD6 /* PPNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F91F3D177AB1D500683D46 /* PPNavigationController.m */; };
 		37F95C2C1D32DA1400422DD6 /* PPNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F91F3D177AB1D500683D46 /* PPNavigationController.m */; };
-		37F95C2D1D32DA1400422DD6 /* PPNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F91F3D177AB1D500683D46 /* PPNavigationController.m */; };
 		37F95C2E1D32DB5500422DD6 /* PPReaderSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A2B4A9199EA8CA005B7671 /* PPReaderSettings.m */; };
-		37F95C301D32DB8300422DD6 /* PPPinboardDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733252716E15D6A002E2AB0 /* PPPinboardDataSource.m */; };
 		37F95C311D32DB8300422DD6 /* PPPinboardDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733252716E15D6A002E2AB0 /* PPPinboardDataSource.m */; };
 		37F95C321D32DB8400422DD6 /* PPPinboardDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733252716E15D6A002E2AB0 /* PPPinboardDataSource.m */; };
-		37F95C381D32DBD200422DD6 /* PPGenericPostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733251E16E155A2002E2AB0 /* PPGenericPostViewController.m */; };
 		37F95C3C1D32DEE400422DD6 /* SharedSafe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 379042B219CC646700409D34 /* SharedSafe.framework */; };
 		37F95C3D1D32DF7F00422DD6 /* SharedSafe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 379042B219CC646700409D34 /* SharedSafe.framework */; };
-		37F9D0801D32F2CC002A168D /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37587B2F1D32B5B0005665DC /* Shared.framework */; };
-		37F9D0811D32F2CC002A168D /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 37587B2F1D32B5B0005665DC /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		37F9D0911D32F57F002A168D /* SharedSafe.framework in Copy Files (1 item) */ = {isa = PBXBuildFile; fileRef = 379042B219CC646700409D34 /* SharedSafe.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		37F9D0961D32FDE1002A168D /* BookmarkletInstallationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */; };
+		37F9D0971D32FDF9002A168D /* PPSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37171A2B18B16C77007FF164 /* PPSearchViewController.m */; };
+		37F9D0981D32FDFB002A168D /* PPTwitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 37BC1BDA1889C6740022020A /* PPTwitter.m */; };
+		37F9D0991D32FDFE002A168D /* PPPinboardFeedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3722155E16FCDB430036AA20 /* PPPinboardFeedDataSource.m */; };
+		37F9D09A1D32FE00002A168D /* PPWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 377E46E1174C85C500CE3813 /* PPWebViewController.m */; };
+		37F9D09B1D32FE03002A168D /* PPSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E40162B2EDA009FCB17 /* PPSettingsViewController.m */; };
+		37F9D09C1D32FE05002A168D /* PPSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FF4130187D95CF00F2D481 /* PPSplitViewController.m */; };
+		37F9D09D1D32FE08002A168D /* PPPinboardLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37919F1D16091DF5007708EF /* PPPinboardLoginViewController.m */; };
+		37F9D09E1D32FE0C002A168D /* PPReaderSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A2B4A1199E6D8D005B7671 /* PPReaderSettingsViewController.m */; };
+		37F9D09F1D32FE11002A168D /* PPTagEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3728CF3C18726EC900155791 /* PPTagEditViewController.m */; };
+		37F9D0A01D32FE28002A168D /* PPOfflineSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37EE01771A093F2B00A03F3B /* PPOfflineSettingsViewController.m */; };
+		37F9D0A11D32FE2A002A168D /* PPNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F91F3D177AB1D500683D46 /* PPNavigationController.m */; };
+		37F9D0A21D32FE2D002A168D /* PPSearchExamplesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3778CE5218B1C97D004113DC /* PPSearchExamplesViewController.m */; };
+		37F9D0A31D32FE30002A168D /* PPStatusBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D4B001188325B000E07EB3 /* PPStatusBar.m */; };
+		37F9D0A41D32FE34002A168D /* PPTagViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3727558B161A66A2001A857B /* PPTagViewController.m */; };
+		37F9D0A51D32FE50002A168D /* PPFeedListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 375A638916C0CB0800665CA1 /* PPFeedListViewController.m */; };
+		37F9D0A61D32FE55002A168D /* PPDisplaySettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B348C8175EFAFA00929E2E /* PPDisplaySettingsViewController.m */; };
+		37F9D0A71D32FE57002A168D /* PPMultipleEditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37C012B81765423A00938D81 /* PPMultipleEditViewController.m */; };
+		37F9D0A81D32FE5D002A168D /* PPPinboardDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733252716E15D6A002E2AB0 /* PPPinboardDataSource.m */; };
+		37F9D0A91D32FED3002A168D /* PPPinboardNotesDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3714DB7417556FC600B23F4F /* PPPinboardNotesDataSource.m */; };
+		37F9D0AA1D32FEDB002A168D /* PPOfflineDownloadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3762CAC61A55A59600301C97 /* PPOfflineDownloadViewController.m */; };
+		37F9D0AC1D32FFEA002A168D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37F9D0AB1D32FFEA002A168D /* CoreGraphics.framework */; };
+		37F9D0B11D330025002A168D /* PPChangelogViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B348CB175FF9D500929E2E /* PPChangelogViewController.m */; };
+		37F9D0B21D33002A002A168D /* PPBrowserSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 377E46DD174C73DD00CE3813 /* PPBrowserSettingsViewController.m */; };
+		37F9D0B41D330054002A168D /* PPMailChimp.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E304111B3C778A00135CF1 /* PPMailChimp.m */; };
+		37F9D0B51D33005D002A168D /* PPNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 374698BF174B33CF00407345 /* PPNotification.m */; };
+		37F9D0B61D330075002A168D /* PPAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3732DF9C175957F000978A68 /* PPAboutViewController.m */; };
+		37F9D0B71D330077002A168D /* PPActivityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37ED3E4D188C4A1F0039B344 /* PPActivityViewController.m */; };
+		37F9D0B81D330082002A168D /* PPAddBookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E44162B389B009FCB17 /* PPAddBookmarkViewController.m */; };
+		37F9D0B91D330087002A168D /* PPAddSavedFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3714DB8E1757D81E00B23F4F /* PPAddSavedFeedViewController.m */; };
+		37F9D0BA1D330105002A168D /* PPSavedFeedsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3714DB7717558A2000B23F4F /* PPSavedFeedsViewController.m */; };
+		37F9D0BB1D330113002A168D /* PPLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E304151B3DAAF700135CF1 /* PPLoginViewController.m */; };
+		37F9D0BC1D330115002A168D /* PPGenericPostViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733251E16E155A2002E2AB0 /* PPGenericPostViewController.m */; };
+		37F9D0C01D330239002A168D /* CoreSpotlight.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37F9D0BF1D330239002A168D /* CoreSpotlight.framework */; };
+		37F9D0C11D330246002A168D /* PPBrowserActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 37018CE4180E3C0B00226408 /* PPBrowserActivity.m */; };
+		37F9D0CB1D330332002A168D /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37F9D0CA1D330332002A168D /* CoreMotion.framework */; };
+		37F9D0CF1D330388002A168D /* Pods_SharedSafe.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 37F9D0AD1D32FFFB002A168D /* Pods_SharedSafe.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		37F9D0D21D330425002A168D /* SharedSafe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 379042B219CC646700409D34 /* SharedSafe.framework */; };
+		37F9D0D31D330425002A168D /* SharedSafe.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 379042B219CC646700409D34 /* SharedSafe.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		37F9D0D81D330440002A168D /* PPAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEBA215745488003F2B77 /* PPAppDelegate.m */; };
+		37F9D0D91D33049B002A168D /* PPCachingURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 37EE01731A07EA0600A03F3B /* PPCachingURLProtocol.m */; };
+		37F9D0DA1D33049F002A168D /* PPBookmarkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 37516A05186C8AF700AEF7A6 /* PPBookmarkCell.m */; };
+		37F9D0DB1D3304A9002A168D /* LHSFontSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F6D7E819A1111E004016DB /* LHSFontSelectionViewController.m */; };
+		37F9D0DD1D3304C7002A168D /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37F9D0DC1D3304C7002A168D /* MobileCoreServices.framework */; };
 		37FB4F981D32ED60004D5C12 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEB9E15745488003F2B77 /* main.m */; };
-		37FB4F9A1D32ED74004D5C12 /* PPAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEBA215745488003F2B77 /* PPAppDelegate.m */; };
 		37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9415745488003F2B77 /* Foundation.framework */; };
-		6E09518D08F38F38289C9403 /* Pods_Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D8798030EDCD83BDC681C69 /* Pods_Shared.framework */; };
-		8E942D39E261BCEB396C6E40 /* Pods_SharedSafe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 018E0AFD29B1ED9300B23568 /* Pods_SharedSafe.framework */; };
+		5BD9EA02818DE92F5A7B9BB7 /* Pods_Pushpin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5085B26ED5E45AA13400511 /* Pods_Pushpin.framework */; };
+		6C759766FD61CD15DC7322DE /* Pods_ReadLaterExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 851194C686EB1E24EABBD1A4 /* Pods_ReadLaterExtension.framework */; };
 		B63698721B0FCC2700F15D42 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B63698711B0FCC2700F15D42 /* Launch Screen.xib */; };
 		B6E3041C1B3DC95500135CF1 /* pinboard-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E304181B3DC95500135CF1 /* pinboard-logo@2x.png */; };
 		B6E3041D1B3DC95500135CF1 /* pinboard.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = B6E304191B3DC95500135CF1 /* pinboard.jpeg */; };
 		B6E3041E1B3DC95500135CF1 /* pushpin-cloud-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E3041A1B3DC95500135CF1 /* pushpin-cloud-logo.png */; };
 		B6E3041F1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E3041B1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png */; };
-		D584A85F7A1198D6E3F98A73 /* Pods_BookmarkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3619D801CC756D8CA859A8E8 /* Pods_BookmarkExtension.framework */; };
 		E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E804950F18103DC700C5CA8B /* SafariServices.framework */; };
 		E873423B180DAC8800CF9E5F /* activity-browser-chrome.png in Resources */ = {isa = PBXBuildFile; fileRef = E8734239180DAC8800CF9E5F /* activity-browser-chrome.png */; };
 		E873423C180DAC8800CF9E5F /* activity-browser-chrome@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E873423A180DAC8800CF9E5F /* activity-browser-chrome@2x.png */; };
@@ -337,33 +331,16 @@
 			remoteGlobalIDString = 37BC1DF41D32862F00AC4607;
 			remoteInfo = ReadLaterExtension;
 		};
-		37F95BF71D32BD7500422DD6 /* PBXContainerItemProxy */ = {
+		37F9D0D41D330425002A168D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 37FEEB8515745488003F2B77 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 379042B119CC646700409D34;
 			remoteInfo = SharedSafe;
 		};
-		37F9D0821D32F2CC002A168D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 37FEEB8515745488003F2B77 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 37587B2E1D32B5B0005665DC;
-			remoteInfo = Shared;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		37587B0F1D32AC4E005665DC /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				37587B101D32AC58005665DC /* SharedSafe.framework in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		3790420B19CBCFF700409D34 /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -376,38 +353,32 @@
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		37F9D0841D32F2CD002A168D /* Embed Frameworks */ = {
+		37F9D0CC1D33036A002A168D /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				37F9D0811D32F2CC002A168D /* Shared.framework in Embed Frameworks */,
+				37F9D0CF1D330388002A168D /* Pods_SharedSafe.framework in CopyFiles */,
 			);
-			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		37F9D0901D32F572002A168D /* Copy Files (1 item) */ = {
+		37F9D0D61D330426002A168D /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				37F9D0911D32F57F002A168D /* SharedSafe.framework in Copy Files (1 item) */,
+				37F9D0D31D330425002A168D /* SharedSafe.framework in Embed Frameworks */,
 			);
-			name = "Copy Files (1 item)";
+			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		018E0AFD29B1ED9300B23568 /* Pods_SharedSafe.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SharedSafe.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		0CF93F4F408A55858B1A08E7 /* Pods-SharedSafe.pinboard beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedSafe.pinboard beta.xcconfig"; path = "Pods/Target Support Files/Pods-SharedSafe/Pods-SharedSafe.pinboard beta.xcconfig"; sourceTree = "<group>"; };
-		0F515C7B602D204A2D456D36 /* Pods-ReadLaterExtension.pinboard debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReadLaterExtension.pinboard debug.xcconfig"; path = "Pods/Target Support Files/Pods-ReadLaterExtension/Pods-ReadLaterExtension.pinboard debug.xcconfig"; sourceTree = "<group>"; };
-		13F78FE66B7F25BB4D215649 /* Pods-Shared.pinboard beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared.pinboard beta.xcconfig"; path = "Pods/Target Support Files/Pods-Shared/Pods-Shared.pinboard beta.xcconfig"; sourceTree = "<group>"; };
-		15C7488AE51DB105A132E864 /* Pods-BookmarkExtension.pinboard beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookmarkExtension.pinboard beta.xcconfig"; path = "Pods/Target Support Files/Pods-BookmarkExtension/Pods-BookmarkExtension.pinboard beta.xcconfig"; sourceTree = "<group>"; };
-		1D8798030EDCD83BDC681C69 /* Pods_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		3619D801CC756D8CA859A8E8 /* Pods_BookmarkExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BookmarkExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		16927E6971F6B1ECE9443FF3 /* Pods-Pushpin.pinboard app store debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.pinboard app store debug.xcconfig"; path = "Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin.pinboard app store debug.xcconfig"; sourceTree = "<group>"; };
+		18EEF1E3DDE0B62559BAAEFA /* Pods-ReadLaterExtension.pinboard debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReadLaterExtension.pinboard debug.xcconfig"; path = "Pods/Target Support Files/Pods-ReadLaterExtension/Pods-ReadLaterExtension.pinboard debug.xcconfig"; sourceTree = "<group>"; };
 		37018CE3180E3C0B00226408 /* PPBrowserActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBrowserActivity.h; sourceTree = "<group>"; };
 		37018CE4180E3C0B00226408 /* PPBrowserActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPBrowserActivity.m; sourceTree = "<group>"; };
 		370859F817F329D400270A9D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Pushpin/Images.xcassets; sourceTree = SOURCE_ROOT; };
@@ -429,10 +400,6 @@
 		37171A2B18B16C77007FF164 /* PPSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPSearchViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37171A2D18B1714E007FF164 /* LHSBooleanTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LHSBooleanTableViewCell.h; sourceTree = "<group>"; };
 		37171A2E18B1714E007FF164 /* LHSBooleanTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LHSBooleanTableViewCell.m; sourceTree = "<group>"; };
-		3717968618A885FE004B2D08 /* Pushpin Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Pushpin Tests-Info.plist"; sourceTree = "<group>"; };
-		3717968818A885FE004B2D08 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		3717968A18A885FE004B2D08 /* Pushpin_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Pushpin_Tests.m; sourceTree = "<group>"; };
-		3717968C18A885FE004B2D08 /* Pushpin Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Pushpin Tests-Prefix.pch"; sourceTree = "<group>"; };
 		371A48E518ADB516009D7533 /* MFMailComposeViewController+Theme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MFMailComposeViewController+Theme.h"; sourceTree = "<group>"; };
 		371A48E618ADB516009D7533 /* MFMailComposeViewController+Theme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MFMailComposeViewController+Theme.m"; sourceTree = "<group>"; };
 		371BCB0115772C0E00BDA996 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
@@ -489,14 +456,13 @@
 		37561D8816ADFEC400D69CDE /* Pushpin.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Pushpin.entitlements; sourceTree = SOURCE_ROOT; };
 		37561D9216AE0C7500D69CDE /* BookmarkletInstallationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkletInstallationViewController.h; sourceTree = "<group>"; };
 		37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = BookmarkletInstallationViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		37587B1E1D32B5A0005665DC /* SharedSafe.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedSafe.h; sourceTree = "<group>"; };
+		37587B1E1D32B5A0005665DC /* SharedSafe.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = SharedSafe.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		37587B201D32B5A0005665DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		37587B2F1D32B5B0005665DC /* Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		37587B311D32B5B0005665DC /* Shared.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Shared.h; sourceTree = "<group>"; };
 		37587B331D32B5B0005665DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		375A638816C0CB0800665CA1 /* PPFeedListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPFeedListViewController.h; sourceTree = "<group>"; };
 		375A638916C0CB0800665CA1 /* PPFeedListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPFeedListViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		375B622F1A4DA9240045AFE7 /* PPURLCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPURLCache.h; sourceTree = "<group>"; };
+		375B622F1A4DA9240045AFE7 /* PPURLCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PPURLCache.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		375B62301A4DA9240045AFE7 /* PPURLCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPURLCache.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3762CAC51A55A59600301C97 /* PPOfflineDownloadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPOfflineDownloadViewController.h; sourceTree = "<group>"; };
 		3762CAC61A55A59600301C97 /* PPOfflineDownloadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPOfflineDownloadViewController.m; sourceTree = "<group>"; };
@@ -515,7 +481,6 @@
 		376C9E8D1749969200A62CB5 /* PPTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTableViewController.h; sourceTree = "<group>"; };
 		376C9E8E1749969200A62CB5 /* PPTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTableViewController.m; sourceTree = "<group>"; };
 		376E0A7F175AA9EC004CCDEE /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		3772DE901933B0E0004B348D /* DebugPodsTests copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "DebugPodsTests copy-Info.plist"; path = "/Users/dan/Documents/Projects/Pushpin/DebugPodsTests copy-Info.plist"; sourceTree = "<absolute>"; };
 		3778CE5118B1C97D004113DC /* PPSearchExamplesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSearchExamplesViewController.h; sourceTree = "<group>"; };
 		3778CE5218B1C97D004113DC /* PPSearchExamplesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPSearchExamplesViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		377E46D6174C396C00CE3813 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
@@ -555,15 +520,12 @@
 		3784B1011A50AE0800CD1435 /* 782-compass@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "782-compass@2x.png"; sourceTree = "<group>"; };
 		3784B1041A51B29B00CD1435 /* badge-cloud.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "badge-cloud.png"; path = "Assets/badge-cloud.png"; sourceTree = "<group>"; };
 		3784B1051A51B29B00CD1435 /* badge-cloud@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "badge-cloud@2x.png"; path = "Assets/badge-cloud@2x.png"; sourceTree = "<group>"; };
-		37887D6918C51F7D00A20B76 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		37889D4219981212002E245A /* PPSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSettings.h; sourceTree = "<group>"; };
 		37889D4319981212002E245A /* PPSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPSettings.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		378BFDF319E5E29B006B48DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		378BFDF419E5E29B006B48DC /* Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tests.m; sourceTree = "<group>"; };
 		378DA45E1633B4B700831134 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		379042B219CC646700409D34 /* SharedSafe.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SharedSafe.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		379042B519CC646900409D34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		379042B619CC646900409D34 /* PushpinFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PushpinFramework.h; sourceTree = "<group>"; };
 		37919F1C16091DF5007708EF /* PPPinboardLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PPPinboardLoginViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		37919F1D16091DF5007708EF /* PPPinboardLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPPinboardLoginViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37919F1F16092198007708EF /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -631,17 +593,6 @@
 		37CFA5FF19683ED300C67338 /* PPNoteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPNoteViewController.m; sourceTree = "<group>"; };
 		37D2351C16B8DDD0007541DC /* NSString+URLEncoding2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+URLEncoding2.h"; path = "Vendor/NSString+URLEncoding2.h"; sourceTree = "<group>"; };
 		37D2351D16B8DDD0007541DC /* NSString+URLEncoding2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+URLEncoding2.m"; path = "Vendor/NSString+URLEncoding2.m"; sourceTree = "<group>"; };
-		37D2DB6E1D32EA4E00167322 /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabase.h; sourceTree = "<group>"; };
-		37D2DB6F1D32EA4E00167322 /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabase.m; sourceTree = "<group>"; };
-		37D2DB701D32EA4E00167322 /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseAdditions.h; sourceTree = "<group>"; };
-		37D2DB711D32EA4E00167322 /* FMDatabaseAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseAdditions.m; sourceTree = "<group>"; };
-		37D2DB721D32EA4E00167322 /* FMDatabasePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabasePool.h; sourceTree = "<group>"; };
-		37D2DB731D32EA4E00167322 /* FMDatabasePool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabasePool.m; sourceTree = "<group>"; };
-		37D2DB741D32EA4E00167322 /* FMDatabaseQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseQueue.h; sourceTree = "<group>"; };
-		37D2DB751D32EA4E00167322 /* FMDatabaseQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseQueue.m; sourceTree = "<group>"; };
-		37D2DB761D32EA4E00167322 /* FMDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDB.h; sourceTree = "<group>"; };
-		37D2DB771D32EA4E00167322 /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMResultSet.h; sourceTree = "<group>"; };
-		37D2DB781D32EA4E00167322 /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
 		37D4B000188325B000E07EB3 /* PPStatusBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPStatusBar.h; sourceTree = "<group>"; };
 		37D4B001188325B000E07EB3 /* PPStatusBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPStatusBar.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37D4B00318833BC800E07EB3 /* readability.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = readability.css; sourceTree = "<group>"; };
@@ -680,11 +631,13 @@
 		37F91F36177A91A500683D46 /* UITableView+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+Additions.h"; sourceTree = "<group>"; };
 		37F91F37177A91A500683D46 /* UITableView+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+Additions.m"; sourceTree = "<group>"; };
 		37F91F3C177AB1D500683D46 /* PPNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPNavigationController.h; sourceTree = "<group>"; };
-		37F91F3D177AB1D500683D46 /* PPNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPNavigationController.m; sourceTree = "<group>"; };
+		37F91F3D177AB1D500683D46 /* PPNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPNavigationController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37F9D0851D32F345002A168D /* ChimpKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ChimpKit.framework; path = "../../../Library/Developer/Xcode/DerivedData/Pushpin-gebzjopdnxqnknacuxjjwrwpjbiu/Build/Products/Pinboard Debug-iphonesimulator/ChimpKit/ChimpKit.framework"; sourceTree = "<group>"; };
-		37F9D08A1D32F475002A168D /* Mixpanel.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = Mixpanel.framework; path = "/Users/dan/Library/Developer/Xcode/DerivedData/Pushpin-gebzjopdnxqnknacuxjjwrwpjbiu/Build/Products/Pinboard Debug-iphonesimulator/Mixpanel/Mixpanel.framework"; sourceTree = "<absolute>"; };
-		37F9D08C1D32F48C002A168D /* OpenInChrome.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = OpenInChrome.framework; path = "/Users/dan/Library/Developer/Xcode/DerivedData/Pushpin-gebzjopdnxqnknacuxjjwrwpjbiu/Build/Products/Pinboard Debug-iphonesimulator/OpenInChrome/OpenInChrome.framework"; sourceTree = "<absolute>"; };
-		37F9D08E1D32F49F002A168D /* uservoice_iphone_sdk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = uservoice_iphone_sdk.framework; path = "/Users/dan/Library/Developer/Xcode/DerivedData/Pushpin-gebzjopdnxqnknacuxjjwrwpjbiu/Build/Products/Pinboard Debug-iphonesimulator/uservoice-iphone-sdk/uservoice_iphone_sdk.framework"; sourceTree = "<absolute>"; };
+		37F9D0AB1D32FFEA002A168D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		37F9D0AD1D32FFFB002A168D /* Pods_SharedSafe.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Pods_SharedSafe.framework; path = "../../../Library/Developer/Xcode/DerivedData/Pushpin-gebzjopdnxqnknacuxjjwrwpjbiu/Build/Products/Pinboard Debug-iphonesimulator/Pods_SharedSafe.framework"; sourceTree = "<group>"; };
+		37F9D0BF1D330239002A168D /* CoreSpotlight.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreSpotlight.framework; path = System/Library/Frameworks/CoreSpotlight.framework; sourceTree = SDKROOT; };
+		37F9D0CA1D330332002A168D /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		37F9D0DC1D3304C7002A168D /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		37FEEB8E15745488003F2B77 /* Pushpin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pushpin.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		37FEEB9215745488003F2B77 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		37FEEB9415745488003F2B77 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -695,12 +648,16 @@
 		37FEEBA215745488003F2B77 /* PPAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPAppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37FF412F187D95CF00F2D481 /* PPSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSplitViewController.h; sourceTree = "<group>"; };
 		37FF4130187D95CF00F2D481 /* PPSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPSplitViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		4D82CC2FFA1306FBB86B6896 /* Pods-BookmarkExtension.pinboard app store debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookmarkExtension.pinboard app store debug.xcconfig"; path = "Pods/Target Support Files/Pods-BookmarkExtension/Pods-BookmarkExtension.pinboard app store debug.xcconfig"; sourceTree = "<group>"; };
-		5E9D483407C9AE45FACD0D59 /* Pods-ReadLaterExtension.pinboard beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReadLaterExtension.pinboard beta.xcconfig"; path = "Pods/Target Support Files/Pods-ReadLaterExtension/Pods-ReadLaterExtension.pinboard beta.xcconfig"; sourceTree = "<group>"; };
-		994B3B32F62AE00AA5D9AD9A /* Pods-SharedSafe.pinboard app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedSafe.pinboard app store.xcconfig"; path = "Pods/Target Support Files/Pods-SharedSafe/Pods-SharedSafe.pinboard app store.xcconfig"; sourceTree = "<group>"; };
-		A2439458E7DD8679EF4BF728 /* Pods-Shared.pinboard app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared.pinboard app store.xcconfig"; path = "Pods/Target Support Files/Pods-Shared/Pods-Shared.pinboard app store.xcconfig"; sourceTree = "<group>"; };
-		AE9361A156E2827FAAE63087 /* Pods-Shared.pinboard debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared.pinboard debug.xcconfig"; path = "Pods/Target Support Files/Pods-Shared/Pods-Shared.pinboard debug.xcconfig"; sourceTree = "<group>"; };
-		AFE28264AFC24CAEB0032656 /* Pods_ReadLaterExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ReadLaterExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5F56635991BACC73C2091F8A /* Pods-BookmarkExtension.pinboard app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookmarkExtension.pinboard app store.xcconfig"; path = "Pods/Target Support Files/Pods-BookmarkExtension/Pods-BookmarkExtension.pinboard app store.xcconfig"; sourceTree = "<group>"; };
+		60FF1FF1486115E49E3383C1 /* Pods-ReadLaterExtension.pinboard beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReadLaterExtension.pinboard beta.xcconfig"; path = "Pods/Target Support Files/Pods-ReadLaterExtension/Pods-ReadLaterExtension.pinboard beta.xcconfig"; sourceTree = "<group>"; };
+		6D29542CF96A0C34F60BEEC6 /* Pods-ReadLaterExtension.pinboard app store debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReadLaterExtension.pinboard app store debug.xcconfig"; path = "Pods/Target Support Files/Pods-ReadLaterExtension/Pods-ReadLaterExtension.pinboard app store debug.xcconfig"; sourceTree = "<group>"; };
+		6D830063BA00918C676CBD39 /* Pods_BookmarkExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BookmarkExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		73CA84345D352950C8E56AC2 /* Pods-SharedSafe.pinboard debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedSafe.pinboard debug.xcconfig"; path = "Pods/Target Support Files/Pods-SharedSafe/Pods-SharedSafe.pinboard debug.xcconfig"; sourceTree = "<group>"; };
+		7C0F1238C7D4E417E0F7DA13 /* Pods-SharedSafe.pinboard app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedSafe.pinboard app store.xcconfig"; path = "Pods/Target Support Files/Pods-SharedSafe/Pods-SharedSafe.pinboard app store.xcconfig"; sourceTree = "<group>"; };
+		851194C686EB1E24EABBD1A4 /* Pods_ReadLaterExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ReadLaterExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		918B9CCA3A7B056396FCC5A4 /* Pods-Pushpin.pinboard app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.pinboard app store.xcconfig"; path = "Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin.pinboard app store.xcconfig"; sourceTree = "<group>"; };
+		9C79845487EF68D4C4D43D2F /* Pods-Pushpin.pinboard debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.pinboard debug.xcconfig"; path = "Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin.pinboard debug.xcconfig"; sourceTree = "<group>"; };
+		AFB4160CFDA40E994A5B6050 /* Pods-SharedSafe.pinboard beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedSafe.pinboard beta.xcconfig"; path = "Pods/Target Support Files/Pods-SharedSafe/Pods-SharedSafe.pinboard beta.xcconfig"; sourceTree = "<group>"; };
 		B63698711B0FCC2700F15D42 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		B6E304101B3C778A00135CF1 /* PPMailChimp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPMailChimp.h; sourceTree = "<group>"; };
 		B6E304111B3C778A00135CF1 /* PPMailChimp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPMailChimp.m; sourceTree = "<group>"; };
@@ -710,10 +667,13 @@
 		B6E304191B3DC95500135CF1 /* pinboard.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = pinboard.jpeg; sourceTree = "<group>"; };
 		B6E3041A1B3DC95500135CF1 /* pushpin-cloud-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pushpin-cloud-logo.png"; sourceTree = "<group>"; };
 		B6E3041B1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pushpin-cloud-logo@2x.png"; sourceTree = "<group>"; };
-		BD1C7594EF196781DEE71795 /* Pods-BookmarkExtension.pinboard app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookmarkExtension.pinboard app store.xcconfig"; path = "Pods/Target Support Files/Pods-BookmarkExtension/Pods-BookmarkExtension.pinboard app store.xcconfig"; sourceTree = "<group>"; };
-		C035569413D7100460BA6F6D /* Pods-ReadLaterExtension.pinboard app store debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReadLaterExtension.pinboard app store debug.xcconfig"; path = "Pods/Target Support Files/Pods-ReadLaterExtension/Pods-ReadLaterExtension.pinboard app store debug.xcconfig"; sourceTree = "<group>"; };
-		D140E604BD743C3559430399 /* Pods-BookmarkExtension.pinboard debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookmarkExtension.pinboard debug.xcconfig"; path = "Pods/Target Support Files/Pods-BookmarkExtension/Pods-BookmarkExtension.pinboard debug.xcconfig"; sourceTree = "<group>"; };
-		E3AE2D1CFC8C2C9374CEB98A /* Pods-Shared.pinboard app store debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Shared.pinboard app store debug.xcconfig"; path = "Pods/Target Support Files/Pods-Shared/Pods-Shared.pinboard app store debug.xcconfig"; sourceTree = "<group>"; };
+		C1FC2E4A5F425F723D5721F2 /* Pods_SharedSafe.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SharedSafe.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C3CD097528CDF6C2F866DDCA /* Pods-SharedSafe.pinboard app store debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedSafe.pinboard app store debug.xcconfig"; path = "Pods/Target Support Files/Pods-SharedSafe/Pods-SharedSafe.pinboard app store debug.xcconfig"; sourceTree = "<group>"; };
+		C5085B26ED5E45AA13400511 /* Pods_Pushpin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Pushpin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD18E5EC9F800BE7850AF872 /* Pods-BookmarkExtension.pinboard debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookmarkExtension.pinboard debug.xcconfig"; path = "Pods/Target Support Files/Pods-BookmarkExtension/Pods-BookmarkExtension.pinboard debug.xcconfig"; sourceTree = "<group>"; };
+		CE2120B2E5327C8D81C9FB7E /* Pods-BookmarkExtension.pinboard beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookmarkExtension.pinboard beta.xcconfig"; path = "Pods/Target Support Files/Pods-BookmarkExtension/Pods-BookmarkExtension.pinboard beta.xcconfig"; sourceTree = "<group>"; };
+		DB7537466202FE3F0D708C47 /* Pods-BookmarkExtension.pinboard app store debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookmarkExtension.pinboard app store debug.xcconfig"; path = "Pods/Target Support Files/Pods-BookmarkExtension/Pods-BookmarkExtension.pinboard app store debug.xcconfig"; sourceTree = "<group>"; };
+		E666ED2FA364C1497E1B6E57 /* Pods_Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E804950C180EF20800C5CA8B /* webview-helpers.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "webview-helpers.js"; path = "Assets/webview-helpers.js"; sourceTree = "<group>"; };
 		E804950F18103DC700C5CA8B /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
 		E80495191810597A00C5CA8B /* PPDefaultFeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PPDefaultFeedViewController.h; path = ../PPDefaultFeedViewController.h; sourceTree = "<group>"; };
@@ -740,7 +700,6 @@
 		E80EEF92185F5BCF00979AA3 /* badge-favorite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "badge-favorite@2x.png"; path = "Assets/badge-favorite@2x.png"; sourceTree = "<group>"; };
 		E80EEF93185F5BCF00979AA3 /* badge-private.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "badge-private.png"; path = "Assets/badge-private.png"; sourceTree = "<group>"; };
 		E80EEF94185F5BCF00979AA3 /* badge-private@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "badge-private@2x.png"; path = "Assets/badge-private@2x.png"; sourceTree = "<group>"; };
-		E833CEA46860A51CBC93F96F /* Pods-SharedSafe.pinboard debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedSafe.pinboard debug.xcconfig"; path = "Pods/Target Support Files/Pods-SharedSafe/Pods-SharedSafe.pinboard debug.xcconfig"; sourceTree = "<group>"; };
 		E8734239180DAC8800CF9E5F /* activity-browser-chrome.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "activity-browser-chrome.png"; path = "Assets/activity-browser-chrome.png"; sourceTree = "<group>"; };
 		E873423A180DAC8800CF9E5F /* activity-browser-chrome@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "activity-browser-chrome@2x.png"; path = "Assets/activity-browser-chrome@2x.png"; sourceTree = "<group>"; };
 		E89001F4183EA43E00C1F969 /* PPBadgeWrapperView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBadgeWrapperView.h; sourceTree = "<group>"; };
@@ -809,26 +768,16 @@
 		E8F987DD183E796900EF976D /* browse-unread.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-unread.png"; path = "Assets/browse-unread.png"; sourceTree = "<group>"; };
 		E8F987DE183E796900EF976D /* browse-untagged.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-untagged.png"; path = "Assets/browse-untagged.png"; sourceTree = "<group>"; };
 		E8F987DF183E796900EF976D /* browse-wikipedia.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-wikipedia.png"; path = "Assets/browse-wikipedia.png"; sourceTree = "<group>"; };
-		FBE52F3EE5EDAC8FDA273EB0 /* Pods-ReadLaterExtension.pinboard app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReadLaterExtension.pinboard app store.xcconfig"; path = "Pods/Target Support Files/Pods-ReadLaterExtension/Pods-ReadLaterExtension.pinboard app store.xcconfig"; sourceTree = "<group>"; };
-		FDFF3C832150D5E51E26377C /* Pods-SharedSafe.pinboard app store debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedSafe.pinboard app store debug.xcconfig"; path = "Pods/Target Support Files/Pods-SharedSafe/Pods-SharedSafe.pinboard app store debug.xcconfig"; sourceTree = "<group>"; };
+		EA47D74DCC7CA9953B039A25 /* Pods-ReadLaterExtension.pinboard app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReadLaterExtension.pinboard app store.xcconfig"; path = "Pods/Target Support Files/Pods-ReadLaterExtension/Pods-ReadLaterExtension.pinboard app store.xcconfig"; sourceTree = "<group>"; };
+		ED459620C3EAAB8D72CA852E /* Pods-Pushpin.pinboard beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.pinboard beta.xcconfig"; path = "Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin.pinboard beta.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		37587B2B1D32B5B0005665DC /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6E09518D08F38F38289C9403 /* Pods_Shared.framework in Frameworks */,
-				37587B3D1D32B5C5005665DC /* SharedSafe.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		379042AE19CC646700409D34 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				37E9965C1D32EC3500659E82 /* libsqlite3.tbd in Frameworks */,
-				8E942D39E261BCEB396C6E40 /* Pods_SharedSafe.framework in Frameworks */,
+				082FF0C6FD12E442413DBF38 /* Pods_SharedSafe.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -836,8 +785,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D584A85F7A1198D6E3F98A73 /* Pods_BookmarkExtension.framework in Frameworks */,
 				37F95C3D1D32DF7F00422DD6 /* SharedSafe.framework in Frameworks */,
+				10EB342A35A18AD912E19457 /* Pods_BookmarkExtension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -845,8 +794,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				15F29DE162BFFE2A1D52093A /* Pods_ReadLaterExtension.framework in Frameworks */,
 				37F95C3C1D32DEE400422DD6 /* SharedSafe.framework in Frameworks */,
+				6C759766FD61CD15DC7322DE /* Pods_ReadLaterExtension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -854,19 +803,24 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37F9D0DD1D3304C7002A168D /* MobileCoreServices.framework in Frameworks */,
+				37F9D0CB1D330332002A168D /* CoreMotion.framework in Frameworks */,
+				37F9D0C01D330239002A168D /* CoreSpotlight.framework in Frameworks */,
+				37F9D0AC1D32FFEA002A168D /* CoreGraphics.framework in Frameworks */,
 				377E46D7174C396C00CE3813 /* Accounts.framework in Frameworks */,
 				372F891416755BF00073D0B6 /* CoreTelephony.framework in Frameworks */,
 				371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */,
+				37F9D0D21D330425002A168D /* SharedSafe.framework in Frameworks */,
 				37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */,
 				378DA45F1633B4B800831134 /* MessageUI.framework in Frameworks */,
 				37919F2016092198007708EF /* QuartzCore.framework in Frameworks */,
 				E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */,
-				37F9D0801D32F2CC002A168D /* Shared.framework in Frameworks */,
 				377E46DB174C3A7500CE3813 /* Social.framework in Frameworks */,
 				376E0A80175AA9EC004CCDEE /* StoreKit.framework in Frameworks */,
 				37800E9A162D5264009FCB17 /* SystemConfiguration.framework in Frameworks */,
 				37B5F4E51773864C005687DA /* Twitter.framework in Frameworks */,
 				379A59E01D32E33100AB4A26 /* UIKit.framework in Frameworks */,
+				5BD9EA02818DE92F5A7B9BB7 /* Pods_Pushpin.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -876,7 +830,6 @@
 		37076D41158AD0B1002566CD /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
-				37D2DB6D1D32EA0A00167322 /* FMDB */,
 				37F6D7E519A1111E004016DB /* LHSFontSelectionViewController */,
 				37D2351C16B8DDD0007541DC /* NSString+URLEncoding2.h */,
 				37D2351D16B8DDD0007541DC /* NSString+URLEncoding2.m */,
@@ -908,25 +861,6 @@
 				3715EEC615787CAA00FD21EE /* main.css */,
 			);
 			name = Stylesheets;
-			sourceTree = "<group>";
-		};
-		3717968418A885FE004B2D08 /* Pushpin Tests */ = {
-			isa = PBXGroup;
-			children = (
-				3717968518A885FE004B2D08 /* Supporting Files */,
-				3717968A18A885FE004B2D08 /* Pushpin_Tests.m */,
-			);
-			path = "Pushpin Tests";
-			sourceTree = "<group>";
-		};
-		3717968518A885FE004B2D08 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				3717968718A885FE004B2D08 /* InfoPlist.strings */,
-				3717968618A885FE004B2D08 /* Pushpin Tests-Info.plist */,
-				3717968C18A885FE004B2D08 /* Pushpin Tests-Prefix.pch */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		37405C1418614FF50052213A /* Categories */ = {
@@ -1096,23 +1030,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		379042B319CC646900409D34 /* PushpinFramework */ = {
-			isa = PBXGroup;
-			children = (
-				379042B419CC646900409D34 /* Supporting Files */,
-				379042B619CC646900409D34 /* PushpinFramework.h */,
-			);
-			path = PushpinFramework;
-			sourceTree = "<group>";
-		};
-		379042B419CC646900409D34 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				379042B519CC646900409D34 /* Info.plist */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
 		37A7B5C018345D6A0038677E /* Web View Icons */ = {
 			isa = PBXGroup;
 			children = (
@@ -1156,25 +1073,6 @@
 				37BC1DF71D32862F00AC4607 /* ShareViewController.swift */,
 			);
 			path = ReadLaterExtension;
-			sourceTree = "<group>";
-		};
-		37D2DB6D1D32EA0A00167322 /* FMDB */ = {
-			isa = PBXGroup;
-			children = (
-				37D2DB6E1D32EA4E00167322 /* FMDatabase.h */,
-				37D2DB6F1D32EA4E00167322 /* FMDatabase.m */,
-				37D2DB701D32EA4E00167322 /* FMDatabaseAdditions.h */,
-				37D2DB711D32EA4E00167322 /* FMDatabaseAdditions.m */,
-				37D2DB721D32EA4E00167322 /* FMDatabasePool.h */,
-				37D2DB731D32EA4E00167322 /* FMDatabasePool.m */,
-				37D2DB741D32EA4E00167322 /* FMDatabaseQueue.h */,
-				37D2DB751D32EA4E00167322 /* FMDatabaseQueue.m */,
-				37D2DB761D32EA4E00167322 /* FMDB.h */,
-				37D2DB771D32EA4E00167322 /* FMResultSet.h */,
-				37D2DB781D32EA4E00167322 /* FMResultSet.m */,
-			);
-			name = FMDB;
-			path = Vendor/fmdb/src/fmdb;
 			sourceTree = "<group>";
 		};
 		37DAAA7F199FFDD50050350D /* Fonts */ = {
@@ -1238,27 +1136,21 @@
 			children = (
 				37FEEBDC15748BA7003F2B77 /* Assets */,
 				37BC1DE21D32861A00AC4607 /* Bookmark Extension */,
+				37BC1DF61D32862F00AC4607 /* ReadLaterExtension */,
 				37FEEB9115745488003F2B77 /* Frameworks */,
 				3740A23616863CF000F95D82 /* Localizations */,
-				C8B81FFE772869958B571275 /* Pods */,
 				37FEEB8F15745488003F2B77 /* Products */,
 				37FEEB9815745488003F2B77 /* Pushpin */,
-				3717968418A885FE004B2D08 /* Pushpin Tests */,
-				379042B319CC646900409D34 /* PushpinFramework */,
-				37BC1DF61D32862F00AC4607 /* ReadLaterExtension */,
 				37587B301D32B5B0005665DC /* Shared */,
 				37587B1D1D32B5A0005665DC /* SharedSafe */,
 				378BFDF119E5E29B006B48DC /* Tests */,
 				37076D41158AD0B1002566CD /* Vendor */,
 				374D91DF19CE26A700995DF1 /* AppExtensionHelper.js */,
-				3772DE901933B0E0004B348D /* DebugPodsTests copy-Info.plist */,
 				370859F817F329D400270A9D /* Images.xcassets */,
-				37F9D08A1D32F475002A168D /* Mixpanel.framework */,
-				37F9D08C1D32F48C002A168D /* OpenInChrome.framework */,
 				374D91E019CE26A700995DF1 /* Share-AppStore.entitlements */,
 				374D91DB19CE26A700995DF1 /* Share-Beta.entitlements */,
 				374D91DC19CE26A700995DF1 /* Share-Dev.entitlements */,
-				37F9D08E1D32F49F002A168D /* uservoice_iphone_sdk.framework */,
+				9CA0C4DDAF057DE8CFC16F6F /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1268,7 +1160,6 @@
 				37BC1DE11D32861A00AC4607 /* BookmarkExtension.appex */,
 				37FEEB8E15745488003F2B77 /* Pushpin.app */,
 				37BC1DF51D32862F00AC4607 /* ReadLaterExtension.appex */,
-				37587B2F1D32B5B0005665DC /* Shared.framework */,
 				379042B219CC646700409D34 /* SharedSafe.framework */,
 			);
 			name = Products;
@@ -1277,6 +1168,11 @@
 		37FEEB9115745488003F2B77 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				37F9D0DC1D3304C7002A168D /* MobileCoreServices.framework */,
+				37F9D0CA1D330332002A168D /* CoreMotion.framework */,
+				37F9D0BF1D330239002A168D /* CoreSpotlight.framework */,
+				37F9D0AD1D32FFFB002A168D /* Pods_SharedSafe.framework */,
+				37F9D0AB1D32FFEA002A168D /* CoreGraphics.framework */,
 				377E46D6174C396C00CE3813 /* Accounts.framework */,
 				37DE5AB8174F2A2E0073A2F4 /* AdSupport.framework */,
 				37BC1DA71D3280EF00AC4607 /* AudioToolbox.framework */,
@@ -1284,14 +1180,9 @@
 				370EE75115ED108300B262E2 /* CoreData.framework */,
 				372F891216755B950073D0B6 /* CoreTelephony.framework */,
 				371BCB0115772C0E00BDA996 /* CoreText.framework */,
-				37887D6918C51F7D00A20B76 /* Crashlytics.framework */,
 				37FEEB9415745488003F2B77 /* Foundation.framework */,
 				37E9965B1D32EC3500659E82 /* libsqlite3.tbd */,
 				378DA45E1633B4B700831134 /* MessageUI.framework */,
-				3619D801CC756D8CA859A8E8 /* Pods_BookmarkExtension.framework */,
-				AFE28264AFC24CAEB0032656 /* Pods_ReadLaterExtension.framework */,
-				1D8798030EDCD83BDC681C69 /* Pods_Shared.framework */,
-				018E0AFD29B1ED9300B23568 /* Pods_SharedSafe.framework */,
 				37919F1F16092198007708EF /* QuartzCore.framework */,
 				E804950F18103DC700C5CA8B /* SafariServices.framework */,
 				377E46DA174C3A7500CE3813 /* Social.framework */,
@@ -1299,6 +1190,11 @@
 				37800E99162D5264009FCB17 /* SystemConfiguration.framework */,
 				37B5F4E41773864C005687DA /* Twitter.framework */,
 				37FEEB9215745488003F2B77 /* UIKit.framework */,
+				6D830063BA00918C676CBD39 /* Pods_BookmarkExtension.framework */,
+				851194C686EB1E24EABBD1A4 /* Pods_ReadLaterExtension.framework */,
+				E666ED2FA364C1497E1B6E57 /* Pods_Shared.framework */,
+				C1FC2E4A5F425F723D5721F2 /* Pods_SharedSafe.framework */,
+				C5085B26ED5E45AA13400511 /* Pods_Pushpin.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1433,25 +1329,25 @@
 			name = Assets;
 			sourceTree = "<group>";
 		};
-		C8B81FFE772869958B571275 /* Pods */ = {
+		9CA0C4DDAF057DE8CFC16F6F /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				4D82CC2FFA1306FBB86B6896 /* Pods-BookmarkExtension.pinboard app store debug.xcconfig */,
-				BD1C7594EF196781DEE71795 /* Pods-BookmarkExtension.pinboard app store.xcconfig */,
-				15C7488AE51DB105A132E864 /* Pods-BookmarkExtension.pinboard beta.xcconfig */,
-				D140E604BD743C3559430399 /* Pods-BookmarkExtension.pinboard debug.xcconfig */,
-				C035569413D7100460BA6F6D /* Pods-ReadLaterExtension.pinboard app store debug.xcconfig */,
-				FBE52F3EE5EDAC8FDA273EB0 /* Pods-ReadLaterExtension.pinboard app store.xcconfig */,
-				5E9D483407C9AE45FACD0D59 /* Pods-ReadLaterExtension.pinboard beta.xcconfig */,
-				0F515C7B602D204A2D456D36 /* Pods-ReadLaterExtension.pinboard debug.xcconfig */,
-				E3AE2D1CFC8C2C9374CEB98A /* Pods-Shared.pinboard app store debug.xcconfig */,
-				A2439458E7DD8679EF4BF728 /* Pods-Shared.pinboard app store.xcconfig */,
-				13F78FE66B7F25BB4D215649 /* Pods-Shared.pinboard beta.xcconfig */,
-				AE9361A156E2827FAAE63087 /* Pods-Shared.pinboard debug.xcconfig */,
-				FDFF3C832150D5E51E26377C /* Pods-SharedSafe.pinboard app store debug.xcconfig */,
-				994B3B32F62AE00AA5D9AD9A /* Pods-SharedSafe.pinboard app store.xcconfig */,
-				0CF93F4F408A55858B1A08E7 /* Pods-SharedSafe.pinboard beta.xcconfig */,
-				E833CEA46860A51CBC93F96F /* Pods-SharedSafe.pinboard debug.xcconfig */,
+				CD18E5EC9F800BE7850AF872 /* Pods-BookmarkExtension.pinboard debug.xcconfig */,
+				5F56635991BACC73C2091F8A /* Pods-BookmarkExtension.pinboard app store.xcconfig */,
+				DB7537466202FE3F0D708C47 /* Pods-BookmarkExtension.pinboard app store debug.xcconfig */,
+				CE2120B2E5327C8D81C9FB7E /* Pods-BookmarkExtension.pinboard beta.xcconfig */,
+				18EEF1E3DDE0B62559BAAEFA /* Pods-ReadLaterExtension.pinboard debug.xcconfig */,
+				EA47D74DCC7CA9953B039A25 /* Pods-ReadLaterExtension.pinboard app store.xcconfig */,
+				6D29542CF96A0C34F60BEEC6 /* Pods-ReadLaterExtension.pinboard app store debug.xcconfig */,
+				60FF1FF1486115E49E3383C1 /* Pods-ReadLaterExtension.pinboard beta.xcconfig */,
+				73CA84345D352950C8E56AC2 /* Pods-SharedSafe.pinboard debug.xcconfig */,
+				7C0F1238C7D4E417E0F7DA13 /* Pods-SharedSafe.pinboard app store.xcconfig */,
+				C3CD097528CDF6C2F866DDCA /* Pods-SharedSafe.pinboard app store debug.xcconfig */,
+				AFB4160CFDA40E994A5B6050 /* Pods-SharedSafe.pinboard beta.xcconfig */,
+				9C79845487EF68D4C4D43D2F /* Pods-Pushpin.pinboard debug.xcconfig */,
+				918B9CCA3A7B056396FCC5A4 /* Pods-Pushpin.pinboard app store.xcconfig */,
+				16927E6971F6B1ECE9443FF3 /* Pods-Pushpin.pinboard app store debug.xcconfig */,
+				ED459620C3EAAB8D72CA852E /* Pods-Pushpin.pinboard beta.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -1583,19 +1479,10 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		37587B2C1D32B5B0005665DC /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				37587B321D32B5B0005665DC /* Shared.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		379042AF19CC646700409D34 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				37D2DB851D32EB8C00167322 /* FMDB.h in Headers */,
 				37E9965D1D32EC9C00659E82 /* NSString+Additions.h in Headers */,
 				379A59E11D32E39F00AB4A26 /* SharedSafe.h in Headers */,
 			);
@@ -1604,33 +1491,12 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		37587B2E1D32B5B0005665DC /* Shared */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 37587B381D32B5B1005665DC /* Build configuration list for PBXNativeTarget "Shared" */;
-			buildPhases = (
-				FBDCDDA8A2CC997671FE4BF8 /* [CP] Check Pods Manifest.lock */,
-				37587B2A1D32B5B0005665DC /* Sources */,
-				37587B2B1D32B5B0005665DC /* Frameworks */,
-				37587B2C1D32B5B0005665DC /* Headers */,
-				37587B2D1D32B5B0005665DC /* Resources */,
-				B0FAF4AF42DED8166D0D2DE6 /* [CP] Copy Pods Resources */,
-				37F9D0901D32F572002A168D /* Copy Files (1 item) */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				37F95BF81D32BD7500422DD6 /* PBXTargetDependency */,
-			);
-			name = Shared;
-			productName = Shared;
-			productReference = 37587B2F1D32B5B0005665DC /* Shared.framework */;
-			productType = "com.apple.product-type.framework";
-		};
 		379042B119CC646700409D34 /* SharedSafe */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 379042C219CC646B00409D34 /* Build configuration list for PBXNativeTarget "SharedSafe" */;
 			buildPhases = (
 				47B6FB3777030947D5381F4E /* [CP] Check Pods Manifest.lock */,
+				37F9D0CC1D33036A002A168D /* CopyFiles */,
 				379042AD19CC646700409D34 /* Sources */,
 				379042AE19CC646700409D34 /* Frameworks */,
 				379042AF19CC646700409D34 /* Headers */,
@@ -1656,7 +1522,6 @@
 				37BC1DDF1D32861A00AC4607 /* Resources */,
 				2DF954F7793C1E4C60D9E5F3 /* [CP] Embed Pods Frameworks */,
 				54939D5792980E2F07411F42 /* [CP] Copy Pods Resources */,
-				37587B0F1D32AC4E005665DC /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -1693,18 +1558,21 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 37FEEBA615745488003F2B77 /* Build configuration list for PBXNativeTarget "Pushpin" */;
 			buildPhases = (
+				8A05B683526C8F1E680FCC2A /* [CP] Check Pods Manifest.lock */,
 				37F95BFB1D32BDE300422DD6 /* Sources */,
 				37FEEB8B15745488003F2B77 /* Frameworks */,
 				37FEEB8C15745488003F2B77 /* Resources */,
 				3790420B19CBCFF700409D34 /* Embed App Extensions */,
-				37F9D0841D32F2CD002A168D /* Embed Frameworks */,
+				D570D088630964A43514ACFC /* [CP] Embed Pods Frameworks */,
+				5493B870AE9DECF8A9CDAAE0 /* [CP] Copy Pods Resources */,
+				37F9D0D61D330426002A168D /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				37BC1DEA1D32861A00AC4607 /* PBXTargetDependency */,
 				37BC1DFE1D32862F00AC4607 /* PBXTargetDependency */,
-				37F9D0831D32F2CC002A168D /* PBXTargetDependency */,
+				37F9D0D51D330425002A168D /* PBXTargetDependency */,
 			);
 			name = Pushpin;
 			productName = "Pinboard for iPhone";
@@ -1722,10 +1590,6 @@
 				LastUpgradeCheck = 0600;
 				ORGANIZATIONNAME = "Lionheart Software";
 				TargetAttributes = {
-					37587B2E1D32B5B0005665DC = {
-						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = 63553QQ62F;
-					};
 					379042B119CC646700409D34 = {
 						CreatedOnToolsVersion = 6.0;
 						DevelopmentTeam = 63553QQ62F;
@@ -1774,7 +1638,6 @@
 			targets = (
 				37FEEB8D15745488003F2B77 /* Pushpin */,
 				379042B119CC646700409D34 /* SharedSafe */,
-				37587B2E1D32B5B0005665DC /* Shared */,
 				37BC1DE01D32861A00AC4607 /* BookmarkExtension */,
 				37BC1DF41D32862F00AC4607 /* ReadLaterExtension */,
 			);
@@ -1782,13 +1645,6 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		37587B2D1D32B5B0005665DC /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		379042B019CC646700409D34 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2077,6 +1933,36 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BookmarkExtension/Pods-BookmarkExtension-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		5493B870AE9DECF8A9CDAAE0 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8A05B683526C8F1E680FCC2A /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
 		8F9EF058D55A1E680AE40B70 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2107,21 +1993,6 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SharedSafe/Pods-SharedSafe-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		B0FAF4AF42DED8166D0D2DE6 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Shared/Pods-Shared-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		CDB199A82AF0FF03DDB3F096 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2137,77 +2008,28 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		FBDCDDA8A2CC997671FE4BF8 /* [CP] Check Pods Manifest.lock */ = {
+		D570D088630964A43514ACFC /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "[CP] Check Pods Manifest.lock";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		37587B2A1D32B5B0005665DC /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				37587B3E1D32B5E1005665DC /* BookmarkletInstallationViewController.m in Sources */,
-				37F95C071D32CE0D00422DD6 /* LHSFontSelectionViewController.m in Sources */,
-				37F95C241D32D93E00422DD6 /* PPAboutViewController.m in Sources */,
-				37587B3F1D32B5E7005665DC /* PPActivityViewController.m in Sources */,
-				37F95C1B1D32D1DA00422DD6 /* PPAddBookmarkViewController.m in Sources */,
-				37F95C0C1D32CE5300422DD6 /* PPAddSavedFeedViewController.m in Sources */,
-				37FB4F9A1D32ED74004D5C12 /* PPAppDelegate.m in Sources */,
-				37F95C0F1D32CEA200422DD6 /* PPBookmarkCell.m in Sources */,
-				37587B431D32B5FE005665DC /* PPBrowserActivity.m in Sources */,
-				37587B411D32B5F6005665DC /* PPBrowserSettingsViewController.m in Sources */,
-				37F95C0E1D32CE7D00422DD6 /* PPCachingURLProtocol.m in Sources */,
-				37F95C211D32D8B900422DD6 /* PPChangelogViewController.m in Sources */,
-				37F95C0B1D32CE4D00422DD6 /* PPDisplaySettingsViewController.m in Sources */,
-				37F95BED1D32BB8C00422DD6 /* PPFeedListViewController.m in Sources */,
-				37F95C381D32DBD200422DD6 /* PPGenericPostViewController.m in Sources */,
-				37F95BEB1D32BB7B00422DD6 /* PPLoginViewController.m in Sources */,
-				37F95BEE1D32BB9500422DD6 /* PPMailChimp.m in Sources */,
-				37F95BFF1D32BE5800422DD6 /* PPMultipleEditViewController.m in Sources */,
-				37F95C2D1D32DA1400422DD6 /* PPNavigationController.m in Sources */,
-				37F95C281D32D9F700422DD6 /* PPNotification.m in Sources */,
-				37F95C081D32CE1D00422DD6 /* PPOfflineDownloadViewController.m in Sources */,
-				37587B471D32B618005665DC /* PPOfflineSettingsViewController.m in Sources */,
-				37F95C301D32DB8300422DD6 /* PPPinboardDataSource.m in Sources */,
-				37F95C001D32BE6F00422DD6 /* PPPinboardFeedDataSource.m in Sources */,
-				37587B481D32B61C005665DC /* PPPinboardLoginViewController.m in Sources */,
-				37F95C011D32BE7300422DD6 /* PPPinboardNotesDataSource.m in Sources */,
-				37F95BEC1D32BB8600422DD6 /* PPReaderSettingsViewController.m in Sources */,
-				37F95C091D32CE2B00422DD6 /* PPSavedFeedsViewController.m in Sources */,
-				37587B491D32B61E005665DC /* PPSearchExamplesViewController.m in Sources */,
-				37F95C021D32BEA100422DD6 /* PPSearchViewController.m in Sources */,
-				37587B461D32B616005665DC /* PPSettingsViewController.m in Sources */,
-				37F95C041D32CDE200422DD6 /* PPSplitViewController.m in Sources */,
-				37F95C0A1D32CE3200422DD6 /* PPStatusBar.m in Sources */,
-				37587B4A1D32B625005665DC /* PPTagEditViewController.m in Sources */,
-				37F95BF61D32BD2000422DD6 /* PPTagViewController.m in Sources */,
-				37F95C061D32CDF100422DD6 /* PPTwitter.m in Sources */,
-				37587B451D32B613005665DC /* PPWebViewController.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		379042AD19CC646700409D34 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				37D2DB7E1D32EA5500167322 /* FMDatabase.m in Sources */,
-				37D2DB7F1D32EA5800167322 /* FMDatabaseAdditions.m in Sources */,
-				37D2DB801D32EA5A00167322 /* FMDatabasePool.m in Sources */,
-				37D2DB811D32EA5C00167322 /* FMDatabaseQueue.m in Sources */,
-				37D2DB821D32EA6000167322 /* FMResultSet.m in Sources */,
 				37F95C111D32CEAC00422DD6 /* LHSBooleanTableViewCell.m in Sources */,
 				3790426A19CBDCDF00409D34 /* MFMailComposeViewController+Theme.m in Sources */,
 				3790426B19CBDCDF00409D34 /* NSData+AES256.m in Sources */,
@@ -2273,7 +2095,44 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37F9D0A61D32FE55002A168D /* PPDisplaySettingsViewController.m in Sources */,
+				37F9D0971D32FDF9002A168D /* PPSearchViewController.m in Sources */,
+				37F9D0BC1D330115002A168D /* PPGenericPostViewController.m in Sources */,
+				37F9D09A1D32FE00002A168D /* PPWebViewController.m in Sources */,
+				37F9D0981D32FDFB002A168D /* PPTwitter.m in Sources */,
+				37F9D0B71D330077002A168D /* PPActivityViewController.m in Sources */,
+				37F9D0B61D330075002A168D /* PPAboutViewController.m in Sources */,
+				37F9D09B1D32FE03002A168D /* PPSettingsViewController.m in Sources */,
+				37F9D0A71D32FE57002A168D /* PPMultipleEditViewController.m in Sources */,
+				37F9D0DA1D33049F002A168D /* PPBookmarkCell.m in Sources */,
+				37F9D0A11D32FE2A002A168D /* PPNavigationController.m in Sources */,
+				37F9D0C11D330246002A168D /* PPBrowserActivity.m in Sources */,
+				37F9D0A51D32FE50002A168D /* PPFeedListViewController.m in Sources */,
+				37F9D0B21D33002A002A168D /* PPBrowserSettingsViewController.m in Sources */,
+				37F9D0AA1D32FEDB002A168D /* PPOfflineDownloadViewController.m in Sources */,
+				37F9D0D81D330440002A168D /* PPAppDelegate.m in Sources */,
+				37F9D0DB1D3304A9002A168D /* LHSFontSelectionViewController.m in Sources */,
+				37F9D0D91D33049B002A168D /* PPCachingURLProtocol.m in Sources */,
+				37F9D0961D32FDE1002A168D /* BookmarkletInstallationViewController.m in Sources */,
+				37F9D09D1D32FE08002A168D /* PPPinboardLoginViewController.m in Sources */,
+				37F9D0BB1D330113002A168D /* PPLoginViewController.m in Sources */,
+				37F9D0B91D330087002A168D /* PPAddSavedFeedViewController.m in Sources */,
+				37F9D09F1D32FE11002A168D /* PPTagEditViewController.m in Sources */,
+				37F9D0BA1D330105002A168D /* PPSavedFeedsViewController.m in Sources */,
+				37F9D0A91D32FED3002A168D /* PPPinboardNotesDataSource.m in Sources */,
+				37F9D09C1D32FE05002A168D /* PPSplitViewController.m in Sources */,
 				37FB4F981D32ED60004D5C12 /* main.m in Sources */,
+				37F9D0B11D330025002A168D /* PPChangelogViewController.m in Sources */,
+				37F9D0A31D32FE30002A168D /* PPStatusBar.m in Sources */,
+				37F9D0B81D330082002A168D /* PPAddBookmarkViewController.m in Sources */,
+				37F9D0A41D32FE34002A168D /* PPTagViewController.m in Sources */,
+				37F9D0B51D33005D002A168D /* PPNotification.m in Sources */,
+				37F9D0A01D32FE28002A168D /* PPOfflineSettingsViewController.m in Sources */,
+				37F9D09E1D32FE0C002A168D /* PPReaderSettingsViewController.m in Sources */,
+				37F9D0B41D330054002A168D /* PPMailChimp.m in Sources */,
+				37F9D0A21D32FE2D002A168D /* PPSearchExamplesViewController.m in Sources */,
+				37F9D0991D32FDFE002A168D /* PPPinboardFeedDataSource.m in Sources */,
+				37F9D0A81D32FE5D002A168D /* PPPinboardDataSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2300,27 +2159,14 @@
 			target = 37BC1DF41D32862F00AC4607 /* ReadLaterExtension */;
 			targetProxy = 37BC1DFD1D32862F00AC4607 /* PBXContainerItemProxy */;
 		};
-		37F95BF81D32BD7500422DD6 /* PBXTargetDependency */ = {
+		37F9D0D51D330425002A168D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 379042B119CC646700409D34 /* SharedSafe */;
-			targetProxy = 37F95BF71D32BD7500422DD6 /* PBXContainerItemProxy */;
-		};
-		37F9D0831D32F2CC002A168D /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 37587B2E1D32B5B0005665DC /* Shared */;
-			targetProxy = 37F9D0821D32F2CC002A168D /* PBXContainerItemProxy */;
+			targetProxy = 37F9D0D41D330425002A168D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		3717968718A885FE004B2D08 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				3717968818A885FE004B2D08 /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
 		3740A23716863CF000F95D82 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -2422,269 +2268,36 @@
 		};
 		37374CB719A259F000C4DC9A /* Pinboard App Store Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 16927E6971F6B1ECE9443FF3 /* Pods-Pushpin.pinboard app store debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_MODULES_AUTOLINK = NO;
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
-				ENABLE_BITCODE = NO;
+				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"@executable_path/../Frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pushpin/Pushpin for Pinboard-Prefix.pch";
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = Pushpin/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) \"@executable_path/Frameworks\" \"@executable_path/../Frameworks\"";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = "Pinboard App Store Debug";
-		};
-		37587B391D32B5B1005665DC /* Pinboard Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = AE9361A156E2827FAAE63087 /* Pods-Shared.pinboard debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
-				CLANG_CXX_LIBRARY = "compiler-default";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = "compiler-default";
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = NO;
-				GCC_WARN_UNUSED_VARIABLE = NO;
-				INFOPLIST_FILE = Shared/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MACH_O_TYPE = mh_dylib;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lionheartsw.Shared;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = "Pinboard Debug";
-		};
-		37587B3A1D32B5B1005665DC /* Pinboard App Store */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = A2439458E7DD8679EF4BF728 /* Pods-Shared.pinboard app store.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
-				CLANG_CXX_LIBRARY = "compiler-default";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = NO;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = "compiler-default";
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = NO;
-				GCC_WARN_UNUSED_VARIABLE = NO;
-				INFOPLIST_FILE = Shared/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MACH_O_TYPE = mh_dylib;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lionheartsw.Shared;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = "Pinboard App Store";
-		};
-		37587B3B1D32B5B1005665DC /* Pinboard App Store Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = E3AE2D1CFC8C2C9374CEB98A /* Pods-Shared.pinboard app store debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
-				CLANG_CXX_LIBRARY = "compiler-default";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = "compiler-default";
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = NO;
-				GCC_WARN_UNUSED_VARIABLE = NO;
-				INFOPLIST_FILE = Shared/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MACH_O_TYPE = mh_dylib;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lionheartsw.Shared;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = "Pinboard App Store Debug";
-		};
-		37587B3C1D32B5B1005665DC /* Pinboard Beta */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 13F78FE66B7F25BB4D215649 /* Pods-Shared.pinboard beta.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
-				CLANG_CXX_LIBRARY = "compiler-default";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = NO;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = "compiler-default";
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = NO;
-				GCC_WARN_UNUSED_VARIABLE = NO;
-				INFOPLIST_FILE = Shared/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MACH_O_TYPE = mh_dylib;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lionheartsw.Shared;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = "Pinboard Beta";
 		};
 		37800E9B162D576E009FCB17 /* Pinboard Beta */ = {
 			isa = XCBuildConfiguration;
@@ -2758,25 +2371,29 @@
 		};
 		37800E9C162D576E009FCB17 /* Pinboard Beta */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = ED459620C3EAAB8D72CA852E /* Pods-Pushpin.pinboard beta.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = PinboardBeta;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_MODULES_AUTOLINK = NO;
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Beta.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
-				ENABLE_BITCODE = NO;
+				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"@executable_path/../Frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pushpin/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = Pushpin/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) \"@executable_path/Frameworks\" \"@executable_path/../Frameworks\"";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2786,7 +2403,7 @@
 		};
 		379042C319CC646B00409D34 /* Pinboard Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E833CEA46860A51CBC93F96F /* Pods-SharedSafe.pinboard debug.xcconfig */;
+			baseConfigurationReference = 73CA84345D352950C8E56AC2 /* Pods-SharedSafe.pinboard debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = YES;
@@ -2833,7 +2450,7 @@
 				GCC_WARN_UNUSED_LABEL = NO;
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
-				INFOPLIST_FILE = PushpinFramework/Info.plist;
+				INFOPLIST_FILE = SharedSafe/Info.plist;
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -2854,7 +2471,7 @@
 		};
 		379042C519CC646B00409D34 /* Pinboard App Store */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 994B3B32F62AE00AA5D9AD9A /* Pods-SharedSafe.pinboard app store.xcconfig */;
+			baseConfigurationReference = 7C0F1238C7D4E417E0F7DA13 /* Pods-SharedSafe.pinboard app store.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = YES;
@@ -2899,7 +2516,7 @@
 				GCC_WARN_UNUSED_LABEL = NO;
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
-				INFOPLIST_FILE = PushpinFramework/Info.plist;
+				INFOPLIST_FILE = SharedSafe/Info.plist;
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -2920,7 +2537,7 @@
 		};
 		379042C619CC646B00409D34 /* Pinboard App Store Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FDFF3C832150D5E51E26377C /* Pods-SharedSafe.pinboard app store debug.xcconfig */;
+			baseConfigurationReference = C3CD097528CDF6C2F866DDCA /* Pods-SharedSafe.pinboard app store debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = YES;
@@ -2965,7 +2582,7 @@
 				GCC_WARN_UNUSED_LABEL = NO;
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
-				INFOPLIST_FILE = PushpinFramework/Info.plist;
+				INFOPLIST_FILE = SharedSafe/Info.plist;
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -2986,7 +2603,7 @@
 		};
 		379042C819CC646B00409D34 /* Pinboard Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0CF93F4F408A55858B1A08E7 /* Pods-SharedSafe.pinboard beta.xcconfig */;
+			baseConfigurationReference = AFB4160CFDA40E994A5B6050 /* Pods-SharedSafe.pinboard beta.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = YES;
@@ -3031,7 +2648,7 @@
 				GCC_WARN_UNUSED_LABEL = NO;
 				GCC_WARN_UNUSED_VALUE = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
-				INFOPLIST_FILE = PushpinFramework/Info.plist;
+				INFOPLIST_FILE = SharedSafe/Info.plist;
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -3052,7 +2669,7 @@
 		};
 		37BC1DEC1D32861B00AC4607 /* Pinboard Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D140E604BD743C3559430399 /* Pods-BookmarkExtension.pinboard debug.xcconfig */;
+			baseConfigurationReference = CD18E5EC9F800BE7850AF872 /* Pods-BookmarkExtension.pinboard debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -3074,6 +2691,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -3108,7 +2726,7 @@
 		};
 		37BC1DED1D32861B00AC4607 /* Pinboard App Store */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BD1C7594EF196781DEE71795 /* Pods-BookmarkExtension.pinboard app store.xcconfig */;
+			baseConfigurationReference = 5F56635991BACC73C2091F8A /* Pods-BookmarkExtension.pinboard app store.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -3130,6 +2748,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -3163,7 +2782,7 @@
 		};
 		37BC1DEE1D32861B00AC4607 /* Pinboard App Store Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4D82CC2FFA1306FBB86B6896 /* Pods-BookmarkExtension.pinboard app store debug.xcconfig */;
+			baseConfigurationReference = DB7537466202FE3F0D708C47 /* Pods-BookmarkExtension.pinboard app store debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -3185,6 +2804,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -3220,7 +2840,7 @@
 		};
 		37BC1DEF1D32861B00AC4607 /* Pinboard Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 15C7488AE51DB105A132E864 /* Pods-BookmarkExtension.pinboard beta.xcconfig */;
+			baseConfigurationReference = CE2120B2E5327C8D81C9FB7E /* Pods-BookmarkExtension.pinboard beta.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -3242,6 +2862,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -3275,7 +2896,7 @@
 		};
 		37BC1E011D32863000AC4607 /* Pinboard Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0F515C7B602D204A2D456D36 /* Pods-ReadLaterExtension.pinboard debug.xcconfig */;
+			baseConfigurationReference = 18EEF1E3DDE0B62559BAAEFA /* Pods-ReadLaterExtension.pinboard debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -3297,6 +2918,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -3330,7 +2952,7 @@
 		};
 		37BC1E021D32863000AC4607 /* Pinboard App Store */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FBE52F3EE5EDAC8FDA273EB0 /* Pods-ReadLaterExtension.pinboard app store.xcconfig */;
+			baseConfigurationReference = EA47D74DCC7CA9953B039A25 /* Pods-ReadLaterExtension.pinboard app store.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -3352,6 +2974,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -3384,7 +3007,7 @@
 		};
 		37BC1E031D32863000AC4607 /* Pinboard App Store Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C035569413D7100460BA6F6D /* Pods-ReadLaterExtension.pinboard app store debug.xcconfig */;
+			baseConfigurationReference = 6D29542CF96A0C34F60BEEC6 /* Pods-ReadLaterExtension.pinboard app store debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -3406,6 +3029,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -3438,7 +3062,7 @@
 		};
 		37BC1E041D32863000AC4607 /* Pinboard Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5E9D483407C9AE45FACD0D59 /* Pods-ReadLaterExtension.pinboard beta.xcconfig */;
+			baseConfigurationReference = 60FF1FF1486115E49E3383C1 /* Pods-ReadLaterExtension.pinboard beta.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -3460,6 +3084,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -3637,25 +3262,29 @@
 		};
 		37FEEBA715745488003F2B77 /* Pinboard Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9C79845487EF68D4C4D43D2F /* Pods-Pushpin.pinboard debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = PinboardDev;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_MODULES_AUTOLINK = NO;
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Dev.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
-				ENABLE_BITCODE = NO;
+				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"@executable_path/../Frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pushpin/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = Pushpin/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) \"@executable_path/Frameworks\" \"@executable_path/../Frameworks\"";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -3665,25 +3294,29 @@
 		};
 		37FEEBA815745488003F2B77 /* Pinboard App Store */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 918B9CCA3A7B056396FCC5A4 /* Pods-Pushpin.pinboard app store.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_MODULES_AUTOLINK = NO;
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
-				ENABLE_BITCODE = NO;
+				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"@executable_path/../Frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pushpin/Pushpin for Pinboard-Prefix.pch";
 				INFOPLIST_FILE = Pushpin/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) \"@executable_path/Frameworks\" \"@executable_path/../Frameworks\"";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -3694,17 +3327,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		37587B381D32B5B1005665DC /* Build configuration list for PBXNativeTarget "Shared" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				37587B391D32B5B1005665DC /* Pinboard Debug */,
-				37587B3A1D32B5B1005665DC /* Pinboard App Store */,
-				37587B3B1D32B5B1005665DC /* Pinboard App Store Debug */,
-				37587B3C1D32B5B1005665DC /* Pinboard Beta */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Pinboard Debug";
-		};
 		379042C219CC646B00409D34 /* Build configuration list for PBXNativeTarget "SharedSafe" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

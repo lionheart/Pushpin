@@ -8,7 +8,7 @@
 
 @import LHSCategoryCollection;
 @import ASPinboard;
-#import "FMDB.h"
+@import FMDB;
 @import LHSKeyboardAdjusting;
 @import LHSTableViewCells;
 

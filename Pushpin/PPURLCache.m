@@ -8,7 +8,7 @@
 
 #import "PPURLCache.h"
 
-#import "FMDB.h"
+@import FMDB;
 @import RNCryptor;
 @import LHSCategoryCollection;
 

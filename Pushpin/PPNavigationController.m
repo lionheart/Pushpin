@@ -8,7 +8,7 @@
 
 #import "PPNavigationController.h"
 
-#import "FMDB.h"
+@import FMDB;
 @import LHSCategoryCollection;
 
 #import "PPNavigationBar.h"

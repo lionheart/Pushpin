@@ -7,7 +7,7 @@
 //
 
 @import QuartzCore;
-#import "FMDB.h"
+@import FMDB;
 
 #import "PPSavedFeedsViewController.h"
 #import "PPAppDelegate.h"

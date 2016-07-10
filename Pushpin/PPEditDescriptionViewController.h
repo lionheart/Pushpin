@@ -7,8 +7,7 @@
 //
 
 @import UIKit;
-
-#import <LHSKeyboardAdjusting/LHSKeyboardAdjusting.h>
+@import LHSKeyboardAdjusting;
 
 @class PPEditDescriptionViewController;
 

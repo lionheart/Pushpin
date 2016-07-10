@@ -6,15 +6,15 @@
 //
 //
 
-@import QuartzCore;
-
 #import "PPAddSavedFeedViewController.h"
+
+@import QuartzCore;
+@import LHSCategoryCollection;
+
 #import "PPPinboardFeedDataSource.h"
 #import "PPTheme.h"
 
 #import "NSString+URLEncoding2.h"
-
-#import <LHSCategoryCollection/UIImage+LHSAdditions.h>
 
 static NSString *CellIdentifier = @"Cell";
 

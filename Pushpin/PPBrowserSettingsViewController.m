@@ -8,6 +8,9 @@
 
 @import QuartzCore;
 @import Mixpanel;
+@import OpenInChrome;
+@import LHSCategoryCollection;
+@import LHSTableViewCells;
 
 #import "PPBrowserSettingsViewController.h"
 #import "BookmarkletInstallationViewController.h"
@@ -17,12 +20,6 @@
 #import "PPTableViewTitleView.h"
 #import "PPConstants.h"
 #import "PPSettings.h"
-#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
-
-#import <OpenInChrome/OpenInChromeController.h>
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-#import <LHSTableViewCells/LHSTableViewCellValue1.h>
-#import <LHSCategoryCollection/UIView+LHSAdditions.h>
 
 static NSString *CellIdentifier = @"Cell";
 

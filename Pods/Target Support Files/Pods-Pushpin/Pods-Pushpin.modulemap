@@ -1,0 +1,6 @@
+framework module Pods_Pushpin {
+  umbrella header "Pods-Pushpin-umbrella.h"
+
+  export *
+  module * { export * }
+}

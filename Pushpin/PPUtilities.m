@@ -6,7 +6,7 @@
 //
 //
 
-#import "FMDB.h"
+@import FMDB;
 @import SafariServices;
 @import LHSCategoryCollection;
 @import MWFeedParser;

@@ -8,7 +8,7 @@
 
 @import QuartzCore;
 @import LHSCategoryCollection;
-#import "FMDB.h"
+@import FMDB;
 @import LHSTableViewCells;
 
 #import "PPAppDelegate.h"

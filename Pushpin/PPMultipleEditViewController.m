@@ -8,7 +8,7 @@
 
 @import QuartzCore;
 @import ASPinboard;
-#import "FMDB.h"
+@import FMDB;
 @import LHSCategoryCollection;
 @import LHSTableViewCells;
 

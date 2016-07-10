@@ -7,7 +7,7 @@
 //
 
 @import Foundation;
-#import "FMDB.h"
+@import FMDB;
 
 @interface PPURLCache : NSURLCache <NSURLSessionDelegate, NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate, NSURLSessionDataDelegate>
 

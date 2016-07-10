@@ -9,7 +9,7 @@
 @import QuartzCore;
 @import Mixpanel;
 @import LHSCategoryCollection;
-#import "FMDB.h"
+@import FMDB;
 @import ASPinboard;
 @import KeychainItemWrapper;
 @import LHSTableViewCells;

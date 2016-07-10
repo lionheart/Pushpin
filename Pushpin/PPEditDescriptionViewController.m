@@ -7,12 +7,12 @@
 //
 
 #import "PPEditDescriptionViewController.h"
+
+@import LHSCategoryCollection;
+@import LHSKeyboardAdjusting;
+
 #import "PPTheme.h"
 #import "PPSettings.h"
-
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-#import <LHSCategoryCollection/UIView+LHSAdditions.h>
-#import <LHSKeyboardAdjusting/UIViewController+LHSKeyboardAdjustment.h>
 
 @interface PPEditDescriptionViewController ()
 

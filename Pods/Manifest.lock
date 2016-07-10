@@ -56,6 +56,7 @@ DEPENDENCIES:
   - ASPinboard (from `Vendor/ASPinboard`)
   - BRYHTMLParser
   - ChimpKit
+  - FMDB
   - HTMLParser
   - KeychainItemWrapper (= 1.2)
   - LHSCategoryCollection (from `../LHSCategoryCollection`)
@@ -103,6 +104,6 @@ SPEC CHECKSUMS:
   uservoice-iphone-sdk: 349d9ef36d3c43939d28390b9e86bb32b65fe983
   YHRoundBorderedButton: 2180f04094db264cace8db88eae977d78a3b4633
 
-PODFILE CHECKSUM: 9bb3aff55a90aed9e2492f10e4a0fccbe6143402
+PODFILE CHECKSUM: 3bc400e2b6c6ae2ad972fd8e418566e0ac20abac
 
 COCOAPODS: 1.0.1

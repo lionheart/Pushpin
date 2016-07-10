@@ -14,7 +14,8 @@
 @import ASPinboard;
 @import LHSTableViewCells;
 @import LHSCategoryCollection;
-#import "FMDB.h"
+@import FMDB;
+@import Mixpanel;
 
 #import "PPNotification.h"
 #import "PPUtilities.h"
@@ -32,8 +33,6 @@
 #if !APP_EXTENSION_SAFE
 #import "PPAppDelegate.h"
 #endif
-
-#import <Mixpanel/Mixpanel.h>
 
 #import "NSString+URLEncoding2.h"
 #import "UITableView+Additions.h"
