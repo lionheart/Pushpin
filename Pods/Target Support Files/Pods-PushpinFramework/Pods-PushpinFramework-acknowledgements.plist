@@ -1420,14 +1420,6 @@ THE SOFTWARE.
 		</dict>
 		<dict>
 			<key>FooterText</key>
-			<string>http://smilesoftware.com/sdk</string>
-			<key>Title</key>
-			<string>TextExpander</string>
-			<key>Type</key>
-			<string>PSGroupSpecifier</string>
-		</dict>
-		<dict>
-			<key>FooterText</key>
 			<string>Copyright (c) 2014 Yeonghoon Park &lt;me@yhpark.co&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

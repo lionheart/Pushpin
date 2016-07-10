@@ -1339,10 +1339,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
-## TextExpander
-
-http://smilesoftware.com/sdk
-
 ## YHRoundBorderedButton
 
 Copyright (c) 2014 Yeonghoon Park <me@yhpark.co>
