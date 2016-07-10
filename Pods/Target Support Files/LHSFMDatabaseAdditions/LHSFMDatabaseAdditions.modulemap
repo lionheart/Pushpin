@@ -1,0 +1,6 @@
+framework module LHSFMDatabaseAdditions {
+  umbrella header "LHSFMDatabaseAdditions-umbrella.h"
+
+  export *
+  module * { export * }
+}

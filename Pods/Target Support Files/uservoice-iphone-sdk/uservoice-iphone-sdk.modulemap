@@ -1,0 +1,6 @@
+framework module uservoice_iphone_sdk {
+  umbrella header "uservoice-iphone-sdk-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -1,0 +1,6 @@
+framework module LHSCategoryCollection {
+  umbrella header "LHSCategoryCollection-umbrella.h"
+
+  export *
+  module * { export * }
+}
