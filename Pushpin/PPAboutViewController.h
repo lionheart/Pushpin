@@ -6,9 +6,10 @@
 //
 //
 
+@import StoreKit;
+
 #import "PPTableViewController.h"
 #import "PPLoadingView.h"
-#import <StoreKit/StoreKit.h>
 
 @interface PPAboutViewController : PPTableViewController <SKStoreProductViewControllerDelegate, UIPopoverPresentationControllerDelegate>
 

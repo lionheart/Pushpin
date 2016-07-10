@@ -6,11 +6,11 @@
 //
 //
 
+@import LHSTableViewCells;
+
 #import "PPSearchExamplesViewController.h"
 #import "PPTheme.h"
 #import "PPNotification.h"
-
-@import LHSTableViewCells;
 
 static NSString *CellIdentifier = @"CellIdentifier";
 

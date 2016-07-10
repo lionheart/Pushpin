@@ -6,10 +6,9 @@
 //
 //
 @import QuartzCore;
+@import LHSCategoryCollection;
 
 #import "PPToolbar.h"
-
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 static CGFloat const kDefaultColorLayerOpacity = 0.5f;
 

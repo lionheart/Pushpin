@@ -6,10 +6,10 @@
 //
 //
 
+@import LHSCategoryCollection;
+
 #import "PPPlainTextViewController.h"
 #import "PPTheme.h"
-
-#import <LHSCategoryCollection/UIView+LHSAdditions.h>
 
 @interface PPPlainTextViewController ()
 

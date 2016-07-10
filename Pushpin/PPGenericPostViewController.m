@@ -6,8 +6,6 @@
 //
 //
 
-#import "PPGenericPostViewController.h"
-
 @import QuartzCore;
 @import FMDB;
 @import ASPinboard;
@@ -15,6 +13,7 @@
 @import LHSCategoryCollection;
 @import Mixpanel;
 
+#import "PPGenericPostViewController.h"
 #import "PPConstants.h"
 #import "PPSettings.h"
 #import "PPUtilities.h"

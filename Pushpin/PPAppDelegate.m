@@ -6,8 +6,6 @@
 //  Copyright (c) 2012 Lionheart Software LLC. All rights reserved.
 //
 
-#import "PPAppDelegate.h"
-
 @import QuartzCore;
 @import CoreSpotlight;
 @import Mixpanel;
@@ -19,6 +17,7 @@
 @import KeychainItemWrapper;
 @import FMDB;
 
+#import "PPAppDelegate.h"
 #import "PPLoginViewController.h"
 #import "PPGenericPostViewController.h"
 #import "PPPinboardDataSource.h"

@@ -6,11 +6,10 @@
 //
 //
 
-#import "PPBookmarkCell.h"
-
 @import TTTAttributedLabel;
 @import LHSCategoryCollection;
 
+#import "PPBookmarkCell.h"
 #import "PPBadgeWrapperView.h"
 #import "PPTheme.h"
 #import "PPSettings.h"

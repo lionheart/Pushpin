@@ -6,11 +6,10 @@
 //
 //
 
-#import "PPPinboardNotesDataSource.h"
-
 @import ASPinboard;
 @import LHSCategoryCollection;
 
+#import "PPPinboardNotesDataSource.h"
 #import "PPTheme.h"
 #import "PPConstants.h"
 #import "PPPlainTextViewController.h"

@@ -6,15 +6,15 @@
 //  Copyright (c) 2015 Lionheart Software. All rights reserved.
 //
 
+@import LHSCategoryCollection;
+@import LHSTableViewCells;
+
 #import "PPOfflineDownloadViewController.h"
 #import "PPURLCache.h"
 #import "PPAppDelegate.h"
 #import "PPTheme.h"
 #import "NSString+Additions.h"
 #import "PPPinboardMetadataCache.h"
-
-#import <LHSCategoryCollection/UIView+LHSAdditions.h>
-#import <LHSTableViewCells/LHSTableViewCellSubtitle.h>
 
 static NSString *CellIdentifier = @"CellIdentifier";
 

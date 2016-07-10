@@ -6,9 +6,9 @@
 //  Copyright (c) 2014 Lionheart Software. All rights reserved.
 //
 
-#import "PPSettings.h"
-
 @import KeychainItemWrapper;
+
+#import "PPSettings.h"
 
 @interface PPSettings ()
 

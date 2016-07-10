@@ -8,9 +8,11 @@
 
 @import QuartzCore;
 @import Mixpanel;
+@import LHSCategoryCollection;
+@import LHSTableViewCells;
+@import MWFeedParser;
 
 #import "PPTagViewController.h"
-#import "FMDatabase.h"
 #import "PPGenericPostViewController.h"
 #import "PPPinboardDataSource.h"
 #import "PPNavigationController.h"
@@ -19,12 +21,6 @@
 #import "PPTableViewTitleView.h"
 #import "PPFeedListViewController.h"
 #import "PPUtilities.h"
-#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
-
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-#import <LHSCategoryCollection/UIView+LHSAdditions.h>
-#import <LHSTableViewCells/LHSTableViewCellValue1.h>
-#import <MWFeedParser/NSString+HTML.h>
 
 static NSString *CellIdentifier = @"TagCell";
 

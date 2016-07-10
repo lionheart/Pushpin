@@ -6,10 +6,9 @@
 //
 //
 
-#import "PPSplitViewController.h"
-
 @import LHSCategoryCollection;
 
+#import "PPSplitViewController.h"
 #import "PPNavigationController.h"
 #import "PPAddBookmarkViewController.h"
 #import "PPAppDelegate.h"

@@ -6,9 +6,9 @@
 //
 //
 
-#import "PPTableViewController.h"
-#import <LHSKeyboardAdjusting/LHSKeyboardAdjusting.h>
+@import LHSKeyboardAdjusting;
 
+#import "PPTableViewController.h"
 
 typedef NS_ENUM(NSInteger, PPSearchScopeType) {
     PPSearchScopeMine,

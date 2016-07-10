@@ -6,8 +6,7 @@
 //
 //
 
-#import <UIKit/UIKit.h>
-
+@import UIKit;
 
 @interface LHSBooleanTableViewCell : UITableViewCell
 

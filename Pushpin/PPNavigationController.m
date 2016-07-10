@@ -6,11 +6,10 @@
 //
 //
 
-#import "PPNavigationController.h"
-
 @import FMDB;
 @import LHSCategoryCollection;
 
+#import "PPNavigationController.h"
 #import "PPNavigationBar.h"
 
 #if !APP_EXTENSION_SAFE

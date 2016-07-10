@@ -6,7 +6,7 @@
 //
 //
 
-#import <MessageUI/MessageUI.h>
+@import MessageUI;
 
 @interface MFMailComposeViewController (Theme)
 

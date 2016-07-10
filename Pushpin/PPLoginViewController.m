@@ -6,17 +6,13 @@
 //  Copyright (c) 2015 Lionheart Software. All rights reserved.
 //
 
-#import "PPLoginViewController.h"
-
-#import <LHSCategoryCollection/UIView+LHSAdditions.h>
-#import <LHSTableViewCells/LHSTableViewCellSubtitle.h>
-#import <LHSTableViewCells/LHSTableViewCellDefault.h>
-#import <LHSTableViewCells/LHSTableViewCellValue1.h>
-#import <LHSKeyboardAdjusting/UIViewController+LHSKeyboardAdjustment.h>
-#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 @import uservoice_iphone_sdk;
-#import "PPMailChimp.h"
+@import LHSCategoryCollection;
+@import LHSTableViewCells;
+@import LHSKeyboardAdjusting;
 
+#import "PPLoginViewController.h"
+#import "PPMailChimp.h"
 #import "PPPinboardLoginViewController.h"
 
 static NSString * const CellIdentifier = @"CellIdentifier";

@@ -6,15 +6,15 @@
 //
 //
 
-#import "PPPinboardDataSource.h"
-
 @import CoreSpotlight;
 @import MobileCoreServices;
 @import ASPinboard;
 @import MWFeedParser;
 @import FMDB;
 @import LHSCategoryCollection;
+@import Mixpanel;
 
+#import "PPPinboardDataSource.h"
 #import "PPNotification.h"
 #import "PPAddBookmarkViewController.h"
 #import "PPTheme.h"
@@ -33,8 +33,6 @@
 #import "NSAttributedString+Attributes.h"
 #import "NSString+LHSAdditions.h"
 #import "NSString+Additions.h"
-
-#import <Mixpanel/Mixpanel.h>
 
 static BOOL kPinboardSyncInProgress = NO;
 

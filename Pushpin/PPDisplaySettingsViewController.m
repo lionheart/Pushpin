@@ -18,8 +18,9 @@
 #import "PPTitleButton.h"
 #import "PPSettings.h"
 #import "PPPinboardMetadataCache.h"
-#import "LHSFontSelectionViewController.h"
 #import "PPUtilities.h"
+
+#import "LHSFontSelectionViewController.h"
 
 static NSString *CellIdentifier = @"Cell";
 static NSString *ChoiceCellIdentifier = @"ChoiceCell";

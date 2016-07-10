@@ -6,8 +6,6 @@
 //
 //
 
-#import "PPAboutViewController.h"
-
 @import QuartzCore;
 @import Accounts;
 @import Social;
@@ -16,6 +14,7 @@
 @import LHSCategoryCollection;
 @import LHSTableViewCells;
 
+#import "PPAboutViewController.h"
 #import "PPChangelogViewController.h"
 #import "PPTheme.h"
 #import "PPTitleButton.h"

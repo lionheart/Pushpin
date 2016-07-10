@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Lionheart Software. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+@import Foundation;
 
 @interface PPReaderSettings : NSObject <NSCoding>
 

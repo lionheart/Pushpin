@@ -6,11 +6,10 @@
 //
 //
 
-#import "PPEditDescriptionViewController.h"
-
 @import LHSCategoryCollection;
 @import LHSKeyboardAdjusting;
 
+#import "PPEditDescriptionViewController.h"
 #import "PPTheme.h"
 #import "PPSettings.h"
 

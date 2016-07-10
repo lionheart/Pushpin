@@ -6,9 +6,10 @@
 //
 //
 
+@import LHSCategoryCollection;
+
 #import "PPTableViewTitleView.h"
 #import "PPTheme.h"
-#import <LHSCategoryCollection/UIView+LHSAdditions.h>
 
 @implementation PPTableViewTitleView
 

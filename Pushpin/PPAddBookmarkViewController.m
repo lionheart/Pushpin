@@ -7,8 +7,6 @@
 //
 //
 
-#import "PPAddBookmarkViewController.h"
-
 @import QuartzCore;
 @import MobileCoreServices;
 @import ASPinboard;
@@ -17,6 +15,7 @@
 @import FMDB;
 @import Mixpanel;
 
+#import "PPAddBookmarkViewController.h"
 #import "PPNotification.h"
 #import "PPUtilities.h"
 #import "PPNavigationController.h"

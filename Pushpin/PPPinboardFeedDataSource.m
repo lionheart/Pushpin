@@ -7,6 +7,10 @@
 //
 
 @import FMDB;
+@import ASPinboard;
+@import FMDB;
+@import LHSCategoryCollection;
+@import MWFeedParser;
 
 #import "PPPinboardFeedDataSource.h"
 #import "PPAppDelegate.h"
@@ -23,11 +27,6 @@
 #import "NSString+URLEncoding2.h"
 #import "PPUtilities.h"
 #import "NSString+LHSAdditions.h"
-
-#import <ASPinboard/ASPinboard.h>
-#import <FMDB/FMDatabase.h>
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-#import <MWFeedParser/NSString+HTML.h>
 
 @interface PPPinboardFeedDataSource ()
 

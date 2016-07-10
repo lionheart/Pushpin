@@ -7,7 +7,8 @@
 //
 
 @import UIKit;
-#import <MessageUI/MessageUI.h>
+@import MessageUI;
+
 #import "PPAppDelegate.h"
 #import "PPToolbar.h"
 

@@ -6,10 +6,9 @@
 //
 //
 
-#import "PPTableViewController.h"
+@import LHSCategoryCollection;
 
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-#import <LHSCategoryCollection/UIView+LHSAdditions.h>
+#import "PPTableViewController.h"
 
 @interface PPTableViewController ()
 

@@ -6,10 +6,9 @@
 //
 //
 
-#import "PPBadgeWrapperView.h"
-
 @import LHSCategoryCollection;
 
+#import "PPBadgeWrapperView.h"
 #import "PPConstants.h"
 
 @implementation PPBadgeWrapperView

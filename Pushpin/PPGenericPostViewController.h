@@ -7,14 +7,13 @@
 //
 
 @import UIKit;
+@import TTTAttributedLabel;
 
-#import "TTTAttributedLabel.h"
 #import "PPAppDelegate.h"
 #import "PPLoadingView.h"
 #import "PPTableViewController.h"
 #import "PPToolbar.h"
 #import "PPWebViewController.h"
-
 #import "PPBadgeWrapperView.h"
 #import "PPTitleButton.h"
 #import "PPBookmarkCell.h"

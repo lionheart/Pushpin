@@ -6,7 +6,8 @@
 //
 //
 
-#import <UIKit/UIKit.h>
+@import UIKit;
+
 #import "PostMetadata.h"
 #import "PPNavigationController.h"
 #import "PPTitleButton.h"

@@ -6,10 +6,9 @@
 //
 //
 
-#import "PPStatusBar.h"
-
 @import LHSCategoryCollection;
 
+#import "PPStatusBar.h"
 #import "PPAddBookmarkViewController.h"
 #import "PPNavigationController.h"
 #import "PPAppDelegate.h"

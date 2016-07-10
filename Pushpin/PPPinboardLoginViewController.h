@@ -13,13 +13,11 @@ typedef NS_ENUM(NSInteger, PPLoginCredentialRowType) {
     PPLoginCredentialPasswordRow
 };
 
-
 typedef NS_ENUM(NSInteger, PPLoginSectionType) {
     PPLoginCredentialSection,
     PPLoginAuthTokenSection,
     PPLogin1PasswordSection
 };
-
 
 static NSInteger PPLoginSectionCount = PPLogin1PasswordSection + 1;
 

@@ -6,10 +6,10 @@
 //  Copyright (c) 2015 Lionheart Software. All rights reserved.
 //
 
-#import "PPMailChimp.h"
-
 @import ChimpKit;
 @import LHSCategoryCollection;
+
+#import "PPMailChimp.h"
 
 @interface PPMailChimp ()
 

@@ -25,7 +25,6 @@
 
 @interface PPPinboardLoginViewController ()
 
-
 @property (nonatomic, strong) UITextField *authTokenTextField;
 @property (nonatomic, strong) UITextView *authTokenFooterTextView;
 

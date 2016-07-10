@@ -6,11 +6,10 @@
 //
 //
 
-#import "PostMetadata.h"
-
 @import TTTAttributedLabel;
 @import LHSCategoryCollection;
 
+#import "PostMetadata.h"
 #import "PPConstants.h"
 #import "PPTheme.h"
 #import "PPPinboardMetadataCache.h"

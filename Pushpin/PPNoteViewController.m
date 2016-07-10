@@ -6,12 +6,10 @@
 //
 //
 
-#import "PPNoteViewController.h"
-
 @import LHSCategoryCollection;
+@import ASPinboard;
 
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-#import <ASPinboard/ASPinboard.h>
+#import "PPNoteViewController.h"
 
 @implementation PPNoteViewController
 

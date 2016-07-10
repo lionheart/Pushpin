@@ -7,14 +7,13 @@
 //
 
 @import QuartzCore;
+@import MWFeedParser;
+@import LHSCategoryCollection;
 
 #import "PPBadgeWrapperView.h"
 #import "PPBadgeView.h"
 #import "PPTheme.h"
 #import "PPConstants.h"
-
-#import <MWFeedParser/NSString+HTML.h>
-#import <LHSCategoryCollection/UIView+LHSAdditions.h>
 
 @implementation PPBadgeView
 

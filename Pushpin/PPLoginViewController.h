@@ -6,9 +6,8 @@
 //  Copyright (c) 2015 Lionheart Software. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
-#import <LHSKeyboardAdjusting/LHSKeyboardAdjusting.h>
+@import UIKit;
+@import LHSKeyboardAdjusting;
 
 #warning Rename these typedefs! Best to use Xcode's refactor / rename tool.
 

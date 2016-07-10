@@ -23,8 +23,6 @@ typedef enum PPProviders : NSInteger {
     PPProviderDelicious
 } PPProviderType;
 
-
-
 static NSString *PPTwitterUsername = @"Pushpin_app";
 
 typedef enum : NSInteger {

@@ -6,8 +6,9 @@
 //  Copyright (c) 2014 Lionheart Software. All rights reserved.
 //
 
+@import LHSCategoryCollection;
+
 #import "PPShrinkBackAnimator.h"
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 static CGFloat kPPShrinkBackAnimationDuration = 0.6;
 

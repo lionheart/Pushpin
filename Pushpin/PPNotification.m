@@ -6,10 +6,9 @@
 //
 //
 
-#import "PPNotification.h"
-
 @import LHSCategoryCollection;
 
+#import "PPNotification.h"
 #import "PPTheme.h"
 
 static NSInteger kPPNotificationPadding = 16;

@@ -6,14 +6,12 @@
 //
 //
 
+@import LHSCategoryCollection;
+@import Social;
+@import Accounts;
+
 #import "PPTwitter.h"
 #import "PPAppDelegate.h"
-#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
-
-#import <Accounts/Accounts.h>
-#import <Social/Social.h>
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-#import <LHSCategoryCollection/UIViewController+LHSAdditions.h>
 
 @interface PPTwitter ()
 

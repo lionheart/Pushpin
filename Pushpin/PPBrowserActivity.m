@@ -6,9 +6,10 @@
 //
 //
 
+@import OpenInChrome;
+
 #import "PPBrowserActivity.h"
 #import "NSString+URLEncoding2.h"
-#import <OpenInChrome/OpenInChromeController.h>
 
 @interface PPBrowserActivity ()
 

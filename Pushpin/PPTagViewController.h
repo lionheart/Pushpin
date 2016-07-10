@@ -7,7 +7,8 @@
 //
 
 @import UIKit;
-#import "FMDatabase.h"
+@import FMDB;
+
 #import "PPTableViewController.h"
 
 @interface PPTagViewController : PPTableViewController <UISearchControllerDelegate, UISearchBarDelegate, UISearchResultsUpdating>
