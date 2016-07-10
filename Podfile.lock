@@ -49,7 +49,6 @@ PODS:
   - OpenInChrome (0.0.1)
   - Reachability (3.2)
   - RNCryptor (4.0.0)
-  - TextExpander (3.0.5)
   - TTTAttributedLabel (1.13.0)
   - uservoice-iphone-sdk (3.2.3)
   - YHRoundBorderedButton (0.1.0)
@@ -72,7 +71,6 @@ DEPENDENCIES:
   - OpenInChrome (= 0.0.1)
   - Reachability (= 3.2)
   - RNCryptor (~> 4.0)
-  - TextExpander (= 3.0.5)
   - TTTAttributedLabel (= 1.13.0)
   - uservoice-iphone-sdk (= 3.2.3)
   - YHRoundBorderedButton (= 0.1.0)
@@ -100,11 +98,10 @@ SPEC CHECKSUMS:
   OpenInChrome: f1f3f9dec682216fe78a0d7fe0b5b263d6312c32
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   RNCryptor: 59d6483908115af5c12b884db23392024e52a5fe
-  TextExpander: 47f9792473ee583b519caf201f5896b5ffb7cdfb
   TTTAttributedLabel: 8aeaf67481bb38970711e2641211cba912bd5239
   uservoice-iphone-sdk: 349d9ef36d3c43939d28390b9e86bb32b65fe983
   YHRoundBorderedButton: 2180f04094db264cace8db88eae977d78a3b4633
 
-PODFILE CHECKSUM: 75d53192c8e87e5dfff29893d3e6343c093166c2
+PODFILE CHECKSUM: ae35201f156c91f85614c35ceef4e57ae8766ed9
 
 COCOAPODS: 1.0.1

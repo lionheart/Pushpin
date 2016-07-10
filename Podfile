@@ -17,7 +17,6 @@ target 'PushpinFramework' do
   pod 'LHSFMDatabaseAdditions', '0.0.3'
   pod 'LHSTableViewCells'
   pod 'BRYHTMLParser'
-  pod 'TextExpander', '3.0.5'
   pod 'MWFeedParser', '1.0.1'
   pod 'ASPinboard', :path => 'Vendor/ASPinboard'
   pod 'HTMLParser'
@@ -28,6 +27,14 @@ target 'PushpinFramework' do
   pod '1PasswordExtension', '~> 1.8'
   pod 'YHRoundBorderedButton', '0.1.0'
   pod 'ChimpKit'
+
+  target 'Bookmark Extension' do
+    inherit! :search_paths
+  end
+
+  target 'Read Later Extension' do
+    inherit! :search_paths
+  end
 end
 
 post_install do |installer|
