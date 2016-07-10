@@ -6,6 +6,9 @@
 //  Copyright (c) 2014 Lionheart Software. All rights reserved.
 //
 
+@import LHSTableViewCells;
+@import LHSCategoryCollection;
+
 #import "PPAppDelegate.h"
 #import "PPOfflineSettingsViewController.h"
 #import "PPOfflineDownloadViewController.h"
@@ -13,9 +16,7 @@
 #import "PPNavigationController.h"
 #import "PPPinboardDataSource.h"
 #import "PPPinboardMetadataCache.h"
-
-#import <LHSTableViewCells/LHSTableViewCellValue1.h>
-#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
+#import "PPSettings.h"
 
 static NSString *CellIdentifier = @"CellIdentifier";
 static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";

@@ -7,6 +7,9 @@
 //
 
 @import QuartzCore;
+@import LHSCategoryCollection;
+#import "FMDB.h"
+@import LHSTableViewCells;
 
 #import "PPAppDelegate.h"
 #import "PPDisplaySettingsViewController.h"
@@ -16,26 +19,13 @@
 #import "PPSettings.h"
 #import "PPPinboardMetadataCache.h"
 #import "LHSFontSelectionViewController.h"
-#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
-
-#import <FMDB/FMDatabase.h>
-#import <TextExpander/SMTEDelegateController.h>
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-#import <LHSTableViewCells/LHSTableViewCellValue1.h>
-#import <LHSTableViewCells/LHSTableViewCellSubtitle.h>
-#import <LHSCategoryCollection/UIFont+LHSAdditions.h>
-#import <LHSCategoryCollection/UIView+LHSAdditions.h>
+#import "PPUtilities.h"
 
 static NSString *CellIdentifier = @"Cell";
 static NSString *ChoiceCellIdentifier = @"ChoiceCell";
 static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 
 @interface PPDisplaySettingsViewController ()
-
-@property (nonatomic) NSUInteger TESnippetCount;
-@property (nonatomic) BOOL TEAvailable;
-
-@property (nonatomic, strong) UIAlertController *textExpanderAlert;
 
 @property (nonatomic, retain) UISwitch *privateByDefaultSwitch;
 @property (nonatomic, retain) UISwitch *readByDefaultSwitch;
@@ -49,7 +39,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 @property (nonatomic, retain) UISwitch *autoCapitalizationSwitch;
 @property (nonatomic, retain) UISwitch *onlyPromptToAddOnceSwitch;
 @property (nonatomic, retain) UISwitch *alwaysShowAlertSwitch;
-@property (nonatomic, retain) UISwitch *textExpanderSwitch;
 @property (nonatomic, retain) UISwitch *turnOffBookmarkPromptSwitch;
 
 @property (nonatomic, strong) UIAlertController *fontSizeAdjustmentActionSheet;
@@ -57,10 +46,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 - (void)privateByDefaultSwitchChangedValue:(id)sender;
 - (void)readByDefaultSwitchChangedValue:(id)sender;
 - (void)switchChangedValue:(id)sender;
-
-- (void)updateSnippetCounts;
-- (void)turnOnTextExpander;
-- (BOOL)textExpanderEnabled;
 
 @end
 
@@ -76,9 +61,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    self.TEAvailable = [SMTEDelegateController textExpanderTouchHasGetSnippetsCallbackURL];
-    
+
     PPTitleButton *titleView = [PPTitleButton button];
     [titleView setTitle:NSLocalizedString(@"Advanced Settings", nil) imageName:nil];
     self.navigationItem.titleView = titleView;
@@ -165,10 +148,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     self.alwaysShowAlertSwitch.on = settings.alwaysShowClipboardNotification;
     [self.alwaysShowAlertSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
     
-    self.textExpanderSwitch = [[UISwitch alloc] init];
-    self.textExpanderSwitch.on = [self textExpanderEnabled];
-    [self.textExpanderSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
-    
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
     [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:ChoiceCellIdentifier];
     [self.tableView registerClass:[LHSTableViewCellSubtitle class] forCellReuseIdentifier:SubtitleCellIdentifier];
@@ -178,30 +157,9 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     [super viewWillAppear:animated];
 
     [self.tableView reloadData];
-    [self updateSnippetCounts];
-}
-
-- (void)updateSnippetCounts {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSUInteger count = self.TESnippetCount;
-        [SMTEDelegateController expansionStatusForceLoad:NO
-                                            snippetCount:&count
-                                                loadDate:nil
-                                                   error:nil];
-
-        self.TESnippetCount = count;
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
-        });
-    });
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    if (self.TEAvailable) {
-        return 4;
-    }
-
     return 3;
 }
 
@@ -225,20 +183,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     return PPRowCountOtherSettings - 2;
                 }
             }
-
-        case PPSectionTextExpanderSettings: {
-            // TextExpander SDK
-            BOOL snippetsLoaded = [SMTEDelegateController expansionStatusForceLoad:NO
-                                                                      snippetCount:0
-                                                                          loadDate:nil
-                                                                             error:nil];
-            if (snippetsLoaded) {
-                return 2;
-            }
-            else {
-                return 1;
-            }
-        }
     }
 }
 
@@ -276,9 +220,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                 case PPOtherAlwaysShowAlert:
                     return 92;
             }
-            
-        case PPSectionTextExpanderSettings:
-            return 56;
     }
 }
 
@@ -514,44 +455,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     break;
             }
             break;
-
-        case PPSectionTextExpanderSettings: {
-            cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier
-                                                   forIndexPath:indexPath];
-            cell.textLabel.font = [PPTheme textLabelFont];
-            cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme fontName] size:13];
-            cell.detailTextLabel.textColor = [UIColor grayColor];
-
-            switch ((PPTextExpanderRowType)indexPath.row) {
-                case PPTextExpanderRowSwitch:
-                    cell.textLabel.text = NSLocalizedString(@"Enable TextExpander", nil);
-                    cell.detailTextLabel.text = nil;
-                    
-                    size = cell.frame.size;
-                    switchSize = self.textExpanderSwitch.frame.size;
-                    self.textExpanderSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-                    cell.accessoryView = self.textExpanderSwitch;
-                    break;
-
-                case PPTextExpanderRowUpdate:
-                    cell.textLabel.text = NSLocalizedString(@"Update TextExpander Snippets", nil);
-                    
-                    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-                    formatter.dateStyle = NSDateFormatterShortStyle;
-                    
-                    if (self.TESnippetCount == 1) {
-                        cell.detailTextLabel.text = NSLocalizedString(@"1 snippet", nil);
-                    }
-                    else {
-                        cell.detailTextLabel.text = [NSString stringWithFormat:@"%ld snippets", (long)self.TESnippetCount];
-                    }
-                    
-                    cell.accessoryType = UITableViewCellAccessoryNone;
-                    cell.accessoryView = nil;
-                    break;
-            }
-            break;
-        }
     }
     
     return cell;
@@ -592,26 +495,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                 }
             }
             break;
-
-        case PPSectionTextExpanderSettings: {
-            switch ((PPTextExpanderRowType)indexPath.row) {
-                case PPTextExpanderRowSwitch:
-                    break;
-
-                case PPTextExpanderRowUpdate: {
-                    [self turnOnTextExpander];
-
-                    double delayInSeconds = 2.0;
-                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-                    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                        [self updateSnippetCounts];
-                    });
-                    break;
-                }
-            }
-
-            break;
-        }
             
         case PPSectionOtherDisplaySettings: {
             switch ((PPOtherDisplaySettingsRowType)indexPath.row) {
@@ -663,9 +546,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             
         case PPSectionOtherDisplaySettings:
             return NSLocalizedString(@"Clipboard URL detection", nil);
-            
-        case PPSectionTextExpanderSettings:
-            return nil;
     }
 }
 
@@ -678,9 +558,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             return NSLocalizedString(@"The selected default feed will be shown immediately after starting the app.", nil);
             
         case PPSectionOtherDisplaySettings:
-            return nil;
-            
-        case PPSectionTextExpanderSettings:
             return nil;
     }
 }
@@ -780,50 +657,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     if (sender == self.compressPostsSwitch) {
         [[NSNotificationCenter defaultCenter] postNotificationName:PPBookmarkCompressSettingUpdate object:nil];
     }
-    else if (sender == self.textExpanderSwitch) {
-        if (self.textExpanderSwitch.on) {
-            // Sync snippets.
-            self.textExpanderAlert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Enable TextExpander", nil)
-                                                                       message:NSLocalizedString(@"To enable TextExpander in Pushpin, you'll be redirected to the TextExpander app.", nil)];
-            
-            [self.textExpanderAlert lhs_addActionWithTitle:NSLocalizedString(@"Continue", nil)
-                                                     style:UIAlertActionStyleDefault
-                                                   handler:^(UIAlertAction *action) {
-                                                       [self turnOnTextExpander];
-                                                       double delayInSeconds = 2.0;
-                                                       dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-                                                       dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                                                           [self updateSnippetCounts];
-                                                           
-                                                           [self.tableView beginUpdates];
-                                                           [self.tableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPTextExpanderRowUpdate inSection:PPSectionTextExpanderSettings]]
-                                                                                 withRowAnimation:UITableViewRowAnimationFade];
-                                                           [self.tableView endUpdates];
-                                                       });
-                                                   }];
-            
-            [self.textExpanderAlert lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
-                                                     style:UIAlertActionStyleCancel
-                                                   handler:^(UIAlertAction *action) {
-                                                       // Switch the switch back to the off position.
-                                                       [self.textExpanderSwitch setOn:NO animated:YES];
-                                                   }];
-
-            [self presentViewController:self.textExpanderAlert animated:YES completion:nil];
-        }
-        else {
-            // Turn off TextExpander and clear all snippets
-            [SMTEDelegateController setExpansionEnabled:NO];
-            [SMTEDelegateController clearSharedSnippets];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.tableView beginUpdates];
-                [self.tableView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPTextExpanderRowUpdate inSection:PPSectionTextExpanderSettings]]
-                                      withRowAnimation:UITableViewRowAnimationFade];
-                [self.tableView endUpdates];
-            });
-        }
-    }
     else {
         [[NSNotificationCenter defaultCenter] postNotificationName:PPBookmarkDisplaySettingUpdated object:nil];
     }
@@ -835,22 +668,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 
 - (void)readByDefaultSwitchChangedValue:(id)sender {
     [[PPSettings sharedSettings] setReadByDefault:self.readByDefaultSwitch.on];
-}
-
-- (BOOL)textExpanderEnabled {
-    return [SMTEDelegateController expansionStatusForceLoad:NO
-                                               snippetCount:0
-                                                   loadDate:nil
-                                                      error:nil];
-}
-
-- (void)turnOnTextExpander {
-    SMTEDelegateController *teDelegate = [PPAppDelegate sharedDelegate].textExpander;
-    
-
-    teDelegate.getSnippetsScheme = @"pushpin";
-    teDelegate.clientAppName = @"Pushpin";
-    [teDelegate getSnippets];
 }
 
 #pragma mark - LHSFontSelecting

@@ -9,6 +9,10 @@
 @import QuartzCore;
 @import CoreMotion;
 @import Mixpanel;
+@import ASPinboard;
+@import LHSCategoryCollection;
+@import Reachability;
+@import LHSTableViewCells;
 
 #import "PPFeedListViewController.h"
 #import "PPAppDelegate.h"
@@ -27,15 +31,7 @@
 #import "PPSearchViewController.h"
 #import "PPSettings.h"
 #import "PPShrinkBackTransition.h"
-#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
-
-#import <ASPinboard/ASPinboard.h>
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-#import <LHSCategoryCollection/UIImage+LHSAdditions.h>
-#import <LHSCategoryCollection/UIView+LHSAdditions.h>
-#import <Reachability/Reachability.h>
-#import <LHSTableViewCells/LHSTableViewCellValue1.h>
-#import <LHSTableViewCells/LHSTableViewCellSubtitle.h>
+#import "PPUtilities.h"
 
 static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
@@ -995,10 +991,12 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     [self.navigationController.navigationBar setBarTintColor:[[(PPGenericPostViewController *)viewControllerToPush postDataSource] barTintColor]];
                 }
             }
-            
-            UIPopoverController *popover = [PPAppDelegate sharedDelegate].feedListViewController.popover;
+
+#warning MARK: TODO
+            PPFeedListViewController *feedListViewController = [PPAppDelegate sharedDelegate].feedListViewController;
+            UIPopoverPresentationController *popover = feedListViewController.popoverPresentationController;
             if (popover) {
-                [popover dismissPopoverAnimated:YES];
+                [feedListViewController dismissViewControllerAnimated:true completion:nil];
             }
         }
         else {

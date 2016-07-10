@@ -6,14 +6,15 @@
 //
 //
 
+#import "PPChangelogViewController.h"
+
 @import QuartzCore;
+@import LHSTableViewCells;
+@import LHSCategoryCollection;
 
 #import "PPAppDelegate.h"
-#import "PPChangelogViewController.h"
 #import "PPTheme.h"
 
-#import <LHSTableViewCells/LHSTableViewCellSubtitle.h>
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import "UITableView+Additions.h"
 
 static NSString *CellIdentifier = @"Cell";
@@ -43,11 +44,8 @@ static NSString *CellIdentifier = @"Cell";
     [super viewDidLoad];
     
     self.heights = [NSMutableArray array];
-    
-    
-#ifdef PINBOARD
+
     NSString* plistPath = [[NSBundle mainBundle] pathForResource:@"Changelog" ofType:@"plist"];
-#endif 
 
     self.data = [NSArray arrayWithContentsOfFile:plistPath];
     self.title = NSLocalizedString(@"Changelog", nil);

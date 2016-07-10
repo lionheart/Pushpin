@@ -17,7 +17,6 @@
 @interface PPEditDescriptionViewController ()
 
 @property (nonatomic, strong) NSLayoutConstraint *bottomConstraint;
-@property (nonatomic) BOOL textExpanderEnabled;
 
 - (void)fixTextView:(UITextView *)textView;
 
@@ -46,20 +45,7 @@
         self.textView.spellCheckingType = UITextSpellCheckingTypeDefault;
         self.textView.font = font;
         self.textView.text = description;
-
-        // TextExpander SDK
-        self.textExpanderEnabled = [SMTEDelegateController expansionStatusForceLoad:NO
-                                                                       snippetCount:0
-                                                                           loadDate:nil
-                                                                              error:nil];
-        if (self.textExpanderEnabled) {
-            self.textExpander = [[SMTEDelegateController alloc] init];
-            self.textExpander.nextDelegate = self;
-            self.textView.delegate = self.textExpander;
-        }
-        else {
-            self.textView.delegate = self;
-        }
+        self.textView.delegate = self;
         
         [self.view addSubview:self.textView];
         
@@ -111,18 +97,7 @@
     [textView.textStorage edited:NSTextStorageEditedCharacters range:NSMakeRange(0, textView.textStorage.length) changeInLength:0];
 }
 
-- (void)textViewDidChange:(UITextView *)textView {
-    if (self.textExpanderEnabled && self.textExpanderSnippetExpanded) {
-        [self performSelector:@selector(fixTextView:) withObject:textView afterDelay:0.01];
-        self.textExpanderSnippetExpanded = NO;
-    }
-}
-
 - (BOOL)textView:(UITextView *)aTextView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-    if (self.textExpanderEnabled && self.textExpander.isAttemptingToExpandText) {
-        self.textExpanderSnippetExpanded = YES;
-    }
-
     return YES;
 }
 

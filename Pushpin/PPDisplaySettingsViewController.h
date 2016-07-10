@@ -14,8 +14,7 @@ typedef NS_ENUM(NSInteger, PPDisplaySettingsSectionType) {
     PPSectionBrowseSettings,
     
     // Where we put the clear cache button.
-    PPSectionOtherDisplaySettings,
-    PPSectionTextExpanderSettings
+    PPSectionOtherDisplaySettings
 };
 
 typedef NS_ENUM(NSInteger, PPEditSettingsRowType) {

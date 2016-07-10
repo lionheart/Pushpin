@@ -8,7 +8,7 @@
 
 #import "PPSettings.h"
 
-#import <KeychainItemWrapper/KeychainItemWrapper.h>
+@import KeychainItemWrapper;
 
 @interface PPSettings ()
 
@@ -51,8 +51,6 @@
 @synthesize downloadFullWebpageForOfflineCache = _downloadFullWebpageForOfflineCache;
 @synthesize turnOffBookmarkPrompt = _turnOffBookmarkPrompt;
 @synthesize turnOffPushpinCloudPrompt = _turnOffPushpinCloudPrompt;
-
-
 @synthesize communityFeedOrder = _communityFeedOrder;
 
 + (instancetype)sharedSettings {

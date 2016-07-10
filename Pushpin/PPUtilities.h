@@ -6,10 +6,9 @@
 //
 //
 
-#import <Foundation/Foundation.h>
-
 #import "PPConstants.h"
-#import <FMDB/FMDB.h>
+
+@import Foundation;
 
 @interface PPUtilities : NSObject
 

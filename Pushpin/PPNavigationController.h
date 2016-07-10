@@ -7,7 +7,6 @@
 //
 
 @import UIKit;
-#import "PPAppDelegate.h"
 
 @interface PPNavigationController : UINavigationController <UINavigationControllerDelegate, UIGestureRecognizerDelegate>
 

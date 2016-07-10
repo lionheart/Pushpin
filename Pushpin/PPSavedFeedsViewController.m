@@ -7,6 +7,7 @@
 //
 
 @import QuartzCore;
+#import "FMDB.h"
 
 #import "PPSavedFeedsViewController.h"
 #import "PPAppDelegate.h"
@@ -15,8 +16,7 @@
 #import "PPAddSavedFeedViewController.h"
 #import "PPTheme.h"
 #import "PPNavigationController.h"
-
-#import <FMDB/FMDatabase.h>
+#import "PPUtilities.h"
 
 static NSString *CellIdentifier = @"Cell";
 

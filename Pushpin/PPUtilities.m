@@ -6,17 +6,14 @@
 //
 //
 
-@import FMDB;
+#import "FMDB.h"
+@import SafariServices;
+@import LHSCategoryCollection;
+@import MWFeedParser;
+@import BRYHTMLParser;
 
 #import "PPUtilities.h"
-
-#import <SafariServices/SafariServices.h>
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-#import <MWFeedParser/NSString+HTML.h>
-#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
-#import <LHSCategoryCollection/UIViewController+LHSAdditions.h>
-
-@import BRYHTMLParser;
+#import "PPSettings.h"
 
 @implementation PPUtilities
 

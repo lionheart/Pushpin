@@ -7,15 +7,16 @@
 //
 
 #import "PostMetadata.h"
+
+@import TTTAttributedLabel;
+@import LHSCategoryCollection;
+
 #import "PPConstants.h"
 #import "PPTheme.h"
 #import "PPPinboardMetadataCache.h"
 #import "PPBadgeWrapperView.h"
 #import "PPBookmarkCell.h"
 #import "PPSettings.h"
-
-#import <TTTAttributedLabel/TTTAttributedLabel.h>
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 @interface PostMetadata ()
 

@@ -7,13 +7,18 @@
 //
 
 #import "PPNavigationController.h"
+
+#import "FMDB.h"
+@import LHSCategoryCollection;
+
 #import "PPNavigationBar.h"
+
+#if !APP_EXTENSION_SAFE
 #import "PPAboutViewController.h"
 #import "PPChangelogViewController.h"
-#import "PPAddBookmarkViewController.h"
+#endif
 
-#import <FMDB/FMDatabase.h>
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
+#import "PPAddBookmarkViewController.h"
 
 @interface PPNavigationController ()
 
@@ -81,7 +86,8 @@
     return self.visibleViewController;
 }
 
-- (NSUInteger)supportedInterfaceOrientations {
+- (NSUInteger)supportedInterfaceOrientation {
+#if !APP_EXTENSION_SAFE
     if ([[self.topViewController class] isSubclassOfClass:[PPAboutViewController class]]) {
         return UIInterfaceOrientationMaskPortrait;
     }
@@ -89,6 +95,7 @@
     if ([[self.topViewController class] isSubclassOfClass:[PPChangelogViewController class]]) {
         return UIInterfaceOrientationMaskPortrait;
     }
+#endif
 
     return UIInterfaceOrientationMaskLandscape | UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown;
 }

@@ -73,7 +73,6 @@ typedef enum BookmarkSections {
 - (void)togglePrivate:(id)sender;
 - (void)toggleRead:(id)sender;
 - (void)addBookmark;
-- (void)close;
 - (void)gestureDetected:(UISwipeGestureRecognizer *)gestureRecognizer;
 - (void)configureWithBookmark:(NSDictionary *)bookmark
                        update:(NSNumber *)isUpdate

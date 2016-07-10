@@ -6,7 +6,8 @@
 //  Copyright (c) 2014 Lionheart Software. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+@import Foundation;
+#import "FMDB.h"
 
 @interface PPURLCache : NSURLCache <NSURLSessionDelegate, NSURLSessionDownloadDelegate, NSURLSessionTaskDelegate, NSURLSessionDataDelegate>
 

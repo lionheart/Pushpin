@@ -6,6 +6,8 @@
 //
 //
 
+@import FMDB;
+
 #import "PPPinboardFeedDataSource.h"
 #import "PPAppDelegate.h"
 #import "PPAddBookmarkViewController.h"

@@ -3,41 +3,41 @@
 //  Pinboard for iPhone
 //
 //  Created by Dan Loewenherz on 5/28/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Lionheart Software LLC. All rights reserved.
 //
+
+#import "PPAppDelegate.h"
 
 @import QuartzCore;
 @import CoreSpotlight;
 @import Mixpanel;
+@import ASPinboard;
+@import Reachability;
+@import LHSCategoryCollection;
+@import OpenInChrome;
+@import ChimpKit;
+@import KeychainItemWrapper;
+@import FMDB;
 
-#import "PPAppDelegate.h"
 #import "PPLoginViewController.h"
 #import "PPGenericPostViewController.h"
 #import "PPPinboardDataSource.h"
 #import "PPNotification.h"
-#import "PPFeedListViewController.h"
 #import "PPAddBookmarkViewController.h"
 #import "PPWebViewController.h"
 #import "PPPinboardFeedDataSource.h"
-#import "PPNavigationController.h"
 #import "PPTheme.h"
 #import "PPTitleButton.h"
-#import "PPSplitViewController.h"
 #import "PPStatusBar.h"
 #import "PPSettings.h"
 #import "PPCachingURLProtocol.h"
 #import "PPURLCache.h"
+#import "PPUtilities.h"
+#import "PPFeedListViewController.h"
+#import "PPNavigationController.h"
 
 #import "NSString+URLEncoding2.h"
-#import <ASPinboard/ASPinboard.h>
-#import <Reachability/Reachability.h>
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-#import <OpenInChrome/OpenInChromeController.h>
-#import <LHSCategoryCollection/UIViewController+LHSAdditions.h>
 #import "MFMailComposeViewController+Theme.h"
-#import <KeychainItemWrapper/KeychainItemWrapper.h>
-#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
-#import <ChimpKit/ChimpKit.h>
 
 @interface PPAppDelegate ()
 
@@ -125,21 +125,7 @@
         }
     };
 
-    if ([@"/TextExpanderSettings" isEqualToString:url.path]) {
-        NSError *error;
-        BOOL cancel;
-
-        if (![self.textExpander handleGetSnippetsURL:url error:&error cancelFlag:&cancel]) {
-            // User cancelled request.
-        }
-        else {
-            if (cancel) {
-                // User cancelled get snippets
-                return NO;
-            }
-        }
-    }
-    else if ([url.host isEqualToString:@"add"]) {
+    if ([url.host isEqualToString:@"add"]) {
         didLaunchWithURL = YES;
         [self showAddBookmarkViewControllerWithBookmark:[self parseQueryParameters:url.query]
                                                  update:@(NO)
@@ -254,38 +240,7 @@
     }
     else if ([url.host isEqualToString:@"x-callback-url"]) {
         didLaunchWithURL = YES;
-
-        // Sync TextExpander snippets
-        if ([url.path hasPrefix:@"/TextExpanderSettings"]) {
-            SMTEDelegateController *teDelegetController = [[SMTEDelegateController alloc] init];
-            BOOL cancel;
-            NSError *error;
-            BOOL response = [teDelegetController handleGetSnippetsURL:url
-                                                                error:&error
-                                                           cancelFlag:&cancel];
-
-            NSString *message;
-            if (error) {
-                message = @"TextExpander snippet sync failed.";
-            }
-            else if (cancel) {
-                message = @"TextExpander snippet sync cancelled.";
-            }
-            else {
-                message = @"TextExpander snippets successfully updated.";
-            }
-
-            UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:nil
-                                                                           message:message];
-
-            [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
-                                                      style:UIAlertActionStyleDefault
-                                                    handler:nil];
-            
-            [[UIViewController lhs_topViewController] presentViewController:alert animated:YES completion:nil];
-            return response;
-        }
-        else if ([url.path isEqualToString:@"/add"]) {
+        if ([url.path isEqualToString:@"/add"]) {
             NSMutableDictionary *queryParameters = [self parseQueryParameters:url.query];
             [self showAddBookmarkViewControllerWithBookmark:queryParameters update:@(NO) callback:^{
                 if (queryParameters[@"url"]) {
@@ -552,8 +507,6 @@
     PPSettings *settings = [PPSettings sharedSettings];
 
     if (!_navigationController) {
-        
-
         PPPinboardDataSource *pinboardDataSource = [[PPPinboardDataSource alloc] init];
         pinboardDataSource.limit = 100;
         pinboardDataSource.orderBy = @"created_at DESC";
@@ -730,7 +683,6 @@
     self.hideURLPrompt = NO;
     self.bookmarksUpdatedMessage = nil;
     self.addOrEditPromptVisible = NO;
-    self.textExpander = [[SMTEDelegateController alloc] init];
 
     [PPUtilities migrateDatabase];
 

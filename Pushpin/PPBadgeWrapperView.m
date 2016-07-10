@@ -7,10 +7,10 @@
 //
 
 #import "PPBadgeWrapperView.h"
-#import "PPConstants.h"
 
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-#import <LHSCategoryCollection/UIView+LHSAdditions.h>
+@import LHSCategoryCollection;
+
+#import "PPConstants.h"
 
 @implementation PPBadgeWrapperView
 

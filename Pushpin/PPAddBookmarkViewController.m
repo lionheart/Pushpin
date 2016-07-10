@@ -7,34 +7,36 @@
 //
 //
 
+#import "PPAddBookmarkViewController.h"
+
 @import QuartzCore;
 @import MobileCoreServices;
-@import Mixpanel;
+@import ASPinboard;
+@import LHSTableViewCells;
+@import LHSCategoryCollection;
+#import "FMDB.h"
 
-#import "PPAddBookmarkViewController.h"
-#import "FMDatabase.h"
-#import "FMDatabaseQueue.h"
-#import "NSString+URLEncoding2.h"
+#import "PPNotification.h"
+#import "PPUtilities.h"
 #import "PPNavigationController.h"
 #import "PPTheme.h"
 #import "PPBadgeWrapperView.h"
 #import "PPBadgeView.h"
-#import "UITableView+Additions.h"
 #import "PPTableViewTitleView.h"
 #import "PPEditDescriptionViewController.h"
 #import "PPShortcutEnabledDescriptionViewController.h"
 #import "PPPinboardDataSource.h"
 #import "PPConstants.h"
 #import "PPSettings.h"
-#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
+#if !APP_EXTENSION_SAFE
+#import "PPAppDelegate.h"
+#endif
 
-#import <ASPinboard/ASPinboard.h>
+#import <Mixpanel/Mixpanel.h>
 
-#import <LHSTableViewCells/LHSTableViewCellValue1.h>
-#import <LHSCategoryCollection/UIImage+LHSAdditions.h>
-#import <LHSCategoryCollection/UIView+LHSAdditions.h>
+#import "NSString+URLEncoding2.h"
+#import "UITableView+Additions.h"
 
 static NSString *CellIdentifier = @"CellIdentifier";
 
@@ -82,7 +84,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (NSArray *)indexPathsForPopularAndSuggestedRows;
 - (NSArray *)indexPathsForAutocompletedRows;
-- (NSArray *)indexPathsForExistingRows;
 - (NSArray *)indexPathsForArray:(NSArray *)array offset:(NSInteger)offset;
 
 - (NSArray *)filteredPopularAndRecommendedTags;
@@ -1054,17 +1055,18 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)prefillTitleAndForceUpdate:(BOOL)forceUpdate {
     NSURL *url = [NSURL URLWithString:self.urlTextField.text];
     self.previousURLContents = self.urlTextField.text;
-    
+
     BOOL shouldPrefillDescription = [self.descriptionTextLabel.text isEqualToString:NSLocalizedString(@"Tap to add a description.", nil)];
     BOOL shouldPrefillTitle = !self.loadingTitle
     && (forceUpdate || self.titleTextField == nil || [self.titleTextField.text isEqualToString:@""])
+#if !APP_EXTENSION_SAFE
     && [[UIApplication sharedApplication] canOpenURL:url]
+#endif
     && ([url.scheme isEqualToString:@"http"] || [url.scheme isEqualToString:@"https"]);
     if (shouldPrefillTitle) {
         [self.urlTextField resignFirstResponder];
         self.loadingTitle = YES;
-        
-        
+
         NSMutableArray *indexPaths = [[NSMutableArray alloc] initWithArray:@[[NSIndexPath indexPathForRow:0 inSection:0]]];
         if (shouldPrefillDescription) {
             [indexPaths addObject:[NSIndexPath indexPathForRow:1 inSection:0]];
@@ -1092,12 +1094,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)addBookmark {
     dispatch_async(dispatch_get_main_queue(), ^{
+#if !APP_EXTENSION_SAFE
         if (![[PPAppDelegate sharedDelegate] connectionAvailable]) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [PPNotification notifyWithMessage:NSLocalizedString(@"Unable to add bookmark; no connection available.", nil)];
                 [self.parentViewController dismissViewControllerAnimated:YES completion:nil];
             });
         }
+#endif
         
         if ([self.urlTextField.text isEqualToString:@""] || [self.titleTextField.text isEqualToString:@""]) {
             UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Uh oh.", nil)
@@ -1854,7 +1858,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
     NSURL *url = [NSURL URLWithString:self.bookmarkData[@"url"]];
     BOOL shouldPrefillTags = !self.loadingTags
         && (self.unfilteredPopularTags.count == 0 && self.unfilteredRecommendedTags.count == 0)
+#if !APP_EXTENSION_SAFE
         && [[UIApplication sharedApplication] canOpenURL:url]
+#endif
         && ([url.scheme isEqualToString:@"http"] || [url.scheme isEqualToString:@"https"]);
     if (shouldPrefillTags) {
         self.loadingTags = YES;

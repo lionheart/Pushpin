@@ -15,9 +15,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3790424519CBD49A00409D34"
-               BuildableName = "Pushpin.appex"
-               BlueprintName = "Bookmark Extension"
+               BlueprintIdentifier = "37BC1DE01D32861A00AC4607"
+               BuildableName = "BookmarkExtension.appex"
+               BlueprintName = "BookmarkExtension"
                ReferencedContainer = "container:Pushpin.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -52,9 +52,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3790424519CBD49A00409D34"
-            BuildableName = "Pushpin.appex"
-            BlueprintName = "Bookmark Extension"
+            BlueprintIdentifier = "37BC1DE01D32861A00AC4607"
+            BuildableName = "BookmarkExtension.appex"
+            BlueprintName = "BookmarkExtension"
             ReferencedContainer = "container:Pushpin.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -100,6 +100,15 @@
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES"
       launchAutomaticallySubstyle = "2">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "37BC1DE01D32861A00AC4607"
+            BuildableName = "BookmarkExtension.appex"
+            BlueprintName = "BookmarkExtension"
+            ReferencedContainer = "container:Pushpin.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Pinboard Debug">

@@ -4,28 +4,35 @@
 
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
-    "130FD3C47D2A93A5E97A58123B57C5301A9BE388" : 0,
+    "E4BA76B4EFA38220802589A8E9F0459552B7A552" : 0,
     "4E6E450F604063387457184D53D2497C56CE77E7" : 0,
-    "E6859DA0812311656A43A32F3151A87A21D7B5A4" : 0,
-    "9EE95AE564A8FA1EB03FB1B2D3BCDFB5090990E4" : 0,
-    "CA1D079377A2BD66346D3AB72C980A5DB6CE1C06" : 0
+    "04101981B66E318109934C9516F88D824BB96459" : 0,
+    "35FE44AA977402958F5B092E8C51FB3CE5832197" : 0,
+    "CA1D079377A2BD66346D3AB72C980A5DB6CE1C06" : 0,
+    "9EE95AE564A8FA1EB03FB1B2D3BCDFB5090990E4" : 0
   },
-  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "D94E718E-6AE2-4F32-83F2-DF116038316F",
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "728197E1-5816-43A9-8C2C-58B26A56D495",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
-    "130FD3C47D2A93A5E97A58123B57C5301A9BE388" : "Pushpin\/Vendor\/LHSDiigo\/",
+    "E4BA76B4EFA38220802589A8E9F0459552B7A552" : "LHSKeyboardAdjusting\/",
     "4E6E450F604063387457184D53D2497C56CE77E7" : "Pushpin\/Vendor\/ASPinboard\/",
-    "E6859DA0812311656A43A32F3151A87A21D7B5A4" : "Pushpin\/Vendor\/LHSDelicious\/",
-    "9EE95AE564A8FA1EB03FB1B2D3BCDFB5090990E4" : "Pushpin\/Localizations\/",
-    "CA1D079377A2BD66346D3AB72C980A5DB6CE1C06" : "Pushpin\/"
+    "04101981B66E318109934C9516F88D824BB96459" : "Pushpin\/Vendor\/fmdb\/",
+    "35FE44AA977402958F5B092E8C51FB3CE5832197" : "LHSCategoryCollection\/",
+    "CA1D079377A2BD66346D3AB72C980A5DB6CE1C06" : "Pushpin\/",
+    "9EE95AE564A8FA1EB03FB1B2D3BCDFB5090990E4" : "Pushpin\/Localizations\/"
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "Pushpin",
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,
   "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Pushpin.xcworkspace",
   "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
     {
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:lionheart\/LHSDiigo",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:ccgus\/fmdb.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "130FD3C47D2A93A5E97A58123B57C5301A9BE388"
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "04101981B66E318109934C9516F88D824BB96459"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:lionheart\/LHSCategoryCollection",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "35FE44AA977402958F5B092E8C51FB3CE5832197"
     },
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:lionheart\/ASPinboard.git",
@@ -38,14 +45,14 @@
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "9EE95AE564A8FA1EB03FB1B2D3BCDFB5090990E4"
     },
     {
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "lionheart:Pushpin",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:lionheart\/Pushpin-Issues.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "CA1D079377A2BD66346D3AB72C980A5DB6CE1C06"
     },
     {
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:lionheart\/LHSDelicious",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:lionheart\/LHSKeyboardAdjusting",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "E6859DA0812311656A43A32F3151A87A21D7B5A4"
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "E4BA76B4EFA38220802589A8E9F0459552B7A552"
     }
   ]
 }

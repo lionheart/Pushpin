@@ -3,7 +3,7 @@
 //  Pinboard for iPhone
 //
 //  Created by Dan Loewenherz on 5/28/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Lionheart Software LLC. All rights reserved.
 //
 
 @import UIKit;
@@ -12,12 +12,10 @@
 #import "PPPinboardLoginViewController.h"
 #import "PPConstants.h"
 #import "PPURLCache.h"
+#import "PPSplitViewController.h"
 
-#import <TextExpander/SMTEDelegateController.h>
-
-@class PPNavigationController;
-@class PPSplitViewController;
 @class PPFeedListViewController;
+@class PPNavigationController;
 
 @interface PPAppDelegate : UIResponder <UIApplicationDelegate,  UISplitViewControllerDelegate, MFMailComposeViewControllerDelegate> {
     BOOL didLaunchWithURL;
@@ -45,8 +43,6 @@
 @property (nonatomic, strong) PPNavigationController *navigationController;
 @property (nonatomic, strong) PPSplitViewController *splitViewController;
 @property (nonatomic, strong) PPFeedListViewController *feedListViewController;
-
-@property (nonatomic, strong) SMTEDelegateController *textExpander;
 
 - (NSMutableDictionary *)parseQueryParameters:(NSString *)query;
 

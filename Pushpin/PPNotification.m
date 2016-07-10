@@ -6,11 +6,11 @@
 //
 //
 
-#import "PPAppDelegate.h"
 #import "PPNotification.h"
-#import "PPTheme.h"
 
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
+@import LHSCategoryCollection;
+
+#import "PPTheme.h"
 
 static NSInteger kPPNotificationPadding = 16;
 static BOOL kPPNotificationIsVisible = NO;
@@ -43,8 +43,10 @@ static PPNotification *shared;
         if (!userInfo) {
             notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
         }
-        
+
+#if !APP_EXTENSION_SAFE
         [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
+#endif
     });
 }
 

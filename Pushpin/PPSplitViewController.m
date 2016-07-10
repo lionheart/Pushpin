@@ -7,10 +7,12 @@
 //
 
 #import "PPSplitViewController.h"
+
+@import LHSCategoryCollection;
+
 #import "PPNavigationController.h"
 #import "PPAddBookmarkViewController.h"
-
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
+#import "PPAppDelegate.h"
 
 @interface PPSplitViewController ()
 

@@ -6,21 +6,19 @@
 //
 //
 
+@import LHSCategoryCollection;
+@import ASPinboard;
+#import "FMDB.h"
+@import LHSKeyboardAdjusting;
+@import LHSTableViewCells;
+
 #import "PPAppDelegate.h"
 #import "PPTagEditViewController.h"
 #import "PPTableViewTitleView.h"
 #import "PPBadgeWrapperView.h"
 #import "PPTheme.h"
 #import "PPSettings.h"
-#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
-
-#import <FMDB/FMDatabase.h>
-#import <ASPinboard/ASPinboard.h>
-#import <LHSCategoryCollection/UIView+LHSAdditions.h>
-#import <LHSCategoryCollection/UIImage+LHSAdditions.h>
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-#import <LHSKeyboardAdjusting/UIViewController+LHSKeyboardAdjustment.h>
-#import <LHSTableViewCells/LHSTableViewCellValue1.h>
+#import "PPUtilities.h"
 
 static NSString *CellIdentifier = @"CellIdentifier";
 

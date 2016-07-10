@@ -13,6 +13,7 @@
 #import "PPTableViewTitleView.h"
 #import "PPConstants.h"
 #import "PPSettings.h"
+#import "PPUtilities.h"
 
 #import <FMDB/FMDatabase.h>
 #import <LHSTableViewCells/LHSTableViewCellSubtitle.h>

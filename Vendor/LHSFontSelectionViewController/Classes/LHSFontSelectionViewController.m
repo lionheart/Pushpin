@@ -6,15 +6,15 @@
 //
 //
 
-#import "PPAppDelegate.h"
-#import "UIAlertController+LHSAdditions.h"
+@import LHSTableViewCells;
+@import LHSCategoryCollection;
+@import YHRoundBorderedButton;
 
+#import "PPAppDelegate.h"
+#import "PPSettings.h"
 #import "LHSFontSelectionViewController.h"
-#import <LHSTableViewCells/LHSTableViewCellValue1.h>
-#import <LHSCategoryCollection/UIFont+LHSAdditions.h>
-#import <YHRoundBorderedButton/YHRoundBorderedButton.h>
-#import <LHSCategoryCollection/UIView+LHSAdditions.h>
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
+
+#import "UIAlertController+LHSAdditions.h"
 
 static NSString *CellIdentifier = @"Cell";
 

@@ -8,6 +8,11 @@
 
 @import QuartzCore;
 @import Mixpanel;
+@import LHSCategoryCollection;
+#import "FMDB.h"
+@import ASPinboard;
+@import KeychainItemWrapper;
+@import LHSTableViewCells;
 
 #import "PPAppDelegate.h"
 #import "PPSettingsViewController.h"
@@ -25,15 +30,7 @@
 #import "PPSettings.h"
 #import "PPReaderSettingsViewController.h"
 #import "PPOfflineSettingsViewController.h"
-#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
-
-#import <ASPinboard/ASPinboard.h>
-#import <FMDB/FMDatabase.h>
-#import <KeychainItemWrapper/KeychainItemWrapper.h>
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-#import <LHSCategoryCollection/UIView+LHSAdditions.h>
-#import <LHSTableViewCells/LHSTableViewCellValue1.h>
-#import <LHSTableViewCells/LHSTableViewCellSubtitle.h>
+#import "PPUtilities.h"
 
 @import uservoice_iphone_sdk;
 @import OnePasswordExtension;
@@ -361,8 +358,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
         case PPSectionOtherSettings: {
             switch ((PPOtherSettingsRowType)indexPath.row) {
                 case PPOtherRatePushpin:
-                    
-
                     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=548052590&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software"]];
                     break;
                     

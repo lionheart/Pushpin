@@ -7,6 +7,10 @@
 //
 
 @import QuartzCore;
+@import ASPinboard;
+#import "FMDB.h"
+@import LHSCategoryCollection;
+@import LHSTableViewCells;
 
 #import "PPAppDelegate.h"
 #import "PPMultipleEditViewController.h"
@@ -14,13 +18,7 @@
 #import "PPTheme.h"
 #import "PPConstants.h"
 #import "PPTagEditViewController.h"
-#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
-
-#import <FMDB/FMDatabase.h>
-#import <LHSCategoryCollection/UIImage+LHSAdditions.h>
-#import <LHSCategoryCollection/UIView+LHSAdditions.h>
-#import <LHSTableViewCells/LHSTableViewCellValue1.h>
-#import <ASPinboard/ASPinboard.h>
+#import "PPUtilities.h"
 
 static NSInteger kMultipleEditViewControllerTagIndexOffset = 1;
 static NSString *CellIdentifier = @"Cell";

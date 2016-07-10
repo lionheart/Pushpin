@@ -11,11 +11,6 @@
 			<key>orderHint</key>
 			<integer>2</integer>
 		</dict>
-		<key>Pushpin for Delicious.xcscheme_^#shared#^_</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>1</integer>
-		</dict>
 		<key>Pushpin for Pinboard.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
@@ -31,7 +26,7 @@
 		<key>Read Later Extension.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>3</integer>
+			<integer>2</integer>
 		</dict>
 		<key>SQLite.xcscheme</key>
 		<dict>
@@ -41,7 +36,7 @@
 		<key>Share Extension.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>2</integer>
+			<integer>1</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
@@ -62,6 +57,16 @@
 			<true/>
 		</dict>
 		<key>372A9D9818B59E0800AABE53</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>37587B1B1D32B59F005665DC</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>37587B2E1D32B5B0005665DC</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -112,6 +117,21 @@
 			<true/>
 		</dict>
 		<key>379042BB19CC646900409D34</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>37BC1DE01D32861A00AC4607</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>37BC1DF41D32862F00AC4607</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>37D2DB5E1D32E9B500167322</key>
 		<dict>
 			<key>primary</key>
 			<true/>

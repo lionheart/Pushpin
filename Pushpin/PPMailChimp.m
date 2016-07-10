@@ -8,14 +8,10 @@
 
 #import "PPMailChimp.h"
 
-#import <ChimpKit/CKSubscribeAlertView.h>
-#import <ChimpKit/ChimpKit.h>
-#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
-#import <LHSCategoryCollection/UIViewController+LHSAdditions.h>
+@import ChimpKit;
+@import LHSCategoryCollection;
 
 @interface PPMailChimp ()
-
-- (void)showSubscribeError;
 
 @end
 

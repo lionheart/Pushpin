@@ -6,31 +6,35 @@
 //
 //
 
+#import "PPPinboardDataSource.h"
+
 @import CoreSpotlight;
 @import MobileCoreServices;
-@import Mixpanel;
+@import ASPinboard;
+@import MWFeedParser;
+@import FMDB;
+@import LHSCategoryCollection;
 
-#import "PPPinboardDataSource.h"
+#import "PPNotification.h"
 #import "PPAddBookmarkViewController.h"
 #import "PPTheme.h"
 #import "PPTitleButton.h"
-#import "PostMetadata.h"
 #import "PPSettings.h"
+
+#if !APP_EXTENSION_SAFE
 #import "PPGenericPostViewController.h"
+#endif
+
+#import "PPPinboardMetadataCache.h"
+#import "PPUtilities.h"
+#import "PPURLCache.h"
+#import "PostMetadata.h"
 
 #import "NSAttributedString+Attributes.h"
 #import "NSString+LHSAdditions.h"
 #import "NSString+Additions.h"
-#import "PPPinboardMetadataCache.h"
-#import "PPUtilities.h"
-#import "PPURLCache.h"
 
-#import <MWFeedParser/NSString+HTML.h>
-#import <FMDB/FMDatabase.h>
-#import <ASPinboard/ASPinboard.h>
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-#import <LHSCategoryCollection/UIViewController+LHSAdditions.h>
-#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
+#import <Mixpanel/Mixpanel.h>
 
 static BOOL kPinboardSyncInProgress = NO;
 
@@ -500,7 +504,7 @@ static BOOL kPinboardSyncInProgress = NO;
 
         [pinboard deleteBookmarkWithURL:post[@"url"] success:SuccessBlock failure:ErrorBlock];
     }
-    
+
     dispatch_group_notify(group, queue, ^{
         NSString *message;
         if ([posts count] == 1) {
@@ -540,6 +544,7 @@ static BOOL kPinboardSyncInProgress = NO;
     return [self editViewControllerForPostAtIndex:index callback:nil];
 }
 
+#if !APP_EXTENSION_SAFE
 - (void)handleTapOnLinkWithURL:(NSURL *)url callback:(void (^)(UIViewController *))callback {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         // All tags should be UTF8 encoded (stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding) before getting passed into the NSURL, so we decode them here
@@ -557,6 +562,7 @@ static BOOL kPinboardSyncInProgress = NO;
         }
     });
 }
+#endif
 
 - (NSAttributedString *)titleForPostAtIndex:(NSInteger)index {
     PostMetadata *metadata = self.metadata[index];

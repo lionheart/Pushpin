@@ -6,6 +6,11 @@
 //
 //
 
+@import LHSCategoryCollection;
+@import LHSKeyboardAdjusting;
+@import LHSTableViewCells;
+@import ASPinboard;
+
 #import "PPSearchViewController.h"
 #import "PPTheme.h"
 #import "PPSearchExamplesViewController.h"
@@ -15,19 +20,7 @@
 #import "PPAppDelegate.h"
 #import "PPFeedListViewController.h"
 #import "PPSettings.h"
-#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
-
-#import <LHSCategoryCollection/UIView+LHSAdditions.h>
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-#import <LHSCategoryCollection/UIImage+LHSAdditions.h>
-
-#import <LHSTableViewCells/LHSTableViewCellSubtitle.h>
-#import <LHSTableViewCells/LHSTableViewCellValue1.h>
-#import <LHSKeyboardAdjusting/UIViewController+LHSKeyboardAdjustment.h>
-
-#ifdef PINBOARD
-#import <ASPinboard/ASPinboard.h>
-#endif
+#import "PPUtilities.h"
 
 static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
 static NSString *CellIdentifier = @"CellIdentifier";

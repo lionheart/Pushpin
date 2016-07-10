@@ -7,10 +7,10 @@
 //
 
 @import Foundation;
+@import ASPinboard;
 
 #import "PPDataSource.h"
 #import "PPConstants.h"
-#import <ASPinboard/ASPinboard.h>
 
 static NSString *kPinboardDataSourceProgressNotification __unused = @"kPinboardDataSourceProgressNotification";
 static NSString *PinboardDataSourceErrorDomain __unused = @"PinboardDataSourceErrorDomain";

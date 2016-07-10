@@ -6,23 +6,22 @@
 //
 //
 
+#import "PPAboutViewController.h"
+
 @import QuartzCore;
 @import Accounts;
 @import Social;
 @import StoreKit;
 @import Mixpanel;
+@import LHSCategoryCollection;
+@import LHSTableViewCells;
 
-#import "PPAboutViewController.h"
 #import "PPChangelogViewController.h"
 #import "PPTheme.h"
 #import "PPTitleButton.h"
 #import "PPTheme.h"
 #import "PPPlainTextViewController.h"
 #import "PPTwitter.h"
-
-#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
-#import <LHSTableViewCells/LHSTableViewCellSubtitle.h>
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 static NSString *CellIdentifier = @"CellIdentifier";
 
@@ -43,7 +42,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     return UIStatusBarStyleLightContent;
 }
 
-- (NSUInteger)supportedInterfaceOrientations {
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
     return UIInterfaceOrientationMaskPortrait;
 }
 

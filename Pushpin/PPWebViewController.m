@@ -12,6 +12,11 @@
 @import Twitter;
 @import SafariServices;
 @import Mixpanel;
+@import LHSCategoryCollection;
+@import RNCryptor;
+#import "FMDB.h"
+@import JavaScriptCore;
+@import KeychainItemWrapper;
 
 #import "PPWebViewController.h"
 #import "PPAddBookmarkViewController.h"
@@ -22,19 +27,13 @@
 #import "PPUtilities.h"
 #import "PPMobilizerUtility.h"
 #import "PPSettings.h"
-#import "NSData+AES256.h"
-#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 #import "PPCachingURLProtocol.h"
 #import "PPPinboardDataSource.h"
+#import "PPNotification.h"
 
-#import <JavaScriptCore/JavaScriptCore.h>
+#import "NSData+AES256.h"
 #import "NSString+URLEncoding2.h"
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 #import "UIView+LHSAdditions.h"
-#import <FMDB/FMDatabase.h>
-#import <KeychainItemWrapper/KeychainItemWrapper.h>
-#import <LHSCategoryCollection/UIView+LHSAdditions.h>
-@import RNCryptor;
 
 #define HIDE_STATUS_BAR_WHILE_SCROLLING NO
 

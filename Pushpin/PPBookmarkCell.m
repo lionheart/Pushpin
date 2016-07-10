@@ -7,14 +7,14 @@
 //
 
 #import "PPBookmarkCell.h"
+
+@import TTTAttributedLabel;
+@import LHSCategoryCollection;
+
 #import "PPBadgeWrapperView.h"
 #import "PPTheme.h"
 #import "PPSettings.h"
 #import "PPDataSource.h"
-
-#import <TTTAttributedLabel/TTTAttributedLabel.h>
-#import <LHSCategoryCollection/UIView+LHSAdditions.h>
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
 
 static NSInteger kEditButtonInnerMargin = 15;
 static NSInteger kEditButtonOuterMargin = 20;

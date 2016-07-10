@@ -8,8 +8,9 @@
 
 #import "PPSearchExamplesViewController.h"
 #import "PPTheme.h"
+#import "PPNotification.h"
 
-#import <LHSTableViewCells/LHSTableViewCellValue1.h>
+@import LHSTableViewCells;
 
 static NSString *CellIdentifier = @"CellIdentifier";
 

@@ -36,7 +36,6 @@ typedef NS_ENUM(NSInteger, FeedListToolbarOrientationType) {
 @property (nonatomic) CGFloat rowHeight;
 
 - (void)dismissViewController;
-
 - (void)preferredContentSizeChanged:(NSNotification *)aNotification;
 
 @end

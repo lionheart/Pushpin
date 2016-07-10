@@ -7,11 +7,12 @@
 //
 
 #import "PPStatusBar.h"
+
+@import LHSCategoryCollection;
+
 #import "PPAddBookmarkViewController.h"
 #import "PPNavigationController.h"
-
-#import <LHSCategoryCollection/UIView+LHSAdditions.h>
-#import <LHSCategoryCollection/UIViewController+LHSAdditions.h>
+#import "PPAppDelegate.h"
 
 @interface PPStatusBar ()
 

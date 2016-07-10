@@ -8,6 +8,10 @@
 
 @import QuartzCore;
 @import Mixpanel;
+@import LHSCategoryCollection;
+@import ASPinboard;
+@import OnePasswordExtension;
+@import uservoice_iphone_sdk;
 
 #import "PPPinboardLoginViewController.h"
 #import "PPAppDelegate.h"
@@ -17,15 +21,7 @@
 #import "PPNavigationController.h"
 #import "PPTableViewTitleView.h"
 #import "PPSettings.h"
-
-#import <LHSCategoryCollection/UIView+LHSAdditions.h>
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
-#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
-#import <ASPinboard/ASPinboard.h>
-
-@import OnePasswordExtension;
-@import uservoice_iphone_sdk;
-
+#import "PPUtilities.h"
 
 @interface PPPinboardLoginViewController ()
 

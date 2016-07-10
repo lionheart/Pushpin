@@ -11,14 +11,13 @@
 #import "PPReaderSettingsViewController.h"
 #import "PPTitleButton.h"
 #import "PPTheme.h"
+#import "PPSettings.h"
 #import "PPWebViewController.h"
-#import "LHSFontSelectionViewController.h"
-#import <LHSCategoryCollection/UIAlertController+LHSAdditions.h>
 
-#import <LHSTableViewCells/LHSTableViewCellValue1.h>
-#import <LHSCategoryCollection/UIFont+LHSAdditions.h>
-#import <LHSCategoryCollection/UIView+LHSAdditions.h>
-#import <LHSCategoryCollection/UIApplication+LHSAdditions.h>
+#import "LHSFontSelectionViewController.h"
+
+@import LHSCategoryCollection;
+@import LHSTableViewCells;
 
 static NSString *CellIdentifier = @"Cell";
 
