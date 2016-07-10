@@ -370,8 +370,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				37BC1DFF1D32862F00AC4607 /* ReadLaterExtension.appex in Embed App Extensions */,
 				37BC1DEB1D32861A00AC4607 /* BookmarkExtension.appex in Embed App Extensions */,
+				37BC1DFF1D32862F00AC4607 /* ReadLaterExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -818,8 +818,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				37587B3D1D32B5C5005665DC /* SharedSafe.framework in Frameworks */,
 				6E09518D08F38F38289C9403 /* Pods_Shared.framework in Frameworks */,
+				37587B3D1D32B5C5005665DC /* SharedSafe.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -836,8 +836,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				37F95C3D1D32DF7F00422DD6 /* SharedSafe.framework in Frameworks */,
 				D584A85F7A1198D6E3F98A73 /* Pods_BookmarkExtension.framework in Frameworks */,
+				37F95C3D1D32DF7F00422DD6 /* SharedSafe.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -845,8 +845,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				37F95C3C1D32DEE400422DD6 /* SharedSafe.framework in Frameworks */,
 				15F29DE162BFFE2A1D52093A /* Pods_ReadLaterExtension.framework in Frameworks */,
+				37F95C3C1D32DEE400422DD6 /* SharedSafe.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -854,19 +854,19 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				379A59E01D32E33100AB4A26 /* UIKit.framework in Frameworks */,
 				377E46D7174C396C00CE3813 /* Accounts.framework in Frameworks */,
-				37F9D0801D32F2CC002A168D /* Shared.framework in Frameworks */,
 				372F891416755BF00073D0B6 /* CoreTelephony.framework in Frameworks */,
 				371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */,
 				37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */,
 				378DA45F1633B4B800831134 /* MessageUI.framework in Frameworks */,
 				37919F2016092198007708EF /* QuartzCore.framework in Frameworks */,
 				E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */,
+				37F9D0801D32F2CC002A168D /* Shared.framework in Frameworks */,
 				377E46DB174C3A7500CE3813 /* Social.framework in Frameworks */,
 				376E0A80175AA9EC004CCDEE /* StoreKit.framework in Frameworks */,
 				37800E9A162D5264009FCB17 /* SystemConfiguration.framework in Frameworks */,
 				37B5F4E51773864C005687DA /* Twitter.framework in Frameworks */,
+				379A59E01D32E33100AB4A26 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1036,8 +1036,8 @@
 		37587B1D1D32B5A0005665DC /* SharedSafe */ = {
 			isa = PBXGroup;
 			children = (
-				37587B1E1D32B5A0005665DC /* SharedSafe.h */,
 				37587B201D32B5A0005665DC /* Info.plist */,
+				37587B1E1D32B5A0005665DC /* SharedSafe.h */,
 			);
 			path = SharedSafe;
 			sourceTree = "<group>";
@@ -1045,8 +1045,8 @@
 		37587B301D32B5B0005665DC /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				37587B311D32B5B0005665DC /* Shared.h */,
 				37587B331D32B5B0005665DC /* Info.plist */,
+				37587B311D32B5B0005665DC /* Shared.h */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -1141,9 +1141,9 @@
 		37BC1DE21D32861A00AC4607 /* Bookmark Extension */ = {
 			isa = PBXGroup;
 			children = (
-				37BC1DE31D32861A00AC4607 /* ShareViewController.swift */,
-				37BC1DE81D32861A00AC4607 /* Info.plist */,
 				37B56EEF1D328A300055144F /* BookmarkExtension-Bridging-Header.h */,
+				37BC1DE81D32861A00AC4607 /* Info.plist */,
+				37BC1DE31D32861A00AC4607 /* ShareViewController.swift */,
 			);
 			name = "Bookmark Extension";
 			path = BookmarkExtension2;
@@ -1152,8 +1152,8 @@
 		37BC1DF61D32862F00AC4607 /* ReadLaterExtension */ = {
 			isa = PBXGroup;
 			children = (
-				37BC1DF71D32862F00AC4607 /* ShareViewController.swift */,
 				37BC1DFC1D32862F00AC4607 /* Info.plist */,
+				37BC1DF71D32862F00AC4607 /* ShareViewController.swift */,
 			);
 			path = ReadLaterExtension;
 			sourceTree = "<group>";
@@ -1236,40 +1236,40 @@
 		37FEEB8315745488003F2B77 = {
 			isa = PBXGroup;
 			children = (
-				37F9D08E1D32F49F002A168D /* uservoice_iphone_sdk.framework */,
-				37F9D08C1D32F48C002A168D /* OpenInChrome.framework */,
-				37F9D08A1D32F475002A168D /* Mixpanel.framework */,
-				374D91E019CE26A700995DF1 /* Share-AppStore.entitlements */,
-				374D91DB19CE26A700995DF1 /* Share-Beta.entitlements */,
-				374D91DC19CE26A700995DF1 /* Share-Dev.entitlements */,
-				374D91DF19CE26A700995DF1 /* AppExtensionHelper.js */,
 				37FEEBDC15748BA7003F2B77 /* Assets */,
 				37BC1DE21D32861A00AC4607 /* Bookmark Extension */,
-				37BC1DF61D32862F00AC4607 /* ReadLaterExtension */,
-				37587B1D1D32B5A0005665DC /* SharedSafe */,
-				37587B301D32B5B0005665DC /* Shared */,
 				37FEEB9115745488003F2B77 /* Frameworks */,
 				3740A23616863CF000F95D82 /* Localizations */,
+				C8B81FFE772869958B571275 /* Pods */,
 				37FEEB8F15745488003F2B77 /* Products */,
 				37FEEB9815745488003F2B77 /* Pushpin */,
 				3717968418A885FE004B2D08 /* Pushpin Tests */,
 				379042B319CC646900409D34 /* PushpinFramework */,
+				37BC1DF61D32862F00AC4607 /* ReadLaterExtension */,
+				37587B301D32B5B0005665DC /* Shared */,
+				37587B1D1D32B5A0005665DC /* SharedSafe */,
 				378BFDF119E5E29B006B48DC /* Tests */,
 				37076D41158AD0B1002566CD /* Vendor */,
+				374D91DF19CE26A700995DF1 /* AppExtensionHelper.js */,
 				3772DE901933B0E0004B348D /* DebugPodsTests copy-Info.plist */,
 				370859F817F329D400270A9D /* Images.xcassets */,
-				C8B81FFE772869958B571275 /* Pods */,
+				37F9D08A1D32F475002A168D /* Mixpanel.framework */,
+				37F9D08C1D32F48C002A168D /* OpenInChrome.framework */,
+				374D91E019CE26A700995DF1 /* Share-AppStore.entitlements */,
+				374D91DB19CE26A700995DF1 /* Share-Beta.entitlements */,
+				374D91DC19CE26A700995DF1 /* Share-Dev.entitlements */,
+				37F9D08E1D32F49F002A168D /* uservoice_iphone_sdk.framework */,
 			);
 			sourceTree = "<group>";
 		};
 		37FEEB8F15745488003F2B77 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				37FEEB8E15745488003F2B77 /* Pushpin.app */,
-				379042B219CC646700409D34 /* SharedSafe.framework */,
 				37BC1DE11D32861A00AC4607 /* BookmarkExtension.appex */,
+				37FEEB8E15745488003F2B77 /* Pushpin.app */,
 				37BC1DF51D32862F00AC4607 /* ReadLaterExtension.appex */,
 				37587B2F1D32B5B0005665DC /* Shared.framework */,
+				379042B219CC646700409D34 /* SharedSafe.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1277,17 +1277,21 @@
 		37FEEB9115745488003F2B77 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				37F9D0851D32F345002A168D /* ChimpKit.framework */,
-				37E9965B1D32EC3500659E82 /* libsqlite3.tbd */,
 				377E46D6174C396C00CE3813 /* Accounts.framework */,
 				37DE5AB8174F2A2E0073A2F4 /* AdSupport.framework */,
 				37BC1DA71D3280EF00AC4607 /* AudioToolbox.framework */,
+				37F9D0851D32F345002A168D /* ChimpKit.framework */,
 				370EE75115ED108300B262E2 /* CoreData.framework */,
 				372F891216755B950073D0B6 /* CoreTelephony.framework */,
 				371BCB0115772C0E00BDA996 /* CoreText.framework */,
 				37887D6918C51F7D00A20B76 /* Crashlytics.framework */,
 				37FEEB9415745488003F2B77 /* Foundation.framework */,
+				37E9965B1D32EC3500659E82 /* libsqlite3.tbd */,
 				378DA45E1633B4B700831134 /* MessageUI.framework */,
+				3619D801CC756D8CA859A8E8 /* Pods_BookmarkExtension.framework */,
+				AFE28264AFC24CAEB0032656 /* Pods_ReadLaterExtension.framework */,
+				1D8798030EDCD83BDC681C69 /* Pods_Shared.framework */,
+				018E0AFD29B1ED9300B23568 /* Pods_SharedSafe.framework */,
 				37919F1F16092198007708EF /* QuartzCore.framework */,
 				E804950F18103DC700C5CA8B /* SafariServices.framework */,
 				377E46DA174C3A7500CE3813 /* Social.framework */,
@@ -1295,10 +1299,6 @@
 				37800E99162D5264009FCB17 /* SystemConfiguration.framework */,
 				37B5F4E41773864C005687DA /* Twitter.framework */,
 				37FEEB9215745488003F2B77 /* UIKit.framework */,
-				3619D801CC756D8CA859A8E8 /* Pods_BookmarkExtension.framework */,
-				AFE28264AFC24CAEB0032656 /* Pods_ReadLaterExtension.framework */,
-				1D8798030EDCD83BDC681C69 /* Pods_Shared.framework */,
-				018E0AFD29B1ED9300B23568 /* Pods_SharedSafe.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1436,22 +1436,22 @@
 		C8B81FFE772869958B571275 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				D140E604BD743C3559430399 /* Pods-BookmarkExtension.pinboard debug.xcconfig */,
-				BD1C7594EF196781DEE71795 /* Pods-BookmarkExtension.pinboard app store.xcconfig */,
 				4D82CC2FFA1306FBB86B6896 /* Pods-BookmarkExtension.pinboard app store debug.xcconfig */,
+				BD1C7594EF196781DEE71795 /* Pods-BookmarkExtension.pinboard app store.xcconfig */,
 				15C7488AE51DB105A132E864 /* Pods-BookmarkExtension.pinboard beta.xcconfig */,
-				0F515C7B602D204A2D456D36 /* Pods-ReadLaterExtension.pinboard debug.xcconfig */,
-				FBE52F3EE5EDAC8FDA273EB0 /* Pods-ReadLaterExtension.pinboard app store.xcconfig */,
+				D140E604BD743C3559430399 /* Pods-BookmarkExtension.pinboard debug.xcconfig */,
 				C035569413D7100460BA6F6D /* Pods-ReadLaterExtension.pinboard app store debug.xcconfig */,
+				FBE52F3EE5EDAC8FDA273EB0 /* Pods-ReadLaterExtension.pinboard app store.xcconfig */,
 				5E9D483407C9AE45FACD0D59 /* Pods-ReadLaterExtension.pinboard beta.xcconfig */,
-				AE9361A156E2827FAAE63087 /* Pods-Shared.pinboard debug.xcconfig */,
-				A2439458E7DD8679EF4BF728 /* Pods-Shared.pinboard app store.xcconfig */,
+				0F515C7B602D204A2D456D36 /* Pods-ReadLaterExtension.pinboard debug.xcconfig */,
 				E3AE2D1CFC8C2C9374CEB98A /* Pods-Shared.pinboard app store debug.xcconfig */,
+				A2439458E7DD8679EF4BF728 /* Pods-Shared.pinboard app store.xcconfig */,
 				13F78FE66B7F25BB4D215649 /* Pods-Shared.pinboard beta.xcconfig */,
-				E833CEA46860A51CBC93F96F /* Pods-SharedSafe.pinboard debug.xcconfig */,
-				994B3B32F62AE00AA5D9AD9A /* Pods-SharedSafe.pinboard app store.xcconfig */,
+				AE9361A156E2827FAAE63087 /* Pods-Shared.pinboard debug.xcconfig */,
 				FDFF3C832150D5E51E26377C /* Pods-SharedSafe.pinboard app store debug.xcconfig */,
+				994B3B32F62AE00AA5D9AD9A /* Pods-SharedSafe.pinboard app store.xcconfig */,
 				0CF93F4F408A55858B1A08E7 /* Pods-SharedSafe.pinboard beta.xcconfig */,
+				E833CEA46860A51CBC93F96F /* Pods-SharedSafe.pinboard debug.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -1595,9 +1595,9 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				379A59E11D32E39F00AB4A26 /* SharedSafe.h in Headers */,
-				37E9965D1D32EC9C00659E82 /* NSString+Additions.h in Headers */,
 				37D2DB851D32EB8C00167322 /* FMDB.h in Headers */,
+				37E9965D1D32EC9C00659E82 /* NSString+Additions.h in Headers */,
+				379A59E11D32E39F00AB4A26 /* SharedSafe.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1800,10 +1800,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				37BC1E071D32892E00AC4607 /* Share-Beta.entitlements in Resources */,
-				37BC1E051D32891D00AC4607 /* Share-AppStore.entitlements in Resources */,
-				37BC1E091D32893100AC4607 /* Share-Dev.entitlements in Resources */,
 				37BC1E0B1D32893900AC4607 /* AppExtensionHelper.js in Resources */,
+				37BC1E051D32891D00AC4607 /* Share-AppStore.entitlements in Resources */,
+				37BC1E071D32892E00AC4607 /* Share-Beta.entitlements in Resources */,
+				37BC1E091D32893100AC4607 /* Share-Dev.entitlements in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1811,10 +1811,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				37BC1E081D32892E00AC4607 /* Share-Beta.entitlements in Resources */,
-				37BC1E061D32891D00AC4607 /* Share-AppStore.entitlements in Resources */,
-				37BC1E0A1D32893100AC4607 /* Share-Dev.entitlements in Resources */,
 				37BC1E0C1D32893900AC4607 /* AppExtensionHelper.js in Resources */,
+				37BC1E061D32891D00AC4607 /* Share-AppStore.entitlements in Resources */,
+				37BC1E081D32892E00AC4607 /* Share-Beta.entitlements in Resources */,
+				37BC1E0A1D32893100AC4607 /* Share-Dev.entitlements in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2159,43 +2159,43 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37587B3E1D32B5E1005665DC /* BookmarkletInstallationViewController.m in Sources */,
+				37F95C071D32CE0D00422DD6 /* LHSFontSelectionViewController.m in Sources */,
+				37F95C241D32D93E00422DD6 /* PPAboutViewController.m in Sources */,
+				37587B3F1D32B5E7005665DC /* PPActivityViewController.m in Sources */,
 				37F95C1B1D32D1DA00422DD6 /* PPAddBookmarkViewController.m in Sources */,
-				37F95C021D32BEA100422DD6 /* PPSearchViewController.m in Sources */,
-				37F95C0A1D32CE3200422DD6 /* PPStatusBar.m in Sources */,
+				37F95C0C1D32CE5300422DD6 /* PPAddSavedFeedViewController.m in Sources */,
+				37FB4F9A1D32ED74004D5C12 /* PPAppDelegate.m in Sources */,
+				37F95C0F1D32CEA200422DD6 /* PPBookmarkCell.m in Sources */,
+				37587B431D32B5FE005665DC /* PPBrowserActivity.m in Sources */,
 				37587B411D32B5F6005665DC /* PPBrowserSettingsViewController.m in Sources */,
+				37F95C0E1D32CE7D00422DD6 /* PPCachingURLProtocol.m in Sources */,
+				37F95C211D32D8B900422DD6 /* PPChangelogViewController.m in Sources */,
+				37F95C0B1D32CE4D00422DD6 /* PPDisplaySettingsViewController.m in Sources */,
+				37F95BED1D32BB8C00422DD6 /* PPFeedListViewController.m in Sources */,
 				37F95C381D32DBD200422DD6 /* PPGenericPostViewController.m in Sources */,
+				37F95BEB1D32BB7B00422DD6 /* PPLoginViewController.m in Sources */,
+				37F95BEE1D32BB9500422DD6 /* PPMailChimp.m in Sources */,
+				37F95BFF1D32BE5800422DD6 /* PPMultipleEditViewController.m in Sources */,
+				37F95C2D1D32DA1400422DD6 /* PPNavigationController.m in Sources */,
+				37F95C281D32D9F700422DD6 /* PPNotification.m in Sources */,
+				37F95C081D32CE1D00422DD6 /* PPOfflineDownloadViewController.m in Sources */,
+				37587B471D32B618005665DC /* PPOfflineSettingsViewController.m in Sources */,
+				37F95C301D32DB8300422DD6 /* PPPinboardDataSource.m in Sources */,
 				37F95C001D32BE6F00422DD6 /* PPPinboardFeedDataSource.m in Sources */,
 				37587B481D32B61C005665DC /* PPPinboardLoginViewController.m in Sources */,
-				37F95C241D32D93E00422DD6 /* PPAboutViewController.m in Sources */,
-				37F95C281D32D9F700422DD6 /* PPNotification.m in Sources */,
+				37F95C011D32BE7300422DD6 /* PPPinboardNotesDataSource.m in Sources */,
+				37F95BEC1D32BB8600422DD6 /* PPReaderSettingsViewController.m in Sources */,
+				37F95C091D32CE2B00422DD6 /* PPSavedFeedsViewController.m in Sources */,
 				37587B491D32B61E005665DC /* PPSearchExamplesViewController.m in Sources */,
+				37F95C021D32BEA100422DD6 /* PPSearchViewController.m in Sources */,
 				37587B461D32B616005665DC /* PPSettingsViewController.m in Sources */,
-				37587B3E1D32B5E1005665DC /* BookmarkletInstallationViewController.m in Sources */,
-				37587B3F1D32B5E7005665DC /* PPActivityViewController.m in Sources */,
-				37F95C0F1D32CEA200422DD6 /* PPBookmarkCell.m in Sources */,
+				37F95C041D32CDE200422DD6 /* PPSplitViewController.m in Sources */,
+				37F95C0A1D32CE3200422DD6 /* PPStatusBar.m in Sources */,
+				37587B4A1D32B625005665DC /* PPTagEditViewController.m in Sources */,
 				37F95BF61D32BD2000422DD6 /* PPTagViewController.m in Sources */,
 				37F95C061D32CDF100422DD6 /* PPTwitter.m in Sources */,
-				37587B471D32B618005665DC /* PPOfflineSettingsViewController.m in Sources */,
-				37F95BED1D32BB8C00422DD6 /* PPFeedListViewController.m in Sources */,
-				37F95BEC1D32BB8600422DD6 /* PPReaderSettingsViewController.m in Sources */,
-				37F95C0E1D32CE7D00422DD6 /* PPCachingURLProtocol.m in Sources */,
-				37F95C091D32CE2B00422DD6 /* PPSavedFeedsViewController.m in Sources */,
-				37F95C081D32CE1D00422DD6 /* PPOfflineDownloadViewController.m in Sources */,
-				37587B4A1D32B625005665DC /* PPTagEditViewController.m in Sources */,
-				37F95C011D32BE7300422DD6 /* PPPinboardNotesDataSource.m in Sources */,
-				37FB4F9A1D32ED74004D5C12 /* PPAppDelegate.m in Sources */,
-				37F95BFF1D32BE5800422DD6 /* PPMultipleEditViewController.m in Sources */,
-				37F95C0B1D32CE4D00422DD6 /* PPDisplaySettingsViewController.m in Sources */,
-				37F95C071D32CE0D00422DD6 /* LHSFontSelectionViewController.m in Sources */,
-				37587B431D32B5FE005665DC /* PPBrowserActivity.m in Sources */,
-				37F95BEB1D32BB7B00422DD6 /* PPLoginViewController.m in Sources */,
-				37F95C301D32DB8300422DD6 /* PPPinboardDataSource.m in Sources */,
-				37F95C2D1D32DA1400422DD6 /* PPNavigationController.m in Sources */,
-				37F95C211D32D8B900422DD6 /* PPChangelogViewController.m in Sources */,
 				37587B451D32B613005665DC /* PPWebViewController.m in Sources */,
-				37F95C041D32CDE200422DD6 /* PPSplitViewController.m in Sources */,
-				37F95C0C1D32CE5300422DD6 /* PPAddSavedFeedViewController.m in Sources */,
-				37F95BEE1D32BB9500422DD6 /* PPMailChimp.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2203,17 +2203,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37D2DB7E1D32EA5500167322 /* FMDatabase.m in Sources */,
+				37D2DB7F1D32EA5800167322 /* FMDatabaseAdditions.m in Sources */,
+				37D2DB801D32EA5A00167322 /* FMDatabasePool.m in Sources */,
+				37D2DB811D32EA5C00167322 /* FMDatabaseQueue.m in Sources */,
+				37D2DB821D32EA6000167322 /* FMResultSet.m in Sources */,
+				37F95C111D32CEAC00422DD6 /* LHSBooleanTableViewCell.m in Sources */,
 				3790426A19CBDCDF00409D34 /* MFMailComposeViewController+Theme.m in Sources */,
 				3790426B19CBDCDF00409D34 /* NSData+AES256.m in Sources */,
 				3762CAD01A59D04700301C97 /* NSString+Additions.m in Sources */,
-				37D2DB7E1D32EA5500167322 /* FMDatabase.m in Sources */,
 				3790426C19CBDCDF00409D34 /* NSString+LHSAdditions.m in Sources */,
 				3790426D19CBDCDF00409D34 /* NSString+URLEncoding2.m in Sources */,
-				37D2DB821D32EA6000167322 /* FMResultSet.m in Sources */,
 				3790426E19CBDCDF00409D34 /* PostMetadata.m in Sources */,
 				3790427419CBDCDF00409D34 /* PPBadgeView.m in Sources */,
 				3790427519CBDCDF00409D34 /* PPBadgeWrapperView.m in Sources */,
-				37D2DB811D32EA5C00167322 /* FMDatabaseQueue.m in Sources */,
 				3790427A19CBDCDF00409D34 /* PPConstants.m in Sources */,
 				3790427B19CBDCDF00409D34 /* PPDefaultFeedViewController.m in Sources */,
 				3790427E19CBDCDF00409D34 /* PPEditDescriptionViewController.m in Sources */,
@@ -2225,23 +2228,20 @@
 				3790428919CBDCDF00409D34 /* PPNoteViewController.m in Sources */,
 				3790428D19CBDCDF00409D34 /* PPPinboardMetadataCache.m in Sources */,
 				3790428F19CBDCDF00409D34 /* PPPlainTextViewController.m in Sources */,
+				37F95C2E1D32DB5500422DD6 /* PPReaderSettings.m in Sources */,
+				37F95C1F1D32D37E00422DD6 /* PPSettings.m in Sources */,
 				3790429919CBDCDF00409D34 /* PPShortcutEnabledDescriptionViewController.m in Sources */,
 				3790429A19CBDCDF00409D34 /* PPShrinkBackAnimator.m in Sources */,
 				3790429B19CBDCDF00409D34 /* PPShrinkBackTransition.m in Sources */,
-				37D2DB7F1D32EA5800167322 /* FMDatabaseAdditions.m in Sources */,
 				3790429F19CBDCDF00409D34 /* PPTableViewController.m in Sources */,
 				379042A019CBDCDF00409D34 /* PPTableViewTitleView.m in Sources */,
 				379042A319CBDCDF00409D34 /* PPTheme.m in Sources */,
 				379042A419CBDCDF00409D34 /* PPTitleButton.m in Sources */,
-				37F95C1F1D32D37E00422DD6 /* PPSettings.m in Sources */,
 				379042A519CBDCDF00409D34 /* PPToolbar.m in Sources */,
 				375B62321A4DA9240045AFE7 /* PPURLCache.m in Sources */,
 				372943E719CF3AFF00ABF006 /* PPUtilities.m in Sources */,
 				379042A919CBDCDF00409D34 /* PSPDFUIKitMainThreadGuard.m in Sources */,
-				37F95C111D32CEAC00422DD6 /* LHSBooleanTableViewCell.m in Sources */,
-				37F95C2E1D32DB5500422DD6 /* PPReaderSettings.m in Sources */,
 				379042AC19CBDCDF00409D34 /* UITableView+Additions.m in Sources */,
-				37D2DB801D32EA5A00167322 /* FMDatabasePool.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2250,10 +2250,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				37F95C1C1D32D1DB00422DD6 /* PPAddBookmarkViewController.m in Sources */,
-				37F95C291D32D9F700422DD6 /* PPNotification.m in Sources */,
-				37BC1DE41D32861A00AC4607 /* ShareViewController.swift in Sources */,
 				37F95C2C1D32DA1400422DD6 /* PPNavigationController.m in Sources */,
+				37F95C291D32D9F700422DD6 /* PPNotification.m in Sources */,
 				37F95C321D32DB8400422DD6 /* PPPinboardDataSource.m in Sources */,
+				37BC1DE41D32861A00AC4607 /* ShareViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2262,10 +2262,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				37F95C1D1D32D1DB00422DD6 /* PPAddBookmarkViewController.m in Sources */,
-				37F95C2A1D32D9F800422DD6 /* PPNotification.m in Sources */,
-				37BC1DF81D32862F00AC4607 /* ShareViewController.swift in Sources */,
 				37F95C2B1D32DA1300422DD6 /* PPNavigationController.m in Sources */,
+				37F95C2A1D32D9F800422DD6 /* PPNotification.m in Sources */,
 				37F95C311D32DB8300422DD6 /* PPPinboardDataSource.m in Sources */,
+				37BC1DF81D32862F00AC4607 /* ShareViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
