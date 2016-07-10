@@ -1,6 +1,0 @@
-framework module KeychainItemWrapper {
-  umbrella header "KeychainItemWrapper-umbrella.h"
-
-  export *
-  module * { export * }
-}

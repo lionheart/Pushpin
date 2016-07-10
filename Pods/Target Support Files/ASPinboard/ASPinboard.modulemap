@@ -1,6 +1,0 @@
-framework module ASPinboard {
-  umbrella header "ASPinboard-umbrella.h"
-
-  export *
-  module * { export * }
-}

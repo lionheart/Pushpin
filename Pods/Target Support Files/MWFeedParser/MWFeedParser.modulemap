@@ -1,6 +1,0 @@
-framework module MWFeedParser {
-  umbrella header "MWFeedParser-umbrella.h"
-
-  export *
-  module * { export * }
-}
