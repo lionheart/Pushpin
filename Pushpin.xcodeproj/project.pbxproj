@@ -11,12 +11,9 @@
 		3709354F1894C7DA00E3588E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9215745488003F2B77 /* UIKit.framework */; };
 		370BBE021901ABBB004FA557 /* safari-callback.html in Resources */ = {isa = PBXBuildFile; fileRef = 370BBE011901ABBB004FA557 /* safari-callback.html */; };
 		370DA46D19EF080500AD6314 /* PushpinFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 379042B219CC646700409D34 /* PushpinFramework.framework */; };
-		3711BC4719EED36F00DC129C /* PushpinFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 379042B219CC646700409D34 /* PushpinFramework.framework */; };
-		3711BC4819EED37400DC129C /* PushpinFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 379042B219CC646700409D34 /* PushpinFramework.framework */; };
 		3714DB7F175673E200B23F4F /* safari-instructions.html in Resources */ = {isa = PBXBuildFile; fileRef = 3714DB7E175673E200B23F4F /* safari-instructions.html */; };
 		3715EEC715787CAA00FD21EE /* main.css in Resources */ = {isa = PBXBuildFile; fileRef = 3715EEC615787CAA00FD21EE /* main.css */; };
 		371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371BCB0115772C0E00BDA996 /* CoreText.framework */; };
-		37247FF61633407E00417E65 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 37247FF51633407E00417E65 /* libz.dylib */; };
 		372943E719CF3AFF00ABF006 /* PPUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B4FFE21923AD18002F8558 /* PPUtilities.m */; };
 		372943F419CF53FD00ABF006 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 372943F319CF53FD00ABF006 /* MainInterface.storyboard */; };
 		372943F719CF53FD00ABF006 /* Read Later.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 372943EC19CF53FD00ABF006 /* Read Later.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -24,7 +21,6 @@
 		3729441019CF5E5700ABF006 /* AppExtensionHelper.js in Resources */ = {isa = PBXBuildFile; fileRef = 374D91DF19CE26A700995DF1 /* AppExtensionHelper.js */; };
 		372C84091870E3B300BF520D /* Delete-Button.png in Resources */ = {isa = PBXBuildFile; fileRef = 372C84071870E3B300BF520D /* Delete-Button.png */; };
 		372C840A1870E3B300BF520D /* Delete-Button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 372C84081870E3B300BF520D /* Delete-Button@2x.png */; };
-		372F88821673EE280073D0B6 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 372F88811673EE280073D0B6 /* libxml2.dylib */; };
 		372F891416755BF00073D0B6 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 372F891216755B950073D0B6 /* CoreTelephony.framework */; };
 		3740A24016863CF000F95D82 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23716863CF000F95D82 /* InfoPlist.strings */; };
 		3740A24116863CF000F95D82 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23916863CF000F95D82 /* Localizable.strings */; };
@@ -253,6 +249,12 @@
 		37BC1BD5188641D80022020A /* readabilityInitializer.js in Resources */ = {isa = PBXBuildFile; fileRef = 37BC1BD3188641D80022020A /* readabilityInitializer.js */; };
 		37BC1BD6188641D80022020A /* JSDOMParser.js in Resources */ = {isa = PBXBuildFile; fileRef = 37BC1BD4188641D80022020A /* JSDOMParser.js */; };
 		37BC1BD8188642F90022020A /* readability.js in Resources */ = {isa = PBXBuildFile; fileRef = 37BC1BD7188642F90022020A /* readability.js */; };
+		37BC1DA61D32800A00AC4607 /* TextExpander.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37BC1DA51D32800A00AC4607 /* TextExpander.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		37BC1DD41D32821600AC4607 /* TextExpanderSimulator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37BC1DD31D32821600AC4607 /* TextExpanderSimulator.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		37BC1DD71D3283E600AC4607 /* PushpinFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 379042B219CC646700409D34 /* PushpinFramework.framework */; };
+		37BC1DD81D3283F500AC4607 /* PushpinFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 379042B219CC646700409D34 /* PushpinFramework.framework */; };
+		37BC1DDA1D32841600AC4607 /* PushpinFramework.framework in Copy Framework */ = {isa = PBXBuildFile; fileRef = 379042B219CC646700409D34 /* PushpinFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		37BC1DDC1D32842300AC4607 /* PushpinFramework.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 379042B219CC646700409D34 /* PushpinFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		37CBB7411881B44B000F9C36 /* About.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7401881B44B000F9C36 /* About.plist */; };
 		37CBB74B1881B568000F9C36 /* mobilize-active.png in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7441881B568000F9C36 /* mobilize-active.png */; };
 		37CBB74C1881B568000F9C36 /* mobilize-active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7451881B568000F9C36 /* mobilize-active@2x.png */; };
@@ -265,7 +267,6 @@
 		37DE5AAB174EF8AF0073A2F4 /* back_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37DE5AA1174EF8AE0073A2F4 /* back_icon@2x.png */; };
 		37E312E51868CCD600B944F1 /* 56_Key-alt.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E312E31868CCD600B944F1 /* 56_Key-alt.png */; };
 		37E312E61868CCD600B944F1 /* 56_Key-alt@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E312E41868CCD600B944F1 /* 56_Key-alt@2x.png */; };
-		37E329ED1629F82D00A6BC18 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 37E329EC1629F82D00A6BC18 /* libsqlite3.dylib */; settings = {ATTRIBUTES = (Required, ); }; };
 		37EE01751A07F34C00A03F3B /* PPCachingURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 37EE01731A07EA0600A03F3B /* PPCachingURLProtocol.m */; };
 		37EE01781A093F2B00A03F3B /* PPOfflineSettingsViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 37EE01761A093F2B00A03F3B /* PPOfflineSettingsViewController.h */; };
 		37EE01791A093F2B00A03F3B /* PPOfflineSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37EE01771A093F2B00A03F3B /* PPOfflineSettingsViewController.m */; };
@@ -279,7 +280,6 @@
 		37F6D7EF19A1111E004016DB /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 37F6D7EC19A1111E004016DB /* README.md */; };
 		37FC851E1D31DD4400EF553F /* PPUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = 37B4FFE11923AD18002F8558 /* PPUtilities.h */; };
 		37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9415745488003F2B77 /* Foundation.framework */; };
-		37FEEB9715745488003F2B77 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9615745488003F2B77 /* CoreGraphics.framework */; };
 		B63698721B0FCC2700F15D42 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B63698711B0FCC2700F15D42 /* Launch Screen.xib */; };
 		B6E304131B3C7C9B00135CF1 /* PPMailChimp.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E304111B3C778A00135CF1 /* PPMailChimp.m */; };
 		B6E304171B3DB04000135CF1 /* PPLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E304151B3DAAF700135CF1 /* PPLoginViewController.m */; };
@@ -287,7 +287,6 @@
 		B6E3041D1B3DC95500135CF1 /* pinboard.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = B6E304191B3DC95500135CF1 /* pinboard.jpeg */; };
 		B6E3041E1B3DC95500135CF1 /* pushpin-cloud-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E3041A1B3DC95500135CF1 /* pushpin-cloud-logo.png */; };
 		B6E3041F1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E3041B1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png */; };
-		D670906A73A000E8570186FF /* Pods_PushpinFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B97A1DE9839B348BBFA5312 /* Pods_PushpinFramework.framework */; };
 		E804950E180EF6D700C5CA8B /* webview-helpers.js in Resources */ = {isa = PBXBuildFile; fileRef = E804950C180EF20800C5CA8B /* webview-helpers.js */; };
 		E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E804950F18103DC700C5CA8B /* SafariServices.framework */; };
 		E80EEF6E184E9AA000979AA3 /* toolbar-checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF68184E9AA000979AA3 /* toolbar-checkmark.png */; };
@@ -444,12 +443,36 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		37BC1DD91D3283FA00AC4607 /* Copy Framework */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				37BC1DDA1D32841600AC4607 /* PushpinFramework.framework in Copy Framework */,
+			);
+			name = "Copy Framework";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		37BC1DDB1D32841B00AC4607 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				37BC1DDC1D32842300AC4607 /* PushpinFramework.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		03443AD99082EA7A775F8152 /* Pods-PushpinFramework.delicious beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PushpinFramework.delicious beta.xcconfig"; path = "Pods/Target Support Files/Pods-PushpinFramework/Pods-PushpinFramework.delicious beta.xcconfig"; sourceTree = "<group>"; };
 		10F0A3CA6F884C01F720539E /* Pods-PushpinFramework.pinboard app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PushpinFramework.pinboard app store.xcconfig"; path = "Pods/Target Support Files/Pods-PushpinFramework/Pods-PushpinFramework.pinboard app store.xcconfig"; sourceTree = "<group>"; };
+		195DE0AD3C704559D9231F84 /* Pods-Bookmark Extension.pinboard app store debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bookmark Extension.pinboard app store debug.xcconfig"; path = "Pods/Target Support Files/Pods-Bookmark Extension/Pods-Bookmark Extension.pinboard app store debug.xcconfig"; sourceTree = "<group>"; };
 		28CF30BCF873441AB9612CF9 /* Pods-PushpinFramework.pinboard app store debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PushpinFramework.pinboard app store debug.xcconfig"; path = "Pods/Target Support Files/Pods-PushpinFramework/Pods-PushpinFramework.pinboard app store debug.xcconfig"; sourceTree = "<group>"; };
+		2974EBF35439D5053023A093 /* Pods-Bookmark Extension.pinboard app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bookmark Extension.pinboard app store.xcconfig"; path = "Pods/Target Support Files/Pods-Bookmark Extension/Pods-Bookmark Extension.pinboard app store.xcconfig"; sourceTree = "<group>"; };
+		2A20245CDC3B31CEB0CABC3A /* Pods-Read Later Extension.pinboard app store debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Read Later Extension.pinboard app store debug.xcconfig"; path = "Pods/Target Support Files/Pods-Read Later Extension/Pods-Read Later Extension.pinboard app store debug.xcconfig"; sourceTree = "<group>"; };
 		2DAE030B734DA0813AF92A58 /* Pods-PushpinFramework.delicious app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PushpinFramework.delicious app store.xcconfig"; path = "Pods/Target Support Files/Pods-PushpinFramework/Pods-PushpinFramework.delicious app store.xcconfig"; sourceTree = "<group>"; };
 		37018CE3180E3C0B00226408 /* PPBrowserActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBrowserActivity.h; sourceTree = "<group>"; };
 		37018CE4180E3C0B00226408 /* PPBrowserActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPBrowserActivity.m; sourceTree = "<group>"; };
@@ -462,9 +485,6 @@
 		370EE75115ED108300B262E2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		370F92ED17500722005F0AD7 /* PPToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPToolbar.h; sourceTree = "<group>"; };
 		370F92EE17500722005F0AD7 /* PPToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPToolbar.m; sourceTree = "<group>"; };
-		3711BC4319EED2B100DC129C /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "Pods/build/Pinboard Debug-iphoneos/libPods.a"; sourceTree = "<group>"; };
-		3711BC4519EED2D300DC129C /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "Pods/build/Pinboard Debug-iphoneos/libPods.a"; sourceTree = "<group>"; };
-		3711BC4919EEDB7900DC129C /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "Pods/build/Pinboard Debug-iphoneos/libPods.a"; sourceTree = "<group>"; };
 		3714DB7317556FC500B23F4F /* PPPinboardNotesDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPPinboardNotesDataSource.h; sourceTree = "<group>"; };
 		3714DB7417556FC600B23F4F /* PPPinboardNotesDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPPinboardNotesDataSource.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3714DB7617558A2000B23F4F /* PPSavedFeedsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSavedFeedsViewController.h; sourceTree = "<group>"; };
@@ -477,7 +497,6 @@
 		37171A2B18B16C77007FF164 /* PPSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPSearchViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37171A2D18B1714E007FF164 /* LHSBooleanTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LHSBooleanTableViewCell.h; sourceTree = "<group>"; };
 		37171A2E18B1714E007FF164 /* LHSBooleanTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LHSBooleanTableViewCell.m; sourceTree = "<group>"; };
-		3717966618A8857F004B2D08 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		3717968618A885FE004B2D08 /* Pushpin Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Pushpin Tests-Info.plist"; sourceTree = "<group>"; };
 		3717968818A885FE004B2D08 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		3717968A18A885FE004B2D08 /* Pushpin_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Pushpin_Tests.m; sourceTree = "<group>"; };
@@ -489,7 +508,6 @@
 		371EE5C7185B49FE005DB908 /* PPTheme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTheme.m; sourceTree = "<group>"; };
 		3722155D16FCDB430036AA20 /* PPPinboardFeedDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPPinboardFeedDataSource.h; sourceTree = "<group>"; };
 		3722155E16FCDB430036AA20 /* PPPinboardFeedDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPPinboardFeedDataSource.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		37247FF51633407E00417E65 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		3727558A161A66A2001A857B /* PPTagViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTagViewController.h; sourceTree = "<group>"; };
 		3727558B161A66A2001A857B /* PPTagViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPTagViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3728CF3B18726EC900155791 /* PPTagEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTagEditViewController.h; sourceTree = "<group>"; };
@@ -503,11 +521,8 @@
 		3729440219CF546700ABF006 /* Beta-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Beta-Info.plist"; sourceTree = "<group>"; };
 		3729440319CF546700ABF006 /* AppStore-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "AppStore-Info.plist"; sourceTree = "<group>"; };
 		3729440419CF546700ABF006 /* Dev-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Dev-Info.plist"; sourceTree = "<group>"; };
-		3729440C19CF5B0200ABF006 /* libPods-ASPinboard.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-ASPinboard.a"; path = "Pods/build/Debug-iphoneos/libPods-ASPinboard.a"; sourceTree = "<group>"; };
-		3729440E19CF5B2600ABF006 /* libPods-hpple.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libPods-hpple.a"; path = "Pods/build/Debug-iphoneos/libPods-hpple.a"; sourceTree = "<group>"; };
 		372C84071870E3B300BF520D /* Delete-Button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Delete-Button.png"; path = "Assets/Delete-Button.png"; sourceTree = "<group>"; };
 		372C84081870E3B300BF520D /* Delete-Button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Delete-Button@2x.png"; path = "Assets/Delete-Button@2x.png"; sourceTree = "<group>"; };
-		372F88811673EE280073D0B6 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		372F8886167429DA0073D0B6 /* Beta-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Beta-Info.plist"; sourceTree = "<group>"; };
 		372F8887167429DA0073D0B6 /* Dev-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Dev-Info.plist"; sourceTree = "<group>"; };
 		372F891216755B950073D0B6 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
@@ -623,15 +638,12 @@
 		378BFDF319E5E29B006B48DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		378BFDF419E5E29B006B48DC /* Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tests.m; sourceTree = "<group>"; };
 		378DA45E1633B4B700831134 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		3790420C19CBD1EF00409D34 /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "Pods/build/Debug-iphoneos/libPods.a"; sourceTree = "<group>"; };
 		3790424619CBD49A00409D34 /* Pushpin.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Pushpin.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		3790424919CBD49A00409D34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3790424D19CBD49A00409D34 /* MainInterface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
-		3790425C19CBD52600409D34 /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "Pods/build/Debug-iphoneos/libPods.a"; sourceTree = "<group>"; };
 		379042B219CC646700409D34 /* PushpinFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PushpinFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		379042B519CC646900409D34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		379042B619CC646900409D34 /* PushpinFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PushpinFramework.h; sourceTree = "<group>"; };
-		3790437119CC67FC00409D34 /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "Pods/build/Pinboard Debug-iphoneos/libPods.a"; sourceTree = "<group>"; };
 		3790437619CC97AD00409D34 /* PPShareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPShareViewController.h; sourceTree = "<group>"; };
 		3790437719CC97AD00409D34 /* PPShareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPShareViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37919F1C16091DF5007708EF /* PPPinboardLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PPPinboardLoginViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -681,6 +693,9 @@
 		37BC1BD7188642F90022020A /* readability.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = readability.js; path = Pushpin/readability.js; sourceTree = "<group>"; };
 		37BC1BD91889C6730022020A /* PPTwitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTwitter.h; sourceTree = "<group>"; };
 		37BC1BDA1889C6740022020A /* PPTwitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTwitter.m; sourceTree = "<group>"; };
+		37BC1DA51D32800A00AC4607 /* TextExpander.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TextExpander.framework; sourceTree = "<group>"; };
+		37BC1DA71D3280EF00AC4607 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		37BC1DD31D32821600AC4607 /* TextExpanderSimulator.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TextExpanderSimulator.framework; sourceTree = "<group>"; };
 		37C012B71765423900938D81 /* PPMultipleEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPMultipleEditViewController.h; sourceTree = "<group>"; };
 		37C012B81765423A00938D81 /* PPMultipleEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPMultipleEditViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37CBB7401881B44B000F9C36 /* About.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = About.plist; path = Assets/About.plist; sourceTree = SOURCE_ROOT; };
@@ -707,7 +722,6 @@
 		37DF2CC116C4B80600CFCA81 /* Dev.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Dev.entitlements; sourceTree = "<group>"; };
 		37E312E31868CCD600B944F1 /* 56_Key-alt.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "56_Key-alt.png"; path = "Assets/56_Key-alt.png"; sourceTree = "<group>"; };
 		37E312E41868CCD600B944F1 /* 56_Key-alt@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "56_Key-alt@2x.png"; path = "Assets/56_Key-alt@2x.png"; sourceTree = "<group>"; };
-		37E329EC1629F82D00A6BC18 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		37ED3E4C188C4A1F0039B344 /* PPActivityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPActivityViewController.h; sourceTree = "<group>"; };
 		37ED3E4D188C4A1F0039B344 /* PPActivityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPActivityViewController.m; sourceTree = "<group>"; };
 		37EE01721A07EA0600A03F3B /* PPCachingURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PPCachingURLProtocol.h; path = Pushpin/PPCachingURLProtocol.h; sourceTree = "<group>"; };
@@ -736,7 +750,6 @@
 		37FEEB8E15745488003F2B77 /* Pushpin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pushpin.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		37FEEB9215745488003F2B77 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		37FEEB9415745488003F2B77 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		37FEEB9615745488003F2B77 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		37FEEB9A15745488003F2B77 /* PinboardAppStore.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PinboardAppStore.plist; sourceTree = "<group>"; };
 		37FEEB9E15745488003F2B77 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = main.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37FEEBA015745488003F2B77 /* Pushpin for Pinboard-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = "Pushpin for Pinboard-Prefix.pch"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -744,8 +757,11 @@
 		37FEEBA215745488003F2B77 /* PPAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPAppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37FF412F187D95CF00F2D481 /* PPSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSplitViewController.h; sourceTree = "<group>"; };
 		37FF4130187D95CF00F2D481 /* PPSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPSplitViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		4B97A1DE9839B348BBFA5312 /* Pods_PushpinFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PushpinFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5034730947F8C11BF9FAB517 /* Pods-Bookmark Extension.pinboard beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bookmark Extension.pinboard beta.xcconfig"; path = "Pods/Target Support Files/Pods-Bookmark Extension/Pods-Bookmark Extension.pinboard beta.xcconfig"; sourceTree = "<group>"; };
 		8034D6D41E0C0CA21A353186 /* Pods-PushpinFramework.delicious debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PushpinFramework.delicious debug.xcconfig"; path = "Pods/Target Support Files/Pods-PushpinFramework/Pods-PushpinFramework.delicious debug.xcconfig"; sourceTree = "<group>"; };
+		8D8E1A4D9484184A2086D6C7 /* Pods-Read Later Extension.pinboard beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Read Later Extension.pinboard beta.xcconfig"; path = "Pods/Target Support Files/Pods-Read Later Extension/Pods-Read Later Extension.pinboard beta.xcconfig"; sourceTree = "<group>"; };
+		95F8E1D2ACD6C92C95B7AC05 /* Pods-Bookmark Extension.pinboard debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bookmark Extension.pinboard debug.xcconfig"; path = "Pods/Target Support Files/Pods-Bookmark Extension/Pods-Bookmark Extension.pinboard debug.xcconfig"; sourceTree = "<group>"; };
+		A7E15E1567174D62741AC710 /* Pods-Read Later Extension.pinboard app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Read Later Extension.pinboard app store.xcconfig"; path = "Pods/Target Support Files/Pods-Read Later Extension/Pods-Read Later Extension.pinboard app store.xcconfig"; sourceTree = "<group>"; };
 		B63698711B0FCC2700F15D42 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen.xib"; sourceTree = "<group>"; };
 		B6E304101B3C778A00135CF1 /* PPMailChimp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPMailChimp.h; sourceTree = "<group>"; };
 		B6E304111B3C778A00135CF1 /* PPMailChimp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPMailChimp.m; sourceTree = "<group>"; };
@@ -851,6 +867,7 @@
 		E8F987DD183E796900EF976D /* browse-unread.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-unread.png"; path = "Assets/browse-unread.png"; sourceTree = "<group>"; };
 		E8F987DE183E796900EF976D /* browse-untagged.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-untagged.png"; path = "Assets/browse-untagged.png"; sourceTree = "<group>"; };
 		E8F987DF183E796900EF976D /* browse-wikipedia.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-wikipedia.png"; path = "Assets/browse-wikipedia.png"; sourceTree = "<group>"; };
+		FCED2FF85BD2730B2247687C /* Pods-Read Later Extension.pinboard debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Read Later Extension.pinboard debug.xcconfig"; path = "Pods/Target Support Files/Pods-Read Later Extension/Pods-Read Later Extension.pinboard debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -858,7 +875,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3711BC4719EED36F00DC129C /* PushpinFramework.framework in Frameworks */,
+				37BC1DD81D3283F500AC4607 /* PushpinFramework.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -866,7 +883,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3711BC4819EED37400DC129C /* PushpinFramework.framework in Frameworks */,
+				37BC1DD71D3283E600AC4607 /* PushpinFramework.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -874,7 +891,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D670906A73A000E8570186FF /* Pods_PushpinFramework.framework in Frameworks */,
+				37BC1DA61D32800A00AC4607 /* TextExpander.framework in Frameworks */,
+				37BC1DD41D32821600AC4607 /* TextExpanderSimulator.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -883,13 +901,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				377E46D7174C396C00CE3813 /* Accounts.framework in Frameworks */,
-				37FEEB9715745488003F2B77 /* CoreGraphics.framework in Frameworks */,
 				372F891416755BF00073D0B6 /* CoreTelephony.framework in Frameworks */,
 				371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */,
 				37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */,
-				37E329ED1629F82D00A6BC18 /* libsqlite3.dylib in Frameworks */,
-				372F88821673EE280073D0B6 /* libxml2.dylib in Frameworks */,
-				37247FF61633407E00417E65 /* libz.dylib in Frameworks */,
 				378DA45F1633B4B800831134 /* MessageUI.framework in Frameworks */,
 				370DA46D19EF080500AD6314 /* PushpinFramework.framework in Frameworks */,
 				37919F2016092198007708EF /* QuartzCore.framework in Frameworks */,
@@ -1322,33 +1336,22 @@
 			children = (
 				377E46D6174C396C00CE3813 /* Accounts.framework */,
 				37DE5AB8174F2A2E0073A2F4 /* AdSupport.framework */,
+				37BC1DA71D3280EF00AC4607 /* AudioToolbox.framework */,
 				370EE75115ED108300B262E2 /* CoreData.framework */,
-				37FEEB9615745488003F2B77 /* CoreGraphics.framework */,
 				372F891216755B950073D0B6 /* CoreTelephony.framework */,
 				371BCB0115772C0E00BDA996 /* CoreText.framework */,
 				37887D6918C51F7D00A20B76 /* Crashlytics.framework */,
 				37FEEB9415745488003F2B77 /* Foundation.framework */,
-				3729440C19CF5B0200ABF006 /* libPods-ASPinboard.a */,
-				3729440E19CF5B2600ABF006 /* libPods-hpple.a */,
-				3711BC4919EEDB7900DC129C /* libPods.a */,
-				3711BC4519EED2D300DC129C /* libPods.a */,
-				3711BC4319EED2B100DC129C /* libPods.a */,
-				3790437119CC67FC00409D34 /* libPods.a */,
-				3790425C19CBD52600409D34 /* libPods.a */,
-				3790420C19CBD1EF00409D34 /* libPods.a */,
-				37E329EC1629F82D00A6BC18 /* libsqlite3.dylib */,
-				372F88811673EE280073D0B6 /* libxml2.dylib */,
-				37247FF51633407E00417E65 /* libz.dylib */,
 				378DA45E1633B4B700831134 /* MessageUI.framework */,
-				4B97A1DE9839B348BBFA5312 /* Pods_PushpinFramework.framework */,
 				37919F1F16092198007708EF /* QuartzCore.framework */,
 				E804950F18103DC700C5CA8B /* SafariServices.framework */,
 				377E46DA174C3A7500CE3813 /* Social.framework */,
 				376E0A7F175AA9EC004CCDEE /* StoreKit.framework */,
 				37800E99162D5264009FCB17 /* SystemConfiguration.framework */,
+				37BC1DA51D32800A00AC4607 /* TextExpander.framework */,
+				37BC1DD31D32821600AC4607 /* TextExpanderSimulator.framework */,
 				37B5F4E41773864C005687DA /* Twitter.framework */,
 				37FEEB9215745488003F2B77 /* UIKit.framework */,
-				3717966618A8857F004B2D08 /* XCTest.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1486,6 +1489,10 @@
 		76B466900019E1E672DDBFC5 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
+				195DE0AD3C704559D9231F84 /* Pods-Bookmark Extension.pinboard app store debug.xcconfig */,
+				2974EBF35439D5053023A093 /* Pods-Bookmark Extension.pinboard app store.xcconfig */,
+				5034730947F8C11BF9FAB517 /* Pods-Bookmark Extension.pinboard beta.xcconfig */,
+				95F8E1D2ACD6C92C95B7AC05 /* Pods-Bookmark Extension.pinboard debug.xcconfig */,
 				2DAE030B734DA0813AF92A58 /* Pods-PushpinFramework.delicious app store.xcconfig */,
 				03443AD99082EA7A775F8152 /* Pods-PushpinFramework.delicious beta.xcconfig */,
 				8034D6D41E0C0CA21A353186 /* Pods-PushpinFramework.delicious debug.xcconfig */,
@@ -1493,6 +1500,10 @@
 				10F0A3CA6F884C01F720539E /* Pods-PushpinFramework.pinboard app store.xcconfig */,
 				C4D568FC852ABBAE855C317C /* Pods-PushpinFramework.pinboard beta.xcconfig */,
 				D48F11FB120D70D6D45E0533 /* Pods-PushpinFramework.pinboard debug.xcconfig */,
+				2A20245CDC3B31CEB0CABC3A /* Pods-Read Later Extension.pinboard app store debug.xcconfig */,
+				A7E15E1567174D62741AC710 /* Pods-Read Later Extension.pinboard app store.xcconfig */,
+				8D8E1A4D9484184A2086D6C7 /* Pods-Read Later Extension.pinboard beta.xcconfig */,
+				FCED2FF85BD2730B2247687C /* Pods-Read Later Extension.pinboard debug.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -1644,9 +1655,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3729440119CF53FE00ABF006 /* Build configuration list for PBXNativeTarget "Read Later Extension" */;
 			buildPhases = (
+				D88B34A58EFCCC9411C08EC3 /* [CP] Check Pods Manifest.lock */,
 				372943E819CF53FD00ABF006 /* Sources */,
 				372943E919CF53FD00ABF006 /* Frameworks */,
 				372943EA19CF53FD00ABF006 /* Resources */,
+				8E44FB5D372324D63AE3F66D /* [CP] Embed Pods Frameworks */,
+				2EF22EE9E7D6A68636DFE8AD /* [CP] Copy Pods Resources */,
+				37BC1DD91D3283FA00AC4607 /* Copy Framework */,
 			);
 			buildRules = (
 			);
@@ -1662,9 +1677,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3790425419CBD49A00409D34 /* Build configuration list for PBXNativeTarget "Bookmark Extension" */;
 			buildPhases = (
+				D75156296DE4B2F6ADB603CE /* [CP] Check Pods Manifest.lock */,
 				3790424219CBD49A00409D34 /* Sources */,
 				3790424319CBD49A00409D34 /* Frameworks */,
 				3790424419CBD49A00409D34 /* Resources */,
+				FA50820653DE903B513FC1BB /* [CP] Embed Pods Frameworks */,
+				D18A969A5B091084861D8CAA /* [CP] Copy Pods Resources */,
+				37BC1DDB1D32841B00AC4607 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -2086,6 +2105,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		2EF22EE9E7D6A68636DFE8AD /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Read Later Extension/Pods-Read Later Extension-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		37B65FDA1672D0270041DA8C /* Sync Bundle and Version Strings */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 12;
@@ -2115,6 +2149,21 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
+		8E44FB5D372324D63AE3F66D /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Read Later Extension/Pods-Read Later Extension-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		AC2AD9DB75B8779818ADA329 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2128,6 +2177,66 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PushpinFramework/Pods-PushpinFramework-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D18A969A5B091084861D8CAA /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Bookmark Extension/Pods-Bookmark Extension-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D75156296DE4B2F6ADB603CE /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		D88B34A58EFCCC9411C08EC3 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		FA50820653DE903B513FC1BB /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Bookmark Extension/Pods-Bookmark Extension-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -2302,6 +2411,7 @@
 /* Begin XCBuildConfiguration section */
 		372943FA19CF53FE00ABF006 /* Pinboard Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FCED2FF85BD2730B2247687C /* Pods-Read Later Extension.pinboard debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -2342,7 +2452,6 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Pods/build/Pinboard",
-					"Debug-iphoneos",
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2356,6 +2465,7 @@
 		};
 		372943FC19CF53FE00ABF006 /* Pinboard App Store */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A7E15E1567174D62741AC710 /* Pods-Read Later Extension.pinboard app store.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -2403,6 +2513,7 @@
 		};
 		372943FD19CF53FE00ABF006 /* Pinboard App Store Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2A20245CDC3B31CEB0CABC3A /* Pods-Read Later Extension.pinboard app store debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -2450,6 +2561,7 @@
 		};
 		372943FF19CF53FE00ABF006 /* Pinboard Beta */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8D8E1A4D9484184A2086D6C7 /* Pods-Read Later Extension.pinboard beta.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -2542,10 +2654,7 @@
 				);
 				INFOPLIST_FILE = Pushpin/PinboardAppStore.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"${PODS_ROOT}/TestFlightSDK\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-DNS_BLOCK_ASSERTIONS=1",
@@ -2642,10 +2751,7 @@
 				);
 				INFOPLIST_FILE = "Pushpin/Beta-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"${PODS_ROOT}/TestFlightSDK\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-DNS_BLOCK_ASSERTIONS=1",
@@ -2697,6 +2803,7 @@
 		};
 		3790425519CBD49A00409D34 /* Pinboard Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 95F8E1D2ACD6C92C95B7AC05 /* Pods-Bookmark Extension.pinboard debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -2750,6 +2857,7 @@
 		};
 		3790425719CBD49A00409D34 /* Pinboard App Store */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2974EBF35439D5053023A093 /* Pods-Bookmark Extension.pinboard app store.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -2802,6 +2910,7 @@
 		};
 		3790425819CBD49A00409D34 /* Pinboard App Store Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 195DE0AD3C704559D9231F84 /* Pods-Bookmark Extension.pinboard app store debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -2854,6 +2963,7 @@
 		};
 		3790425A19CBD49A00409D34 /* Pinboard Beta */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5034730947F8C11BF9FAB517 /* Pods-Bookmark Extension.pinboard beta.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
@@ -2908,7 +3018,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D48F11FB120D70D6D45E0533 /* Pods-PushpinFramework.pinboard debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -2927,7 +3037,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 557;
-				DEFINES_MODULE = YES;
+				DEFINES_MODULE = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 557;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -2955,12 +3065,7 @@
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(PROJECT_DIR)/Pods/build/Debug-iphoneos\"",
-					"$(PROJECT_DIR)/Pods/build/Pinboard",
-					"Debug-iphoneos",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2978,7 +3083,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 10F0A3CA6F884C01F720539E /* Pods-PushpinFramework.pinboard app store.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -2997,7 +3102,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 557;
-				DEFINES_MODULE = YES;
+				DEFINES_MODULE = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 557;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -3019,12 +3124,7 @@
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(PROJECT_DIR)/Pods/build/Debug-iphoneos\"",
-					"$(PROJECT_DIR)/Pods/build/Pinboard",
-					"Debug-iphoneos",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -3042,7 +3142,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 28CF30BCF873441AB9612CF9 /* Pods-PushpinFramework.pinboard app store debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -3061,7 +3161,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 557;
-				DEFINES_MODULE = YES;
+				DEFINES_MODULE = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 557;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -3083,12 +3183,7 @@
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(PROJECT_DIR)/Pods/build/Debug-iphoneos\"",
-					"$(PROJECT_DIR)/Pods/build/Pinboard",
-					"Debug-iphoneos",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -3106,7 +3201,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C4D568FC852ABBAE855C317C /* Pods-PushpinFramework.pinboard beta.xcconfig */;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = YES;
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -3125,7 +3220,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 557;
-				DEFINES_MODULE = YES;
+				DEFINES_MODULE = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 557;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -3147,12 +3242,7 @@
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(PROJECT_DIR)/Pods/build/Debug-iphoneos\"",
-					"$(PROJECT_DIR)/Pods/build/Pinboard",
-					"Debug-iphoneos",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -3215,10 +3305,7 @@
 				);
 				INFOPLIST_FILE = "Pushpin/Dev-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"${PODS_ROOT}/TestFlightSDK\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-lxml2",
@@ -3288,10 +3375,7 @@
 				);
 				INFOPLIST_FILE = Pushpin/PinboardAppStore.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"${PODS_ROOT}/TestFlightSDK\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-DNS_BLOCK_ASSERTIONS=1",
