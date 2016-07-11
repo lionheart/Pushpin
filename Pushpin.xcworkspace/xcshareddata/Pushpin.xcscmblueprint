@@ -6,29 +6,22 @@
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
     "E4BA76B4EFA38220802589A8E9F0459552B7A552" : 0,
     "4E6E450F604063387457184D53D2497C56CE77E7" : 0,
-    "04101981B66E318109934C9516F88D824BB96459" : 0,
     "35FE44AA977402958F5B092E8C51FB3CE5832197" : 0,
-    "CA1D079377A2BD66346D3AB72C980A5DB6CE1C06" : 0,
-    "9EE95AE564A8FA1EB03FB1B2D3BCDFB5090990E4" : 0
+    "9EE95AE564A8FA1EB03FB1B2D3BCDFB5090990E4" : 0,
+    "CA1D079377A2BD66346D3AB72C980A5DB6CE1C06" : 0
   },
-  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "2B4DF233-6F41-4790-9356-9729D17BF571",
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "EC741E4A-1FB3-496C-B440-802FCC70D660",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
     "E4BA76B4EFA38220802589A8E9F0459552B7A552" : "LHSKeyboardAdjusting\/",
     "4E6E450F604063387457184D53D2497C56CE77E7" : "Pushpin\/Vendor\/ASPinboard\/",
-    "04101981B66E318109934C9516F88D824BB96459" : "Pushpin\/Vendor\/fmdb\/",
     "35FE44AA977402958F5B092E8C51FB3CE5832197" : "LHSCategoryCollection\/",
-    "CA1D079377A2BD66346D3AB72C980A5DB6CE1C06" : "Pushpin\/",
-    "9EE95AE564A8FA1EB03FB1B2D3BCDFB5090990E4" : "Pushpin\/Localizations\/"
+    "9EE95AE564A8FA1EB03FB1B2D3BCDFB5090990E4" : "Pushpin\/Localizations\/",
+    "CA1D079377A2BD66346D3AB72C980A5DB6CE1C06" : "Pushpin\/"
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "Pushpin",
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,
   "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Pushpin.xcworkspace",
   "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
-    {
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:ccgus\/fmdb.git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "04101981B66E318109934C9516F88D824BB96459"
-    },
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:lionheart\/LHSCategoryCollection",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
