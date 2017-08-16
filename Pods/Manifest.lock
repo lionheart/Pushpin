@@ -1,5 +1,5 @@
 PODS:
-  - 1PasswordExtension (1.8.2)
+  - 1PasswordExtension (1.8.4)
   - AFNetworking (3.1.0):
     - AFNetworking/NSURLSession (= 3.1.0)
     - AFNetworking/Reachability (= 3.1.0)
@@ -19,21 +19,18 @@ PODS:
     - hpple (~> 0.2.0)
   - BRYHTMLParser (2.1.2)
   - ChimpKit (3.1.1)
-  - FMDB (2.6.2):
-    - FMDB/standard (= 2.6.2)
-  - FMDB/standard (2.6.2)
+  - FMDB (2.7.2):
+    - FMDB/standard (= 2.7.2)
+  - FMDB/standard (2.7.2)
   - hpple (0.2.0)
   - HTMLParser (0.1.2)
   - KeychainItemWrapper (1.2)
-  - LHSCategoryCollection (0.0.20)
+  - LHSCategoryCollection (0.0.22)
   - LHSFMDatabaseAdditions (0.0.3):
     - FMDB
-  - LHSKeyboardAdjusting (0.0.2)
+  - LHSKeyboardAdjusting (2.0.1)
   - LHSTableViewCells (0.0.1)
-  - Mixpanel (3.0.0):
-    - Mixpanel/Mixpanel (= 3.0.0)
-  - Mixpanel/AppExtension (3.0.0)
-  - Mixpanel/Mixpanel (3.0.0)
+  - Mixpanel (3.1.9)
   - MWFeedParser (1.0.1):
     - MWFeedParser/FeedParser (= 1.0.1)
     - MWFeedParser/NSDate+InternetDateTime (= 1.0.1)
@@ -45,7 +42,7 @@ PODS:
   - MWFeedParser/NSString+HTML (1.0.1)
   - OpenInChrome (0.0.1)
   - Reachability (3.2)
-  - RNCryptor (4.0.0)
+  - RNCryptor-objc (3.0.5)
   - TTTAttributedLabel (1.13.0)
   - uservoice-iphone-sdk (3.2.3)
   - YHRoundBorderedButton (0.1.0)
@@ -64,11 +61,10 @@ DEPENDENCIES:
   - LHSKeyboardAdjusting (from `../LHSKeyboardAdjusting`)
   - LHSTableViewCells
   - Mixpanel
-  - Mixpanel/AppExtension
   - MWFeedParser (= 1.0.1)
   - OpenInChrome (= 0.0.1)
   - Reachability (= 3.2)
-  - RNCryptor (~> 4.0)
+  - RNCryptor-objc (~> 3)
   - TTTAttributedLabel (= 1.13.0)
   - uservoice-iphone-sdk (= 3.2.3)
   - YHRoundBorderedButton (= 0.1.0)
@@ -77,33 +73,33 @@ EXTERNAL SOURCES:
   ASPinboard:
     :path: Vendor/ASPinboard
   LHSCategoryCollection:
-    :path: "../LHSCategoryCollection"
+    :path: ../LHSCategoryCollection
   LHSKeyboardAdjusting:
-    :path: "../LHSKeyboardAdjusting"
+    :path: ../LHSKeyboardAdjusting
 
 SPEC CHECKSUMS:
-  1PasswordExtension: 303f2b7bbf6dc19ede3090bd6b5987530648d687
+  1PasswordExtension: e775a29310c65851e5a6cec1afc349ab4e334e47
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   ASPinboard: 80ace27c6db2ac7681d2851b6ba9460d68243bd7
   BRYHTMLParser: f26cabad255a7115842d7b9c1cad8f612cf66deb
   ChimpKit: d020126089544daa349397a91f1489a3f271b791
-  FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
+  FMDB: 6198a90e7b6900cfc046e6bc0ef6ebb7be9236aa
   hpple: 3b765f96fc2cd56ad1a49aef6f7be5cb2aa64b57
   HTMLParser: 0aff2823b285cfe41996d55d1ae742a27ff89305
   KeychainItemWrapper: 67a240172ed669842bc6bc13ed554dcd50469fa2
-  LHSCategoryCollection: a351a51fd0da1be413222ed54020d7b9420eea7f
+  LHSCategoryCollection: 738329e3b0f67a5f981c6e3eb102ce841c6e5ab6
   LHSFMDatabaseAdditions: aba229cb0db6aea013a64c3be1542cd13b0a069e
-  LHSKeyboardAdjusting: 897244ca4bdecf3a6f45e592ce5c37237bfb878d
+  LHSKeyboardAdjusting: 8f9b8d6e80315e653bf3188ae62963874d342d68
   LHSTableViewCells: 47b4d33382cb4a09960371267e2142970afdfdd6
-  Mixpanel: ac92056ee35a961362513ba11049e67cffcaa1f1
+  Mixpanel: 57923411aec1a1c7926efbb158f0bbd4460803fa
   MWFeedParser: 2cf646014c1baf6ad1b08c480b40a08180079247
   OpenInChrome: f1f3f9dec682216fe78a0d7fe0b5b263d6312c32
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  RNCryptor: 59d6483908115af5c12b884db23392024e52a5fe
+  RNCryptor-objc: a65b15493de05dda4af0f392c70372b7a5625aab
   TTTAttributedLabel: 8aeaf67481bb38970711e2641211cba912bd5239
   uservoice-iphone-sdk: 349d9ef36d3c43939d28390b9e86bb32b65fe983
   YHRoundBorderedButton: 2180f04094db264cace8db88eae977d78a3b4633
 
-PODFILE CHECKSUM: 3bc400e2b6c6ae2ad972fd8e418566e0ac20abac
+PODFILE CHECKSUM: 08e5e440d4a78fb62c7d0b59c131a5662ea06f14
 
-COCOAPODS: 1.0.1
+COCOAPODS: 1.3.1
