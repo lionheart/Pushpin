@@ -16,7 +16,7 @@ NSString *const MPABTestDesignerDisconnectMessageType = @"disconnect";
 
 + (instancetype)message
 {
-    return [[self alloc] initWithType:MPABTestDesignerDisconnectMessageType];
+    return [(MPABTestDesignerDisconnectMessage *)[self alloc] initWithType:MPABTestDesignerDisconnectMessageType];
 }
 
 - (NSOperation *)responseCommandWithConnection:(MPABTestDesignerConnection *)connection
@@ -27,9 +27,7 @@ NSString *const MPABTestDesignerDisconnectMessageType = @"disconnect";
 
         MPVariant *variant = [connection sessionObjectForKey:kSessionVariantKey];
         if (variant) {
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                [variant stop];
-            });
+            [variant stop];
         }
 
         conn.sessionEnded = YES;

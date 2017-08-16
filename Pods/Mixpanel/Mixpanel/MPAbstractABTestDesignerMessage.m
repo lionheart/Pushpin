@@ -18,7 +18,7 @@
 
 + (instancetype)messageWithType:(NSString *)type payload:(NSDictionary *)payload
 {
-    return [[self alloc] initWithType:type payload:payload];
+    return [(MPAbstractABTestDesignerMessage *)[self alloc] initWithType:type payload:payload];
 }
 
 - (instancetype)initWithType:(NSString *)type
@@ -59,8 +59,8 @@
 
     NSError *error = nil;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:jsonObject options:(NSJSONWritingOptions)0 error:&error];
-    if (jsonData == nil && error) {
-        MixpanelError(@"Failed to serialize test designer message: %@", error);
+    if (error) {
+        MPLogError(@"Failed to serialize test designer message: %@", error);
     }
 
     return jsonData;

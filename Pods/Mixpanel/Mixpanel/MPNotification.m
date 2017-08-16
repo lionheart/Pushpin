@@ -6,167 +6,113 @@ NSString *const MPNotificationTypeTakeover = @"takeover";
 
 @implementation MPNotification
 
-+ (MPNotification *)notificationWithJSONObject:(NSDictionary *)object
-{
-    if (object == nil) {
-        MixpanelError(@"notif json object should not be nil");
-        return nil;
-    }
-
-    NSNumber *ID = object[@"id"];
-    if (!([ID isKindOfClass:[NSNumber class]] && ID.integerValue > 0)) {
-        MixpanelError(@"invalid notif id: %@", ID);
-        return nil;
-    }
-
-    NSNumber *messageID = object[@"message_id"];
-    if (!([messageID isKindOfClass:[NSNumber class]] && messageID.integerValue > 0)) {
-        MixpanelError(@"invalid notif message id: %@", messageID);
-        return nil;
-    }
-
-    NSString *type = object[@"type"];
-    if (![type isKindOfClass:[NSString class]]) {
-        MixpanelError(@"invalid notif type: %@", type);
-        return nil;
-    }
-    
-    NSString *style = object[@"style"];
-    if (![style isKindOfClass:[NSString class]]) {
-        MixpanelError(@"invalid notif style: %@", style);
-        return nil;
-    }
-
-    NSString *title = object[@"title"];
-    if (![title isKindOfClass:[NSString class]]) {
-        MixpanelError(@"invalid notif title: %@", title);
-        return nil;
-    }
-
-    NSString *body = object[@"body"];
-    if (![body isKindOfClass:[NSString class]]) {
-        MixpanelError(@"invalid notif body: %@", body);
-        return nil;
-    }
-
-    NSString *callToAction = object[@"cta"];
-    if (![callToAction isKindOfClass:[NSString class]]) {
-        MixpanelError(@"invalid notif cta: %@", callToAction);
-        return nil;
-    }
-
-    NSURL *callToActionURL = nil;
-    NSObject *URLString = object[@"cta_url"];
-    if (URLString != nil && ![URLString isKindOfClass:[NSNull class]]) {
-        if (![URLString isKindOfClass:[NSString class]] || [(NSString *)URLString length] == 0) {
-            MixpanelError(@"invalid notif URL: %@", URLString);
+- (instancetype)initWithJSONObject:(NSDictionary *)object {
+    if (self = [super init]) {
+        if (object == nil) {
+            MPLogError(@"notif json object should not be nil");
             return nil;
-        }
-
-        callToActionURL = [NSURL URLWithString:(NSString *)URLString];
-        if (callToActionURL == nil) {
-            MixpanelError(@"invalid notif URL: %@", URLString);
-            return nil;
-        }
-    }
-
-    NSURL *imageURL = nil;
-    NSString *imageURLString = object[@"image_url"];
-    if (imageURLString != nil && ![imageURLString isKindOfClass:[NSNull class]]) {
-        if (![imageURLString isKindOfClass:[NSString class]]) {
-            MixpanelError(@"invalid notif image URL: %@", imageURLString);
-            return nil;
-        }
-        NSString *escapedURLString = [imageURLString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-        imageURL = [NSURL URLWithString:escapedURLString];
-        if (imageURL == nil) {
-            MixpanelError(@"invalid notif image URL: %@", escapedURLString);
-            return nil;
-        }
-
-        NSString *imagePath = imageURL.path;
-        if ([type isEqualToString:MPNotificationTypeTakeover]) {
-            NSString *imageName = [imagePath stringByDeletingPathExtension];
-            NSString *extension = [imagePath pathExtension];
-            imagePath = [[imageName stringByAppendingString:@"@2x"] stringByAppendingPathExtension:extension];
         }
         
-        NSURLComponents *imageURLComponents = [[NSURLComponents alloc] init];
-        imageURLComponents.scheme = imageURL.scheme;
-        imageURLComponents.host = imageURL.host;
-        imageURLComponents.path = imagePath;
-        imageURL = imageURLComponents.URL;
-
-        if (imageURL == nil) {
-            MixpanelError(@"invalid notif image URL: %@", imageURLString);
+        NSNumber *ID = object[@"id"];
+        if (!([ID isKindOfClass:[NSNumber class]] && ID.integerValue > 0)) {
+            [MPNotification logNotificationError:@"id" withValue:ID];
             return nil;
         }
-    }
-
-    return [[MPNotification alloc] initWithID:ID.unsignedIntegerValue
-                                    messageID:messageID.unsignedIntegerValue
-                                         type:type
-                                        style:style
-                                        title:title
-                                         body:body
-                                 callToAction:callToAction
-                              callToActionURL:callToActionURL
-                                     imageURL:imageURL];
-}
-
-- (instancetype)initWithID:(NSUInteger)ID
-                 messageID:(NSUInteger)messageID
-                      type:(NSString *)type
-                     style:(NSString *)style
-                     title:(NSString *)title
-                      body:(NSString *)body
-              callToAction:(NSString *)callToAction
-           callToActionURL:(NSURL *)callToActionURL
-                  imageURL:(NSURL *)imageURL
-{
-    if (self = [super init]) {
-        if (title.length == 0) {
-            MixpanelError(@"Notification title nil or empty: %@", title);
+        
+        NSNumber *messageID = object[@"message_id"];
+        if (!([messageID isKindOfClass:[NSNumber class]] && messageID.integerValue > 0)) {
+            [MPNotification logNotificationError:@"message" withValue:messageID];
             return nil;
         }
-
-        if (body.length == 0) {
-            MixpanelError(@"Notification body nil or empty: %@", body);
+        
+        NSString *body = object[@"body"];
+        if ([body isEqual:[NSNull null]]) {
+            body = nil;
+        }
+        
+        NSNumber *bodyColor = object[@"body_color"];
+        if (!([bodyColor isKindOfClass:[NSNumber class]])) {
+            [MPNotification logNotificationError:@"body color" withValue:bodyColor];
             return nil;
         }
-
-        if (!([type isEqualToString:MPNotificationTypeTakeover] || [type isEqualToString:MPNotificationTypeMini])) {
-            MixpanelError(@"Invalid notification type: %@, must be %@ or %@", type, MPNotificationTypeMini, MPNotificationTypeTakeover);
+        
+        NSNumber *backgroundColor = object[@"bg_color"];
+        if (!([backgroundColor isKindOfClass:[NSNumber class]])) {
+            [MPNotification logNotificationError:@"background color" withValue:bodyColor];
             return nil;
         }
-
-        _ID = ID;
-        _messageID = messageID;
-        _type = type;
-        _style = style;
-        _title = title;
+        
+        NSURL *imageURL = nil;
+        NSString *imageURLString = object[@"image_url"];
+        if (imageURLString != nil && ![imageURLString isKindOfClass:[NSNull class]]) {
+            if (![imageURLString isKindOfClass:[NSString class]]) {
+                [MPNotification logNotificationError:@"image url" withValue:imageURLString];
+                return nil;
+            }
+            
+            NSString *escapedURLString = [imageURLString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+            imageURL = [NSURL URLWithString:escapedURLString];
+            if (imageURL == nil) {
+                [MPNotification logNotificationError:@"image url" withValue:escapedURLString];
+                return nil;
+            }
+            
+            NSString *imagePath = imageURL.path;
+            if ([self.type isEqualToString:MPNotificationTypeTakeover]) {
+                NSString *imageName = [imagePath stringByDeletingPathExtension];
+                NSString *extension = [imagePath pathExtension];
+                imagePath = [[imageName stringByAppendingString:@"@2x"] stringByAppendingPathExtension:extension];
+            }
+            
+            NSURLComponents *imageURLComponents = [[NSURLComponents alloc] init];
+            imageURLComponents.scheme = imageURL.scheme;
+            imageURLComponents.host = imageURL.host;
+            imageURLComponents.path = imagePath;
+            
+            if (imageURLComponents.URL == nil) {
+                [MPNotification logNotificationError:@"image url" withValue:imageURLString];
+                return nil;
+            }
+            imageURL = imageURLComponents.URL;
+        } else {
+            [MPNotification logNotificationError:@"image url" withValue:imageURLString];
+            return nil;
+        }
+        
+        _jsonDescription = object;
+        _extrasDescription = object[@"extras"];
+        _ID = ID.unsignedIntegerValue;
+        _messageID = messageID.unsignedIntegerValue;
         _body = body;
+        _bodyColor = bodyColor.unsignedIntegerValue;
+        _backgroundColor = backgroundColor.unsignedIntegerValue;
         _imageURL = imageURL;
-        _callToAction = callToAction;
-        _callToActionURL = callToActionURL;
         _image = nil;
     }
 
     return self;
 }
 
-- (NSData *)image
-{
+- (NSString *)type {
+    NSAssert(false, @"Sub-classes must override this method");
+    return nil;
+}
+
+- (NSData *)image {
     if (_image == nil && _imageURL != nil) {
         NSError *error = nil;
         NSData *imageData = [NSData dataWithContentsOfURL:_imageURL options:NSDataReadingMappedIfSafe error:&error];
         if (error || !imageData) {
-            MixpanelError(@"image failed to load from URL: %@", _imageURL);
+            MPLogError(@"image failed to load from URL: %@", _imageURL);
             return nil;
         }
         _image = imageData;
     }
     return _image;
+}
+
++ (void)logNotificationError:(NSString *)field withValue:(id)value {
+    MPLogError(@"Invalid notification %@: %@", field, value);
 }
 
 @end

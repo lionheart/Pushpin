@@ -6,13 +6,14 @@
 //  Copyright (c) 2014 Mixpanel. All rights reserved.
 //
 
+#import "MPVariant.h"
 #import "MPLogger.h"
 #import "MPObjectSelector.h"
 #import "MPSwizzler.h"
 #import "MPTweak.h"
 #import "MPTweakStore.h"
 #import "MPValueTransformers.h"
-#import "MPVariant.h"
+#import "NSThread+MPHelpers.h"
 
 @interface MPVariant ()
 
@@ -80,25 +81,25 @@
 
     NSNumber *ID = object[@"id"];
     if (!([ID isKindOfClass:[NSNumber class]] && ID.integerValue > 0)) {
-        MixpanelError(@"invalid variant id: %@", ID);
+        MPLogError(@"invalid variant id: %@", ID);
         return nil;
     }
 
     NSNumber *experimentID = object[@"experiment_id"];
     if (!([experimentID isKindOfClass:[NSNumber class]] && experimentID.integerValue > 0)) {
-        MixpanelError(@"invalid experiment id: %@", experimentID);
+        MPLogError(@"invalid experiment id: %@", experimentID);
         return nil;
     }
 
     NSArray *actions = object[@"actions"];
     if (![actions isKindOfClass:[NSArray class]]) {
-        MixpanelError(@"variant requires an array of actions");
+        MPLogError(@"variant requires an array of actions");
         return nil;
     }
 
     NSArray *tweaks = object[@"tweaks"];
     if (![tweaks isKindOfClass:[NSArray class]]) {
-        MixpanelError(@"variant requires an array of tweaks");
+        MPLogError(@"variant requires an array of tweaks");
         return nil;
     }
 
@@ -241,7 +242,7 @@
 
 - (BOOL)isEqualToVariant:(MPVariant *)variant
 {
-    return self.ID == variant.ID;
+    return self.ID == variant.ID && [self.actions isEqual:variant.actions];
 }
 
 - (BOOL)isEqual:(id)object
@@ -299,19 +300,19 @@ static NSMapTable *originalCache;
     // Required parameters
     MPObjectSelector *path = [MPObjectSelector objectSelectorWithString:object[@"path"]];
     if (!path) {
-        MixpanelError(@"invalid action path: %@", object[@"path"]);
+        MPLogError(@"invalid action path: %@", object[@"path"]);
         return nil;
     }
 
     SEL selector = NSSelectorFromString(object[@"selector"]);
     if (selector == (SEL)0) {
-        MixpanelError(@"invalid action selector: %@", object[@"selector"]);
+        MPLogError(@"invalid action selector: %@", object[@"selector"]);
         return nil;
     }
 
     NSArray *args = object[@"args"];
     if (![args isKindOfClass:[NSArray class]]) {
-        MixpanelError(@"invalid action arguments: %@", args);
+        MPLogError(@"invalid action arguments: %@", args);
         return nil;
     }
 
@@ -372,7 +373,20 @@ static NSMapTable *originalCache;
         self.swizzleClass = swizzleClass;
 
         if (!swizzleSelector) {
-            swizzleSelector = NSSelectorFromString(@"didMoveToWindow");
+            BOOL shouldUseLayoutSubviews = NO;
+            NSArray *classesToUseLayoutSubviews = @[[UITableViewCell class], [UINavigationBar class]];
+            for (Class klass in classesToUseLayoutSubviews) {
+                if ([self.swizzleClass isSubclassOfClass:klass] ||
+                    [self.path pathContainsObjectOfClass:klass]) {
+                    shouldUseLayoutSubviews = YES;
+                    break;
+                }
+            }
+            if (shouldUseLayoutSubviews) {
+                swizzleSelector = NSSelectorFromString(@"layoutSubviews");
+            } else {
+                swizzleSelector = NSSelectorFromString(@"didMoveToWindow");
+            }
         }
         self.swizzleSelector = swizzleSelector;
 
@@ -396,12 +410,13 @@ static NSMapTable *originalCache;
         self.swizzle = [(NSNumber *)[aDecoder decodeObjectForKey:@"swizzle"] boolValue];
         self.swizzleClass = NSClassFromString([aDecoder decodeObjectForKey:@"swizzleClass"]);
         self.swizzleSelector = NSSelectorFromString([aDecoder decodeObjectForKey:@"swizzleSelector"]);
+
+        self.appliedTo = [NSHashTable hashTableWithOptions:(NSHashTableWeakMemory|NSHashTableObjectPointerPersonality)];
     }
     return self;
 }
 
-- (void)encodeWithCoder:(NSCoder *)aCoder
-{
+- (void)encodeWithCoder:(NSCoder *)aCoder {
     [aCoder encodeObject:_name forKey:@"name"];
 
     [aCoder encodeObject:_path.string forKey:@"path"];
@@ -416,46 +431,39 @@ static NSMapTable *originalCache;
 
 #pragma mark Executing Actions
 
-- (void)execute
-{
+- (void)execute {
     // Block to execute on swizzle
-    void (^executeBlock)(id, SEL) = ^(id view, SEL command){
+    void (^executeBlock)(id, SEL) = ^(id view, SEL command) {
+        [NSThread mp_safelyRunOnMainThreadSync:^{
+            if (self.cacheOriginal) {
+                [self cacheOriginalImage:view];
+            }
 
-        if (self.cacheOriginal) {
-            [self cacheOriginalImage:view];
-        }
+            NSArray *invocations = [[self class] executeSelector:self.selector
+                                                        withArgs:self.args
+                                                          onPath:self.path
+                                                        fromRoot:[UIApplication sharedApplication].keyWindow.rootViewController
+                                                          toLeaf:view];
 
-        NSArray *invocations = [[self class] executeSelector:self.selector
-                                                    withArgs:self.args
-                                                      onPath:self.path
-                                                    fromRoot:[UIApplication sharedApplication].keyWindow.rootViewController
-                                                      toLeaf:view];
-
-        for (NSInvocation *invocation in invocations) {
-            [self.appliedTo addObject:invocation.target];
-        }
+            for (NSInvocation *invocation in invocations) {
+                [self.appliedTo addObject:invocation.target];
+            }
+        }];
     };
 
     // Execute once in case the view to be changed is already on screen.
     executeBlock(nil, _cmd);
 
-    // The block that is called on swizzle executes the executeBlock on the main queue to minimize time
-    // spent in the swizzle, and allow the newly added UI elements time to be initialized on screen.
-    void (^swizzleBlock)(id, SEL) = ^(id view, SEL command){
-        dispatch_async(dispatch_get_main_queue(), ^{ executeBlock(view, command);});
-    };
-
     if (self.swizzle && self.swizzleClass != nil) {
         // Swizzle the method needed to check for this object coming onscreen
         [MPSwizzler swizzleSelector:self.swizzleSelector
                             onClass:self.swizzleClass
-                          withBlock:swizzleBlock
+                          withBlock:executeBlock
                               named:self.name];
     }
 }
 
-- (void)stop
-{
+- (void)stop {
     if (self.swizzle && self.swizzleClass != nil) {
         // Stop this change from applying in future
         [MPSwizzler unswizzleSelector:self.swizzleSelector
@@ -463,15 +471,17 @@ static NSMapTable *originalCache;
                                 named:self.name];
     }
 
-    if (self.original) {
-        // Undo the changes with the original values specified in the action
-        [[self class] executeSelector:self.selector withArgs:self.original onObjects:self.appliedTo.allObjects];
-    } else if (self.cacheOriginal) {
-        // Or undo them from the local cache of original images
-        [self restoreCachedImage];
-    }
+    [NSThread mp_safelyRunOnMainThreadSync:^{
+        if (self.original) {
+            // Undo the changes with the original values specified in the action
+            [[self class] executeSelector:self.selector withArgs:self.original onObjects:self.appliedTo.allObjects];
+        } else if (self.cacheOriginal) {
+            // Or undo them from the local cache of original images
+            [self restoreCachedImage];
+        }
 
-    [self.appliedTo removeAllObjects];
+        [self.appliedTo removeAllObjects];
+    }];
 }
 
 - (void)cacheOriginalImage:(id)view
@@ -574,17 +584,21 @@ static NSMapTable *originalCache;
                     }
                 }
                 @try {
+                    // This check is done to avoid moving and resizing UI components that you are not allowed to change.
+                    if ([NSStringFromSelector(selector) isEqualToString:@"setFrame:"] && ![o isKindOfClass:[UINavigationBar class]]) {
+                        ((UIView *)o).translatesAutoresizingMaskIntoConstraints = YES;
+                    }
                     [invocation invokeWithTarget:o];
                 }
                 @catch (NSException *exception) {
-                    MixpanelError(@"Exception during invocation: %@", exception);
+                    MPLogError(@"Exception during invocation: %@", exception);
                 }
                 [invocations addObject:invocation];
             } else {
-                MixpanelError(@"Not enough args");
+                MPLogError(@"Not enough args");
             }
         } else {
-            MixpanelError(@"No method found for %@", NSStringFromSelector(selector));
+            MPLogError(@"No method found for %@", NSStringFromSelector(selector));
         }
     }
     return [invocations copy];
@@ -625,19 +639,19 @@ static NSMapTable *originalCache;
     // Required parameters
     NSString *name = object[@"name"];
     if (![name isKindOfClass:[NSString class]]) {
-        MixpanelError(@"invalid name: %@", name);
+        MPLogError(@"invalid name: %@", name);
         return nil;
     }
 
     NSString *encoding = object[@"encoding"];
     if (![encoding isKindOfClass:[NSString class]]) {
-        MixpanelError(@"invalid encoding: %@", encoding);
+        MPLogError(@"invalid encoding: %@", encoding);
         return nil;
     }
 
     MPTweakValue value = object[@"value"];
     if (value == nil) {
-        MixpanelError(@"invalid value: %@", value);
+        MPLogError(@"invalid value: %@", value);
         return nil;
     }
 
