@@ -15,7 +15,7 @@ target 'Pushpin' do
   pod 'ASPinboard', :path => 'Vendor/ASPinboard'
   pod 'HTMLParser'
   pod 'AFNetworking', '~> 3.0'
-  pod 'RNCryptor', '~> 4.0'
+  pod 'RNCryptor-objc', '~> 3'
   pod '1PasswordExtension', '~> 1.8'
   pod 'YHRoundBorderedButton', '0.1.0'
   pod 'LHSCategoryCollection', :path => '../LHSCategoryCollection'
@@ -39,7 +39,7 @@ target 'SharedSafe' do
   pod 'ASPinboard', :path => 'Vendor/ASPinboard'
   pod 'HTMLParser'
   pod 'AFNetworking', '~> 3.0'
-  pod 'RNCryptor', '~> 4.0'
+  pod 'RNCryptor-objc', '~> 3'
   pod '1PasswordExtension', '~> 1.8'
   pod 'YHRoundBorderedButton', '0.1.0'
   pod 'LHSCategoryCollection', :path => '../LHSCategoryCollection'
@@ -47,16 +47,4 @@ target 'SharedSafe' do
   pod 'LHSFMDatabaseAdditions', '0.0.3'
   pod 'LHSTableViewCells'
   pod 'FMDB'
-
-  target 'BookmarkExtension' do
-    inherit! :search_paths
-
-    pod 'Mixpanel/AppExtension'
-  end
-
-  target 'ReadLaterExtension' do
-    inherit! :search_paths
-
-    pod 'Mixpanel/AppExtension'
-  end
 end
