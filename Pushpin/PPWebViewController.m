@@ -13,7 +13,7 @@
 @import SafariServices;
 @import Mixpanel;
 @import LHSCategoryCollection;
-@import RNCryptor;
+@import RNCryptor_objc;
 @import JavaScriptCore;
 @import KeychainItemWrapper;
 
@@ -1182,9 +1182,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                                                 if ([[(NSHTTPURLResponse *)response MIMEType] isEqualToString:@"text/plain"]) {
                                                     NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                                                     NSData *encodedData = [[NSData alloc] initWithBase64EncodedString:string options:NSDataBase64DecodingIgnoreUnknownCharacters];
-                                                    NSData *decryptedData = [RNCryptor decryptData:encodedData
-                                                                                          password:@"Isabelle and Dante"
-                                                                                             error:nil];
+                                                    NSData *decryptedData = [RNDecryptor decryptData:encodedData withPassword:@"Isabelle and Dante" error:nil];
                                                     id article = [NSJSONSerialization JSONObjectWithData:decryptedData
                                                                                                  options:NSJSONReadingAllowFragments
                                                                                                    error:nil];

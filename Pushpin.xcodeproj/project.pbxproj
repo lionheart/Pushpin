@@ -152,18 +152,6 @@
 		37AB960A18C437090008CDD5 /* browse-recent@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37AB960618C437090008CDD5 /* browse-recent@2x.png */; };
 		37AD159518A13365005813CC /* About-Delicious.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37AD159418A13365005813CC /* About-Delicious.plist */; };
 		37B5F4E51773864C005687DA /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37B5F4E41773864C005687DA /* Twitter.framework */; };
-		37BC1DE41D32861A00AC4607 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BC1DE31D32861A00AC4607 /* ShareViewController.swift */; };
-		37BC1DEB1D32861A00AC4607 /* BookmarkExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 37BC1DE11D32861A00AC4607 /* BookmarkExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		37BC1DF81D32862F00AC4607 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BC1DF71D32862F00AC4607 /* ShareViewController.swift */; };
-		37BC1DFF1D32862F00AC4607 /* ReadLaterExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 37BC1DF51D32862F00AC4607 /* ReadLaterExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		37BC1E051D32891D00AC4607 /* Share-AppStore.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 374D91E019CE26A700995DF1 /* Share-AppStore.entitlements */; };
-		37BC1E061D32891D00AC4607 /* Share-AppStore.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 374D91E019CE26A700995DF1 /* Share-AppStore.entitlements */; };
-		37BC1E071D32892E00AC4607 /* Share-Beta.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 374D91DB19CE26A700995DF1 /* Share-Beta.entitlements */; };
-		37BC1E081D32892E00AC4607 /* Share-Beta.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 374D91DB19CE26A700995DF1 /* Share-Beta.entitlements */; };
-		37BC1E091D32893100AC4607 /* Share-Dev.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 374D91DC19CE26A700995DF1 /* Share-Dev.entitlements */; };
-		37BC1E0A1D32893100AC4607 /* Share-Dev.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 374D91DC19CE26A700995DF1 /* Share-Dev.entitlements */; };
-		37BC1E0B1D32893900AC4607 /* AppExtensionHelper.js in Resources */ = {isa = PBXBuildFile; fileRef = 374D91DF19CE26A700995DF1 /* AppExtensionHelper.js */; };
-		37BC1E0C1D32893900AC4607 /* AppExtensionHelper.js in Resources */ = {isa = PBXBuildFile; fileRef = 374D91DF19CE26A700995DF1 /* AppExtensionHelper.js */; };
 		37CBB7411881B44B000F9C36 /* About.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7401881B44B000F9C36 /* About.plist */; };
 		37CBB7551881FFBC000F9C36 /* About.json in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7541881FFBC000F9C36 /* About.json */; };
 		37DE5AAA174EF8AF0073A2F4 /* back_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 37DE5AA0174EF8AE0073A2F4 /* back_icon.png */; };
@@ -174,18 +162,8 @@
 		37F1E1BC18C617940032B22B /* navigation-search.png in Resources */ = {isa = PBXBuildFile; fileRef = 37F1E1B818C617940032B22B /* navigation-search.png */; };
 		37F1E1BD18C617940032B22B /* navigation-search@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37F1E1B918C617940032B22B /* navigation-search@2x.png */; };
 		37F95C111D32CEAC00422DD6 /* LHSBooleanTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 37171A2E18B1714E007FF164 /* LHSBooleanTableViewCell.m */; };
-		37F95C1C1D32D1DB00422DD6 /* PPAddBookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E44162B389B009FCB17 /* PPAddBookmarkViewController.m */; };
-		37F95C1D1D32D1DB00422DD6 /* PPAddBookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E44162B389B009FCB17 /* PPAddBookmarkViewController.m */; };
 		37F95C1F1D32D37E00422DD6 /* PPSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 37889D4319981212002E245A /* PPSettings.m */; };
-		37F95C291D32D9F700422DD6 /* PPNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 374698BF174B33CF00407345 /* PPNotification.m */; };
-		37F95C2A1D32D9F800422DD6 /* PPNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 374698BF174B33CF00407345 /* PPNotification.m */; };
-		37F95C2B1D32DA1300422DD6 /* PPNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F91F3D177AB1D500683D46 /* PPNavigationController.m */; };
-		37F95C2C1D32DA1400422DD6 /* PPNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F91F3D177AB1D500683D46 /* PPNavigationController.m */; };
 		37F95C2E1D32DB5500422DD6 /* PPReaderSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A2B4A9199EA8CA005B7671 /* PPReaderSettings.m */; };
-		37F95C311D32DB8300422DD6 /* PPPinboardDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733252716E15D6A002E2AB0 /* PPPinboardDataSource.m */; };
-		37F95C321D32DB8400422DD6 /* PPPinboardDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733252716E15D6A002E2AB0 /* PPPinboardDataSource.m */; };
-		37F95C3C1D32DEE400422DD6 /* SharedSafe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 379042B219CC646700409D34 /* SharedSafe.framework */; };
-		37F95C3D1D32DF7F00422DD6 /* SharedSafe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 379042B219CC646700409D34 /* SharedSafe.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		37F9D0961D32FDE1002A168D /* BookmarkletInstallationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */; };
 		37F9D0971D32FDF9002A168D /* PPSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37171A2B18B16C77007FF164 /* PPSearchViewController.m */; };
 		37F9D0981D32FDFB002A168D /* PPTwitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 37BC1BDA1889C6740022020A /* PPTwitter.m */; };
@@ -222,7 +200,7 @@
 		37F9D0C01D330239002A168D /* CoreSpotlight.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37F9D0BF1D330239002A168D /* CoreSpotlight.framework */; };
 		37F9D0C11D330246002A168D /* PPBrowserActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 37018CE4180E3C0B00226408 /* PPBrowserActivity.m */; };
 		37F9D0CB1D330332002A168D /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37F9D0CA1D330332002A168D /* CoreMotion.framework */; };
-		37F9D0CF1D330388002A168D /* (null) in CopyFiles */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		37F9D0CF1D330388002A168D /* BuildFile in CopyFiles */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		37F9D0D21D330425002A168D /* SharedSafe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 379042B219CC646700409D34 /* SharedSafe.framework */; };
 		37F9D0D31D330425002A168D /* SharedSafe.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 379042B219CC646700409D34 /* SharedSafe.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		37F9D0D81D330440002A168D /* PPAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEBA215745488003F2B77 /* PPAppDelegate.m */; };
@@ -233,13 +211,11 @@
 		37FB4F981D32ED60004D5C12 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEB9E15745488003F2B77 /* main.m */; };
 		37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9415745488003F2B77 /* Foundation.framework */; };
 		5758E62A8847EC5BE44AD826 /* Pods_SharedSafe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1220199B73DD6474740BDE0 /* Pods_SharedSafe.framework */; };
-		7C999A09B0D2861C99DEA9A3 /* Pods_BookmarkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3F909DEAE43E6D72C0DAD5B /* Pods_BookmarkExtension.framework */; };
 		B63698721B0FCC2700F15D42 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B63698711B0FCC2700F15D42 /* Launch Screen.xib */; };
 		B6E3041C1B3DC95500135CF1 /* pinboard-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E304181B3DC95500135CF1 /* pinboard-logo@2x.png */; };
 		B6E3041D1B3DC95500135CF1 /* pinboard.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = B6E304191B3DC95500135CF1 /* pinboard.jpeg */; };
 		B6E3041E1B3DC95500135CF1 /* pushpin-cloud-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E3041A1B3DC95500135CF1 /* pushpin-cloud-logo.png */; };
 		B6E3041F1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E3041B1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png */; };
-		E067414DA0058A93D314558B /* Pods_ReadLaterExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E0708FCB9F2E69436A23527 /* Pods_ReadLaterExtension.framework */; };
 		E6B7CF996201BD8DBAE91532 /* Pods_Pushpin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5425ABB5B0FF12D61E064A0C /* Pods_Pushpin.framework */; };
 		E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E804950F18103DC700C5CA8B /* SafariServices.framework */; };
 		E873423B180DAC8800CF9E5F /* activity-browser-chrome.png in Resources */ = {isa = PBXBuildFile; fileRef = E8734239180DAC8800CF9E5F /* activity-browser-chrome.png */; };
@@ -303,34 +279,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		3716E8401D32986E00D8039E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 37FEEB8515745488003F2B77 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 379042B119CC646700409D34;
-			remoteInfo = PushpinFramework;
-		};
-		3716E8421D32987100D8039E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 37FEEB8515745488003F2B77 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 379042B119CC646700409D34;
-			remoteInfo = PushpinFramework;
-		};
-		37BC1DE91D32861A00AC4607 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 37FEEB8515745488003F2B77 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 37BC1DE01D32861A00AC4607;
-			remoteInfo = BookmarkExtension2;
-		};
-		37BC1DFD1D32862F00AC4607 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 37FEEB8515745488003F2B77 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 37BC1DF41D32862F00AC4607;
-			remoteInfo = ReadLaterExtension;
-		};
 		37F9D0D41D330425002A168D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 37FEEB8515745488003F2B77 /* Project object */;
@@ -347,8 +295,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				37BC1DEB1D32861A00AC4607 /* BookmarkExtension.appex in Embed App Extensions */,
-				37BC1DFF1D32862F00AC4607 /* ReadLaterExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -359,7 +305,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				37F9D0CF1D330388002A168D /* (null) in CopyFiles */,
+				37F9D0CF1D330388002A168D /* BuildFile in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -574,10 +520,8 @@
 		37BC1BD91889C6730022020A /* PPTwitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTwitter.h; sourceTree = "<group>"; };
 		37BC1BDA1889C6740022020A /* PPTwitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTwitter.m; sourceTree = "<group>"; };
 		37BC1DA71D3280EF00AC4607 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		37BC1DE11D32861A00AC4607 /* BookmarkExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BookmarkExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		37BC1DE31D32861A00AC4607 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		37BC1DE81D32861A00AC4607 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		37BC1DF51D32862F00AC4607 /* ReadLaterExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ReadLaterExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		37BC1DF71D32862F00AC4607 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		37BC1DFC1D32862F00AC4607 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		37C012B71765423900938D81 /* PPMultipleEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPMultipleEditViewController.h; sourceTree = "<group>"; };
@@ -776,24 +720,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				5758E62A8847EC5BE44AD826 /* Pods_SharedSafe.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		37BC1DDE1D32861A00AC4607 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				7C999A09B0D2861C99DEA9A3 /* Pods_BookmarkExtension.framework in Frameworks */,
-				37F95C3D1D32DF7F00422DD6 /* SharedSafe.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		37BC1DF21D32862F00AC4607 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				E067414DA0058A93D314558B /* Pods_ReadLaterExtension.framework in Frameworks */,
-				37F95C3C1D32DEE400422DD6 /* SharedSafe.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1178,9 +1104,7 @@
 		37FEEB8F15745488003F2B77 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				37BC1DE11D32861A00AC4607 /* BookmarkExtension.appex */,
 				37FEEB8E15745488003F2B77 /* Pushpin.app */,
-				37BC1DF51D32862F00AC4607 /* ReadLaterExtension.appex */,
 				379042B219CC646700409D34 /* SharedSafe.framework */,
 			);
 			name = Products;
@@ -1508,48 +1432,6 @@
 			productReference = 379042B219CC646700409D34 /* SharedSafe.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		37BC1DE01D32861A00AC4607 /* BookmarkExtension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 37BC1DF01D32861B00AC4607 /* Build configuration list for PBXNativeTarget "BookmarkExtension" */;
-			buildPhases = (
-				CDB199A82AF0FF03DDB3F096 /* [CP] Check Pods Manifest.lock */,
-				37BC1DDD1D32861A00AC4607 /* Sources */,
-				37BC1DDE1D32861A00AC4607 /* Frameworks */,
-				37BC1DDF1D32861A00AC4607 /* Resources */,
-				2DF954F7793C1E4C60D9E5F3 /* [CP] Embed Pods Frameworks */,
-				54939D5792980E2F07411F42 /* [CP] Copy Pods Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				3716E8411D32986E00D8039E /* PBXTargetDependency */,
-			);
-			name = BookmarkExtension;
-			productName = BookmarkExtension2;
-			productReference = 37BC1DE11D32861A00AC4607 /* BookmarkExtension.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
-		37BC1DF41D32862F00AC4607 /* ReadLaterExtension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 37BC1E001D32863000AC4607 /* Build configuration list for PBXNativeTarget "ReadLaterExtension" */;
-			buildPhases = (
-				1401171FD1AC57819636F832 /* [CP] Check Pods Manifest.lock */,
-				37BC1DF11D32862F00AC4607 /* Sources */,
-				37BC1DF21D32862F00AC4607 /* Frameworks */,
-				37BC1DF31D32862F00AC4607 /* Resources */,
-				4655B8F44086F24E86CFF973 /* [CP] Embed Pods Frameworks */,
-				8F9EF058D55A1E680AE40B70 /* [CP] Copy Pods Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				3716E8431D32987100D8039E /* PBXTargetDependency */,
-			);
-			name = ReadLaterExtension;
-			productName = ReadLaterExtension;
-			productReference = 37BC1DF51D32862F00AC4607 /* ReadLaterExtension.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
 		37FEEB8D15745488003F2B77 /* Pushpin */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 37FEEBA615745488003F2B77 /* Build configuration list for PBXNativeTarget "Pushpin" */;
@@ -1566,8 +1448,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				37BC1DEA1D32861A00AC4607 /* PBXTargetDependency */,
-				37BC1DFE1D32862F00AC4607 /* PBXTargetDependency */,
 				37F9D0D51D330425002A168D /* PBXTargetDependency */,
 			);
 			name = Pushpin;
@@ -1589,17 +1469,11 @@
 					379042B119CC646700409D34 = {
 						CreatedOnToolsVersion = 6.0;
 						DevelopmentTeam = 63553QQ62F;
-					};
-					37BC1DE01D32861A00AC4607 = {
-						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = 63553QQ62F;
-					};
-					37BC1DF41D32862F00AC4607 = {
-						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = 63553QQ62F;
+						LastSwiftMigration = 0830;
 					};
 					37FEEB8D15745488003F2B77 = {
 						DevelopmentTeam = 63553QQ62F;
+						LastSwiftMigration = 0830;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
@@ -1634,8 +1508,6 @@
 			targets = (
 				37FEEB8D15745488003F2B77 /* Pushpin */,
 				379042B119CC646700409D34 /* SharedSafe */,
-				37BC1DE01D32861A00AC4607 /* BookmarkExtension */,
-				37BC1DF41D32862F00AC4607 /* ReadLaterExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -1645,28 +1517,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		37BC1DDF1D32861A00AC4607 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				37BC1E0B1D32893900AC4607 /* AppExtensionHelper.js in Resources */,
-				37BC1E051D32891D00AC4607 /* Share-AppStore.entitlements in Resources */,
-				37BC1E071D32892E00AC4607 /* Share-Beta.entitlements in Resources */,
-				37BC1E091D32893100AC4607 /* Share-Dev.entitlements in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		37BC1DF31D32862F00AC4607 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				37BC1E0C1D32893900AC4607 /* AppExtensionHelper.js in Resources */,
-				37BC1E061D32891D00AC4607 /* Share-AppStore.entitlements in Resources */,
-				37BC1E081D32892E00AC4607 /* Share-Beta.entitlements in Resources */,
-				37BC1E0A1D32893100AC4607 /* Share-Dev.entitlements in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1854,79 +1704,22 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		1401171FD1AC57819636F832 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		2DF954F7793C1E4C60D9E5F3 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BookmarkExtension/Pods-BookmarkExtension-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		4655B8F44086F24E86CFF973 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ReadLaterExtension/Pods-ReadLaterExtension-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		47B6FB3777030947D5381F4E /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SharedSafe-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		54939D5792980E2F07411F42 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-BookmarkExtension/Pods-BookmarkExtension-resources.sh\"\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		5493B870AE9DECF8A9CDAAE0 /* [CP] Copy Pods Resources */ = {
@@ -1950,28 +1743,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Pushpin-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		8F9EF058D55A1E680AE40B70 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ReadLaterExtension/Pods-ReadLaterExtension-resources.sh\"\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		AC2AD9DB75B8779818ADA329 /* [CP] Copy Pods Resources */ = {
@@ -1989,30 +1770,58 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SharedSafe/Pods-SharedSafe-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		CDB199A82AF0FF03DDB3F096 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
 		D570D088630964A43514ACFC /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/1PasswordExtension/OnePasswordExtension.framework",
+				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
+				"${BUILT_PRODUCTS_DIR}/ASPinboard/ASPinboard.framework",
+				"${BUILT_PRODUCTS_DIR}/BRYHTMLParser/BRYHTMLParser.framework",
+				"${BUILT_PRODUCTS_DIR}/ChimpKit/ChimpKit.framework",
+				"${BUILT_PRODUCTS_DIR}/FMDB/FMDB.framework",
+				"${BUILT_PRODUCTS_DIR}/HTMLParser/HTMLParser.framework",
+				"${BUILT_PRODUCTS_DIR}/KeychainItemWrapper/KeychainItemWrapper.framework",
+				"${BUILT_PRODUCTS_DIR}/LHSCategoryCollection/LHSCategoryCollection.framework",
+				"${BUILT_PRODUCTS_DIR}/LHSFMDatabaseAdditions/LHSFMDatabaseAdditions.framework",
+				"${BUILT_PRODUCTS_DIR}/LHSKeyboardAdjusting/LHSKeyboardAdjusting.framework",
+				"${BUILT_PRODUCTS_DIR}/LHSTableViewCells/LHSTableViewCells.framework",
+				"${BUILT_PRODUCTS_DIR}/MWFeedParser/MWFeedParser.framework",
+				"${BUILT_PRODUCTS_DIR}/Mixpanel/Mixpanel.framework",
+				"${BUILT_PRODUCTS_DIR}/OpenInChrome/OpenInChrome.framework",
+				"${BUILT_PRODUCTS_DIR}/RNCryptor-objc/RNCryptor_objc.framework",
+				"${BUILT_PRODUCTS_DIR}/Reachability/Reachability.framework",
+				"${BUILT_PRODUCTS_DIR}/TTTAttributedLabel/TTTAttributedLabel.framework",
+				"${BUILT_PRODUCTS_DIR}/YHRoundBorderedButton/YHRoundBorderedButton.framework",
+				"${BUILT_PRODUCTS_DIR}/hpple/hpple.framework",
+				"${BUILT_PRODUCTS_DIR}/uservoice-iphone-sdk/uservoice_iphone_sdk.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OnePasswordExtension.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ASPinboard.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BRYHTMLParser.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ChimpKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FMDB.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/HTMLParser.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainItemWrapper.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/LHSCategoryCollection.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/LHSFMDatabaseAdditions.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/LHSKeyboardAdjusting.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/LHSTableViewCells.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MWFeedParser.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mixpanel.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OpenInChrome.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RNCryptor_objc.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TTTAttributedLabel.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YHRoundBorderedButton.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hpple.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/uservoice_iphone_sdk.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2060,30 +1869,6 @@
 				372943E719CF3AFF00ABF006 /* PPUtilities.m in Sources */,
 				379042A919CBDCDF00409D34 /* PSPDFUIKitMainThreadGuard.m in Sources */,
 				379042AC19CBDCDF00409D34 /* UITableView+Additions.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		37BC1DDD1D32861A00AC4607 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				37F95C1C1D32D1DB00422DD6 /* PPAddBookmarkViewController.m in Sources */,
-				37F95C2C1D32DA1400422DD6 /* PPNavigationController.m in Sources */,
-				37F95C291D32D9F700422DD6 /* PPNotification.m in Sources */,
-				37F95C321D32DB8400422DD6 /* PPPinboardDataSource.m in Sources */,
-				37BC1DE41D32861A00AC4607 /* ShareViewController.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		37BC1DF11D32862F00AC4607 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				37F95C1D1D32D1DB00422DD6 /* PPAddBookmarkViewController.m in Sources */,
-				37F95C2B1D32DA1300422DD6 /* PPNavigationController.m in Sources */,
-				37F95C2A1D32D9F800422DD6 /* PPNotification.m in Sources */,
-				37F95C311D32DB8300422DD6 /* PPPinboardDataSource.m in Sources */,
-				37BC1DF81D32862F00AC4607 /* ShareViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2135,26 +1920,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		3716E8411D32986E00D8039E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 379042B119CC646700409D34 /* SharedSafe */;
-			targetProxy = 3716E8401D32986E00D8039E /* PBXContainerItemProxy */;
-		};
-		3716E8431D32987100D8039E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 379042B119CC646700409D34 /* SharedSafe */;
-			targetProxy = 3716E8421D32987100D8039E /* PBXContainerItemProxy */;
-		};
-		37BC1DEA1D32861A00AC4607 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 37BC1DE01D32861A00AC4607 /* BookmarkExtension */;
-			targetProxy = 37BC1DE91D32861A00AC4607 /* PBXContainerItemProxy */;
-		};
-		37BC1DFE1D32862F00AC4607 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 37BC1DF41D32862F00AC4607 /* ReadLaterExtension */;
-			targetProxy = 37BC1DFD1D32862F00AC4607 /* PBXContainerItemProxy */;
-		};
 		37F9D0D51D330425002A168D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 379042B119CC646700409D34 /* SharedSafe */;
@@ -2290,6 +2055,7 @@
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = YES;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -2392,6 +2158,7 @@
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = YES;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -2459,6 +2226,7 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -2524,6 +2292,7 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -2590,6 +2359,7 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -2656,458 +2426,11 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = YES;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
-			};
-			name = "Pinboard Beta";
-		};
-		37BC1DEC1D32861B00AC4607 /* Pinboard Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3A3B65690814986CC704D649 /* Pods-BookmarkExtension.pinboard debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = "Pinboard/Share-Dev.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
-				ENABLE_BITCODE = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-					"APP_EXTENSION_SAFE=1",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = BookmarkExtension2/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpindev.$(PRODUCT_NAME)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "BookmarkExtension2/BookmarkExtension-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-			};
-			name = "Pinboard Debug";
-		};
-		37BC1DED1D32861B00AC4607 /* Pinboard App Store */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = B52918749386B6BDC7B2F8ED /* Pods-BookmarkExtension.pinboard app store.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = "Pinboard/Share-AppStore.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
-				ENABLE_BITCODE = NO;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					"COCOAPODS=1",
-					MIXPANEL_APP_EXTENSION,
-					"APP_EXTENSION_SAFE=1",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = BookmarkExtension2/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpin.$(PRODUCT_NAME)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "BookmarkExtension2/BookmarkExtension-Bridging-Header.h";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = "Pinboard App Store";
-		};
-		37BC1DEE1D32861B00AC4607 /* Pinboard App Store Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 452DCCB6662A00CCC2560D4E /* Pods-BookmarkExtension.pinboard app store debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = "Pinboard/Share-AppStore.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
-				ENABLE_BITCODE = NO;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					"COCOAPODS=1",
-					"$(inherited)",
-					MIXPANEL_APP_EXTENSION,
-					"APP_EXTENSION_SAFE=1",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = BookmarkExtension2/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpin.$(PRODUCT_NAME)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "BookmarkExtension2/BookmarkExtension-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = "Pinboard App Store Debug";
-		};
-		37BC1DEF1D32861B00AC4607 /* Pinboard Beta */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = E6D1211C1A069BC8F82CEADF /* Pods-BookmarkExtension.pinboard beta.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = "Pinboard/Share-Beta.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
-				ENABLE_BITCODE = NO;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					"COCOAPODS=1",
-					MIXPANEL_APP_EXTENSION,
-					"APP_EXTENSION_SAFE=1",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = BookmarkExtension2/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpinbeta.$(PRODUCT_NAME)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "BookmarkExtension2/BookmarkExtension-Bridging-Header.h";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = "Pinboard Beta";
-		};
-		37BC1E011D32863000AC4607 /* Pinboard Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = AC7A34175B3086B5BF1AC40E /* Pods-ReadLaterExtension.pinboard debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = "Pinboard/Share-Dev.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
-				ENABLE_BITCODE = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					"DEBUG=1",
-					"APP_EXTENSION_SAFE=1",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = ReadLaterExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpindev.$(PRODUCT_NAME)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-			};
-			name = "Pinboard Debug";
-		};
-		37BC1E021D32863000AC4607 /* Pinboard App Store */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 791009AD63AD512B348A84B4 /* Pods-ReadLaterExtension.pinboard app store.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = "Pinboard/Share-AppStore.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
-				ENABLE_BITCODE = NO;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					"COCOAPODS=1",
-					"APP_EXTENSION_SAFE=1",
-					MIXPANEL_APP_EXTENSION,
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = ReadLaterExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpin.$(PRODUCT_NAME)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				VALIDATE_PRODUCT = YES;
-			};
-			name = "Pinboard App Store";
-		};
-		37BC1E031D32863000AC4607 /* Pinboard App Store Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 08394A8A45FD1BB534C6B487 /* Pods-ReadLaterExtension.pinboard app store debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = "Pinboard/Share-AppStore.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
-				ENABLE_BITCODE = NO;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					"COCOAPODS=1",
-					MIXPANEL_APP_EXTENSION,
-					"APP_EXTENSION_SAFE=1",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = ReadLaterExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpin.$(PRODUCT_NAME)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				VALIDATE_PRODUCT = YES;
-			};
-			name = "Pinboard App Store Debug";
-		};
-		37BC1E041D32863000AC4607 /* Pinboard Beta */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6EC2C277D16AE72291D2254F /* Pods-ReadLaterExtension.pinboard beta.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = "Pinboard/Share-Beta.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
-				ENABLE_BITCODE = NO;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					"COCOAPODS=1",
-					"APP_EXTENSION_SAFE=1",
-					MIXPANEL_APP_EXTENSION,
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = ReadLaterExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpinbeta.$(PRODUCT_NAME)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				VALIDATE_PRODUCT = YES;
 			};
 			name = "Pinboard Beta";
 		};
@@ -3283,6 +2606,7 @@
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = YES;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -3315,6 +2639,7 @@
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = YES;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -3330,28 +2655,6 @@
 				379042C519CC646B00409D34 /* Pinboard App Store */,
 				379042C619CC646B00409D34 /* Pinboard App Store Debug */,
 				379042C819CC646B00409D34 /* Pinboard Beta */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Pinboard Debug";
-		};
-		37BC1DF01D32861B00AC4607 /* Build configuration list for PBXNativeTarget "BookmarkExtension" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				37BC1DEC1D32861B00AC4607 /* Pinboard Debug */,
-				37BC1DED1D32861B00AC4607 /* Pinboard App Store */,
-				37BC1DEE1D32861B00AC4607 /* Pinboard App Store Debug */,
-				37BC1DEF1D32861B00AC4607 /* Pinboard Beta */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Pinboard Debug";
-		};
-		37BC1E001D32863000AC4607 /* Build configuration list for PBXNativeTarget "ReadLaterExtension" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				37BC1E011D32863000AC4607 /* Pinboard Debug */,
-				37BC1E021D32863000AC4607 /* Pinboard App Store */,
-				37BC1E031D32863000AC4607 /* Pinboard App Store Debug */,
-				37BC1E041D32863000AC4607 /* Pinboard Beta */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = "Pinboard Debug";

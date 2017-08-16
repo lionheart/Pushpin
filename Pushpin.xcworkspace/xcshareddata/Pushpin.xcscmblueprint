@@ -4,41 +4,50 @@
 
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
-    "E4BA76B4EFA38220802589A8E9F0459552B7A552" : 0,
-    "4E6E450F604063387457184D53D2497C56CE77E7" : 0,
-    "35FE44AA977402958F5B092E8C51FB3CE5832197" : 0,
+    "CA1D079377A2BD66346D3AB72C980A5DB6CE1C06" : 0,
+    "E4BA76B4EFA38220802589A8E9F0459552B7A552" : 9223372036854775807,
     "9EE95AE564A8FA1EB03FB1B2D3BCDFB5090990E4" : 0,
-    "CA1D079377A2BD66346D3AB72C980A5DB6CE1C06" : 0
+    "E6859DA0812311656A43A32F3151A87A21D7B5A4" : 0,
+    "130FD3C47D2A93A5E97A58123B57C5301A9BE388" : 0,
+    "4E6E450F604063387457184D53D2497C56CE77E7" : 0,
+    "35FE44AA977402958F5B092E8C51FB3CE5832197" : 9223372036854775807
   },
-  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "EC741E4A-1FB3-496C-B440-802FCC70D660",
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "495CE4D2-4A2E-42CF-B54A-4D44856B6E85",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "CA1D079377A2BD66346D3AB72C980A5DB6CE1C06" : "Pushpin\/",
     "E4BA76B4EFA38220802589A8E9F0459552B7A552" : "LHSKeyboardAdjusting\/",
-    "4E6E450F604063387457184D53D2497C56CE77E7" : "Pushpin\/Vendor\/ASPinboard\/",
-    "35FE44AA977402958F5B092E8C51FB3CE5832197" : "LHSCategoryCollection\/",
     "9EE95AE564A8FA1EB03FB1B2D3BCDFB5090990E4" : "Pushpin\/Localizations\/",
-    "CA1D079377A2BD66346D3AB72C980A5DB6CE1C06" : "Pushpin\/"
+    "E6859DA0812311656A43A32F3151A87A21D7B5A4" : "Pushpin\/Vendor\/LHSDelicious\/",
+    "130FD3C47D2A93A5E97A58123B57C5301A9BE388" : "Pushpin\/Vendor\/LHSDiigo\/",
+    "4E6E450F604063387457184D53D2497C56CE77E7" : "Pushpin\/Vendor\/ASPinboard\/",
+    "35FE44AA977402958F5B092E8C51FB3CE5832197" : "LHSCategoryCollection\/"
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "Pushpin",
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,
   "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Pushpin.xcworkspace",
   "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
     {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:lionheart\/LHSDiigo",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "130FD3C47D2A93A5E97A58123B57C5301A9BE388"
+    },
+    {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:lionheart\/LHSCategoryCollection",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "35FE44AA977402958F5B092E8C51FB3CE5832197"
     },
     {
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:lionheart\/ASPinboard.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:aurorasoftware\/ASPinboard.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "4E6E450F604063387457184D53D2497C56CE77E7"
     },
     {
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:lionheart\/pushpin-localizations.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:aurorasoftware\/pushpin-localizations.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "9EE95AE564A8FA1EB03FB1B2D3BCDFB5090990E4"
     },
     {
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:lionheart\/Pushpin-Issues.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:lionheart\/Pushpin.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "CA1D079377A2BD66346D3AB72C980A5DB6CE1C06"
     },
@@ -46,6 +55,11 @@
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:lionheart\/LHSKeyboardAdjusting",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "E4BA76B4EFA38220802589A8E9F0459552B7A552"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:lionheart\/LHSDelicious",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "E6859DA0812311656A43A32F3151A87A21D7B5A4"
     }
   ]
 }
