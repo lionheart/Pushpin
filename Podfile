@@ -4,10 +4,9 @@ source 'https://github.com/CocoaPods/Specs.git'
 project 'Pushpin.xcodeproj'
 
 inhibit_all_warnings!
-use_frameworks!
 
 target 'Pushpin' do
-  pod 'Reachability', '3.2'
+  pod 'Reachability', '~> 3.2'
   pod 'KeychainItemWrapper', '1.2'
   pod 'TTTAttributedLabel', '1.13.0'
   pod 'BRYHTMLParser'
