@@ -13,6 +13,7 @@
 @import ASPinboard;
 @import KeychainItemWrapper;
 @import LHSTableViewCells;
+@import OnePasswordExtension;
 
 #import "PPAppDelegate.h"
 #import "PPSettingsViewController.h"
@@ -31,9 +32,6 @@
 #import "PPReaderSettingsViewController.h"
 #import "PPOfflineSettingsViewController.h"
 #import "PPUtilities.h"
-
-@import uservoice_iphone_sdk;
-@import OnePasswordExtension;
 
 static NSString *CellIdentifier = @"CellIdentifier";
 static NSString *DeleteCellIdentifier = @"DeleteCellIdentifier";
@@ -369,14 +367,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                 }
 
                 case PPOtherFeedback: {
-                    UVConfig *config = [UVConfig configWithSite:@"lionheartsw.uservoice.com"
-                                                         andKey:@"9pBeLUHkDPLj3XhBG9jQ"
-                                                      andSecret:@"PaXdmNmtTAynLJ1MpuOFnVUUpfD2qA5obo7NxhsxP5A"];
-                    
-                    [UVStyleSheet instance].navigationBarBackgroundColor = [UIColor colorWithRed:0 green:0.5863 blue:1 alpha:1];
-                    [UVStyleSheet instance].navigationBarTintColor = [UIColor whiteColor];
-                    [UVStyleSheet instance].navigationBarTextColor = [UIColor whiteColor];
-                    [UserVoice presentUserVoiceInterfaceForParentViewController:self andConfig:config];
+#pragma mark - TODO
                     break;
                 }
                     

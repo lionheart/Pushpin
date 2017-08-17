@@ -11,7 +11,6 @@
 @import LHSCategoryCollection;
 @import ASPinboard;
 @import OnePasswordExtension;
-@import uservoice_iphone_sdk;
 
 #import "PPPinboardLoginViewController.h"
 #import "PPAppDelegate.h"
@@ -63,6 +62,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                                              style:UIBarButtonItemStyleDone
                                                                             target:self
                                                                             action:@selector(showContactForm)];
+    self.navigationItem.leftBarButtonItem.enabled = NO;
 
     self.tableView.backgroundColor = HEX(0xeeeeeeff);
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:LoginTableCellIdentifier];
@@ -744,11 +744,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 #pragma mark - Utils
 
 - (void)showContactForm {
-    UVConfig *config = [UVConfig configWithSite:@"lionheartsw.uservoice.com"
-                                         andKey:@"9pBeLUHkDPLj3XhBG9jQ"
-                                      andSecret:@"PaXdmNmtTAynLJ1MpuOFnVUUpfD2qA5obo7NxhsxP5A"];
-
-    [UserVoice presentUserVoiceContactUsFormForParentViewController:self andConfig:config];
 }
 
 @end

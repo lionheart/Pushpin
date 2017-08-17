@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 Lionheart Software. All rights reserved.
 //
 
-@import uservoice_iphone_sdk;
 @import LHSCategoryCollection;
 @import LHSTableViewCells;
 @import LHSKeyboardAdjusting;
@@ -56,8 +55,9 @@ static NSString * const CellIdentifier = @"CellIdentifier";
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Help", nil)
                                                                              style:UIBarButtonItemStyleDone
-                                                                            target:self
-                                                                            action:@selector(showContactForm)];
+                                                                            target:nil
+                                                                            action:nil];
+    self.navigationItem.leftBarButtonItem.enabled = false;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -138,11 +138,6 @@ static NSString * const CellIdentifier = @"CellIdentifier";
 #pragma mark - Utils
 
 - (void)showContactForm {
-    UVConfig *config = [UVConfig configWithSite:@"lionheartsw.uservoice.com"
-                                         andKey:@"9pBeLUHkDPLj3XhBG9jQ"
-                                      andSecret:@"PaXdmNmtTAynLJ1MpuOFnVUUpfD2qA5obo7NxhsxP5A"];
-    
-    [UserVoice presentUserVoiceContactUsFormForParentViewController:self andConfig:config];
 }
 
 @end
