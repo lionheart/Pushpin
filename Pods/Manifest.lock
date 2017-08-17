@@ -41,8 +41,8 @@ PODS:
   - MWFeedParser/NSDate+InternetDateTime (1.0.1)
   - MWFeedParser/NSString+HTML (1.0.1)
   - OpenInChrome (0.0.1)
-  - Reachability (3.2)
   - RNCryptor-objc (3.0.5)
+  - TMReachability (3.2)
   - TTTAttributedLabel (1.13.0)
   - uservoice-iphone-sdk (3.2.3)
   - YHRoundBorderedButton (0.1.0)
@@ -63,8 +63,8 @@ DEPENDENCIES:
   - Mixpanel
   - MWFeedParser (= 1.0.1)
   - OpenInChrome (= 0.0.1)
-  - Reachability (~> 3.2)
   - RNCryptor-objc (~> 3)
+  - TMReachability (from `https://github.com/albertbori/Reachability`, commit `e34782b386307e386348b481c02c176d58ba45e6`)
   - TTTAttributedLabel (= 1.13.0)
   - uservoice-iphone-sdk (= 3.2.3)
   - YHRoundBorderedButton (= 0.1.0)
@@ -76,6 +76,14 @@ EXTERNAL SOURCES:
     :path: ../LHSCategoryCollection
   LHSKeyboardAdjusting:
     :path: ../LHSKeyboardAdjusting
+  TMReachability:
+    :commit: e34782b386307e386348b481c02c176d58ba45e6
+    :git: https://github.com/albertbori/Reachability
+
+CHECKOUT OPTIONS:
+  TMReachability:
+    :commit: e34782b386307e386348b481c02c176d58ba45e6
+    :git: https://github.com/albertbori/Reachability
 
 SPEC CHECKSUMS:
   1PasswordExtension: e775a29310c65851e5a6cec1afc349ab4e334e47
@@ -94,12 +102,12 @@ SPEC CHECKSUMS:
   Mixpanel: 57923411aec1a1c7926efbb158f0bbd4460803fa
   MWFeedParser: 2cf646014c1baf6ad1b08c480b40a08180079247
   OpenInChrome: f1f3f9dec682216fe78a0d7fe0b5b263d6312c32
-  Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   RNCryptor-objc: a65b15493de05dda4af0f392c70372b7a5625aab
+  TMReachability: 48c99d728a8b0ad4493800592484b8cbb65c896c
   TTTAttributedLabel: 8aeaf67481bb38970711e2641211cba912bd5239
   uservoice-iphone-sdk: 349d9ef36d3c43939d28390b9e86bb32b65fe983
   YHRoundBorderedButton: 2180f04094db264cace8db88eae977d78a3b4633
 
-PODFILE CHECKSUM: fe5c2628f54cee72e4321f506c2aadeaf9cda395
+PODFILE CHECKSUM: 839d80b450a8e3a427b16173d7f4ebdd0280a36f
 
 COCOAPODS: 1.3.1
