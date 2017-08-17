@@ -1752,7 +1752,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		37374CB619A259F000C4DC9A /* Pinboard App Store Debug */ = {
+		37374CB619A259F000C4DC9A /* Release Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -1777,7 +1777,7 @@
 				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 561;
+				CURRENT_PROJECT_VERSION = 562;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_POSTPROCESSING = YES;
 				ENABLE_BITCODE = YES;
@@ -1833,9 +1833,9 @@
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
-			name = "Pinboard App Store Debug";
+			name = "Release Debug";
 		};
-		37374CB719A259F000C4DC9A /* Pinboard App Store Debug */ = {
+		37374CB719A259F000C4DC9A /* Release Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7B9CEAC4017990D284AFFD19 /* Pods-Pushpin.pinboard app store debug.xcconfig */;
 			buildSettings = {
@@ -1870,9 +1870,9 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
-			name = "Pinboard App Store Debug";
+			name = "Release Debug";
 		};
-		37800E9B162D576E009FCB17 /* Pinboard Beta */ = {
+		37800E9B162D576E009FCB17 /* Beta */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -1897,7 +1897,7 @@
 				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 561;
+				CURRENT_PROJECT_VERSION = 562;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				ENABLE_BITCODE = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -1950,9 +1950,9 @@
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
-			name = "Pinboard Beta";
+			name = Beta;
 		};
-		37800E9C162D576E009FCB17 /* Pinboard Beta */ = {
+		37800E9C162D576E009FCB17 /* Beta */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FAE4C2E68510E120B3586391 /* Pods-Pushpin.pinboard beta.xcconfig */;
 			buildSettings = {
@@ -1986,9 +1986,9 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
-			name = "Pinboard Beta";
+			name = Beta;
 		};
-		37FEEBA415745488003F2B77 /* Pinboard Debug */ = {
+		37FEEBA415745488003F2B77 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -2014,7 +2014,7 @@
 				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 561;
+				CURRENT_PROJECT_VERSION = 562;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_POSTPROCESSING = YES;
 				ENABLE_BITCODE = YES;
@@ -2071,9 +2071,9 @@
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
-			name = "Pinboard Debug";
+			name = Debug;
 		};
-		37FEEBA515745488003F2B77 /* Pinboard App Store */ = {
+		37FEEBA515745488003F2B77 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -2098,7 +2098,7 @@
 				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 561;
+				CURRENT_PROJECT_VERSION = 562;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				ENABLE_BITCODE = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -2152,9 +2152,9 @@
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
-			name = "Pinboard App Store";
+			name = Release;
 		};
-		37FEEBA715745488003F2B77 /* Pinboard Debug */ = {
+		37FEEBA715745488003F2B77 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E812290D60D84E663BDC9094 /* Pods-Pushpin.pinboard debug.xcconfig */;
 			buildSettings = {
@@ -2188,9 +2188,9 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
-			name = "Pinboard Debug";
+			name = Debug;
 		};
-		37FEEBA815745488003F2B77 /* Pinboard App Store */ = {
+		37FEEBA815745488003F2B77 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A1646DB4B51F0C69620EEF51 /* Pods-Pushpin.pinboard app store.xcconfig */;
 			buildSettings = {
@@ -2224,7 +2224,7 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
-			name = "Pinboard App Store";
+			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
@@ -2232,24 +2232,24 @@
 		37FEEB8815745488003F2B77 /* Build configuration list for PBXProject "Pushpin" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				37FEEBA415745488003F2B77 /* Pinboard Debug */,
-				37FEEBA515745488003F2B77 /* Pinboard App Store */,
-				37374CB619A259F000C4DC9A /* Pinboard App Store Debug */,
-				37800E9B162D576E009FCB17 /* Pinboard Beta */,
+				37FEEBA415745488003F2B77 /* Debug */,
+				37FEEBA515745488003F2B77 /* Release */,
+				37374CB619A259F000C4DC9A /* Release Debug */,
+				37800E9B162D576E009FCB17 /* Beta */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Pinboard Debug";
+			defaultConfigurationName = Debug;
 		};
 		37FEEBA615745488003F2B77 /* Build configuration list for PBXNativeTarget "Pushpin" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				37FEEBA715745488003F2B77 /* Pinboard Debug */,
-				37FEEBA815745488003F2B77 /* Pinboard App Store */,
-				37374CB719A259F000C4DC9A /* Pinboard App Store Debug */,
-				37800E9C162D576E009FCB17 /* Pinboard Beta */,
+				37FEEBA715745488003F2B77 /* Debug */,
+				37FEEBA815745488003F2B77 /* Release */,
+				37374CB719A259F000C4DC9A /* Release Debug */,
+				37800E9C162D576E009FCB17 /* Beta */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Pinboard Debug";
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};

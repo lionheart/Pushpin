@@ -16,7 +16,7 @@ platform :ios do
 
     gym
 
-    ENV["SCHEME"] = "Pushpin for Pinboard"
+    ENV["SCHEME"] = "Pushpin"
     # snapshot
     deliver
 

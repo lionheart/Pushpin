@@ -14,10 +14,10 @@ include_bitcode false
 
 for_platform :ios do
   for_lane :beta do
-    configuration "Pinboard Beta"
+    configuration "Beta"
   end
 
   for_lane :appstore do
-    configuration "Pinboard App Store"
+    configuration "Release"
   end
 end
