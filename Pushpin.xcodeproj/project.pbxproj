@@ -288,6 +288,7 @@
 /* Begin PBXFileReference section */
 		08394A8A45FD1BB534C6B487 /* Pods-ReadLaterExtension.pinboard app store debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReadLaterExtension.pinboard app store debug.xcconfig"; path = "Pods/Target Support Files/Pods-ReadLaterExtension/Pods-ReadLaterExtension.pinboard app store debug.xcconfig"; sourceTree = "<group>"; };
 		24CE59D9F3978615E2B65E6C /* Pods-SharedSafe.pinboard debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedSafe.pinboard debug.xcconfig"; path = "Pods/Target Support Files/Pods-SharedSafe/Pods-SharedSafe.pinboard debug.xcconfig"; sourceTree = "<group>"; };
+		2F3E6B06D75215F26129E539 /* Pods-Pushpin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin.debug.xcconfig"; sourceTree = "<group>"; };
 		37018CE3180E3C0B00226408 /* PPBrowserActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBrowserActivity.h; sourceTree = "<group>"; };
 		37018CE4180E3C0B00226408 /* PPBrowserActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPBrowserActivity.m; sourceTree = "<group>"; };
 		370859F817F329D400270A9D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Pushpin/Images.xcassets; sourceTree = SOURCE_ROOT; };
@@ -544,6 +545,7 @@
 		37FEEBA215745488003F2B77 /* PPAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPAppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37FF412F187D95CF00F2D481 /* PPSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSplitViewController.h; sourceTree = "<group>"; };
 		37FF4130187D95CF00F2D481 /* PPSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPSplitViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		39A34EF3D1DF502D08B66F5E /* Pods-Pushpin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.release.xcconfig"; path = "Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin.release.xcconfig"; sourceTree = "<group>"; };
 		3A3B65690814986CC704D649 /* Pods-BookmarkExtension.pinboard debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookmarkExtension.pinboard debug.xcconfig"; path = "Pods/Target Support Files/Pods-BookmarkExtension/Pods-BookmarkExtension.pinboard debug.xcconfig"; sourceTree = "<group>"; };
 		452DCCB6662A00CCC2560D4E /* Pods-BookmarkExtension.pinboard app store debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookmarkExtension.pinboard app store debug.xcconfig"; path = "Pods/Target Support Files/Pods-BookmarkExtension/Pods-BookmarkExtension.pinboard app store debug.xcconfig"; sourceTree = "<group>"; };
 		4E0708FCB9F2E69436A23527 /* Pods_ReadLaterExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ReadLaterExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -566,8 +568,10 @@
 		B6E3041A1B3DC95500135CF1 /* pushpin-cloud-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pushpin-cloud-logo.png"; sourceTree = "<group>"; };
 		B6E3041B1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pushpin-cloud-logo@2x.png"; sourceTree = "<group>"; };
 		C3F909DEAE43E6D72C0DAD5B /* Pods_BookmarkExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BookmarkExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C52D163517A5097BC9346B54 /* Pods-Pushpin.release debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.release debug.xcconfig"; path = "Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin.release debug.xcconfig"; sourceTree = "<group>"; };
 		D1220199B73DD6474740BDE0 /* Pods_SharedSafe.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SharedSafe.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E6D1211C1A069BC8F82CEADF /* Pods-BookmarkExtension.pinboard beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookmarkExtension.pinboard beta.xcconfig"; path = "Pods/Target Support Files/Pods-BookmarkExtension/Pods-BookmarkExtension.pinboard beta.xcconfig"; sourceTree = "<group>"; };
+		E7F03000D414AAC81272FB02 /* Pods-Pushpin.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin.beta.xcconfig"; sourceTree = "<group>"; };
 		E804950C180EF20800C5CA8B /* webview-helpers.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "webview-helpers.js"; path = "Assets/webview-helpers.js"; sourceTree = "<group>"; };
 		E804950F18103DC700C5CA8B /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
 		E80495191810597A00C5CA8B /* PPDefaultFeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PPDefaultFeedViewController.h; path = ../PPDefaultFeedViewController.h; sourceTree = "<group>"; };
@@ -702,10 +706,14 @@
 				B52918749386B6BDC7B2F8ED /* Pods-BookmarkExtension.pinboard app store.xcconfig */,
 				E6D1211C1A069BC8F82CEADF /* Pods-BookmarkExtension.pinboard beta.xcconfig */,
 				3A3B65690814986CC704D649 /* Pods-BookmarkExtension.pinboard debug.xcconfig */,
+				E7F03000D414AAC81272FB02 /* Pods-Pushpin.beta.xcconfig */,
+				2F3E6B06D75215F26129E539 /* Pods-Pushpin.debug.xcconfig */,
 				7B9CEAC4017990D284AFFD19 /* Pods-Pushpin.pinboard app store debug.xcconfig */,
 				A1646DB4B51F0C69620EEF51 /* Pods-Pushpin.pinboard app store.xcconfig */,
 				FAE4C2E68510E120B3586391 /* Pods-Pushpin.pinboard beta.xcconfig */,
 				E812290D60D84E663BDC9094 /* Pods-Pushpin.pinboard debug.xcconfig */,
+				C52D163517A5097BC9346B54 /* Pods-Pushpin.release debug.xcconfig */,
+				39A34EF3D1DF502D08B66F5E /* Pods-Pushpin.release.xcconfig */,
 				08394A8A45FD1BB534C6B487 /* Pods-ReadLaterExtension.pinboard app store debug.xcconfig */,
 				791009AD63AD512B348A84B4 /* Pods-ReadLaterExtension.pinboard app store.xcconfig */,
 				6EC2C277D16AE72291D2254F /* Pods-ReadLaterExtension.pinboard beta.xcconfig */,
@@ -1837,7 +1845,7 @@
 		};
 		37374CB719A259F000C4DC9A /* Release Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7B9CEAC4017990D284AFFD19 /* Pods-Pushpin.pinboard app store debug.xcconfig */;
+			baseConfigurationReference = C52D163517A5097BC9346B54 /* Pods-Pushpin.release debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
@@ -1954,7 +1962,7 @@
 		};
 		37800E9C162D576E009FCB17 /* Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FAE4C2E68510E120B3586391 /* Pods-Pushpin.pinboard beta.xcconfig */;
+			baseConfigurationReference = E7F03000D414AAC81272FB02 /* Pods-Pushpin.beta.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = PinboardBeta;
@@ -2156,7 +2164,7 @@
 		};
 		37FEEBA715745488003F2B77 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E812290D60D84E663BDC9094 /* Pods-Pushpin.pinboard debug.xcconfig */;
+			baseConfigurationReference = 2F3E6B06D75215F26129E539 /* Pods-Pushpin.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = PinboardDev;
@@ -2192,7 +2200,7 @@
 		};
 		37FEEBA815745488003F2B77 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A1646DB4B51F0C69620EEF51 /* Pods-Pushpin.pinboard app store.xcconfig */;
+			baseConfigurationReference = 39A34EF3D1DF502D08B66F5E /* Pods-Pushpin.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
