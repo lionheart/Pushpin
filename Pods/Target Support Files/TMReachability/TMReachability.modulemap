@@ -1,0 +1,6 @@
+framework module TMReachability {
+  umbrella header "TMReachability-umbrella.h"
+
+  export *
+  module * { export * }
+}
