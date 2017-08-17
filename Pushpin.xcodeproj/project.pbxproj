@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		204677A3B02B7F961E852C3F /* Pods_Pushpin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5432DFD885110E3E9CBEE751 /* Pods_Pushpin.framework */; };
+		370B75DB1F45FE5200391769 /* NSString+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 3762CACE1A59D04700301C97 /* NSString+Additions.m */; };
 		371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371BCB0115772C0E00BDA996 /* CoreText.framework */; };
 		372F891416755BF00073D0B6 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 372F891216755B950073D0B6 /* CoreTelephony.framework */; };
 		3747C6F219CCDB1F00FAD488 /* 56_Key-alt.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E312E31868CCD600B944F1 /* 56_Key-alt.png */; };
@@ -1574,9 +1575,9 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin-resources.sh",
-				"$PODS_CONFIGURATION_BUILD_DIR/1PasswordExtension/OnePasswordExtensionResources.bundle",
+				$PODS_CONFIGURATION_BUILD_DIR/1PasswordExtension/OnePasswordExtensionResources.bundle,
 				"${PODS_ROOT}/ChimpKit/ChimpKit3/Helper Objects/CKAuthViewController.xib",
-				"$PODS_CONFIGURATION_BUILD_DIR/HTMLParser/HTMLParser.bundle",
+				$PODS_CONFIGURATION_BUILD_DIR/HTMLParser/HTMLParser.bundle,
 				"${PODS_ROOT}/Mixpanel/Mixpanel/Images/MPArrowLeft.png",
 				"${PODS_ROOT}/Mixpanel/Mixpanel/Images/MPArrowLeft@2x.png",
 				"${PODS_ROOT}/Mixpanel/Mixpanel/Images/MPArrowRight.png",
@@ -1742,6 +1743,7 @@
 				37F9D09F1D32FE11002A168D /* PPTagEditViewController.m in Sources */,
 				37F9D0A41D32FE34002A168D /* PPTagViewController.m in Sources */,
 				37B620071F4520AB005DE789 /* PPTheme.m in Sources */,
+				370B75DB1F45FE5200391769 /* NSString+Additions.m in Sources */,
 				37B620081F4520B1005DE789 /* PPTitleButton.m in Sources */,
 				37B620161F4520F7005DE789 /* PPToolbar.m in Sources */,
 				37F9D0981D32FDFB002A168D /* PPTwitter.m in Sources */,

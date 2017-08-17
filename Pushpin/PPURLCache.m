@@ -729,21 +729,25 @@
 }
 
 - (void)stopAllDownloads {
-    self.isBackgroundSessionInvalidated = YES;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        self.isBackgroundSessionInvalidated = YES;
 
-    [self.urlsToDownload removeAllObjects];
+        [self.urlsToDownload removeAllObjects];
 
-    dispatch_semaphore_t sem = dispatch_semaphore_create(0);
-    [self.session lhs_cancelAllTasksWithCompletion:^{
-        dispatch_semaphore_signal(sem);
-    }];
+        dispatch_semaphore_t sem = dispatch_semaphore_create(0);
+        [self.session lhs_cancelAllTasksWithCompletion:^{
+            dispatch_semaphore_signal(sem);
+        }];
 
-    dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
+        dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
 
-    // Set everything to 100%.
-    [self updateProgressWithCompletedValues];
-    dispatch_semaphore_signal([PPURLCache semaphore]);
-    dispatch_semaphore_signal([PPURLCache HTMLDownloadSemaphore]);
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // Set everything to 100%.
+            [self updateProgressWithCompletedValues];
+            dispatch_semaphore_signal([PPURLCache semaphore]);
+            dispatch_semaphore_signal([PPURLCache HTMLDownloadSemaphore]);
+        });
+    });
 }
 
 - (void)queueNextHTMLDownload {
