@@ -2169,7 +2169,7 @@
 				INFOPLIST_FILE = "Read Later Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpindev.Read-Later-Extension";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpin.Read-Later-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -2204,7 +2204,7 @@
 				INFOPLIST_FILE = "Read Later Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpindev.Read-Later-Extension";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpin.Read-Later-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -2239,7 +2239,7 @@
 				INFOPLIST_FILE = "Read Later Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpindev.Read-Later-Extension";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpinbeta.Read-Later-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -2307,7 +2307,7 @@
 				INFOPLIST_FILE = "Bookmark Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpindev.Bookmark-Extension";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpin.Bookmark-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -2342,7 +2342,7 @@
 				INFOPLIST_FILE = "Bookmark Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpindev.Bookmark-Extension";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpin.Bookmark-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -2377,7 +2377,7 @@
 				INFOPLIST_FILE = "Bookmark Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpindev.Bookmark-Extension";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpinbeta.Bookmark-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -2408,7 +2408,7 @@
 				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 568;
+				CURRENT_PROJECT_VERSION = 569;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_POSTPROCESSING = YES;
 				ENABLE_BITCODE = NO;
@@ -2528,7 +2528,7 @@
 				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 568;
+				CURRENT_PROJECT_VERSION = 569;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -2645,7 +2645,7 @@
 				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 568;
+				CURRENT_PROJECT_VERSION = 569;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_POSTPROCESSING = YES;
 				ENABLE_BITCODE = NO;
@@ -2729,7 +2729,7 @@
 				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 568;
+				CURRENT_PROJECT_VERSION = 569;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
