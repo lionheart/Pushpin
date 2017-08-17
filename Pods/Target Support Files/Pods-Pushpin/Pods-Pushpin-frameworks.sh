@@ -101,7 +101,7 @@ strip_invalid_archs() {
 }
 
 
-if [[ "$CONFIGURATION" == "Pinboard Debug" ]]; then
+if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/1PasswordExtension/OnePasswordExtension.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/ASPinboard/ASPinboard.framework"
@@ -124,7 +124,7 @@ if [[ "$CONFIGURATION" == "Pinboard Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/hpple/hpple.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/uservoice-iphone-sdk/uservoice_iphone_sdk.framework"
 fi
-if [[ "$CONFIGURATION" == "Pinboard App Store" ]]; then
+if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/1PasswordExtension/OnePasswordExtension.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/ASPinboard/ASPinboard.framework"
@@ -147,7 +147,7 @@ if [[ "$CONFIGURATION" == "Pinboard App Store" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/hpple/hpple.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/uservoice-iphone-sdk/uservoice_iphone_sdk.framework"
 fi
-if [[ "$CONFIGURATION" == "Pinboard App Store Debug" ]]; then
+if [[ "$CONFIGURATION" == "Release Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/1PasswordExtension/OnePasswordExtension.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/ASPinboard/ASPinboard.framework"
@@ -170,7 +170,7 @@ if [[ "$CONFIGURATION" == "Pinboard App Store Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/hpple/hpple.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/uservoice-iphone-sdk/uservoice_iphone_sdk.framework"
 fi
-if [[ "$CONFIGURATION" == "Pinboard Beta" ]]; then
+if [[ "$CONFIGURATION" == "Beta" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/1PasswordExtension/OnePasswordExtension.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/ASPinboard/ASPinboard.framework"
