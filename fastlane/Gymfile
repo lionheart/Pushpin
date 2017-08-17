@@ -1,6 +1,6 @@
 # vim: set ft=ruby:
 
-scheme "Pushpin for Pinboard"
+scheme "Pushpin"
 
 # output_directory "./"
 # output_name "Fugue.ipa"

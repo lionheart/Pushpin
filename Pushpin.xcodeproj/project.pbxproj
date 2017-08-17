@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		204677A3B02B7F961E852C3F /* Pods_Pushpin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5432DFD885110E3E9CBEE751 /* Pods_Pushpin.framework */; };
 		371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371BCB0115772C0E00BDA996 /* CoreText.framework */; };
 		372F891416755BF00073D0B6 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 372F891216755B950073D0B6 /* CoreTelephony.framework */; };
 		3747C6F219CCDB1F00FAD488 /* 56_Key-alt.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E312E31868CCD600B944F1 /* 56_Key-alt.png */; };
@@ -195,7 +196,6 @@
 		37F9D0DD1D3304C7002A168D /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37F9D0DC1D3304C7002A168D /* MobileCoreServices.framework */; };
 		37FB4F981D32ED60004D5C12 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEB9E15745488003F2B77 /* main.m */; };
 		37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9415745488003F2B77 /* Foundation.framework */; };
-		A5E90FEAC9C70007B74D6E1D /* libPods-Pushpin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AB0B1950C5A3692390BFAB70 /* libPods-Pushpin.a */; };
 		B63698721B0FCC2700F15D42 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B63698711B0FCC2700F15D42 /* Launch Screen.xib */; };
 		B6E3041C1B3DC95500135CF1 /* pinboard-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E304181B3DC95500135CF1 /* pinboard-logo@2x.png */; };
 		B6E3041D1B3DC95500135CF1 /* pinboard.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = B6E304191B3DC95500135CF1 /* pinboard.jpeg */; };
@@ -549,12 +549,12 @@
 		3A3B65690814986CC704D649 /* Pods-BookmarkExtension.pinboard debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookmarkExtension.pinboard debug.xcconfig"; path = "Pods/Target Support Files/Pods-BookmarkExtension/Pods-BookmarkExtension.pinboard debug.xcconfig"; sourceTree = "<group>"; };
 		452DCCB6662A00CCC2560D4E /* Pods-BookmarkExtension.pinboard app store debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookmarkExtension.pinboard app store debug.xcconfig"; path = "Pods/Target Support Files/Pods-BookmarkExtension/Pods-BookmarkExtension.pinboard app store debug.xcconfig"; sourceTree = "<group>"; };
 		4E0708FCB9F2E69436A23527 /* Pods_ReadLaterExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ReadLaterExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5432DFD885110E3E9CBEE751 /* Pods_Pushpin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Pushpin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6EC2C277D16AE72291D2254F /* Pods-ReadLaterExtension.pinboard beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReadLaterExtension.pinboard beta.xcconfig"; path = "Pods/Target Support Files/Pods-ReadLaterExtension/Pods-ReadLaterExtension.pinboard beta.xcconfig"; sourceTree = "<group>"; };
 		791009AD63AD512B348A84B4 /* Pods-ReadLaterExtension.pinboard app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReadLaterExtension.pinboard app store.xcconfig"; path = "Pods/Target Support Files/Pods-ReadLaterExtension/Pods-ReadLaterExtension.pinboard app store.xcconfig"; sourceTree = "<group>"; };
 		7B9CEAC4017990D284AFFD19 /* Pods-Pushpin.pinboard app store debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.pinboard app store debug.xcconfig"; path = "Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin.pinboard app store debug.xcconfig"; sourceTree = "<group>"; };
 		93905BF17CB2971DC2D7A046 /* Pods-SharedSafe.pinboard beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedSafe.pinboard beta.xcconfig"; path = "Pods/Target Support Files/Pods-SharedSafe/Pods-SharedSafe.pinboard beta.xcconfig"; sourceTree = "<group>"; };
 		A1646DB4B51F0C69620EEF51 /* Pods-Pushpin.pinboard app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.pinboard app store.xcconfig"; path = "Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin.pinboard app store.xcconfig"; sourceTree = "<group>"; };
-		AB0B1950C5A3692390BFAB70 /* libPods-Pushpin.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Pushpin.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABD8CCD3A660C50E1D5C76C6 /* Pods-SharedSafe.pinboard app store debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SharedSafe.pinboard app store debug.xcconfig"; path = "Pods/Target Support Files/Pods-SharedSafe/Pods-SharedSafe.pinboard app store debug.xcconfig"; sourceTree = "<group>"; };
 		AC7A34175B3086B5BF1AC40E /* Pods-ReadLaterExtension.pinboard debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReadLaterExtension.pinboard debug.xcconfig"; path = "Pods/Target Support Files/Pods-ReadLaterExtension/Pods-ReadLaterExtension.pinboard debug.xcconfig"; sourceTree = "<group>"; };
 		B52918749386B6BDC7B2F8ED /* Pods-BookmarkExtension.pinboard app store.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BookmarkExtension.pinboard app store.xcconfig"; path = "Pods/Target Support Files/Pods-BookmarkExtension/Pods-BookmarkExtension.pinboard app store.xcconfig"; sourceTree = "<group>"; };
@@ -683,9 +683,9 @@
 				372F891416755BF00073D0B6 /* CoreTelephony.framework in Frameworks */,
 				371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */,
 				37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */,
-				A5E90FEAC9C70007B74D6E1D /* libPods-Pushpin.a in Frameworks */,
 				378DA45F1633B4B800831134 /* MessageUI.framework in Frameworks */,
 				37F9D0DD1D3304C7002A168D /* MobileCoreServices.framework in Frameworks */,
+				204677A3B02B7F961E852C3F /* Pods_Pushpin.framework in Frameworks */,
 				37919F2016092198007708EF /* QuartzCore.framework in Frameworks */,
 				E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */,
 				377E46DB174C3A7500CE3813 /* Social.framework in Frameworks */,
@@ -1033,11 +1033,11 @@
 				372F891216755B950073D0B6 /* CoreTelephony.framework */,
 				371BCB0115772C0E00BDA996 /* CoreText.framework */,
 				37FEEB9415745488003F2B77 /* Foundation.framework */,
-				AB0B1950C5A3692390BFAB70 /* libPods-Pushpin.a */,
 				37E9965B1D32EC3500659E82 /* libsqlite3.tbd */,
 				378DA45E1633B4B700831134 /* MessageUI.framework */,
 				37F9D0DC1D3304C7002A168D /* MobileCoreServices.framework */,
 				C3F909DEAE43E6D72C0DAD5B /* Pods_BookmarkExtension.framework */,
+				5432DFD885110E3E9CBEE751 /* Pods_Pushpin.framework */,
 				4E0708FCB9F2E69436A23527 /* Pods_ReadLaterExtension.framework */,
 				D1220199B73DD6474740BDE0 /* Pods_SharedSafe.framework */,
 				37919F1F16092198007708EF /* QuartzCore.framework */,
@@ -1808,7 +1808,7 @@
 				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 564;
+				CURRENT_PROJECT_VERSION = 565;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_POSTPROCESSING = YES;
 				ENABLE_BITCODE = YES;
@@ -1928,7 +1928,7 @@
 				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 564;
+				CURRENT_PROJECT_VERSION = 565;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				ENABLE_BITCODE = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -2045,7 +2045,7 @@
 				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 564;
+				CURRENT_PROJECT_VERSION = 565;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_POSTPROCESSING = YES;
 				ENABLE_BITCODE = YES;
@@ -2129,7 +2129,7 @@
 				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 564;
+				CURRENT_PROJECT_VERSION = 565;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				ENABLE_BITCODE = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
