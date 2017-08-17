@@ -11,7 +11,7 @@
 @import Mixpanel;
 @import ASPinboard;
 @import LHSCategoryCollection;
-@import Reachability;
+@import TMReachability;
 @import LHSTableViewCells;
 
 #import "PPFeedListViewController.h"

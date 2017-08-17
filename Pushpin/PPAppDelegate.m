@@ -10,7 +10,7 @@
 @import CoreSpotlight;
 @import Mixpanel;
 @import ASPinboard;
-@import Reachability;
+@import TMReachability;
 @import LHSCategoryCollection;
 @import OpenInChrome;
 @import ChimpKit;
@@ -755,16 +755,16 @@
 
     [NSURLProtocol registerClass:[PPCachingURLProtocol class]];
 
-    Reachability *reach = [Reachability reachabilityForInternetConnection];
+    TMReachability *reach = [TMReachability reachabilityForInternetConnection];
     self.connectionAvailable = [reach isReachable];
-    reach.reachableBlock = ^(Reachability *reach) {
+    reach.reachableBlock = ^(TMReachability *reach) {
         self.connectionAvailable = YES;
 #if !FORCE_OFFLINE
 //        [NSURLProtocol unregisterClass:[PPCachingURLProtocol class]];
 #endif
     };
 
-    reach.unreachableBlock = ^(Reachability *reach) {
+    reach.unreachableBlock = ^(TMReachability *reach) {
         self.connectionAvailable = NO;
 #if !FORCE_OFFLINE
 //        [NSURLProtocol registerClass:[PPCachingURLProtocol class]];
