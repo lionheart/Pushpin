@@ -31,6 +31,7 @@ PODS:
   - LHSKeyboardAdjusting (2.0.1)
   - LHSTableViewCells (0.0.1)
   - Mixpanel (3.1.9)
+  - Mixpanel-AppExtension (3.1.9)
   - MWFeedParser (1.0.1):
     - MWFeedParser/FeedParser (= 1.0.1)
     - MWFeedParser/NSDate+InternetDateTime (= 1.0.1)
@@ -60,6 +61,7 @@ DEPENDENCIES:
   - LHSKeyboardAdjusting (from `../LHSKeyboardAdjusting`)
   - LHSTableViewCells
   - Mixpanel
+  - Mixpanel-AppExtension
   - MWFeedParser (= 1.0.1)
   - OpenInChrome (~> 0.0)
   - RNCryptor-objc (~> 3)
@@ -98,6 +100,7 @@ SPEC CHECKSUMS:
   LHSKeyboardAdjusting: 8f9b8d6e80315e653bf3188ae62963874d342d68
   LHSTableViewCells: 47b4d33382cb4a09960371267e2142970afdfdd6
   Mixpanel: 57923411aec1a1c7926efbb158f0bbd4460803fa
+  Mixpanel-AppExtension: 8b0eb1df4d985e0dd69dc6e3e51d8a3dd59751cb
   MWFeedParser: 2cf646014c1baf6ad1b08c480b40a08180079247
   OpenInChrome: f1f3f9dec682216fe78a0d7fe0b5b263d6312c32
   RNCryptor-objc: a65b15493de05dda4af0f392c70372b7a5625aab
@@ -105,6 +108,6 @@ SPEC CHECKSUMS:
   TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
   YHRoundBorderedButton: 2180f04094db264cace8db88eae977d78a3b4633
 
-PODFILE CHECKSUM: 8f293c60c37aed08ec2592987e27ade84962d9af
+PODFILE CHECKSUM: 487e8d85b8068a155ace455d437faea88df82ec3
 
 COCOAPODS: 1.3.1
