@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371BCB0115772C0E00BDA996 /* CoreText.framework */; };
-		372943E719CF3AFF00ABF006 /* PPUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B4FFE21923AD18002F8558 /* PPUtilities.m */; };
 		372F891416755BF00073D0B6 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 372F891216755B950073D0B6 /* CoreTelephony.framework */; };
 		3747C6F219CCDB1F00FAD488 /* 56_Key-alt.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E312E31868CCD600B944F1 /* 56_Key-alt.png */; };
 		3747C6F319CCDB1F00FAD488 /* 56_Key-alt@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E312E41868CCD600B944F1 /* 56_Key-alt@2x.png */; };
@@ -90,8 +89,6 @@
 		3747C74D19CCDB1F00FAD488 /* toolbar-trash.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF6A184E9AA000979AA3 /* toolbar-trash.png */; };
 		3747C74E19CCDB1F00FAD488 /* toolbar-trash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF6B184E9AA000979AA3 /* toolbar-trash@2x.png */; };
 		3747C75419CCDB1F00FAD488 /* webview-helpers.js in Resources */ = {isa = PBXBuildFile; fileRef = E804950C180EF20800C5CA8B /* webview-helpers.js */; };
-		375B62321A4DA9240045AFE7 /* PPURLCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 375B62301A4DA9240045AFE7 /* PPURLCache.m */; };
-		3762CAD01A59D04700301C97 /* NSString+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 3762CACE1A59D04700301C97 /* NSString+Additions.m */; };
 		376E0A80175AA9EC004CCDEE /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 376E0A7F175AA9EC004CCDEE /* StoreKit.framework */; };
 		377E46D7174C396C00CE3813 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 377E46D6174C396C00CE3813 /* Accounts.framework */; };
 		377E46DB174C3A7500CE3813 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 377E46DA174C3A7500CE3813 /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -111,59 +108,50 @@
 		3784B1061A51B29B00CD1435 /* badge-cloud.png in Resources */ = {isa = PBXBuildFile; fileRef = 3784B1041A51B29B00CD1435 /* badge-cloud.png */; };
 		3784B1071A51B29B00CD1435 /* badge-cloud@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3784B1051A51B29B00CD1435 /* badge-cloud@2x.png */; };
 		378DA45F1633B4B800831134 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 378DA45E1633B4B700831134 /* MessageUI.framework */; };
-		3790426A19CBDCDF00409D34 /* MFMailComposeViewController+Theme.m in Sources */ = {isa = PBXBuildFile; fileRef = 371A48E618ADB516009D7533 /* MFMailComposeViewController+Theme.m */; };
-		3790426B19CBDCDF00409D34 /* NSData+AES256.m in Sources */ = {isa = PBXBuildFile; fileRef = 37802194198D709000CE269A /* NSData+AES256.m */; };
-		3790426C19CBDCDF00409D34 /* NSString+LHSAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B4FFDF1922B6EF002F8558 /* NSString+LHSAdditions.m */; };
-		3790426D19CBDCDF00409D34 /* NSString+URLEncoding2.m in Sources */ = {isa = PBXBuildFile; fileRef = 37D2351D16B8DDD0007541DC /* NSString+URLEncoding2.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		3790426E19CBDCDF00409D34 /* PostMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 37405C6618620BCB0052213A /* PostMetadata.m */; };
-		3790427419CBDCDF00409D34 /* PPBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = E89001F8183EA5B500C1F969 /* PPBadgeView.m */; };
-		3790427519CBDCDF00409D34 /* PPBadgeWrapperView.m in Sources */ = {isa = PBXBuildFile; fileRef = E89001F5183EA43E00C1F969 /* PPBadgeWrapperView.m */; };
-		3790427A19CBDCDF00409D34 /* PPConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 3769A5781879C50D00AC8C44 /* PPConstants.m */; };
-		3790427B19CBDCDF00409D34 /* PPDefaultFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E804951A1810597A00C5CA8B /* PPDefaultFeedViewController.m */; };
-		3790427E19CBDCDF00409D34 /* PPEditDescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3728CF3F1872880A00155791 /* PPEditDescriptionViewController.m */; };
-		3790427F19CBDCDF00409D34 /* PPFadeAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 3780219D199130E000CE269A /* PPFadeAnimator.m */; };
-		3790428019CBDCDF00409D34 /* PPFadeTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 378021A0199130EC00CE269A /* PPFadeTransition.m */; };
-		3790428319CBDCDF00409D34 /* PPLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 376C9E7D1746FB4300A62CB5 /* PPLoadingView.m */; };
-		3790428519CBDCDF00409D34 /* PPMobilizerUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 3769A5751879BCAF00AC8C44 /* PPMobilizerUtility.m */; };
-		3790428719CBDCDF00409D34 /* PPNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = E8DA7974183D2EC5002B1D0B /* PPNavigationBar.m */; };
-		3790428919CBDCDF00409D34 /* PPNoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37CFA5FF19683ED300C67338 /* PPNoteViewController.m */; };
-		3790428D19CBDCDF00409D34 /* PPPinboardMetadataCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 3743B7371875DAA800B97E6D /* PPPinboardMetadataCache.m */; };
-		3790428F19CBDCDF00409D34 /* PPPlainTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37CBB7521881F31C000F9C36 /* PPPlainTextViewController.m */; };
-		3790429919CBDCDF00409D34 /* PPShortcutEnabledDescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 373D6F561965E85A006833D2 /* PPShortcutEnabledDescriptionViewController.m */; };
-		3790429A19CBDCDF00409D34 /* PPShrinkBackAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F7825D198C354D00C99139 /* PPShrinkBackAnimator.m */; };
-		3790429B19CBDCDF00409D34 /* PPShrinkBackTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F7825A198C354200C99139 /* PPShrinkBackTransition.m */; };
-		3790429F19CBDCDF00409D34 /* PPTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 376C9E8E1749969200A62CB5 /* PPTableViewController.m */; };
-		379042A019CBDCDF00409D34 /* PPTableViewTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3743B73A18763D1D00B97E6D /* PPTableViewTitleView.m */; };
-		379042A319CBDCDF00409D34 /* PPTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 371EE5C7185B49FE005DB908 /* PPTheme.m */; };
-		379042A419CBDCDF00409D34 /* PPTitleButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 370B1B781864FADC00319A20 /* PPTitleButton.m */; };
-		379042A519CBDCDF00409D34 /* PPToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 370F92EE17500722005F0AD7 /* PPToolbar.m */; };
-		379042A919CBDCDF00409D34 /* PSPDFUIKitMainThreadGuard.m in Sources */ = {isa = PBXBuildFile; fileRef = 3794AE9F176D33D100250909 /* PSPDFUIKitMainThreadGuard.m */; };
-		379042AC19CBDCDF00409D34 /* UITableView+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F91F37177A91A500683D46 /* UITableView+Additions.m */; };
 		37919F2016092198007708EF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37919F1F16092198007708EF /* QuartzCore.framework */; };
 		3798B08E18767DAB002D684B /* navigation-edit-blue.png in Resources */ = {isa = PBXBuildFile; fileRef = 3798B08A18767DAB002D684B /* navigation-edit-blue.png */; };
 		3798B08F18767DAB002D684B /* navigation-edit-darker.png in Resources */ = {isa = PBXBuildFile; fileRef = 3798B08B18767DAB002D684B /* navigation-edit-darker.png */; };
 		3798B09018767DAB002D684B /* navigation-edit-darker@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3798B08C18767DAB002D684B /* navigation-edit-darker@2x.png */; };
 		3798B09118767DAB002D684B /* navigation-edit-blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3798B08D18767DAB002D684B /* navigation-edit-blue@2x.png */; };
 		379A59E01D32E33100AB4A26 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9215745488003F2B77 /* UIKit.framework */; };
-		379A59E11D32E39F00AB4A26 /* SharedSafe.h in Headers */ = {isa = PBXBuildFile; fileRef = 37587B1E1D32B5A0005665DC /* SharedSafe.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		37AB960718C437090008CDD5 /* browse-search@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37AB960318C437090008CDD5 /* browse-search@2x.png */; };
 		37AB960818C437090008CDD5 /* browse-search.png in Resources */ = {isa = PBXBuildFile; fileRef = 37AB960418C437090008CDD5 /* browse-search.png */; };
 		37AB960918C437090008CDD5 /* browse-recent.png in Resources */ = {isa = PBXBuildFile; fileRef = 37AB960518C437090008CDD5 /* browse-recent.png */; };
 		37AB960A18C437090008CDD5 /* browse-recent@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37AB960618C437090008CDD5 /* browse-recent@2x.png */; };
 		37AD159518A13365005813CC /* About-Delicious.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37AD159418A13365005813CC /* About-Delicious.plist */; };
 		37B5F4E51773864C005687DA /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37B5F4E41773864C005687DA /* Twitter.framework */; };
+		37B620061F45206D005DE789 /* NSString+LHSAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B4FFDF1922B6EF002F8558 /* NSString+LHSAdditions.m */; };
+		37B620071F4520AB005DE789 /* PPTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 371EE5C7185B49FE005DB908 /* PPTheme.m */; };
+		37B620081F4520B1005DE789 /* PPTitleButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 370B1B781864FADC00319A20 /* PPTitleButton.m */; };
+		37B620091F4520B4005DE789 /* PPUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B4FFE21923AD18002F8558 /* PPUtilities.m */; };
+		37B6200A1F4520B8005DE789 /* PPMobilizerUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 3769A5751879BCAF00AC8C44 /* PPMobilizerUtility.m */; };
+		37B6200B1F4520BD005DE789 /* PPTableViewTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3743B73A18763D1D00B97E6D /* PPTableViewTitleView.m */; };
+		37B6200C1F4520BF005DE789 /* PPTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 376C9E8E1749969200A62CB5 /* PPTableViewController.m */; };
+		37B6200D1F4520CC005DE789 /* PPNoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37CFA5FF19683ED300C67338 /* PPNoteViewController.m */; };
+		37B6200E1F4520D0005DE789 /* PostMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 37405C6618620BCB0052213A /* PostMetadata.m */; };
+		37B6200F1F4520D5005DE789 /* PPPinboardMetadataCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 3743B7371875DAA800B97E6D /* PPPinboardMetadataCache.m */; };
+		37B620101F4520D9005DE789 /* PPDefaultFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E804951A1810597A00C5CA8B /* PPDefaultFeedViewController.m */; };
+		37B620111F4520DC005DE789 /* PPURLCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 375B62301A4DA9240045AFE7 /* PPURLCache.m */; };
+		37B620121F4520E0005DE789 /* PPSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 37889D4319981212002E245A /* PPSettings.m */; };
+		37B620131F4520E3005DE789 /* PPPlainTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37CBB7521881F31C000F9C36 /* PPPlainTextViewController.m */; };
+		37B620141F4520ED005DE789 /* PPNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = E8DA7974183D2EC5002B1D0B /* PPNavigationBar.m */; };
+		37B620151F4520F3005DE789 /* PPLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 376C9E7D1746FB4300A62CB5 /* PPLoadingView.m */; };
+		37B620161F4520F7005DE789 /* PPToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = 370F92EE17500722005F0AD7 /* PPToolbar.m */; };
+		37B620171F4520FD005DE789 /* PPShrinkBackTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F7825A198C354200C99139 /* PPShrinkBackTransition.m */; };
+		37B620181F452101005DE789 /* PPReaderSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A2B4A9199EA8CA005B7671 /* PPReaderSettings.m */; };
+		37B620191F452105005DE789 /* PPBadgeWrapperView.m in Sources */ = {isa = PBXBuildFile; fileRef = E89001F5183EA43E00C1F969 /* PPBadgeWrapperView.m */; };
+		37B6201A1F452109005DE789 /* PPShortcutEnabledDescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 373D6F561965E85A006833D2 /* PPShortcutEnabledDescriptionViewController.m */; };
+		37B6201B1F452114005DE789 /* PPBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = E89001F8183EA5B500C1F969 /* PPBadgeView.m */; };
+		37B6201C1F452119005DE789 /* PPShrinkBackAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F7825D198C354D00C99139 /* PPShrinkBackAnimator.m */; };
+		37B6201D1F45211D005DE789 /* PPEditDescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3728CF3F1872880A00155791 /* PPEditDescriptionViewController.m */; };
 		37CBB7411881B44B000F9C36 /* About.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7401881B44B000F9C36 /* About.plist */; };
 		37CBB7551881FFBC000F9C36 /* About.json in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7541881FFBC000F9C36 /* About.json */; };
 		37DE5AAA174EF8AF0073A2F4 /* back_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 37DE5AA0174EF8AE0073A2F4 /* back_icon.png */; };
 		37DE5AAB174EF8AF0073A2F4 /* back_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37DE5AA1174EF8AE0073A2F4 /* back_icon@2x.png */; };
-		37E9965D1D32EC9C00659E82 /* NSString+Additions.h in Headers */ = {isa = PBXBuildFile; fileRef = 3762CACD1A59D04700301C97 /* NSString+Additions.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		37F1E1BA18C617940032B22B /* navigation-recent.png in Resources */ = {isa = PBXBuildFile; fileRef = 37F1E1B618C617940032B22B /* navigation-recent.png */; };
 		37F1E1BB18C617940032B22B /* navigation-recent@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37F1E1B718C617940032B22B /* navigation-recent@2x.png */; };
 		37F1E1BC18C617940032B22B /* navigation-search.png in Resources */ = {isa = PBXBuildFile; fileRef = 37F1E1B818C617940032B22B /* navigation-search.png */; };
 		37F1E1BD18C617940032B22B /* navigation-search@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37F1E1B918C617940032B22B /* navigation-search@2x.png */; };
-		37F95C111D32CEAC00422DD6 /* LHSBooleanTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 37171A2E18B1714E007FF164 /* LHSBooleanTableViewCell.m */; };
-		37F95C1F1D32D37E00422DD6 /* PPSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 37889D4319981212002E245A /* PPSettings.m */; };
-		37F95C2E1D32DB5500422DD6 /* PPReaderSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A2B4A9199EA8CA005B7671 /* PPReaderSettings.m */; };
 		37F9D0961D32FDE1002A168D /* BookmarkletInstallationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */; };
 		37F9D0971D32FDF9002A168D /* PPSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37171A2B18B16C77007FF164 /* PPSearchViewController.m */; };
 		37F9D0981D32FDFB002A168D /* PPTwitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 37BC1BDA1889C6740022020A /* PPTwitter.m */; };
@@ -200,9 +188,6 @@
 		37F9D0C01D330239002A168D /* CoreSpotlight.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37F9D0BF1D330239002A168D /* CoreSpotlight.framework */; };
 		37F9D0C11D330246002A168D /* PPBrowserActivity.m in Sources */ = {isa = PBXBuildFile; fileRef = 37018CE4180E3C0B00226408 /* PPBrowserActivity.m */; };
 		37F9D0CB1D330332002A168D /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37F9D0CA1D330332002A168D /* CoreMotion.framework */; };
-		37F9D0CF1D330388002A168D /* BuildFile in CopyFiles */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		37F9D0D21D330425002A168D /* SharedSafe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 379042B219CC646700409D34 /* SharedSafe.framework */; };
-		37F9D0D31D330425002A168D /* SharedSafe.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 379042B219CC646700409D34 /* SharedSafe.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		37F9D0D81D330440002A168D /* PPAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEBA215745488003F2B77 /* PPAppDelegate.m */; };
 		37F9D0D91D33049B002A168D /* PPCachingURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 37EE01731A07EA0600A03F3B /* PPCachingURLProtocol.m */; };
 		37F9D0DA1D33049F002A168D /* PPBookmarkCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 37516A05186C8AF700AEF7A6 /* PPBookmarkCell.m */; };
@@ -210,7 +195,6 @@
 		37F9D0DD1D3304C7002A168D /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37F9D0DC1D3304C7002A168D /* MobileCoreServices.framework */; };
 		37FB4F981D32ED60004D5C12 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEB9E15745488003F2B77 /* main.m */; };
 		37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9415745488003F2B77 /* Foundation.framework */; };
-		5758E62A8847EC5BE44AD826 /* Pods_SharedSafe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1220199B73DD6474740BDE0 /* Pods_SharedSafe.framework */; };
 		B63698721B0FCC2700F15D42 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B63698711B0FCC2700F15D42 /* Launch Screen.xib */; };
 		B6E3041C1B3DC95500135CF1 /* pinboard-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E304181B3DC95500135CF1 /* pinboard-logo@2x.png */; };
 		B6E3041D1B3DC95500135CF1 /* pinboard.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = B6E304191B3DC95500135CF1 /* pinboard.jpeg */; };
@@ -278,16 +262,6 @@
 		E8F987EB183E796900EF976D /* browse-wikipedia.png in Resources */ = {isa = PBXBuildFile; fileRef = E8F987DF183E796900EF976D /* browse-wikipedia.png */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		37F9D0D41D330425002A168D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 37FEEB8515745488003F2B77 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 379042B119CC646700409D34;
-			remoteInfo = SharedSafe;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXCopyFilesBuildPhase section */
 		3790420B19CBCFF700409D34 /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -299,23 +273,12 @@
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		37F9D0CC1D33036A002A168D /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				37F9D0CF1D330388002A168D /* BuildFile in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		37F9D0D61D330426002A168D /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				37F9D0D31D330425002A168D /* SharedSafe.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -402,10 +365,6 @@
 		37561D8816ADFEC400D69CDE /* Pushpin.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Pushpin.entitlements; sourceTree = SOURCE_ROOT; };
 		37561D9216AE0C7500D69CDE /* BookmarkletInstallationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookmarkletInstallationViewController.h; sourceTree = "<group>"; };
 		37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = BookmarkletInstallationViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		37587B1E1D32B5A0005665DC /* SharedSafe.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = SharedSafe.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
-		37587B201D32B5A0005665DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		37587B311D32B5B0005665DC /* Shared.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Shared.h; sourceTree = "<group>"; };
-		37587B331D32B5B0005665DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		375A638816C0CB0800665CA1 /* PPFeedListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPFeedListViewController.h; sourceTree = "<group>"; };
 		375A638916C0CB0800665CA1 /* PPFeedListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPFeedListViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		375B622F1A4DA9240045AFE7 /* PPURLCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PPURLCache.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -471,7 +430,6 @@
 		378BFDF319E5E29B006B48DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		378BFDF419E5E29B006B48DC /* Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tests.m; sourceTree = "<group>"; };
 		378DA45E1633B4B700831134 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		379042B219CC646700409D34 /* SharedSafe.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SharedSafe.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		37919F1C16091DF5007708EF /* PPPinboardLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PPPinboardLoginViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		37919F1D16091DF5007708EF /* PPPinboardLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPPinboardLoginViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37919F1F16092198007708EF /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -715,14 +673,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		379042AE19CC646700409D34 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				5758E62A8847EC5BE44AD826 /* Pods_SharedSafe.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		37FEEB8B15745488003F2B77 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -739,7 +689,6 @@
 				E6B7CF996201BD8DBAE91532 /* Pods_Pushpin.framework in Frameworks */,
 				37919F2016092198007708EF /* QuartzCore.framework in Frameworks */,
 				E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */,
-				37F9D0D21D330425002A168D /* SharedSafe.framework in Frameworks */,
 				377E46DB174C3A7500CE3813 /* Social.framework in Frameworks */,
 				376E0A80175AA9EC004CCDEE /* StoreKit.framework in Frameworks */,
 				37800E9A162D5264009FCB17 /* SystemConfiguration.framework in Frameworks */,
@@ -914,24 +863,6 @@
 			name = "Table View Cells";
 			sourceTree = "<group>";
 		};
-		37587B1D1D32B5A0005665DC /* SharedSafe */ = {
-			isa = PBXGroup;
-			children = (
-				37587B201D32B5A0005665DC /* Info.plist */,
-				37587B1E1D32B5A0005665DC /* SharedSafe.h */,
-			);
-			path = SharedSafe;
-			sourceTree = "<group>";
-		};
-		37587B301D32B5B0005665DC /* Shared */ = {
-			isa = PBXGroup;
-			children = (
-				37587B331D32B5B0005665DC /* Info.plist */,
-				37587B311D32B5B0005665DC /* Shared.h */,
-			);
-			path = Shared;
-			sourceTree = "<group>";
-		};
 		376ABBBE1895892300132CFF /* Entitlements */ = {
 			isa = PBXGroup;
 			children = (
@@ -1089,8 +1020,6 @@
 				37FEEB8F15745488003F2B77 /* Products */,
 				37FEEB9815745488003F2B77 /* Pushpin */,
 				37BC1DF61D32862F00AC4607 /* ReadLaterExtension */,
-				37587B301D32B5B0005665DC /* Shared */,
-				37587B1D1D32B5A0005665DC /* SharedSafe */,
 				378BFDF119E5E29B006B48DC /* Tests */,
 				37076D41158AD0B1002566CD /* Vendor */,
 				374D91DF19CE26A700995DF1 /* AppExtensionHelper.js */,
@@ -1105,7 +1034,6 @@
 			isa = PBXGroup;
 			children = (
 				37FEEB8E15745488003F2B77 /* Pushpin.app */,
-				379042B219CC646700409D34 /* SharedSafe.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1398,40 +1326,7 @@
 		};
 /* End PBXGroup section */
 
-/* Begin PBXHeadersBuildPhase section */
-		379042AF19CC646700409D34 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				37E9965D1D32EC9C00659E82 /* NSString+Additions.h in Headers */,
-				379A59E11D32E39F00AB4A26 /* SharedSafe.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXHeadersBuildPhase section */
-
 /* Begin PBXNativeTarget section */
-		379042B119CC646700409D34 /* SharedSafe */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 379042C219CC646B00409D34 /* Build configuration list for PBXNativeTarget "SharedSafe" */;
-			buildPhases = (
-				47B6FB3777030947D5381F4E /* [CP] Check Pods Manifest.lock */,
-				37F9D0CC1D33036A002A168D /* CopyFiles */,
-				379042AD19CC646700409D34 /* Sources */,
-				379042AE19CC646700409D34 /* Frameworks */,
-				379042AF19CC646700409D34 /* Headers */,
-				379042B019CC646700409D34 /* Resources */,
-				AC2AD9DB75B8779818ADA329 /* [CP] Copy Pods Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = SharedSafe;
-			productName = PushpinFramework;
-			productReference = 379042B219CC646700409D34 /* SharedSafe.framework */;
-			productType = "com.apple.product-type.framework";
-		};
 		37FEEB8D15745488003F2B77 /* Pushpin */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 37FEEBA615745488003F2B77 /* Build configuration list for PBXNativeTarget "Pushpin" */;
@@ -1448,7 +1343,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				37F9D0D51D330425002A168D /* PBXTargetDependency */,
 			);
 			name = Pushpin;
 			productName = "Pinboard for iPhone";
@@ -1463,14 +1357,9 @@
 			attributes = {
 				CLASSPREFIX = PP;
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0600;
+				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = "Lionheart Software";
 				TargetAttributes = {
-					379042B119CC646700409D34 = {
-						CreatedOnToolsVersion = 6.0;
-						DevelopmentTeam = 63553QQ62F;
-						LastSwiftMigration = 0830;
-					};
 					37FEEB8D15745488003F2B77 = {
 						DevelopmentTeam = 63553QQ62F;
 						LastSwiftMigration = 0830;
@@ -1507,19 +1396,11 @@
 			projectRoot = "";
 			targets = (
 				37FEEB8D15745488003F2B77 /* Pushpin */,
-				379042B119CC646700409D34 /* SharedSafe */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		379042B019CC646700409D34 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		37FEEB8C15745488003F2B77 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1704,24 +1585,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		47B6FB3777030947D5381F4E /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-SharedSafe-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		5493B870AE9DECF8A9CDAAE0 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1753,21 +1616,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		AC2AD9DB75B8779818ADA329 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SharedSafe/Pods-SharedSafe-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		D570D088630964A43514ACFC /* [CP] Embed Pods Frameworks */ = {
@@ -1831,47 +1679,6 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		379042AD19CC646700409D34 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				37F95C111D32CEAC00422DD6 /* LHSBooleanTableViewCell.m in Sources */,
-				3790426A19CBDCDF00409D34 /* MFMailComposeViewController+Theme.m in Sources */,
-				3790426B19CBDCDF00409D34 /* NSData+AES256.m in Sources */,
-				3762CAD01A59D04700301C97 /* NSString+Additions.m in Sources */,
-				3790426C19CBDCDF00409D34 /* NSString+LHSAdditions.m in Sources */,
-				3790426D19CBDCDF00409D34 /* NSString+URLEncoding2.m in Sources */,
-				3790426E19CBDCDF00409D34 /* PostMetadata.m in Sources */,
-				3790427419CBDCDF00409D34 /* PPBadgeView.m in Sources */,
-				3790427519CBDCDF00409D34 /* PPBadgeWrapperView.m in Sources */,
-				3790427A19CBDCDF00409D34 /* PPConstants.m in Sources */,
-				3790427B19CBDCDF00409D34 /* PPDefaultFeedViewController.m in Sources */,
-				3790427E19CBDCDF00409D34 /* PPEditDescriptionViewController.m in Sources */,
-				3790427F19CBDCDF00409D34 /* PPFadeAnimator.m in Sources */,
-				3790428019CBDCDF00409D34 /* PPFadeTransition.m in Sources */,
-				3790428319CBDCDF00409D34 /* PPLoadingView.m in Sources */,
-				3790428519CBDCDF00409D34 /* PPMobilizerUtility.m in Sources */,
-				3790428719CBDCDF00409D34 /* PPNavigationBar.m in Sources */,
-				3790428919CBDCDF00409D34 /* PPNoteViewController.m in Sources */,
-				3790428D19CBDCDF00409D34 /* PPPinboardMetadataCache.m in Sources */,
-				3790428F19CBDCDF00409D34 /* PPPlainTextViewController.m in Sources */,
-				37F95C2E1D32DB5500422DD6 /* PPReaderSettings.m in Sources */,
-				37F95C1F1D32D37E00422DD6 /* PPSettings.m in Sources */,
-				3790429919CBDCDF00409D34 /* PPShortcutEnabledDescriptionViewController.m in Sources */,
-				3790429A19CBDCDF00409D34 /* PPShrinkBackAnimator.m in Sources */,
-				3790429B19CBDCDF00409D34 /* PPShrinkBackTransition.m in Sources */,
-				3790429F19CBDCDF00409D34 /* PPTableViewController.m in Sources */,
-				379042A019CBDCDF00409D34 /* PPTableViewTitleView.m in Sources */,
-				379042A319CBDCDF00409D34 /* PPTheme.m in Sources */,
-				379042A419CBDCDF00409D34 /* PPTitleButton.m in Sources */,
-				379042A519CBDCDF00409D34 /* PPToolbar.m in Sources */,
-				375B62321A4DA9240045AFE7 /* PPURLCache.m in Sources */,
-				372943E719CF3AFF00ABF006 /* PPUtilities.m in Sources */,
-				379042A919CBDCDF00409D34 /* PSPDFUIKitMainThreadGuard.m in Sources */,
-				379042AC19CBDCDF00409D34 /* UITableView+Additions.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		37F95BFB1D32BDE300422DD6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1879,53 +1686,69 @@
 				37F9D0961D32FDE1002A168D /* BookmarkletInstallationViewController.m in Sources */,
 				37F9D0DB1D3304A9002A168D /* LHSFontSelectionViewController.m in Sources */,
 				37FB4F981D32ED60004D5C12 /* main.m in Sources */,
+				37B620061F45206D005DE789 /* NSString+LHSAdditions.m in Sources */,
+				37B6200E1F4520D0005DE789 /* PostMetadata.m in Sources */,
 				37F9D0B61D330075002A168D /* PPAboutViewController.m in Sources */,
 				37F9D0B71D330077002A168D /* PPActivityViewController.m in Sources */,
 				37F9D0B81D330082002A168D /* PPAddBookmarkViewController.m in Sources */,
 				37F9D0B91D330087002A168D /* PPAddSavedFeedViewController.m in Sources */,
 				37F9D0D81D330440002A168D /* PPAppDelegate.m in Sources */,
+				37B6201B1F452114005DE789 /* PPBadgeView.m in Sources */,
+				37B620191F452105005DE789 /* PPBadgeWrapperView.m in Sources */,
 				37F9D0DA1D33049F002A168D /* PPBookmarkCell.m in Sources */,
 				37F9D0C11D330246002A168D /* PPBrowserActivity.m in Sources */,
 				37F9D0B21D33002A002A168D /* PPBrowserSettingsViewController.m in Sources */,
 				37F9D0D91D33049B002A168D /* PPCachingURLProtocol.m in Sources */,
 				37F9D0B11D330025002A168D /* PPChangelogViewController.m in Sources */,
+				37B620101F4520D9005DE789 /* PPDefaultFeedViewController.m in Sources */,
 				37F9D0A61D32FE55002A168D /* PPDisplaySettingsViewController.m in Sources */,
+				37B6201D1F45211D005DE789 /* PPEditDescriptionViewController.m in Sources */,
 				37F9D0A51D32FE50002A168D /* PPFeedListViewController.m in Sources */,
 				37F9D0BC1D330115002A168D /* PPGenericPostViewController.m in Sources */,
+				37B620151F4520F3005DE789 /* PPLoadingView.m in Sources */,
 				37F9D0BB1D330113002A168D /* PPLoginViewController.m in Sources */,
 				37F9D0B41D330054002A168D /* PPMailChimp.m in Sources */,
+				37B6200A1F4520B8005DE789 /* PPMobilizerUtility.m in Sources */,
 				37F9D0A71D32FE57002A168D /* PPMultipleEditViewController.m in Sources */,
+				37B620141F4520ED005DE789 /* PPNavigationBar.m in Sources */,
 				37F9D0A11D32FE2A002A168D /* PPNavigationController.m in Sources */,
+				37B6200D1F4520CC005DE789 /* PPNoteViewController.m in Sources */,
 				37F9D0B51D33005D002A168D /* PPNotification.m in Sources */,
 				37F9D0AA1D32FEDB002A168D /* PPOfflineDownloadViewController.m in Sources */,
 				37F9D0A01D32FE28002A168D /* PPOfflineSettingsViewController.m in Sources */,
 				37F9D0A81D32FE5D002A168D /* PPPinboardDataSource.m in Sources */,
 				37F9D0991D32FDFE002A168D /* PPPinboardFeedDataSource.m in Sources */,
 				37F9D09D1D32FE08002A168D /* PPPinboardLoginViewController.m in Sources */,
+				37B6200F1F4520D5005DE789 /* PPPinboardMetadataCache.m in Sources */,
 				37F9D0A91D32FED3002A168D /* PPPinboardNotesDataSource.m in Sources */,
+				37B620131F4520E3005DE789 /* PPPlainTextViewController.m in Sources */,
+				37B620181F452101005DE789 /* PPReaderSettings.m in Sources */,
 				37F9D09E1D32FE0C002A168D /* PPReaderSettingsViewController.m in Sources */,
 				37F9D0BA1D330105002A168D /* PPSavedFeedsViewController.m in Sources */,
 				37F9D0A21D32FE2D002A168D /* PPSearchExamplesViewController.m in Sources */,
 				37F9D0971D32FDF9002A168D /* PPSearchViewController.m in Sources */,
+				37B620121F4520E0005DE789 /* PPSettings.m in Sources */,
 				37F9D09B1D32FE03002A168D /* PPSettingsViewController.m in Sources */,
+				37B6201A1F452109005DE789 /* PPShortcutEnabledDescriptionViewController.m in Sources */,
+				37B6201C1F452119005DE789 /* PPShrinkBackAnimator.m in Sources */,
+				37B620171F4520FD005DE789 /* PPShrinkBackTransition.m in Sources */,
 				37F9D09C1D32FE05002A168D /* PPSplitViewController.m in Sources */,
 				37F9D0A31D32FE30002A168D /* PPStatusBar.m in Sources */,
+				37B6200C1F4520BF005DE789 /* PPTableViewController.m in Sources */,
+				37B6200B1F4520BD005DE789 /* PPTableViewTitleView.m in Sources */,
 				37F9D09F1D32FE11002A168D /* PPTagEditViewController.m in Sources */,
 				37F9D0A41D32FE34002A168D /* PPTagViewController.m in Sources */,
+				37B620071F4520AB005DE789 /* PPTheme.m in Sources */,
+				37B620081F4520B1005DE789 /* PPTitleButton.m in Sources */,
+				37B620161F4520F7005DE789 /* PPToolbar.m in Sources */,
 				37F9D0981D32FDFB002A168D /* PPTwitter.m in Sources */,
+				37B620111F4520DC005DE789 /* PPURLCache.m in Sources */,
+				37B620091F4520B4005DE789 /* PPUtilities.m in Sources */,
 				37F9D09A1D32FE00002A168D /* PPWebViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		37F9D0D51D330425002A168D /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 379042B119CC646700409D34 /* SharedSafe */;
-			targetProxy = 37F9D0D41D330425002A168D /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		3740A23716863CF000F95D82 /* InfoPlist.strings */ = {
@@ -1960,16 +1783,21 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_MEMORY_MANAGEMENT = YES;
 				CLANG_ANALYZER_OBJC_UNUSED_IVARS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = NO;
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
 				CODE_SIGN_IDENTITY = "";
@@ -1978,6 +1806,8 @@
 				CURRENT_PROJECT_VERSION = 557;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEPLOYMENT_POSTPROCESSING = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1985,6 +1815,7 @@
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREFIX_HEADER = "Pushpin/Pushpin for Pinboard-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1992,7 +1823,9 @@
 					"APPSTORE=1",
 				);
 				GCC_VERSION = "";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = NO;
@@ -2002,9 +1835,9 @@
 					"$(OBJROOT)/UninstalledProducts/include",
 				);
 				INFOPLIST_FILE = Pushpin/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-DNS_BLOCK_ASSERTIONS=1",
 					"-DSQLITE_ENABLE_FTS3",
@@ -2031,13 +1864,13 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7B9CEAC4017990D284AFFD19 /* Pods-Pushpin.pinboard app store debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_MODULES_AUTOLINK = NO;
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = NO;
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2066,16 +1899,21 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_MEMORY_MANAGEMENT = YES;
 				CLANG_ANALYZER_OBJC_UNUSED_IVARS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = NO;
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Beta.entitlements;
 				CODE_SIGN_IDENTITY = "";
@@ -2083,6 +1921,7 @@
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 557;
 				DEPLOYMENT_POSTPROCESSING = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -2090,13 +1929,16 @@
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREFIX_HEADER = "Pushpin/Pushpin for Pinboard-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"BETA=1",
 				);
 				GCC_VERSION = "";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = NO;
@@ -2106,7 +1948,7 @@
 					"$(OBJROOT)/UninstalledProducts/include",
 				);
 				INFOPLIST_FILE = Pushpin/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
@@ -2135,13 +1977,13 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FAE4C2E68510E120B3586391 /* Pods-Pushpin.pinboard beta.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = PinboardBeta;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_MODULES_AUTOLINK = NO;
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Beta.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = NO;
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2164,292 +2006,27 @@
 			};
 			name = "Pinboard Beta";
 		};
-		379042C319CC646B00409D34 /* Pinboard Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 24CE59D9F3978615E2B65E6C /* Pods-SharedSafe.pinboard debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				APPLICATION_EXTENSION_API_ONLY = YES;
-				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
-				CLANG_ANALYZER_OBJC_UNUSED_IVARS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = "";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 557;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 557;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_BITCODE = YES;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/build/Debug-iphoneos",
-				);
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = NO;
-				GCC_WARN_UNUSED_LABEL = NO;
-				GCC_WARN_UNUSED_VALUE = NO;
-				GCC_WARN_UNUSED_VARIABLE = NO;
-				INFOPLIST_FILE = SharedSafe/Info.plist;
-				INSTALL_PATH = "@executable_path/../Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MACH_O_TYPE = mh_dylib;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
-				SWIFT_VERSION = 3.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = "Pinboard Debug";
-		};
-		379042C519CC646B00409D34 /* Pinboard App Store */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = FB39D98469E9E1F14C03210E /* Pods-SharedSafe.pinboard app store.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				APPLICATION_EXTENSION_API_ONLY = YES;
-				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
-				CLANG_ANALYZER_OBJC_UNUSED_IVARS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = "";
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 557;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 557;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_BITCODE = YES;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/build/Debug-iphoneos",
-				);
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = NO;
-				GCC_WARN_UNUSED_LABEL = NO;
-				GCC_WARN_UNUSED_VALUE = NO;
-				GCC_WARN_UNUSED_VARIABLE = NO;
-				INFOPLIST_FILE = SharedSafe/Info.plist;
-				INSTALL_PATH = "@executable_path/../Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MACH_O_TYPE = mh_dylib;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
-				SWIFT_VERSION = 3.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = "Pinboard App Store";
-		};
-		379042C619CC646B00409D34 /* Pinboard App Store Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = ABD8CCD3A660C50E1D5C76C6 /* Pods-SharedSafe.pinboard app store debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				APPLICATION_EXTENSION_API_ONLY = YES;
-				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
-				CLANG_ANALYZER_OBJC_UNUSED_IVARS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = "";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 557;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 557;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_BITCODE = YES;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/build/Debug-iphoneos",
-				);
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = NO;
-				GCC_WARN_UNUSED_LABEL = NO;
-				GCC_WARN_UNUSED_VALUE = NO;
-				GCC_WARN_UNUSED_VARIABLE = NO;
-				INFOPLIST_FILE = SharedSafe/Info.plist;
-				INSTALL_PATH = "@executable_path/../Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MACH_O_TYPE = mh_dylib;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
-				SWIFT_VERSION = 3.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = "Pinboard App Store Debug";
-		};
-		379042C819CC646B00409D34 /* Pinboard Beta */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 93905BF17CB2971DC2D7A046 /* Pods-SharedSafe.pinboard beta.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				APPLICATION_EXTENSION_API_ONLY = YES;
-				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
-				CLANG_ANALYZER_OBJC_UNUSED_IVARS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = "";
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 557;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 557;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_BITCODE = YES;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/build/Debug-iphoneos",
-				);
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = NO;
-				GCC_WARN_UNUSED_LABEL = NO;
-				GCC_WARN_UNUSED_VALUE = NO;
-				GCC_WARN_UNUSED_VARIABLE = NO;
-				INFOPLIST_FILE = SharedSafe/Info.plist;
-				INSTALL_PATH = "@executable_path/../Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MACH_O_TYPE = mh_dylib;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
-				SWIFT_VERSION = 3.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = "Pinboard Beta";
-		};
 		37FEEBA415745488003F2B77 /* Pinboard Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "";
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_MEMORY_MANAGEMENT = YES;
 				CLANG_ANALYZER_OBJC_UNUSED_IVARS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = NO;
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Dev.entitlements;
 				CODE_SIGN_IDENTITY = "";
@@ -2458,12 +2035,15 @@
 				CURRENT_PROJECT_VERSION = 557;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEPLOYMENT_POSTPROCESSING = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREFIX_HEADER = "Pushpin/Pushpin for Pinboard-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -2472,7 +2052,9 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_VERSION = "";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = NO;
@@ -2483,9 +2065,9 @@
 					"\"$(PROJECT_ROOT)/Pods/Headers\"/**",
 				);
 				INFOPLIST_FILE = Pushpin/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-DSQLITE_ENABLE_FTS3",
 					"-DSQLITE_ENABLE_FTS3_PARENTHESIS",
@@ -2513,16 +2095,21 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_MEMORY_MANAGEMENT = YES;
 				CLANG_ANALYZER_OBJC_UNUSED_IVARS = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_RECEIVER_WEAK = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = NO;
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
 				CODE_SIGN_IDENTITY = "";
@@ -2530,6 +2117,7 @@
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 557;
 				DEPLOYMENT_POSTPROCESSING = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -2537,6 +2125,7 @@
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = fast;
 				GCC_PREFIX_HEADER = "Pushpin/Pushpin for Pinboard-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -2544,7 +2133,9 @@
 					"APPSTORE=1",
 				);
 				GCC_VERSION = "";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = NO;
@@ -2554,7 +2145,7 @@
 					"$(OBJROOT)/UninstalledProducts/include",
 				);
 				INFOPLIST_FILE = Pushpin/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
@@ -2583,13 +2174,13 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E812290D60D84E663BDC9094 /* Pods-Pushpin.pinboard debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = PinboardDev;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_MODULES_AUTOLINK = NO;
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Dev.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = NO;
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2616,13 +2207,13 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A1646DB4B51F0C69620EEF51 /* Pods-Pushpin.pinboard app store.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_MODULES_AUTOLINK = NO;
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = NO;
 				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2648,17 +2239,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		379042C219CC646B00409D34 /* Build configuration list for PBXNativeTarget "SharedSafe" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				379042C319CC646B00409D34 /* Pinboard Debug */,
-				379042C519CC646B00409D34 /* Pinboard App Store */,
-				379042C619CC646B00409D34 /* Pinboard App Store Debug */,
-				379042C819CC646B00409D34 /* Pinboard Beta */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Pinboard Debug";
-		};
 		37FEEB8815745488003F2B77 /* Build configuration list for PBXProject "Pushpin" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -48,7 +48,7 @@ static NSString *CellIdentifier = @"Cell";
     
     void (^BrowserAlertActionHandler)(UIAlertAction *action) = ^(UIAlertAction *action) {
         PPSettings *settings = [PPSettings sharedSettings];
-        
+
         if ([action.title isEqualToString:NSLocalizedString(@"Webview", nil)]) {
             [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Webview"];
             settings.browser = PPBrowserWebview;

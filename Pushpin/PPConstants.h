@@ -91,7 +91,8 @@ typedef enum : NSInteger {
     PPBrowseriCabMobile,
     PPBrowserDolphin,
     PPBrowserCyberspace,
-    PPBrowserOpera
+    PPBrowserOpera,
+    PPBrowserSafariViewController
 } PPBrowserType;
 
 typedef enum : NSInteger {

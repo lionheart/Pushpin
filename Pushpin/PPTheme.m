@@ -27,7 +27,7 @@
 }
 
 + (UIFont *)extraLargeFont {
-    return [UIFont fontWithName:[PPTheme boldFontName] size:[PPTheme fontSize] + 1];
+    return [UIFont systemFontOfSize:[PPTheme fontSize] + 1 weight:UIFontWeightBold];
 }
 
 + (UIFont *)titleFont {
@@ -105,11 +105,11 @@
 }
 
 + (NSString *)fontName {
-    return @"AvenirNext-Regular";
+    return [UIFont systemFontOfSize:10].fontName;
 }
 
 + (NSString *)boldFontName {
-    return @"AvenirNext-Medium";
+    return [UIFont boldSystemFontOfSize:10].fontName;
 }
 
 + (UIColor *)bookmarkBackgroundColor {
