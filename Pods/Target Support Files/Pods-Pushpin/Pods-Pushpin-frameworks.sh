@@ -122,7 +122,6 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/TTTAttributedLabel/TTTAttributedLabel.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/YHRoundBorderedButton/YHRoundBorderedButton.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/hpple/hpple.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/uservoice-iphone-sdk/uservoice_iphone_sdk.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/1PasswordExtension/OnePasswordExtension.framework"
@@ -145,7 +144,6 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/TTTAttributedLabel/TTTAttributedLabel.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/YHRoundBorderedButton/YHRoundBorderedButton.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/hpple/hpple.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/uservoice-iphone-sdk/uservoice_iphone_sdk.framework"
 fi
 if [[ "$CONFIGURATION" == "Release Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/1PasswordExtension/OnePasswordExtension.framework"
@@ -168,7 +166,6 @@ if [[ "$CONFIGURATION" == "Release Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/TTTAttributedLabel/TTTAttributedLabel.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/YHRoundBorderedButton/YHRoundBorderedButton.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/hpple/hpple.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/uservoice-iphone-sdk/uservoice_iphone_sdk.framework"
 fi
 if [[ "$CONFIGURATION" == "Beta" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/1PasswordExtension/OnePasswordExtension.framework"
@@ -191,7 +188,6 @@ if [[ "$CONFIGURATION" == "Beta" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/TTTAttributedLabel/TTTAttributedLabel.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/YHRoundBorderedButton/YHRoundBorderedButton.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/hpple/hpple.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/uservoice-iphone-sdk/uservoice_iphone_sdk.framework"
 fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then
   wait
