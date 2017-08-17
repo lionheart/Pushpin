@@ -23,11 +23,10 @@ pod 'LHSFMDatabaseAdditions', '~> 0.0'
 pod 'LHSTableViewCells'
 pod 'FMDB'
 
-pod 'ChimpKit'
-pod 'OpenInChrome', '~> 0.0'
-
 target 'Pushpin' do
   pod 'Mixpanel'
+  pod 'ChimpKit'
+  pod 'OpenInChrome', '~> 0.0'
 end
 
 target 'Bookmark Extension' do
