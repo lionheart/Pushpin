@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 #import <Social/Social.h>
 
-@interface ShareViewController : UIAlertController
+@interface ShareViewController : UIViewController
 
 @end

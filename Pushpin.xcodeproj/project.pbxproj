@@ -10,13 +10,33 @@
 		204677A3B02B7F961E852C3F /* Pods_Pushpin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5432DFD885110E3E9CBEE751 /* Pods_Pushpin.framework */; };
 		370B75DB1F45FE5200391769 /* NSString+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 3762CACE1A59D04700301C97 /* NSString+Additions.m */; };
 		370B760E1F4603A400391769 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 370B760D1F4603A400391769 /* ShareViewController.m */; };
-		370B76111F4603A400391769 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 370B760F1F4603A400391769 /* MainInterface.storyboard */; };
 		370B76151F4603A400391769 /* Read Later Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 370B760A1F4603A400391769 /* Read Later Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		370B76231F4603AA00391769 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 370B76221F4603AA00391769 /* ShareViewController.m */; };
-		370B76261F4603AA00391769 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 370B76241F4603AA00391769 /* MainInterface.storyboard */; };
 		370B762A1F4603AA00391769 /* Bookmark Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 370B761F1F4603AA00391769 /* Bookmark Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371BCB0115772C0E00BDA996 /* CoreText.framework */; };
 		372F891416755BF00073D0B6 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 372F891216755B950073D0B6 /* CoreTelephony.framework */; };
+		373025FB1F4610D5007014EF /* PPUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B4FFE21923AD18002F8558 /* PPUtilities.m */; };
+		373025FC1F4610D6007014EF /* PPUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B4FFE21923AD18002F8558 /* PPUtilities.m */; };
+		373025FD1F4610E3007014EF /* PPSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 37889D4319981212002E245A /* PPSettings.m */; };
+		373025FE1F4610E3007014EF /* PPSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 37889D4319981212002E245A /* PPSettings.m */; };
+		373025FF1F4610EA007014EF /* PPReaderSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A2B4A9199EA8CA005B7671 /* PPReaderSettings.m */; };
+		373026001F4610EA007014EF /* PPReaderSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A2B4A9199EA8CA005B7671 /* PPReaderSettings.m */; };
+		373026011F46136E007014EF /* AppExtensionHelper.js in Resources */ = {isa = PBXBuildFile; fileRef = 374D91DF19CE26A700995DF1 /* AppExtensionHelper.js */; };
+		373026021F46136E007014EF /* AppExtensionHelper.js in Resources */ = {isa = PBXBuildFile; fileRef = 374D91DF19CE26A700995DF1 /* AppExtensionHelper.js */; };
+		373026031F461980007014EF /* PPNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F91F3D177AB1D500683D46 /* PPNavigationController.m */; };
+		373026041F4619E6007014EF /* PPTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 371EE5C7185B49FE005DB908 /* PPTheme.m */; };
+		373026051F4619ED007014EF /* PPPinboardDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733252716E15D6A002E2AB0 /* PPPinboardDataSource.m */; };
+		373026061F461AF7007014EF /* PostMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 37405C6618620BCB0052213A /* PostMetadata.m */; };
+		373026081F461B85007014EF /* PPTitleButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 370B1B781864FADC00319A20 /* PPTitleButton.m */; };
+		373026091F461BB2007014EF /* PPURLCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 375B62301A4DA9240045AFE7 /* PPURLCache.m */; };
+		3730260A1F461BBB007014EF /* PPBadgeWrapperView.m in Sources */ = {isa = PBXBuildFile; fileRef = E89001F5183EA43E00C1F969 /* PPBadgeWrapperView.m */; };
+		3730260B1F461BC1007014EF /* PPNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = E8DA7974183D2EC5002B1D0B /* PPNavigationBar.m */; };
+		3730260C1F461BCA007014EF /* PPPinboardMetadataCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 3743B7371875DAA800B97E6D /* PPPinboardMetadataCache.m */; };
+		3730260D1F461BD0007014EF /* PPAddBookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E44162B389B009FCB17 /* PPAddBookmarkViewController.m */; };
+		3730260F1F461C31007014EF /* PPShortcutEnabledDescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 373D6F561965E85A006833D2 /* PPShortcutEnabledDescriptionViewController.m */; };
+		373026101F461C38007014EF /* PPEditDescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3728CF3F1872880A00155791 /* PPEditDescriptionViewController.m */; };
+		373026111F461C3D007014EF /* PPBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = E89001F8183EA5B500C1F969 /* PPBadgeView.m */; };
+		373026121F461C42007014EF /* PPNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 374698BF174B33CF00407345 /* PPNotification.m */; };
 		3747C6F219CCDB1F00FAD488 /* 56_Key-alt.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E312E31868CCD600B944F1 /* 56_Key-alt.png */; };
 		3747C6F319CCDB1F00FAD488 /* 56_Key-alt@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E312E41868CCD600B944F1 /* 56_Key-alt@2x.png */; };
 		3747C6F419CCDB1F00FAD488 /* add.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A7B5D2183463410038677E /* add.png */; };
@@ -103,6 +123,18 @@
 		37800E9A162D5264009FCB17 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37800E99162D5264009FCB17 /* SystemConfiguration.framework */; };
 		378111201A65F27700F0D061 /* activity-browser-safari.png in Resources */ = {isa = PBXBuildFile; fileRef = 3781111E1A65F27700F0D061 /* activity-browser-safari.png */; };
 		378111211A65F27700F0D061 /* activity-browser-safari@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3781111F1A65F27700F0D061 /* activity-browser-safari@2x.png */; };
+		378338741F461F40006C0A01 /* roundbutton-checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF89185B6A1300979AA3 /* roundbutton-checkmark.png */; };
+		378338751F461F40006C0A01 /* roundbutton-checkmark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF8A185B6A1300979AA3 /* roundbutton-checkmark@2x.png */; };
+		378338761F461F40006C0A01 /* roundbutton-private.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF8B185B6A1300979AA3 /* roundbutton-private.png */; };
+		378338771F461F40006C0A01 /* roundbutton-private@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF8C185B6A1300979AA3 /* roundbutton-private@2x.png */; };
+		378338781F461F4A006C0A01 /* toolbar-tag.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF83185A4D9B00979AA3 /* toolbar-tag.png */; };
+		378338791F461F4A006C0A01 /* toolbar-tag@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF84185A4D9B00979AA3 /* toolbar-tag@2x.png */; };
+		3783387A1F461F51006C0A01 /* Delete-Button.png in Resources */ = {isa = PBXBuildFile; fileRef = 372C84071870E3B300BF520D /* Delete-Button.png */; };
+		3783387B1F461F51006C0A01 /* Delete-Button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 372C84081870E3B300BF520D /* Delete-Button@2x.png */; };
+		3783387C1F461F57006C0A01 /* toolbar-bookmark.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF79185A4AD800979AA3 /* toolbar-bookmark.png */; };
+		3783387D1F461F57006C0A01 /* toolbar-bookmark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF7A185A4AD800979AA3 /* toolbar-bookmark@2x.png */; };
+		3783387E1F461F5E006C0A01 /* toolbar-description.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF7B185A4AD800979AA3 /* toolbar-description.png */; };
+		3783387F1F461F5E006C0A01 /* toolbar-description@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF7C185A4AD800979AA3 /* toolbar-description@2x.png */; };
 		3784B0F81A50AD1500CD1435 /* 731-cloud-download.png in Resources */ = {isa = PBXBuildFile; fileRef = 3784B0F01A50AD1500CD1435 /* 731-cloud-download.png */; };
 		3784B0F91A50AD1600CD1435 /* 731-cloud-download@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3784B0F11A50AD1500CD1435 /* 731-cloud-download@2x.png */; };
 		3784B0FA1A50AD1600CD1435 /* 740-gear.png in Resources */ = {isa = PBXBuildFile; fileRef = 3784B0F21A50AD1500CD1435 /* 740-gear.png */; };
@@ -328,12 +360,10 @@
 		370B760A1F4603A400391769 /* Read Later Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Read Later Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		370B760C1F4603A400391769 /* ShareViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareViewController.h; sourceTree = "<group>"; };
 		370B760D1F4603A400391769 /* ShareViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareViewController.m; sourceTree = "<group>"; };
-		370B76101F4603A400391769 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		370B76121F4603A400391769 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		370B761F1F4603AA00391769 /* Bookmark Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Bookmark Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		370B76211F4603AA00391769 /* ShareViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareViewController.h; sourceTree = "<group>"; };
 		370B76221F4603AA00391769 /* ShareViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareViewController.m; sourceTree = "<group>"; };
-		370B76251F4603AA00391769 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		370B76271F4603AA00391769 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		370BBE011901ABBB004FA557 /* safari-callback.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "safari-callback.html"; path = "Assets/safari-callback.html"; sourceTree = "<group>"; };
 		370EE75115ED108300B262E2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -830,7 +860,6 @@
 			isa = PBXGroup;
 			children = (
 				370B76121F4603A400391769 /* Info.plist */,
-				370B760F1F4603A400391769 /* MainInterface.storyboard */,
 				370B760C1F4603A400391769 /* ShareViewController.h */,
 				370B760D1F4603A400391769 /* ShareViewController.m */,
 			);
@@ -841,7 +870,6 @@
 			isa = PBXGroup;
 			children = (
 				370B76271F4603AA00391769 /* Info.plist */,
-				370B76241F4603AA00391769 /* MainInterface.storyboard */,
 				370B76211F4603AA00391769 /* ShareViewController.h */,
 				370B76221F4603AA00391769 /* ShareViewController.m */,
 			);
@@ -1539,7 +1567,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				370B76111F4603A400391769 /* MainInterface.storyboard in Resources */,
+				373026011F46136E007014EF /* AppExtensionHelper.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1547,7 +1575,19 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				370B76261F4603AA00391769 /* MainInterface.storyboard in Resources */,
+				373026021F46136E007014EF /* AppExtensionHelper.js in Resources */,
+				3783387A1F461F51006C0A01 /* Delete-Button.png in Resources */,
+				3783387B1F461F51006C0A01 /* Delete-Button@2x.png in Resources */,
+				378338741F461F40006C0A01 /* roundbutton-checkmark.png in Resources */,
+				378338751F461F40006C0A01 /* roundbutton-checkmark@2x.png in Resources */,
+				378338761F461F40006C0A01 /* roundbutton-private.png in Resources */,
+				378338771F461F40006C0A01 /* roundbutton-private@2x.png in Resources */,
+				3783387C1F461F57006C0A01 /* toolbar-bookmark.png in Resources */,
+				3783387D1F461F57006C0A01 /* toolbar-bookmark@2x.png in Resources */,
+				3783387E1F461F5E006C0A01 /* toolbar-description.png in Resources */,
+				3783387F1F461F5E006C0A01 /* toolbar-description@2x.png in Resources */,
+				378338781F461F4A006C0A01 /* toolbar-tag.png in Resources */,
+				378338791F461F4A006C0A01 /* toolbar-tag@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1775,9 +1815,9 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin-resources.sh",
-				"$PODS_CONFIGURATION_BUILD_DIR/1PasswordExtension/OnePasswordExtensionResources.bundle",
+				$PODS_CONFIGURATION_BUILD_DIR/1PasswordExtension/OnePasswordExtensionResources.bundle,
 				"${PODS_ROOT}/ChimpKit/ChimpKit3/Helper Objects/CKAuthViewController.xib",
-				"$PODS_CONFIGURATION_BUILD_DIR/HTMLParser/HTMLParser.bundle",
+				$PODS_CONFIGURATION_BUILD_DIR/HTMLParser/HTMLParser.bundle,
 				"${PODS_ROOT}/Mixpanel/Mixpanel/Images/MPArrowLeft.png",
 				"${PODS_ROOT}/Mixpanel/Mixpanel/Images/MPArrowLeft@2x.png",
 				"${PODS_ROOT}/Mixpanel/Mixpanel/Images/MPArrowRight.png",
@@ -1922,6 +1962,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				373026001F4610EA007014EF /* PPReaderSettings.m in Sources */,
+				373025FD1F4610E3007014EF /* PPSettings.m in Sources */,
+				373025FB1F4610D5007014EF /* PPUtilities.m in Sources */,
 				370B760E1F4603A400391769 /* ShareViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1930,6 +1973,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				373026061F461AF7007014EF /* PostMetadata.m in Sources */,
+				3730260D1F461BD0007014EF /* PPAddBookmarkViewController.m in Sources */,
+				373026111F461C3D007014EF /* PPBadgeView.m in Sources */,
+				3730260A1F461BBB007014EF /* PPBadgeWrapperView.m in Sources */,
+				373026101F461C38007014EF /* PPEditDescriptionViewController.m in Sources */,
+				3730260B1F461BC1007014EF /* PPNavigationBar.m in Sources */,
+				373026031F461980007014EF /* PPNavigationController.m in Sources */,
+				373026121F461C42007014EF /* PPNotification.m in Sources */,
+				373026051F4619ED007014EF /* PPPinboardDataSource.m in Sources */,
+				3730260C1F461BCA007014EF /* PPPinboardMetadataCache.m in Sources */,
+				373025FF1F4610EA007014EF /* PPReaderSettings.m in Sources */,
+				373025FE1F4610E3007014EF /* PPSettings.m in Sources */,
+				3730260F1F461C31007014EF /* PPShortcutEnabledDescriptionViewController.m in Sources */,
+				373026041F4619E6007014EF /* PPTheme.m in Sources */,
+				373026081F461B85007014EF /* PPTitleButton.m in Sources */,
+				373026091F461BB2007014EF /* PPURLCache.m in Sources */,
+				373025FC1F4610D6007014EF /* PPUtilities.m in Sources */,
 				370B76231F4603AA00391769 /* ShareViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2020,22 +2080,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		370B760F1F4603A400391769 /* MainInterface.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				370B76101F4603A400391769 /* Base */,
-			);
-			name = MainInterface.storyboard;
-			sourceTree = "<group>";
-		};
-		370B76241F4603AA00391769 /* MainInterface.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				370B76251F4603AA00391769 /* Base */,
-			);
-			name = MainInterface.storyboard;
-			sourceTree = "<group>";
-		};
 		3740A23716863CF000F95D82 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -2081,12 +2125,12 @@
 				DEVELOPMENT_TEAM = 63553QQ62F;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
+					"APP_EXTENSION_SAFE=1",
 					"$(inherited)",
 				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_VARIABLE = YES;
+				GCC_WARN_UNUSED_VARIABLE = NO;
 				INFOPLIST_FILE = "Read Later Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -2115,9 +2159,13 @@
 				DEVELOPMENT_TEAM = 63553QQ62F;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"APP_EXTENSION_SAFE=1",
+					"$(inherited)",
+				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_VARIABLE = YES;
+				GCC_WARN_UNUSED_VARIABLE = NO;
 				INFOPLIST_FILE = "Read Later Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -2146,9 +2194,13 @@
 				DEVELOPMENT_TEAM = 63553QQ62F;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"APP_EXTENSION_SAFE=1",
+					"$(inherited)",
+				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_VARIABLE = YES;
+				GCC_WARN_UNUSED_VARIABLE = NO;
 				INFOPLIST_FILE = "Read Later Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -2177,9 +2229,13 @@
 				DEVELOPMENT_TEAM = 63553QQ62F;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"APP_EXTENSION_SAFE=1",
+					"$(inherited)",
+				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_VARIABLE = YES;
+				GCC_WARN_UNUSED_VARIABLE = NO;
 				INFOPLIST_FILE = "Read Later Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -2203,11 +2259,11 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 63553QQ62F;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
+					"APP_EXTENSION_SAFE=1",
 					"$(inherited)",
 				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -2241,6 +2297,10 @@
 				DEVELOPMENT_TEAM = 63553QQ62F;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"APP_EXTENSION_SAFE=1",
+					"$(inherited)",
+				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -2272,6 +2332,10 @@
 				DEVELOPMENT_TEAM = 63553QQ62F;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"APP_EXTENSION_SAFE=1",
+					"$(inherited)",
+				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -2303,6 +2367,10 @@
 				DEVELOPMENT_TEAM = 63553QQ62F;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"APP_EXTENSION_SAFE=1",
+					"$(inherited)",
+				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -2343,7 +2411,7 @@
 				CURRENT_PROJECT_VERSION = 568;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_POSTPROCESSING = YES;
-				ENABLE_BITCODE = YES;
+				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2365,7 +2433,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_FUNCTION = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				HEADER_SEARCH_PATHS = (
 					"${SDKROOT}/usr/include/libxml2",
@@ -2462,7 +2530,7 @@
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 568;
 				DEPLOYMENT_POSTPROCESSING = YES;
-				ENABLE_BITCODE = YES;
+				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2482,7 +2550,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_FUNCTION = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				HEADER_SEARCH_PATHS = (
 					"${SDKROOT}/usr/include/libxml2",
@@ -2580,7 +2648,7 @@
 				CURRENT_PROJECT_VERSION = 568;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_POSTPROCESSING = YES;
-				ENABLE_BITCODE = YES;
+				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2602,7 +2670,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_FUNCTION = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				HEADER_SEARCH_PATHS = (
 					"${SDKROOT}/usr/include/libxml2",
@@ -2663,7 +2731,7 @@
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 568;
 				DEPLOYMENT_POSTPROCESSING = YES;
-				ENABLE_BITCODE = YES;
+				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2684,7 +2752,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_FUNCTION = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
 				HEADER_SEARCH_PATHS = (
 					"${SDKROOT}/usr/include/libxml2",

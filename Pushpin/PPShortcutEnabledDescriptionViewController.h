@@ -6,8 +6,10 @@
 //
 //
 
+@import LHSKeyboardAdjusting;
+
 #import "PPEditDescriptionViewController.h"
 
-@interface PPShortcutEnabledDescriptionViewController : PPEditDescriptionViewController
+@interface PPShortcutEnabledDescriptionViewController : PPEditDescriptionViewController <LHSKeyboardAdjusting>
 
 @end

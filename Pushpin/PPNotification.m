@@ -43,7 +43,7 @@ static PPNotification *shared;
             notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
         }
 
-#if !APP_EXTENSION_SAFE
+#ifndef APP_EXTENSION_SAFE
         [[UIApplication sharedApplication] presentLocalNotificationNow:notification];
 #endif
     });

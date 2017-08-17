@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <Social/Social.h>
 
-@interface ShareViewController : SLComposeServiceViewController
+#import "PPNavigationController.h"
+
+@interface ShareViewController : PPNavigationController
 
 @end

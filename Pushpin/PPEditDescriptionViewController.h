@@ -21,6 +21,7 @@
 
 @interface PPEditDescriptionViewController : UIViewController <UITextViewDelegate, LHSKeyboardAdjusting>
 
+@property (nonatomic, strong) NSLayoutConstraint *keyboardAdjustingBottomConstraint;
 @property (nonatomic, strong) UITextView *textView;
 @property (nonatomic, strong) id<PPDescriptionEditing> delegate;
 

@@ -12,18 +12,20 @@
 @import MWFeedParser;
 @import FMDB;
 @import LHSCategoryCollection;
+
+#ifdef APP_EXTENSION_SAFE
+@import Mixpanel_AppExtension;
+#else
 @import Mixpanel;
+#import "PPGenericPostViewController.h"
+#import "PPNotification.h"
+#endif
 
 #import "PPPinboardDataSource.h"
-#import "PPNotification.h"
 #import "PPAddBookmarkViewController.h"
 #import "PPTheme.h"
 #import "PPTitleButton.h"
 #import "PPSettings.h"
-
-#if !APP_EXTENSION_SAFE
-#import "PPGenericPostViewController.h"
-#endif
 
 #import "PPPinboardMetadataCache.h"
 #import "PPUtilities.h"
@@ -503,6 +505,7 @@ static BOOL kPinboardSyncInProgress = NO;
         [pinboard deleteBookmarkWithURL:post[@"url"] success:SuccessBlock failure:ErrorBlock];
     }
 
+#ifndef APP_EXTENSION_SAFE
     dispatch_group_notify(group, queue, ^{
         NSString *message;
         if ([posts count] == 1) {
@@ -516,6 +519,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                   success:YES
                                   updated:NO];
     });
+#endif
 }
 
 - (PPPostActionType)actionsForPost:(NSDictionary *)post {
@@ -542,7 +546,7 @@ static BOOL kPinboardSyncInProgress = NO;
     return [self editViewControllerForPostAtIndex:index callback:nil];
 }
 
-#if !APP_EXTENSION_SAFE
+#ifndef APP_EXTENSION_SAFE
 - (void)handleTapOnLinkWithURL:(NSURL *)url callback:(void (^)(UIViewController *))callback {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         // All tags should be UTF8 encoded (stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding) before getting passed into the NSURL, so we decode them here

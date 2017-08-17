@@ -4,7 +4,7 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>Bookmark Extension.xcscheme</key>
+		<key>Bookmark Extension.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>24</integer>
@@ -28,15 +28,10 @@
 			<key>orderHint</key>
 			<integer>37</integer>
 		</dict>
-		<key>Read Later Extension.xcscheme</key>
+		<key>Read Later Extension.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>26</integer>
-		</dict>
-		<key>Read Later.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>25</integer>
 		</dict>
 		<key>SQLite.xcscheme</key>
 		<dict>

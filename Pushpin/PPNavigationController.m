@@ -12,7 +12,7 @@
 #import "PPNavigationController.h"
 #import "PPNavigationBar.h"
 
-#if !APP_EXTENSION_SAFE
+#ifndef APP_EXTENSION_SAFE
 #import "PPAboutViewController.h"
 #import "PPChangelogViewController.h"
 #endif
@@ -86,7 +86,7 @@
 }
 
 - (NSUInteger)supportedInterfaceOrientation {
-#if !APP_EXTENSION_SAFE
+#ifndef APP_EXTENSION_SAFE
     if ([[self.topViewController class] isSubclassOfClass:[PPAboutViewController class]]) {
         return UIInterfaceOrientationMaskPortrait;
     }

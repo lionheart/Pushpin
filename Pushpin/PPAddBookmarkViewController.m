@@ -13,7 +13,6 @@
 @import LHSTableViewCells;
 @import LHSCategoryCollection;
 @import FMDB;
-@import Mixpanel;
 
 #import "PPAddBookmarkViewController.h"
 #import "PPNotification.h"
@@ -29,8 +28,11 @@
 #import "PPConstants.h"
 #import "PPSettings.h"
 
-#if !APP_EXTENSION_SAFE
+#ifdef APP_EXTENSION_SAFE
+@import Mixpanel_AppExtension;
+#else
 #import "PPAppDelegate.h"
+@import Mixpanel;
 #endif
 
 #import "NSString+URLEncoding2.h"
@@ -1057,7 +1059,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     BOOL shouldPrefillDescription = [self.descriptionTextLabel.text isEqualToString:NSLocalizedString(@"Tap to add a description.", nil)];
     BOOL shouldPrefillTitle = !self.loadingTitle
     && (forceUpdate || self.titleTextField == nil || [self.titleTextField.text isEqualToString:@""])
-#if !APP_EXTENSION_SAFE
+#ifndef APP_EXTENSION_SAFE
     && [[UIApplication sharedApplication] canOpenURL:url]
 #endif
     && ([url.scheme isEqualToString:@"http"] || [url.scheme isEqualToString:@"https"]);
@@ -1092,7 +1094,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)addBookmark {
     dispatch_async(dispatch_get_main_queue(), ^{
-#if !APP_EXTENSION_SAFE
+#ifndef APP_EXTENSION_SAFE
         if (![[PPAppDelegate sharedDelegate] connectionAvailable]) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [PPNotification notifyWithMessage:NSLocalizedString(@"Unable to add bookmark; no connection available.", nil)];
@@ -1856,7 +1858,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     NSURL *url = [NSURL URLWithString:self.bookmarkData[@"url"]];
     BOOL shouldPrefillTags = !self.loadingTags
         && (self.unfilteredPopularTags.count == 0 && self.unfilteredRecommendedTags.count == 0)
-#if !APP_EXTENSION_SAFE
+#ifndef APP_EXTENSION_SAFE
         && [[UIApplication sharedApplication] canOpenURL:url]
 #endif
         && ([url.scheme isEqualToString:@"http"] || [url.scheme isEqualToString:@"https"]);
