@@ -4,6 +4,11 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>Bookmark Extension.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>24</integer>
+		</dict>
 		<key>DebugPods.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -23,6 +28,16 @@
 			<key>orderHint</key>
 			<integer>37</integer>
 		</dict>
+		<key>Read Later Extension.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>26</integer>
+		</dict>
+		<key>Read Later.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>25</integer>
+		</dict>
 		<key>SQLite.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -31,6 +46,26 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>370B75DF1F46034400391769</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>370B75F41F46037E00391769</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>370B76091F4603A400391769</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>370B761E1F4603AA00391769</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>3717966418A88578004B2D08</key>
 		<dict>
 			<key>primary</key>
