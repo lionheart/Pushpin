@@ -1,6 +1,5 @@
 # vim: set ft=ruby:
 
-app_identifier "io.aurora.pushpinbeta"
 username "dan@lionheartsw.com"
 skip_screenshots true
 skip_metadata true
