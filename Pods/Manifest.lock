@@ -43,8 +43,7 @@ PODS:
   - OpenInChrome (0.0.1)
   - RNCryptor-objc (3.0.5)
   - TMReachability (3.2)
-  - TTTAttributedLabel (1.13.0)
-  - uservoice-iphone-sdk (3.2.3)
+  - TTTAttributedLabel (1.13.4)
   - YHRoundBorderedButton (0.1.0)
 
 DEPENDENCIES:
@@ -55,19 +54,18 @@ DEPENDENCIES:
   - ChimpKit
   - FMDB
   - HTMLParser
-  - KeychainItemWrapper (= 1.2)
+  - KeychainItemWrapper (~> 1.2)
   - LHSCategoryCollection (from `../LHSCategoryCollection`)
-  - LHSFMDatabaseAdditions (= 0.0.3)
+  - LHSFMDatabaseAdditions (~> 0.0)
   - LHSKeyboardAdjusting (from `../LHSKeyboardAdjusting`)
   - LHSTableViewCells
   - Mixpanel
   - MWFeedParser (= 1.0.1)
-  - OpenInChrome (= 0.0.1)
+  - OpenInChrome (~> 0.0)
   - RNCryptor-objc (~> 3)
   - TMReachability (from `https://github.com/albertbori/Reachability`, commit `e34782b386307e386348b481c02c176d58ba45e6`)
-  - TTTAttributedLabel (= 1.13.0)
-  - uservoice-iphone-sdk (= 3.2.3)
-  - YHRoundBorderedButton (= 0.1.0)
+  - TTTAttributedLabel (~> 1.13)
+  - YHRoundBorderedButton (~> 0.1)
 
 EXTERNAL SOURCES:
   ASPinboard:
@@ -104,10 +102,9 @@ SPEC CHECKSUMS:
   OpenInChrome: f1f3f9dec682216fe78a0d7fe0b5b263d6312c32
   RNCryptor-objc: a65b15493de05dda4af0f392c70372b7a5625aab
   TMReachability: 48c99d728a8b0ad4493800592484b8cbb65c896c
-  TTTAttributedLabel: 8aeaf67481bb38970711e2641211cba912bd5239
-  uservoice-iphone-sdk: 349d9ef36d3c43939d28390b9e86bb32b65fe983
+  TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
   YHRoundBorderedButton: 2180f04094db264cace8db88eae977d78a3b4633
 
-PODFILE CHECKSUM: 839d80b450a8e3a427b16173d7f4ebdd0280a36f
+PODFILE CHECKSUM: 8f293c60c37aed08ec2592987e27ade84962d9af
 
 COCOAPODS: 1.3.1
