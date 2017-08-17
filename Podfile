@@ -7,7 +7,7 @@ inhibit_all_warnings!
 use_frameworks!
 
 target 'Pushpin' do
-  pod 'Reachability', '~> 3.2'
+  pod 'TMReachability', :git => 'https://github.com/albertbori/Reachability', :commit => 'e34782b386307e386348b481c02c176d58ba45e6'
   pod 'KeychainItemWrapper', '1.2'
   pod 'TTTAttributedLabel', '1.13.0'
   pod 'BRYHTMLParser'
