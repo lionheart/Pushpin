@@ -1,27 +1,29 @@
-fastlane_version "1.39.0"
+# vim: set ft=ruby:
 
+fastlane_version "2.28.1"
+xcversion(version: "8.3.3")
 default_platform :ios
 
 platform :ios do
-  before_all do
-#ensure_git_status_clean
-    cocoapods
-    increment_build_number
-    increment_version_number(version_number: "4.1.1")
-# version = prompt(text: "Marketing version: ")
-  end
-
-  desc "Submit a new Beta Build to Apple TestFlight"
-  desc "This will also make sure the profile is up to date"
   lane :beta do
-    sigh
-    gym(scheme: "Pushpin for Pinboard")
-    pilot
+    gym
+    deliver
   end
 
-  desc "Deploy a new version to the App Store"
   lane :appstore do
-    gym(scheme: "Pushpin for Pinboard")
-    deliver(force: true)
+    ensure_git_status_clean
+    increment_build_number(xcodeproj: "Pushpin.xcodeproj")
+
+    gym
+
+    ENV["SCHEME"] = "Pushpin for Pinboard"
+    # snapshot
+    deliver
+
+    version_number = get_version_number(xcodeproj: "Pushpin.xcodeproj", target: "Pushpin")
+    build_number = get_build_number(xcodeproj: "Pushpin.xcodeproj")
+    commit_version_bump(message: "bump to #{build_number}", xcodeproj: "./Pushpin.xcodeproj")
+    add_git_tag tag: "v#{version_number}+#{build_number}"
+    push_to_git_remote
   end
 end

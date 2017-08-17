@@ -1,10 +1,9 @@
-app_identifier "io.aurora.pushpin"
+# vim: set ft=ruby:
+
 apple_id "dan@lionheartsw.com"
+itc_team_name "Lionheart Software LLC"
 
 for_platform :ios do
-  team_name "Lionheart Software LLC"
-  team_id "Q2CBPJ58CA"
-
   for_lane :beta do
     app_identifier 'io.aurora.pushpinbeta'
   end

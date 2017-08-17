@@ -1,2 +1,17 @@
+# vim: set ft=ruby:
+
 app_identifier "io.aurora.pushpinbeta"
 username "dan@lionheartsw.com"
+skip_screenshots true
+skip_metadata true
+force true
+
+app_review_information(
+  first_name: "Dan",
+  last_name: "Loewenherz",
+  phone_number: "786-201-1161",
+  email_address: "dan@lionheartsw.com",
+  demo_user: "appstore",
+  demo_password: "MacBookAir123"
+)
+

@@ -1,0 +1,23 @@
+# vim: set ft=ruby:
+
+scheme "Pushpin for Pinboard"
+
+# output_directory "./"
+# output_name "Fugue.ipa"
+
+include_bitcode false
+# toolchain "swift-3.0.2-RELEASE"
+
+# export_options(
+#     method: "app-store"
+# )
+
+for_platform :ios do
+  for_lane :beta do
+    configuration "Pinboard Beta"
+  end
+
+  for_lane :appstore do
+    configuration "Pinboard App Store"
+  end
+end
