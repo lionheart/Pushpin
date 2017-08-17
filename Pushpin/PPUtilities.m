@@ -18,11 +18,14 @@
 @implementation PPUtilities
 
 + (NSString *)stringByTrimmingWhitespace:(id)object {
-    if (!object || [object isEqual:[NSNull null]]) {
+    if (object && [object isEqual:[NSNull null]]) {
+        @try {
+            return [(NSString *)object stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        } @catch (NSException *exception) {
+            return @"";
+        }
+    } else {
         return @"";
-    }
-    else {
-        return [(NSString *)object stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     }
 }
 

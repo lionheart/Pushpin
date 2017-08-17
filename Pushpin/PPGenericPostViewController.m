@@ -148,7 +148,8 @@ static NSInteger PPBookmarkEditMaximum = 25;
     self.definesPresentationContext = YES;
     self.extendedLayoutIncludesOpaqueBars = NO;
     self.view.backgroundColor = [UIColor whiteColor];
-    self.prefersStatusBarHidden = NO;
+#pragma mark - XXX
+    // self.prefersStatusBarHidden = NO;
     self.latestSearchTime = [NSDate date];
     self.isProcessingPosts = NO;
     
