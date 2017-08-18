@@ -356,9 +356,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                     break;
                     
                 case PPOtherFollow: {
-                    UIView *view = [tableView cellForRowAtIndexPath:indexPath];
-                    CGPoint point = view.center;
-                    [[PPTwitter sharedInstance] followScreenName:PPTwitterUsername point:point view:view callback:nil];
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://twitter.com/pushpin_app"] options:nil completionHandler:nil];
                     break;
                 }
 
