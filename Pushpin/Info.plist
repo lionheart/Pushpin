@@ -63,10 +63,8 @@
 		<dict>
 			<key>pinboard.in</key>
 			<dict>
-				<key>NSExceptionMinimumTLSVersion</key>
-				<string>TLSv1.0</string>
 				<key>NSExceptionRequiresForwardSecrecy</key>
-				<false/>
+				<true/>
 				<key>NSIncludesSubdomains</key>
 				<true/>
 			</dict>
