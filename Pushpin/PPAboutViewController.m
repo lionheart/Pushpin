@@ -18,9 +18,7 @@
 #import "PPChangelogViewController.h"
 #import "PPTheme.h"
 #import "PPTitleButton.h"
-#import "PPTheme.h"
 #import "PPPlainTextViewController.h"
-#import "PPTwitter.h"
 
 static NSString *CellIdentifier = @"CellIdentifier";
 
@@ -47,8 +45,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    
 
     NSBundle *bundle = [NSBundle mainBundle];
     NSDictionary *info = [bundle infoDictionary];
@@ -61,12 +57,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
     self.sections = [NSArray arrayWithContentsOfFile:aboutPlist];
 
-    self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
-    [self.tableView addGestureRecognizer:self.longPressGestureRecognizer];
-
     self.heights = [NSMutableArray array];
 
     self.loadingIndicator = [[PPLoadingView alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
+    self.tableView.estimatedRowHeight = 44;
     [self.tableView registerClass:[LHSTableViewCellSubtitle class] forCellReuseIdentifier:CellIdentifier];
 }
 
@@ -175,6 +170,22 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
+    self.selectedItem = self.sections[indexPath.section][@"rows"][indexPath.row];
+    UIView *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+
+    NSString *title = self.sections[indexPath.section][@"title"];
+    if (self.selectedItem[@"username"]) {
+        NSString *screenName = self.selectedItem[@"username"];
+
+        NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"https://twitter.com/%@", screenName]];
+        NSMutableDictionary *options = [NSMutableDictionary dictionary];
+        if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"twitter://"]]) {
+            options[UIApplicationOpenURLOptionUniversalLinksOnly] = @YES;
+        }
+        [[UIApplication sharedApplication] openURL:url options:options completionHandler:nil];
+        return;
+    }
+
     switch (indexPath.section) {
         case 0:
             switch (indexPath.row) {
@@ -188,14 +199,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 }
                     
                 case 2: {
-                    [[PPTwitter sharedInstance] followScreenName:@"pushpin_app"
-                                                           point:self.selectedPoint
-                                                            view:self.view
-                                                        callback:^{
-                                                            self.selectedItem = nil;
-                                                            self.selectedPoint = CGPointZero;
-                                                            self.selectedIndexPath = nil;
-                                                        }];
+                    NSURL *url = [NSURL URLWithString:@"https://twitter.com/pushpin_app"];
+                    NSMutableDictionary *options = [NSMutableDictionary dictionary];
+                    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"twitter://"]]) {
+                        options[UIApplicationOpenURLOptionUniversalLinksOnly] = @YES;
+                    }
+                    [[UIApplication sharedApplication] openURL:url options:options completionHandler:nil];
                     break;
                 }
 
@@ -218,56 +227,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
             
         default:
             break;
-    }
-}
-
-- (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController {
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)gestureDetected:(UILongPressGestureRecognizer *)recognizer {
-    if (recognizer == self.longPressGestureRecognizer && recognizer.state == UIGestureRecognizerStateBegan) {
-        if (!self.actionSheet) {
-            self.selectedPoint = [recognizer locationInView:self.tableView];
-            NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:self.selectedPoint];
-            self.selectedItem = self.sections[indexPath.section][@"rows"][indexPath.row];
-            UIView *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-            
-            NSString *title = self.sections[indexPath.section][@"title"];
-            if ([@[@"Acknowledgements", @"Team"] containsObject:title] && self.selectedItem[@"username"]) {
-                self.actionSheet = [UIAlertController lhs_actionSheetWithTitle:nil];
-
-                NSString *screenName = self.selectedItem[@"username"];
-                [self.actionSheet lhs_addActionWithTitle:[NSString stringWithFormat:@"Follow @%@ on Twitter", screenName]
-                                                   style:UIAlertActionStyleDefault
-                                                 handler:^(UIAlertAction *action) {
-                                                     [[PPTwitter sharedInstance] followScreenName:self.selectedItem[@"username"]
-                                                                                            point:self.selectedPoint
-                                                                                             view:self.view
-                                                                                         callback:^{
-                                                                                             self.selectedItem = nil;
-                                                                                             self.selectedPoint = CGPointZero;
-                                                                                             self.selectedIndexPath = nil;
-                                                                                         }];
-                                                     
-                                                     self.actionSheet = nil;
-                                                 }];
-                
-                [self.actionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
-                                                   style:UIAlertActionStyleCancel
-                                                 handler:^(UIAlertAction *action) {
-                                                     self.actionSheet = nil;
-                                                 }];
-
-                self.actionSheet.popoverPresentationController.sourceRect = (CGRect){{cell.frame.size.width / 2.0, cell.frame.size.height / 2.0}, {1, 1}};
-                self.actionSheet.popoverPresentationController.sourceView = cell;
-
-                [self presentViewController:self.actionSheet animated:YES completion:nil];
-            }
-        } else {
-            [self dismissViewControllerAnimated:YES completion:nil];
-            self.actionSheet = nil;
-        }
     }
 }
 

@@ -9,7 +9,7 @@
 				<key>title</key>
 				<string>Pushpin is designed and developed by Lionheart, a software studio based in Austin, TX.</string>
 				<key>detail</key>
-				<string>Tap and hold people listed below to follow them on Twitter.</string>
+				<string>Tap people listed below to follow them on Twitter.</string>
 			</dict>
 			<dict>
 				<key>title</key>
@@ -62,6 +62,8 @@
 				<string>For making Pinboard.</string>
 				<key>title</key>
 				<string>Maciej Ceglowski</string>
+				<key>username</key>
+				<string>baconmeteor</string>
 			</dict>
 		</array>
 		<key>title</key>

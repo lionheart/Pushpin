@@ -49,6 +49,7 @@
 	<string>576</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
+		<string>twitter</string>
 		<string>pushpin</string>
 		<string>org-appextension-feature-password-management</string>
 	</array>

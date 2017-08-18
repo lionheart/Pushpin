@@ -27,7 +27,6 @@
 #import "PPTitleButton.h"
 #import "PPMobilizerUtility.h"
 #import "PPConstants.h"
-#import "PPTwitter.h"
 #import "PPSettings.h"
 #import "PPReaderSettingsViewController.h"
 #import "PPOfflineSettingsViewController.h"
@@ -357,6 +356,10 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                     
                 case PPOtherFollow: {
                     NSURL *url = [NSURL URLWithString:@"https://twitter.com/pushpin_app"];
+                    NSMutableDictionary *options = [NSMutableDictionary dictionary];
+                    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"twitter://"]]) {
+                        options[UIApplicationOpenURLOptionUniversalLinksOnly] = @YES;
+                    }
                     [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
                     break;
                 }
