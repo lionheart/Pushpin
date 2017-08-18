@@ -40,7 +40,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 @property (nonatomic, retain) UISwitch *autoCapitalizationSwitch;
 @property (nonatomic, retain) UISwitch *onlyPromptToAddOnceSwitch;
 @property (nonatomic, retain) UISwitch *alwaysShowAlertSwitch;
-@property (nonatomic, retain) UISwitch *turnOffBookmarkPromptSwitch;
+@property (nonatomic, retain) UISwitch *enableBookmarkPromptSwitch;
 
 @property (nonatomic, strong) UIAlertController *fontSizeAdjustmentActionSheet;
 
@@ -97,9 +97,9 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                                                        handler:nil];
     
     PPSettings *settings = [PPSettings sharedSettings];
-    self.turnOffBookmarkPromptSwitch = [[UISwitch alloc] init];
-    self.turnOffBookmarkPromptSwitch.on = settings.turnOffBookmarkPrompt;
-    [self.turnOffBookmarkPromptSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
+    self.enableBookmarkPromptSwitch = [[UISwitch alloc] init];
+    self.enableBookmarkPromptSwitch.on = !settings.turnOffBookmarkPrompt;
+    [self.enableBookmarkPromptSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
     
     self.privateByDefaultSwitch = [[UISwitch alloc] init];
     self.privateByDefaultSwitch.on = settings.privateByDefault;
@@ -173,14 +173,14 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             return PPRowCountBrowse;
             
         case PPSectionOtherDisplaySettings:
-            if (self.turnOffBookmarkPromptSwitch.on) {
-                return 1;
-            } else {
-                if (!self.onlyPromptToAddOnceSwitch.on) {
-                    return PPRowCountOtherSettings;
-                } else {
+            if (self.enableBookmarkPromptSwitch.on) {
+                if (self.onlyPromptToAddOnceSwitch.on) {
                     return PPRowCountOtherSettings - 2;
+                } else {
+                    return PPRowCountOtherSettings;
                 }
+            } else {
+                return 1;
             }
     }
 }
@@ -417,17 +417,17 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 
             switch ((PPOtherDisplaySettingsRowType)indexPath.row) {
                 case PPOtherTurnOffPrompt:
-                    cell.textLabel.text = NSLocalizedString(@"Turn it off!", nil);
-                    cell.detailTextLabel.text = NSLocalizedString(@"The future is here. Be one with the extensions. Never see a bookmark prompt again. Ever.", nil);
+                    cell.textLabel.text = NSLocalizedString(@"Enable clipboard prompt", nil);
+                    cell.detailTextLabel.text = NSLocalizedString(@"Display a prompt when Pushpin detects a URL on the clipboard.", nil);
                     
                     size = cell.frame.size;
-                    switchSize = self.turnOffBookmarkPromptSwitch.frame.size;
-                    self.turnOffBookmarkPromptSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-                    cell.accessoryView = self.turnOffBookmarkPromptSwitch;
+                    switchSize = self.enableBookmarkPromptSwitch.frame.size;
+                    self.enableBookmarkPromptSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
+                    cell.accessoryView = self.enableBookmarkPromptSwitch;
                     break;
 
                 case PPOtherOnlyPromptToAddBookmarksOnce:
-                    cell.textLabel.text = NSLocalizedString(@"Always show add prompt", nil);
+                    cell.textLabel.text = NSLocalizedString(@"Always display prompt", nil);
                     cell.detailTextLabel.text = NSLocalizedString(@"Always show the add bookmark prompt, even for URLs that Pushpin has seen before.", nil);
 
                     size = cell.frame.size;
@@ -600,23 +600,14 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     else if (sender == self.alwaysShowAlertSwitch) {
         [settings setAlwaysShowClipboardNotification:self.alwaysShowAlertSwitch.on];
     }
-    else if (sender == self.turnOffBookmarkPromptSwitch) {
-        [settings setTurnOffBookmarkPrompt:self.turnOffBookmarkPromptSwitch.on];
+    else if (sender == self.enableBookmarkPromptSwitch) {
+        [settings setTurnOffBookmarkPrompt:!self.enableBookmarkPromptSwitch.on];
 
         [self.tableView beginUpdates];
         
         NSMutableArray *indexPathsToDelete = [NSMutableArray array];
         NSMutableArray *indexPathsToInsert = [NSMutableArray array];
-        if (self.turnOffBookmarkPromptSwitch.on) {
-            if (self.onlyPromptToAddOnceSwitch.on) {
-                [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:PPOtherOnlyPromptToAddBookmarksOnce inSection:PPSectionOtherDisplaySettings]];
-            } else {
-                [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:PPOtherOnlyPromptToAddBookmarksOnce inSection:PPSectionOtherDisplaySettings]];
-                [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:PPOtherAlwaysShowAlert inSection:PPSectionOtherDisplaySettings]];
-                [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:PPOtherDisplayClearCache inSection:PPSectionOtherDisplaySettings]];
-            }
-            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-        } else {
+        if (self.enableBookmarkPromptSwitch.on) {
             if (self.onlyPromptToAddOnceSwitch.on) {
                 [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:PPOtherOnlyPromptToAddBookmarksOnce inSection:PPSectionOtherDisplaySettings]];
             } else {
@@ -625,6 +616,15 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                 [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:PPOtherDisplayClearCache inSection:PPSectionOtherDisplaySettings]];
             }
             [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+        } else {
+            if (self.onlyPromptToAddOnceSwitch.on) {
+                [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:PPOtherOnlyPromptToAddBookmarksOnce inSection:PPSectionOtherDisplaySettings]];
+            } else {
+                [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:PPOtherOnlyPromptToAddBookmarksOnce inSection:PPSectionOtherDisplaySettings]];
+                [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:PPOtherAlwaysShowAlert inSection:PPSectionOtherDisplaySettings]];
+                [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:PPOtherDisplayClearCache inSection:PPSectionOtherDisplaySettings]];
+            }
+            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
         }
         
         [self.tableView endUpdates];
