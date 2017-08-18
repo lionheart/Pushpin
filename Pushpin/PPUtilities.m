@@ -189,37 +189,36 @@
 + (void)retrievePageTitle:(NSURL *)url callback:(void (^)(NSString *title, NSString *description))callback {
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:5];
     [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];
-    [NSURLConnection sendAsynchronousRequest:request
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                               [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
-                               
-                               NSString *description = @"";
-                               NSString *title = @"";
-                               if (!error) {
-                                   HTMLParser *parser = [[HTMLParser alloc] initWithData:data error:&error];
-                                   
-                                   if (!error) {
-                                       NSCharacterSet *whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+    NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
 
-                                       id<HTMLNode> root = [parser head];
-                                       id<HTMLNode> titleTag = [root findChildTag:@"title"];
-                                       NSArray *metaTags = [root findChildTags:@"meta"];
-                                       for (id<HTMLNode> tag in metaTags) {
-                                           if ([[tag getAttributeNamed:@"name"] isEqualToString:@"description"]) {
-                                               description = [[tag getAttributeNamed:@"content"] stringByTrimmingCharactersInSet:whitespace];
-                                               break;
-                                           }
-                                       }
-                                       
-                                       if (titleTag && titleTag.contents) {
-                                           title = [titleTag.contents stringByTrimmingCharactersInSet:whitespace];
-                                       }
-                                   }
-                               }
-                               
-                               callback(title, description);
-                           }];
+        NSString *description = @"";
+        NSString *title = @"";
+        if (!error) {
+            HTMLParser *parser = [[HTMLParser alloc] initWithData:data error:&error];
+
+            if (!error) {
+                NSCharacterSet *whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
+
+                id<HTMLNode> root = [parser head];
+                id<HTMLNode> titleTag = [root findChildTag:@"title"];
+                NSArray *metaTags = [root findChildTags:@"meta"];
+                for (id<HTMLNode> tag in metaTags) {
+                    if ([[tag getAttributeNamed:@"name"] isEqualToString:@"description"]) {
+                        description = [[tag getAttributeNamed:@"content"] stringByTrimmingCharactersInSet:whitespace];
+                        break;
+                    }
+                }
+
+                if (titleTag && titleTag.contents) {
+                    title = [titleTag.contents stringByTrimmingCharactersInSet:whitespace];
+                }
+            }
+        }
+
+        callback(title, description);
+    }];
+    [task resume];
 }
 
 + (NSString *)databasePath {
