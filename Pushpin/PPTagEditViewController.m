@@ -843,8 +843,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 #pragma mark - LHSKeyboardAdjusting
 
-- (NSLayoutConstraint *)keyboardAdjustingBottomConstraint {
-    return self.bottomConstraint;
+- (UIView *)keyboardAdjustingView {
+    return self.tableView;
 }
 
 @end
