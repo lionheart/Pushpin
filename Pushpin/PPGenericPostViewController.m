@@ -142,7 +142,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
     
 #ifdef PROFILING
     UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-    pasteboard.URL = [NSURL URLWithString:@"http://lionheartsw.com"];
+    pasteboard.URL = [NSURL URLWithString:@"https://lionheartsw.com"];
 #endif
     
     self.edgesForExtendedLayout = UIRectEdgeNone;

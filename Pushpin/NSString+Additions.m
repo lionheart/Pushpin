@@ -11,7 +11,7 @@
 @implementation NSString (Additions)
 
 - (BOOL)isReadabilityURL {
-    return [self hasPrefix:@"http://pushpin-readability.herokuapp.com/v1/parser?url="] && [self hasSuffix:@"&format=json&onerr="];
+    return [self hasPrefix:@"https://pushpin-readability.herokuapp.com/v1/parser?url="] && [self hasSuffix:@"&format=json&onerr="];
 }
 
 - (NSString *)originalURLString {

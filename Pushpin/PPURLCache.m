@@ -186,7 +186,7 @@
                 NSURL *url = [NSURL URLWithString:urlString];
                 
                 // https://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=
-                NSString *readerURLString = [NSString stringWithFormat:@"http://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [url.absoluteString urlEncodeUsingEncoding:NSUTF8StringEncoding]];
+                NSString *readerURLString = [NSString stringWithFormat:@"https://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [url.absoluteString urlEncodeUsingEncoding:NSUTF8StringEncoding]];
                 NSURL *readerURL = [NSURL URLWithString:readerURLString];
                 
                 if ([@[@"http", @"https"] containsObject:url.scheme]) {
