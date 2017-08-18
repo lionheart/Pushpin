@@ -63,7 +63,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                                              style:UIBarButtonItemStyleDone
                                                                             target:self
                                                                             action:@selector(showContactForm)];
-    self.navigationItem.leftBarButtonItem.enabled = NO;
 
     self.tableView.backgroundColor = HEX(0xeeeeeeff);
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:LoginTableCellIdentifier];
@@ -733,7 +732,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 - (void)showContactForm {
     if ([MFMailComposeViewController canSendMail]) {
         MFMailComposeViewController *controller = [[MFMailComposeViewController alloc] init];
-        controller.delegate = self;
+        controller.mailComposeDelegate = self;
         [controller setSubject:@"Pushpin Support Inquiry"];
         [controller setToRecipients:@[@"Lionheart Support <support@lionheartsw.com>"]];
         [self presentViewController:controller animated:YES completion:nil];
