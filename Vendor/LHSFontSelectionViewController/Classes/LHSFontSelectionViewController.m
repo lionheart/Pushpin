@@ -306,7 +306,6 @@ static NSString *CellIdentifier = @"Cell";
     self.fonts = [NSMutableArray array];
     self.fontsForSectionIndex = [NSMutableDictionary dictionary];
     self.sectionIndexTitles = [NSMutableArray array];
-    self.preferredStatusBarStyle = UIStatusBarStyleLightContent;
 
     if (!self.onlyShowPreferredFonts) {
         NSSet *preferredFontSet = [NSSet setWithArray:self.preferredFontNames];
@@ -832,6 +831,10 @@ static NSString *CellIdentifier = @"Cell";
 #else
     return [PPSettings sharedSettings].purchasedPremiumFonts;
 #endif
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
 }
 
 @end

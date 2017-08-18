@@ -50,6 +50,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 @property (nonatomic, strong) UIWebView *readerWebView;
 @property (nonatomic) BOOL mobilized;
 @property (nonatomic, strong) NSMutableSet *loadedURLs;
+@property (nonatomic) UIStatusBarStyle statusBarStyle;
 
 - (void)updateInterfaceWithComputedWebPageBackgroundColor;
 - (void)updateInterfaceWithComputedWebPageBackgroundColorTimedOut:(BOOL)timedOut;
@@ -79,8 +80,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.prefersStatusBarHidden = NO;
-    self.preferredStatusBarStyle = UIStatusBarStyleDefault;
+    self.statusBarStyle = UIStatusBarStyleDefault;
     self.numberOfRequestsInProgress = 0;
     self.alreadyLoaded = NO;
     self.history = [NSMutableArray array];
@@ -550,7 +550,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
         [UIView animateWithDuration:0.3
                          animations:^{
-                             self.preferredStatusBarStyle = UIStatusBarStyleLightContent;
+                             self.statusBarStyle = UIStatusBarStyleLightContent;
                              [self setNeedsStatusBarAppearanceUpdate];
                          }];
 
@@ -1044,11 +1044,11 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         if (isDark) {
             [self tintButtonsWithColor:[UIColor whiteColor]];
             self.titleLabel.textColor = [UIColor whiteColor];
-            self.preferredStatusBarStyle = UIStatusBarStyleLightContent;
+            self.statusBarStyle = UIStatusBarStyleLightContent;
         } else {
             [self tintButtonsWithColor:HEX(0x555555FF)];
             self.titleLabel.textColor = [UIColor darkTextColor];
-            self.preferredStatusBarStyle = UIStatusBarStyleDefault;
+            self.statusBarStyle = UIStatusBarStyleDefault;
         }
 
         [self setNeedsStatusBarAppearanceUpdate];
@@ -1263,6 +1263,14 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     [webView stringByEvaluatingJavaScriptFromString:@"document.body.style.webkitTouchCallout='none';"];
     [webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitTouchCallout='none';"];
     [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"webview-helpers" ofType:@"js"] encoding:NSUTF8StringEncoding error:nil]];
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return self.statusBarStyle;
+}
+
+- (BOOL)prefersStatusBarHidden {
+    return NO;
 }
 
 @end

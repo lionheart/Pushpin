@@ -477,7 +477,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     LHSFontSelectionViewController *fontSelectionViewController = [[LHSFontSelectionViewController alloc] initWithPreferredFontNames:preferredFontNames
                                                                                                                               onlyShowPreferredFonts:NO];
                     fontSelectionViewController.delegate = self;
-                    fontSelectionViewController.preferredStatusBarStyle = UIStatusBarStyleLightContent;
                     [self.navigationController pushViewController:fontSelectionViewController animated:YES];
                     break;
                 }
