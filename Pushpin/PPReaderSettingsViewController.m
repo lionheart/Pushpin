@@ -487,8 +487,7 @@ static NSString *CellIdentifier = @"Cell";
 
     switch ((PPReaderSettingsMainRowType)indexPath.row) {
         case PPReaderSettingsMainRowFontFamily: {
-            // NSArray *preferredFontNames = @[@"Flex-Regular", @"Brando-Regular", @"AvenirNext-Regular", @"Charter", @"LyonTextApp-Regular", @"CourierPrime", @"HelveticaNeue-Light"];
-            NSArray *preferredFontNames = @[@"Flex-Regular", @"Brando-Regular", @"LyonTextApp-Regular"];
+            NSArray *preferredFontNames = @[@"Flex-Regular", @"Brando-Regular", @"AvenirNext-Regular", @"LyonTextApp-Regular", [UIFont systemFontOfSize:10].fontName, [UIFont boldSystemFontOfSize:10].fontName];
             LHSFontSelectionViewController *fontSelectionViewController = [[LHSFontSelectionViewController alloc] initWithPreferredFontNames:preferredFontNames
                                                                                                                       onlyShowPreferredFonts:NO];
             fontSelectionViewController.delegate = self;

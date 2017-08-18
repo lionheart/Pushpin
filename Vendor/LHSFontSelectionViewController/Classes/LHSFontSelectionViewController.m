@@ -30,7 +30,9 @@ static NSString *CellIdentifier = @"Cell";
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
         self.preferredFontNames = [fontNames mutableCopy];
-        [self.preferredFontNames sortUsingSelector:@selector(compare:)];
+        [self.preferredFontNames sortUsingComparator:^NSComparisonResult(NSString * _Nonnull obj1, NSString * _Nonnull obj2) {
+            return [[LHSFontSelectionViewController fontNameToDisplayName:obj1] compare:[LHSFontSelectionViewController fontNameToDisplayName:obj2]];
+        }];
         self.onlyShowPreferredFonts = onlyShowPreferredFonts;
     }
     return self;
@@ -166,8 +168,13 @@ static NSString *CellIdentifier = @"Cell";
     }
 
     UIFont *font = [UIFont fontWithName:fontName size:[self.delegate fontSizeForFontSelectionViewController:self]];
-    
-    NSString *fontDisplayName = [LHSFontSelectionViewController fontNameToDisplayName:[font lhs_displayName]];
+
+    NSString *fontDisplayName;
+    if ([fontName hasPrefix:@"."]) {
+        fontDisplayName = [LHSFontSelectionViewController fontNameToDisplayName:fontName];
+    } else {
+        fontDisplayName = [LHSFontSelectionViewController fontNameToDisplayName:[font lhs_displayName]];
+    }
 
     cell.textLabel.textColor = [UIColor blackColor];
     cell.textLabel.text = fontDisplayName;
@@ -291,6 +298,10 @@ static NSString *CellIdentifier = @"Cell";
     }
     else if ([fontName isEqualToString:@"Brando Regular"]) {
         fontName = @"Brando";
+    } else if ([fontName isEqualToString:[UIFont systemFontOfSize:10].fontName]) {
+        fontName = @"San Francisco";
+    } else if ([fontName isEqualToString:[UIFont boldSystemFontOfSize:10].fontName]) {
+        fontName = @"San Francisco Bold";
     }
     return fontName;
 }

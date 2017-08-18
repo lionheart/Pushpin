@@ -471,9 +471,9 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     [self.navigationController pushViewController:vc animated:YES];
                     break;
                 }
-                    
+
                 case PPBrowseFontRow: {
-                    NSArray *preferredFontNames = @[@"Flex-Regular", @"Brando-Regular", @"LyonTextApp-Regular"];
+                    NSArray *preferredFontNames = @[@"Flex-Regular", @"Brando-Regular", @"AvenirNext-Regular", @"LyonTextApp-Regular", [UIFont systemFontOfSize:10].fontName, [UIFont boldSystemFontOfSize:10].fontName];
                     LHSFontSelectionViewController *fontSelectionViewController = [[LHSFontSelectionViewController alloc] initWithPreferredFontNames:preferredFontNames
                                                                                                                               onlyShowPreferredFonts:NO];
                     fontSelectionViewController.delegate = self;
