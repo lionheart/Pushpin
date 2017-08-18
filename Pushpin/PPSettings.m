@@ -52,6 +52,7 @@
 @synthesize turnOffBookmarkPrompt = _turnOffBookmarkPrompt;
 @synthesize turnOffPushpinCloudPrompt = _turnOffPushpinCloudPrompt;
 @synthesize communityFeedOrder = _communityFeedOrder;
+@synthesize useSafariViewController = _useSafariViewController;
 
 + (instancetype)sharedSettings {
     static PPSettings *settings;
@@ -100,7 +101,7 @@
 - (BOOL)compressPosts {
     if (!_compressPosts) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _compressPosts = [[defaults objectForKey:@"io.aurora.pinboard.CompressPosts"] boolValue];
+        _compressPosts = [defaults boolForKey:@"io.aurora.pinboard.CompressPosts"];
     }
     return _compressPosts;
 }
@@ -115,7 +116,7 @@
 - (BOOL)openLinksWithMobilizer {
     if (!_openLinksWithMobilizer) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _openLinksWithMobilizer = [[defaults objectForKey:@"io.aurora.pinboard.OpenLinksWithMobilizer"] boolValue];
+        _openLinksWithMobilizer = [defaults boolForKey:@"io.aurora.pinboard.OpenLinksWithMobilizer"];
     }
     return _openLinksWithMobilizer;
 }
@@ -130,7 +131,7 @@
 - (BOOL)dimReadPosts {
     if (!_dimReadPosts) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _dimReadPosts = [[defaults objectForKey:@"io.aurora.pinboard.DimReadPosts"] boolValue];
+        _dimReadPosts = [defaults boolForKey:@"io.aurora.pinboard.DimReadPosts"];
     }
     return _dimReadPosts;
 }
@@ -145,7 +146,7 @@
 - (BOOL)markReadPosts {
     if (!_markReadPosts) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _markReadPosts = [[defaults objectForKey:@"io.aurora.pinboard.MarkReadPosts"] boolValue];
+        _markReadPosts = [defaults boolForKey:@"io.aurora.pinboard.MarkReadPosts"];
     }
     return _markReadPosts;
 }
@@ -160,7 +161,7 @@
 - (BOOL)turnOffBookmarkPrompt {
     if (!_turnOffBookmarkPrompt) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _turnOffBookmarkPrompt = [[defaults objectForKey:@"io.aurora.pinboard.TurnOffBookmarkPrompt"] boolValue];
+        _turnOffBookmarkPrompt = [defaults boolForKey:@"io.aurora.pinboard.TurnOffBookmarkPrompt"];
     }
     return _turnOffBookmarkPrompt;
 }
@@ -175,7 +176,7 @@
 - (BOOL)turnOffPushpinCloudPrompt {
     if (!_turnOffPushpinCloudPrompt) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _turnOffPushpinCloudPrompt = [[defaults objectForKey:@"io.aurora.pinboard.TurnOffPushpinCloudPrompt"] boolValue];
+        _turnOffPushpinCloudPrompt = [defaults boolForKey:@"io.aurora.pinboard.TurnOffPushpinCloudPrompt"];
     }
     return _turnOffPushpinCloudPrompt;
 }
@@ -190,7 +191,7 @@
 - (BOOL)onlyPromptToAddOnce {
     if (!_onlyPromptToAddOnce) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _onlyPromptToAddOnce = [[defaults objectForKey:@"io.aurora.pinboard.TurnOffPushpinCloudPrompt"] boolValue];
+        _onlyPromptToAddOnce = [defaults boolForKey:@"io.aurora.pinboard.TurnOffPushpinCloudPrompt"];
     }
     return _onlyPromptToAddOnce;
 }
@@ -205,7 +206,7 @@
 - (BOOL)alwaysShowClipboardNotification {
     if (!_alwaysShowClipboardNotification) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _alwaysShowClipboardNotification = [[defaults objectForKey:@"io.aurora.pinboard.AlwaysShowClipboardNotification"] boolValue];
+        _alwaysShowClipboardNotification = [defaults boolForKey:@"io.aurora.pinboard.AlwaysShowClipboardNotification"];
     }
     return _alwaysShowClipboardNotification;
 }
@@ -220,7 +221,7 @@
 - (BOOL)enableAutoCorrect {
     if (!_enableAutoCorrect) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _enableAutoCorrect = [[defaults objectForKey:@"io.aurora.pinboard.EnableAutoCorrect"] boolValue];
+        _enableAutoCorrect = [defaults boolForKey:@"io.aurora.pinboard.EnableAutoCorrect"];
         
         if (!_enableAutoCorrect) {
             NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
@@ -243,7 +244,7 @@
 - (BOOL)enableTagAutoCorrect {
     if (!_enableTagAutoCorrect) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _enableTagAutoCorrect = [[defaults objectForKey:@"io.aurora.pinboard.EnableTagAutoCorrect"] boolValue];
+        _enableTagAutoCorrect = [defaults boolForKey:@"io.aurora.pinboard.EnableTagAutoCorrect"];
         
         if (!_enableTagAutoCorrect) {
             NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
@@ -266,7 +267,7 @@
 - (BOOL)enableAutoCapitalize {
     if (!_enableAutoCapitalize) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _enableAutoCapitalize = [[defaults objectForKey:@"io.aurora.pinboard.EnableAutoCapitalize"] boolValue];
+        _enableAutoCapitalize = [defaults boolForKey:@"io.aurora.pinboard.EnableAutoCapitalize"];
         
         if (!_enableAutoCapitalize) {
             NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
@@ -429,15 +430,30 @@
 - (BOOL)privateByDefault {
     if (!_privateByDefault) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _privateByDefault = [[defaults objectForKey:@"io.aurora.pinboard.PrivateByDefault"] boolValue];
+        _privateByDefault = [defaults boolForKey:@"io.aurora.pinboard.PrivateByDefault"];
     }
     return _privateByDefault;
+}
+
+- (BOOL)useSafariViewController {
+    if (!_useSafariViewController) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        _useSafariViewController = [defaults boolForKey:@"io.aurora.pinboard.UseSafariViewController"];
+    }
+    return _useSafariViewController;
+}
+
+- (void)setUseSafariViewController:(BOOL)useSafariViewController {
+    _useSafariViewController = useSafariViewController;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:useSafariViewController forKey:@"io.aurora.pinboard.UseSafariViewController"];
+    [defaults synchronize];
 }
 
 - (BOOL)openLinksInApp {
     if (!_openLinksInApp) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _openLinksInApp = [[defaults objectForKey:@"io.aurora.pinboard.OpenLinksInApp"] boolValue];
+        _openLinksInApp = [defaults boolForKey:@"io.aurora.pinboard.OpenLinksInApp"];
     }
     return _openLinksInApp;
 }
@@ -459,7 +475,7 @@
 - (BOOL)doubleTapToEdit {
     if (!_doubleTapToEdit) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _doubleTapToEdit = [[defaults objectForKey:@"io.aurora.pinboard.DoubleTapToEdit"] boolValue];
+        _doubleTapToEdit = [defaults boolForKey:@"io.aurora.pinboard.DoubleTapToEdit"];
     }
     return _doubleTapToEdit;
 }
@@ -477,7 +493,7 @@
 - (BOOL)readByDefault {
     if (!_readByDefault) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        _readByDefault = [[defaults objectForKey:@"io.aurora.pinboard.ReadByDefault"] boolValue];
+        _readByDefault = [defaults boolForKey:@"io.aurora.pinboard.ReadByDefault"];
     }
     return _readByDefault;
 }

@@ -31,6 +31,7 @@
 @property (nonatomic) BOOL markReadPosts;
 @property (nonatomic) BOOL openLinksWithMobilizer;
 @property (nonatomic) BOOL openLinksInApp;
+@property (nonatomic) BOOL useSafariViewController;
 @property (nonatomic) BOOL privateByDefault;
 @property (nonatomic) BOOL readByDefault;
 @property (nonatomic) BOOL onlyPromptToAddOnce;

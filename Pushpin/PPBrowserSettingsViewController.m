@@ -40,6 +40,18 @@ static NSString *CellIdentifier = @"Cell";
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    self.openLinksInAppSwitch = [[UISwitch alloc] init];
+    self.openLinksInAppSwitch.on = [PPSettings sharedSettings].openLinksInApp;
+    [self.openLinksInAppSwitch addTarget:self action:@selector(openLinksInAppSwitchValueChanged:) forControlEvents:UIControlEventValueChanged];
+
+    self.useSafariViewControllerSwitch = [[UISwitch alloc] init];
+    self.useSafariViewControllerSwitch.on = [PPSettings sharedSettings].useSafariViewController;
+    [self.useSafariViewControllerSwitch addTarget:self action:@selector(useSafariViewControllerSwitchValueChanged:) forControlEvents:UIControlEventValueChanged];
+
+    if (!self.openLinksInAppSwitch.on) {
+        self.useSafariViewControllerSwitch.enabled = false;
+    }
+
     PPTitleButton *titleView = [PPTitleButton button];
     [titleView setTitle:NSLocalizedString(@"Browser Settings", nil) imageName:nil];
     self.navigationItem.titleView = titleView;
@@ -132,7 +144,7 @@ static NSString *CellIdentifier = @"Cell";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == 0) {
-        return 2;
+        return 3;
     }
     return 1;
 }
@@ -150,6 +162,8 @@ static NSString *CellIdentifier = @"Cell";
     cell.textLabel.font = [PPTheme textLabelFont];
     cell.detailTextLabel.text = nil;
     cell.accessoryView = nil;
+
+    CGSize size = cell.frame.size;
 
     switch (indexPath.section) {
         case 0: {
@@ -195,14 +209,19 @@ static NSString *CellIdentifier = @"Cell";
                 case 1:
                     cell.textLabel.text = NSLocalizedString(@"Open links in-app", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-                    
-                    CGSize size = cell.frame.size;
-                    self.openLinksInAppSwitch = [[UISwitch alloc] init];
-                    CGSize switchSize = self.openLinksInAppSwitch.frame.size;
-                    self.openLinksInAppSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
-                    self.openLinksInAppSwitch.on = [PPSettings sharedSettings].openLinksInApp;
-                    [self.openLinksInAppSwitch addTarget:self action:@selector(readByDefaultSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
+
+                    CGSize openLinksInAppSwitchSize = self.openLinksInAppSwitch.frame.size;
+                    self.openLinksInAppSwitch.frame = CGRectMake(size.width - openLinksInAppSwitchSize.width - 30, (size.height - openLinksInAppSwitchSize.height) / 2.0, openLinksInAppSwitchSize.width, openLinksInAppSwitchSize.height);
                     cell.accessoryView = self.openLinksInAppSwitch;
+                    break;
+
+                case 2:
+                    cell.textLabel.text = NSLocalizedString(@"Use Safari View Controller", nil);
+                    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+
+                    CGSize useSafariViewControllerSwitchSize = self.useSafariViewControllerSwitch.frame.size;
+                    self.useSafariViewControllerSwitch.frame = CGRectMake(size.width - useSafariViewControllerSwitchSize.width - 30, (size.height - useSafariViewControllerSwitchSize.height) / 2.0, useSafariViewControllerSwitchSize.width, useSafariViewControllerSwitchSize.height);
+                    cell.accessoryView = self.useSafariViewControllerSwitch;
                     break;
             }
             break;
@@ -248,8 +267,14 @@ static NSString *CellIdentifier = @"Cell";
     }
 }
 
-- (void)readByDefaultSwitchChangedValue:(id)sender {
+- (void)useSafariViewControllerSwitchValueChanged:(id)sender {
+    [[PPSettings sharedSettings] setUseSafariViewController:self.useSafariViewControllerSwitch.on];
+}
+
+- (void)openLinksInAppSwitchValueChanged:(id)sender {
     [[PPSettings sharedSettings] setOpenLinksInApp:self.openLinksInAppSwitch.on];
+
+    self.useSafariViewControllerSwitch.enabled = self.openLinksInAppSwitch.on;
 }
 
 @end

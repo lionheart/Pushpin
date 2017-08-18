@@ -12,6 +12,7 @@
 @import KeychainItemWrapper;
 @import LHSCategoryCollection;
 @import Mixpanel;
+@import SafariServices;
 
 #import "PPGenericPostViewController.h"
 #import "PPConstants.h"
@@ -550,20 +551,25 @@ static NSInteger PPBookmarkEditMaximum = 25;
 #warning TODO Check outside links
             if (settings.openLinksInApp) {
                 [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
-                
-                self.webViewController = [PPWebViewController webViewControllerWithURL:urlString];
-                self.webViewController.shouldMobilize = settings.openLinksWithMobilizer;
-                self.webViewController.transitioningDelegate = [PPShrinkBackTransition sharedInstance];
-                
-                static BOOL presentModally = YES;
-                if (presentModally) {
-                    if (self.searchController.isActive) {
-                        [self.searchController presentViewController:self.webViewController animated:YES completion:nil];
-                    } else {
-                        [self presentViewController:self.webViewController animated:YES completion:nil];
-                    }
+
+                if (settings.useSafariViewController) {
+                    SFSafariViewController *controller = [[SFSafariViewController alloc] initWithURL:[NSURL URLWithString:urlString]];
+                    [self presentViewController:controller animated:YES completion:nil];
                 } else {
-                    [self.navigationController pushViewController:self.webViewController animated:YES];
+                    self.webViewController = [PPWebViewController webViewControllerWithURL:urlString];
+                    self.webViewController.shouldMobilize = settings.openLinksWithMobilizer;
+                    self.webViewController.transitioningDelegate = [PPShrinkBackTransition sharedInstance];
+
+                    static BOOL presentModally = YES;
+                    if (presentModally) {
+                        if (self.searchController.isActive) {
+                            [self.searchController presentViewController:self.webViewController animated:YES completion:nil];
+                        } else {
+                            [self presentViewController:self.webViewController animated:YES completion:nil];
+                        }
+                    } else {
+                        [self.navigationController pushViewController:self.webViewController animated:YES];
+                    }
                 }
             } else {
                 if (httpRange.location == NSNotFound) {

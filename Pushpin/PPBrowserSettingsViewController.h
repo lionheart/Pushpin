@@ -14,6 +14,7 @@
 @property (nonatomic, retain) UIAlertController *installChromeAlertView;
 @property (nonatomic, retain) UIAlertController *installICabMobileAlertView;
 @property (nonatomic, retain) UISwitch *openLinksInAppSwitch;
+@property (nonatomic, retain) UISwitch *useSafariViewControllerSwitch;
 @property (nonatomic, strong) UIAlertController *actionSheet;
 
 @end
