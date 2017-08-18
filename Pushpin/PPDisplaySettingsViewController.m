@@ -351,7 +351,13 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.textLabel.text = NSLocalizedString(@"Font", nil);
 
                     UIFont *font = [PPTheme titleFont];
-                    cell.detailTextLabel.text = [LHSFontSelectionViewController fontNameToDisplayName:[font lhs_displayName]];
+
+                    if ([font.fontName hasPrefix:@"."]) {
+                        cell.detailTextLabel.text = [LHSFontSelectionViewController fontNameToDisplayName:font.fontName];
+                    } else {
+                        cell.detailTextLabel.text = [LHSFontSelectionViewController fontNameToDisplayName:[font lhs_displayName]];
+                    }
+
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
                 }
