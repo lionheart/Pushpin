@@ -1271,7 +1271,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 NSDate *lastLocalUpdate = [settings lastUpdated];
                 BOOL neverUpdated = lastLocalUpdate == nil;
                 BOOL outOfSyncWithAPI = [lastLocalUpdate compare:updateTime] == NSOrderedAscending;
-                BOOL lastUpdatedMoreThanFiveMinutesAgo = abs([lastLocalUpdate timeIntervalSinceNow]) >= 300;
+                BOOL lastUpdatedMoreThanFiveMinutesAgo = fabs([lastLocalUpdate timeIntervalSinceNow]) >= 300;
 
                 if (neverUpdated || outOfSyncWithAPI || lastUpdatedMoreThanFiveMinutesAgo) {
                     dispatch_async(dispatch_get_main_queue(), ^{
