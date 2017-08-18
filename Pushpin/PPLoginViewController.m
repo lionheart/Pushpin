@@ -9,6 +9,7 @@
 @import LHSCategoryCollection;
 @import LHSTableViewCells;
 @import LHSKeyboardAdjusting;
+@import MessageUI;
 
 #import "PPLoginViewController.h"
 #import "PPMailChimp.h"
@@ -55,9 +56,8 @@ static NSString * const CellIdentifier = @"CellIdentifier";
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Help", nil)
                                                                              style:UIBarButtonItemStyleDone
-                                                                            target:nil
-                                                                            action:nil];
-    self.navigationItem.leftBarButtonItem.enabled = false;
+                                                                            target:self
+                                                                            action:@selector(showContactForm)];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -138,6 +138,19 @@ static NSString * const CellIdentifier = @"CellIdentifier";
 #pragma mark - Utils
 
 - (void)showContactForm {
+    if ([MFMailComposeViewController canSendMail]) {
+        MFMailComposeViewController *controller = [[MFMailComposeViewController alloc] init];
+        controller.delegate = self;
+        [controller setSubject:@"Pushpin Support Inquiry"];
+        [controller setToRecipients:@[@"Lionheart Support <support@lionheartsw.com>"]];
+        [self presentViewController:controller animated:YES completion:nil];
+    }
+}
+
+#pragma mark - MFMailComposeViewControllerDelegate
+
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
+    [controller dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

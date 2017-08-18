@@ -11,6 +11,7 @@
 @import LHSCategoryCollection;
 @import ASPinboard;
 @import OnePasswordExtension;
+@import MessageUI;
 
 #import "PPPinboardLoginViewController.h"
 #import "PPAppDelegate.h"
@@ -730,6 +731,19 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 #pragma mark - Utils
 
 - (void)showContactForm {
+    if ([MFMailComposeViewController canSendMail]) {
+        MFMailComposeViewController *controller = [[MFMailComposeViewController alloc] init];
+        controller.delegate = self;
+        [controller setSubject:@"Pushpin Support Inquiry"];
+        [controller setToRecipients:@[@"Lionheart Support <support@lionheartsw.com>"]];
+        [self presentViewController:controller animated:YES completion:nil];
+    }
+}
+
+#pragma mark - MFMailComposeViewControllerDelegate
+
+- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
+    [controller dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

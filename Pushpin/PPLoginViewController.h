@@ -16,6 +16,6 @@ typedef NS_ENUM(NSInteger, PPLoginServiceRowType) {
     PPLoginPushpinRow
 };
 
-@interface PPLoginViewController : UIViewController <LHSKeyboardAdjusting, UITableViewDataSource, UITableViewDelegate>
+@interface PPLoginViewController : UIViewController <LHSKeyboardAdjusting, UITableViewDataSource, UITableViewDelegate, MFMailComposeViewControllerDelegate>
 
 @end
