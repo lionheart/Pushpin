@@ -8,10 +8,10 @@
       buildImplicitDependencies = "YES">
       <BuildActionEntries>
          <BuildActionEntry
-            buildForTesting = "YES"
+            buildForTesting = "NO"
             buildForRunning = "YES"
             buildForProfiling = "YES"
-            buildForArchiving = "YES"
+            buildForArchiving = "NO"
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
@@ -58,8 +58,8 @@
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
-      selectedDebuggerIdentifier = ""
-      selectedLauncherIdentifier = "Xcode.IDEFoundation.Launcher.PosixSpawn"
+      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
@@ -67,17 +67,16 @@
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES"
       launchAutomaticallySubstyle = "2">
-      <RemoteRunnable
-         runnableDebuggingMode = "1"
-         BundleIdentifier = "com.apple.mobilesafari"
-         RemotePath = "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/Applications/MobileSafari.app">
-      </RemoteRunnable>
+      <PathRunnable
+         runnableDebuggingMode = "0"
+         FilePath = "/&lt;placeholder&gt;">
+      </PathRunnable>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "37FEEB8D15745488003F2B77"
-            BuildableName = "Pushpin.app"
-            BlueprintName = "Pushpin"
+            BlueprintIdentifier = "370B76091F4603A400391769"
+            BuildableName = "Read Later Extension.appex"
+            BlueprintName = "Read Later Extension"
             ReferencedContainer = "container:Pushpin.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
