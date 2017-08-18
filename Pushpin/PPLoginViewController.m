@@ -140,7 +140,7 @@ static NSString * const CellIdentifier = @"CellIdentifier";
 - (void)showContactForm {
     if ([MFMailComposeViewController canSendMail]) {
         MFMailComposeViewController *controller = [[MFMailComposeViewController alloc] init];
-        controller.delegate = self;
+        controller.mailComposeDelegate = self;
         [controller setSubject:@"Pushpin Support Inquiry"];
         [controller setToRecipients:@[@"Lionheart Support <support@lionheartsw.com>"]];
         [self presentViewController:controller animated:YES completion:nil];

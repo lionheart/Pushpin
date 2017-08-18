@@ -363,7 +363,13 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                 }
 
                 case PPOtherFeedback: {
-#pragma mark - TODO
+                    if ([MFMailComposeViewController canSendMail]) {
+                        MFMailComposeViewController *controller = [[MFMailComposeViewController alloc] init];
+                        controller.mailComposeDelegate = self;
+                        [controller setSubject:@"Pushpin Support Inquiry"];
+                        [controller setToRecipients:@[@"Lionheart Support <support@lionheartsw.com>"]];
+                        [self presentViewController:controller animated:YES completion:nil];
+                    }
                     break;
                 }
                     
@@ -423,7 +429,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 }
 
 - (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [controller dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
