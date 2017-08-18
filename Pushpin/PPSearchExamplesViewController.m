@@ -113,7 +113,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (void)openSQLiteFTSDocumentation {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://www.sqlite.org/fts3.html#section_3"]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://www.sqlite.org/fts3.html#section_3"] options:@{} completionHandler:nil];;
 }
 
 @end

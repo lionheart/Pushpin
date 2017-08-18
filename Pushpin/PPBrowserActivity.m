@@ -81,7 +81,7 @@
         OpenInChromeController *openInChromeController = [OpenInChromeController sharedInstance];
         [openInChromeController openInChrome:self.url withCallbackURL:[NSURL URLWithString:@"pushpin://"] createNewTab:YES];
     } else {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[self.url.absoluteString stringByReplacingCharactersInRange:range withString:self.urlScheme]]];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[self.url.absoluteString stringByReplacingCharactersInRange:range withString:self.urlScheme]] options:@{} completionHandler:nil];;
     }
     
     [self activityDidFinish:YES];

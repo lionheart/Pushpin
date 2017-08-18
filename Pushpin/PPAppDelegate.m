@@ -244,7 +244,7 @@
                         OpenInChromeController *openInChromeController = [OpenInChromeController sharedInstance];
                         [openInChromeController openInChrome:url];
                     } else {
-                        [[UIApplication sharedApplication] openURL:url];
+                        [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];;
                     }
                 }
             }];

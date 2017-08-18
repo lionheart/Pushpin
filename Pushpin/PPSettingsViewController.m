@@ -144,7 +144,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
 -(BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     if (navigationType == UIWebViewNavigationTypeLinkClicked) {
-        [[UIApplication sharedApplication] openURL:[request URL]];
+        [[UIApplication sharedApplication] openURL:[request URL] options:@{} completionHandler:nil];;
         return NO;
     }
     return YES;
@@ -352,11 +352,12 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
         case PPSectionOtherSettings: {
             switch ((PPOtherSettingsRowType)indexPath.row) {
                 case PPOtherRatePushpin:
-                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/pushpin-for-pinboard/id548052590?mt=8&uo=4&at=1l3vbEC&action=write-review"]];
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/pushpin-for-pinboard/id548052590?mt=8&uo=4&at=1l3vbEC&action=write-review"] options:@{} completionHandler:nil];;
                     break;
                     
                 case PPOtherFollow: {
-                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://twitter.com/pushpin_app"] options:nil completionHandler:nil];
+                    NSURL *url = [NSURL URLWithString:@"https://twitter.com/pushpin_app"];
+                    [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
                     break;
                 }
 

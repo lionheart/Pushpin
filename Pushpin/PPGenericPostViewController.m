@@ -582,7 +582,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                     switch (browser) {
                         case PPBrowserSafari: {
                             [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Safari"}];
-                            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
+                            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString] options:@{} completionHandler:nil];;
                             break;
                         }
                             
@@ -590,11 +590,11 @@ static NSInteger PPBookmarkEditMaximum = 25;
                             if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome-x-callback://"]]) {
                                 NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"googlechrome-x-callback://x-callback-url/open/?url=%@&x-success=pushpin%%3A%%2F%%2F&&x-source=Pushpin", [urlString urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
                                 [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
-                                [[UIApplication sharedApplication] openURL:url];
+                                [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];;
                             } else {
                                 NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"googlechrome"]];
                                 [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
-                                [[UIApplication sharedApplication] openURL:url];
+                                [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];;
                             }
                             break;
                         }
@@ -602,28 +602,28 @@ static NSInteger PPBookmarkEditMaximum = 25;
                         case PPBrowseriCabMobile: {
                             NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"icabmobile"]];
                             [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"iCab Mobile"}];
-                            [[UIApplication sharedApplication] openURL:url];
+                            [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];;
                             break;
                         }
                             
                         case PPBrowserOpera: {
                             NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"ohttp"]];
                             [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Opera"}];
-                            [[UIApplication sharedApplication] openURL:url];
+                            [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];;
                             break;
                         }
                             
                         case PPBrowserDolphin: {
                             NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"dolphin"]];
                             [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"dolphin"}];
-                            [[UIApplication sharedApplication] openURL:url];
+                            [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];;
                             break;
                         }
                             
                         case PPBrowserCyberspace: {
                             NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"cyber"]];
                             [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Cyberspace Browser"}];
-                            [[UIApplication sharedApplication] openURL:url];
+                            [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];;
                             break;
                         }
                             

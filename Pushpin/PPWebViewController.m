@@ -850,7 +850,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                     [self.openLinkExternallyAlertView lhs_addActionWithTitle:NSLocalizedString(@"Open", nil)
                                                                        style:UIAlertActionStyleDefault
                                                                      handler:^(UIAlertAction *action) {
-                                                                         [[UIApplication sharedApplication] openURL:webView.request.URL];
+                                                                         [[UIApplication sharedApplication] openURL:webView.request.URL options:@{} completionHandler:nil];;
                                                                      }];
 
                     [self.openLinkExternallyAlertView lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
