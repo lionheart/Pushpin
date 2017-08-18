@@ -27,11 +27,11 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
-    UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:@"Bookmarking..." message:@""];
-    [alert lhs_addActionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+    UIAlertController *loadingAlert = [UIAlertController lhs_alertViewWithTitle:@"Bookmarking..." message:@""];
+    [loadingAlert lhs_addActionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
         [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
     }];
-    [self presentViewController:alert animated:YES completion:^{
+    [self presentViewController:loadingAlert animated:YES completion:^{
         TMReachability *reach = [TMReachability reachabilityForInternetConnection];
         if (reach.isReachable) {
             NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
@@ -78,22 +78,30 @@
                         }
                     }
 
-                    void (^CompletionBlockInner)(NSString *title, NSString *message) = ^(NSString *title, NSString *message) {
-                        [alert dismissViewControllerAnimated:YES completion:^{
-                            UIAlertController *alert2 = [UIAlertController alertControllerWithTitle:title
-                                                                                            message:message
-                                                                                     preferredStyle:UIAlertControllerStyleAlert];
+                    void (^CompletionBlockInnerInner)(NSString *title, NSString *message) = ^(NSString *title, NSString *message) {
+                        UIAlertController *alert2 = [UIAlertController alertControllerWithTitle:title
+                                                                                        message:message
+                                                                                 preferredStyle:UIAlertControllerStyleAlert];
 
-                            [self presentViewController:alert2 animated:YES completion:^{
-                                double delayInSeconds = 1;
-                                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-                                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                                    [self dismissViewControllerAnimated:YES completion:^{
-                                        [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
-                                    }];
-                                });
-                            }];
+                        [self presentViewController:alert2 animated:YES completion:^{
+                            double delayInSeconds = 1;
+                            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                                [self dismissViewControllerAnimated:YES completion:^{
+                                    [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
+                                }];
+                            });
                         }];
+                    };
+
+                    void (^CompletionBlockInner)(NSString *title, NSString *message) = ^(NSString *title, NSString *message) {
+                        if (loadingAlert.isBeingPresented) {
+                            [loadingAlert dismissViewControllerAnimated:YES completion:^{
+                                CompletionBlockInnerInner(title, message);
+                            }];
+                        } else {
+                            CompletionBlockInnerInner(title, message);
+                        }
                     };
 
                     NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
@@ -101,18 +109,20 @@
                     BOOL privateByDefault = [[sharedDefaults objectForKey:@"PrivateByDefault"] boolValue];
 
                     void (^AddBookmarkBlock)(NSString *urlString, NSString *title) = ^(NSString *urlString, NSString *title) {
-                        [[ASPinboard sharedInstance] addBookmarkWithURL:urlString
-                                                                  title:title
-                                                            description:@""
-                                                                   tags:@""
-                                                                 shared:!privateByDefault
-                                                                 unread:!readByDefault
-                                                                success:^{
-                                                                    CompletionBlockInner(NSLocalizedString(@"Success!", nil), NSLocalizedString(@"Your bookmark was added.", nil));
-                                                                }
-                                                                failure:^(NSError *error) {
-                                                                    CompletionBlockInner(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:@"%@. %@", NSLocalizedString(@"There was an error saving this bookmark.", nil), error.localizedDescription]);
-                                                                }];
+                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                            [[ASPinboard sharedInstance] addBookmarkWithURL:urlString
+                                                                      title:title
+                                                                description:@""
+                                                                       tags:@""
+                                                                     shared:!privateByDefault
+                                                                     unread:!readByDefault
+                                                                    success:^{
+                                                                        CompletionBlockInner(NSLocalizedString(@"Success!", nil), NSLocalizedString(@"Your bookmark was added.", nil));
+                                                                    }
+                                                                    failure:^(NSError *error) {
+                                                                        CompletionBlockInner(NSLocalizedString(@"Error", nil), [NSString stringWithFormat:@"%@. %@", NSLocalizedString(@"There was an error saving this bookmark.", nil), error.localizedDescription]);
+                                                                    }];
+                        });
                     };
 
                     dispatch_group_notify(group, dispatch_get_main_queue(), ^{
@@ -125,7 +135,7 @@
                                                           if (title.length > 0) {
                                                               AddBookmarkBlock(urlString, title);
                                                           } else {
-                                                              [self dismissViewControllerAnimated:YES completion:^{
+                                                              [loadingAlert dismissViewControllerAnimated:YES completion:^{
                                                                   UIAlertController *controller = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"No Title Found", nil)
                                                                                                                                     message:NSLocalizedString(@"Pushpin couldn't retrieve a title for this bookmark. Would you like to add this bookmark with the URL as the title?", nil)];
 
