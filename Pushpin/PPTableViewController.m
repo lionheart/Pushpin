@@ -13,6 +13,7 @@
 @interface PPTableViewController ()
 
 @property (nonatomic) UITableViewStyle style;
+@property (nonatomic, strong) NSLayoutConstraint *keyboardAdjustingBottomConstraint;
 
 @end
 
@@ -49,16 +50,7 @@
 
     NSDictionary *views = @{@"table": self.tableView};
     [self.tableView lhs_fillWidthOfSuperview];
-    [self.view lhs_addConstraints:@"V:|[table]" views:views];
-
-    self.bottomConstraint = [NSLayoutConstraint constraintWithItem:self.tableView
-                                                         attribute:NSLayoutAttributeBottom
-                                                         relatedBy:NSLayoutRelationEqual
-                                                            toItem:self.view
-                                                         attribute:NSLayoutAttributeBottom
-                                                        multiplier:1
-                                                          constant:0];
-    [self.view addConstraint:self.bottomConstraint];
+    [self.view lhs_addConstraints:@"V:|[table]|" views:views];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
