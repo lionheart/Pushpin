@@ -129,7 +129,7 @@
                                                    NSDictionary *data = [self parseQueryParameters:url.query];
                                                    if (data[@"x-success"]) {
                                                        NSURL *url = [NSURL URLWithString:[data[@"x-success"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-                                                       [application openURL:url];
+                                                       [application openURL:url options:@{} completionHandler:nil];
                                                    }
                                                }];
     } else if ([url.host isEqualToString:@"search"]) {
@@ -757,8 +757,6 @@
 #if FORCE_OFFLINE
     [NSURLProtocol registerClass:[PPCachingURLProtocol class]];
 #endif
-    
-
 
     ASPinboard *pinboard = [ASPinboard sharedInstance];
     [pinboard setRequestCompletedCallback:^{
@@ -767,8 +765,6 @@
     [pinboard setRequestStartedCallback:^{
         [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];
     }];
-
-    [application setStatusBarStyle:UIStatusBarStyleLightContent];
 
     if (settings.isAuthenticated) {
 
@@ -920,7 +916,7 @@
         // This activity represents an item indexed using Core Spotlight, so restore the context related to the unique identifier.
         // The unique identifier of the Core Spotlight item is set in the activity’s userInfo for the key CSSearchableItemActivityIdentifier.
         NSString *urlString = userActivity.userInfo[CSSearchableItemActivityIdentifier];
-        [application openURL:[NSURL URLWithString:urlString]];
+        [application openURL:[NSURL URLWithString:urlString] options:@{} completionHandler:nil];
     }
 
     return YES;
