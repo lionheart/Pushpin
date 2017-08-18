@@ -325,8 +325,6 @@ static NSString *CellIdentifier = @"TagCell";
     [self.navigationController.navigationBar setBarTintColor:HEX(0x0096FFFF)];
 
     PPGenericPostViewController *postViewController = [[PPGenericPostViewController alloc] init];
-    
-    
 
     PPPinboardDataSource *pinboardDataSource = [[PPPinboardDataSource alloc] init];
     pinboardDataSource.tags = @[tag];
