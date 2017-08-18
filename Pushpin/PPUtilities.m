@@ -18,9 +18,9 @@
 
 + (NSString *)stringByTrimmingWhitespace:(id)object {
     if (object && ![object isEqual:[NSNull null]]) {
-        @try {
+        if ([object isKindOfClass:[NSString class]]) {
             return [(NSString *)object stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        } @catch (NSException *exception) {
+        } else {
             return @"";
         }
     } else {
