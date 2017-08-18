@@ -135,8 +135,7 @@ static const CGFloat PADDING_Y = 2;
 - (void)updateBackgroundColor {
     if (self.enabled) {
         self.backgroundColor = self.normalColor;
-    }
-    else {
+    } else {
         self.backgroundColor = self.disabledColor;
     }
 }

@@ -52,8 +52,7 @@ static CGFloat kPPShrinkBackAnimationDuration = 0.6;
             toViewController.view.frame = containerView.frame;
             fromViewController.view.frame = CGRectOffset(fromViewController.view.frame, 0, CGRectGetHeight(fromViewController.view.frame));
         };
-    }
-    else {
+    } else {
         cover.alpha = 0;
         toViewController.view.frame = CGRectOffset(toViewController.view.frame, 0, CGRectGetHeight(toViewController.view.frame));
 

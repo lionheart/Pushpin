@@ -502,8 +502,7 @@ static NSString *CellIdentifier = @"Cell";
         case PPReaderSettingsMainRowFontLineSpacing: {
             if ([self.toggledIndexPaths containsObject:indexPath]) {
                 [self.toggledIndexPaths removeObject:indexPath];
-            }
-            else {
+            } else {
                 [self.toggledIndexPaths addObject:indexPath];
             }
             
@@ -521,12 +520,10 @@ static NSString *CellIdentifier = @"Cell";
                 self.textAlignmentActionSheet.popoverPresentationController.sourceRect = [cell lhs_centerRect];
                 if ([UIApplication isIPad]) {
                     [self presentViewController:self.textAlignmentActionSheet animated:YES completion:nil];
-                }
-                else {
+                } else {
                     [self.navigationController presentViewController:self.textAlignmentActionSheet animated:YES completion:nil];
                 }
-            }
-            else {
+            } else {
                 PPSettings *settings = [PPSettings sharedSettings];
                 PPReaderSettings *readerSettings = settings.readerSettings;
                 switch (readerSettings.textAlignment) {
@@ -711,8 +708,7 @@ static NSString *CellIdentifier = @"Cell";
 - (void)toggleFullScreenExampleWebView {
     if ([self.view.constraints containsObject:self.webViewContainerPinnedToTopConstraint]) {
         self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Preview", nil);
-    }
-    else {
+    } else {
         self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Minimize", nil);
     }
 
@@ -721,8 +717,7 @@ static NSString *CellIdentifier = @"Cell";
                          if ([self.view.constraints containsObject:self.webViewContainerPinnedToTopConstraint]) {
                              [self.view removeConstraint:self.webViewContainerPinnedToTopConstraint];
                              self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Preview", nil);
-                         }
-                         else {
+                         } else {
                              [self.view addConstraint:self.webViewContainerPinnedToTopConstraint];
                              self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Minimize", nil);
                          }

@@ -61,8 +61,7 @@
         if ([NSStringFromClass([controller class]) isEqualToString:@"_UIModalItemsPresentingViewController"]) {
             notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:1];
             [application scheduleLocalNotification:notification];
-        }
-        else {
+        } else {
             self.bookmarksUpdated = [notification.userInfo[@"updated"] boolValue];
             NSString *text = notification.alertBody;
             
@@ -86,8 +85,7 @@
         [self.navigationController dismissViewControllerAnimated:NO completion:^{
             [self.navigationController presentViewController:addBookmarkViewController animated:NO completion:nil];
         }];
-    }
-    else {
+    } else {
         [self.navigationController presentViewController:addBookmarkViewController animated:NO completion:nil];
     }
 }
@@ -118,8 +116,7 @@
             if (popover) {
                 [popover dismissPopoverAnimated:YES];
             }
-        }
-        else {
+        } else {
             [self.navigationController presentViewController:navController animated:NO completion:nil];
         }
     };
@@ -201,8 +198,7 @@
             [self.navigationController dismissViewControllerAnimated:YES completion:^{
                 PresentView(postViewController, navController);
             }];
-        }
-        else {
+        } else {
             PresentView(postViewController, navController);
         }
     }
@@ -232,8 +228,7 @@
             [self.navigationController dismissViewControllerAnimated:YES completion:^{
                 PresentView(postViewController, navController);
             }];
-        }
-        else {
+        } else {
             PresentView(postViewController, navController);
         }
     }
@@ -248,8 +243,7 @@
                     if ([sourceApplication isEqualToString:@"com.google.chrome.ios"]) {
                         OpenInChromeController *openInChromeController = [OpenInChromeController sharedInstance];
                         [openInChromeController openInChrome:url];
-                    }
-                    else {
+                    } else {
                         [[UIApplication sharedApplication] openURL:url];
                     }
                 }
@@ -268,8 +262,7 @@
             [self.navigationController dismissViewControllerAnimated:YES completion:^{
                 [self.navigationController presentViewController:navController animated:NO completion:nil];
             }];
-        }
-        else {
+        } else {
             [self.navigationController presentViewController:navController animated:NO completion:nil];
         }
     }
@@ -318,8 +311,7 @@
 
         if (settings.offlineReadingEnabled) {
             [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
-        }
-        else {
+        } else {
             [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalNever];
         }
     }
@@ -394,8 +386,7 @@
 
                     [[UIViewController lhs_topViewController] presentViewController:alertController animated:YES completion:nil];
                 });
-            }
-            else {
+            } else {
                 NSURL *candidateURL = [NSURL URLWithString:self.clipboardBookmarkURL];
                 if (candidateURL && candidateURL.scheme && candidateURL.host) {
                     [PPUtilities retrievePageTitle:candidateURL
@@ -650,8 +641,7 @@
                     [self.feedListNavigationController.navigationBar setBarTintColor:[pinboardViewController.postDataSource barTintColor]];
                 }
             }
-        }
-        else {
+        } else {
             _navigationController.viewControllers = @[self.feedListViewController, pinboardViewController];
         }
 
@@ -797,12 +787,10 @@
         
         if ([UIApplication isIPad]) {
             [self.window setRootViewController:self.splitViewController];
-        }
-        else {
+        } else {
             [self.window setRootViewController:self.navigationController];
         }
-    }
-    else {
+    } else {
         [self.window setRootViewController:self.loginViewController];
     }
 
@@ -922,8 +910,7 @@
     [cache initiateBackgroundDownloadsWithCompletion:^(NSInteger count) {
         if (count > 0) {
             completionHandler(UIBackgroundFetchResultNewData);
-        }
-        else {
+        } else {
             completionHandler(UIBackgroundFetchResultNoData);
         }
     } progress:nil];

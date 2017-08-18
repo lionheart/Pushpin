@@ -165,8 +165,7 @@ static BOOL kPinboardSyncInProgress = NO;
     query = [PPUtilities stringByTrimmingWhitespace:query];
     if (self.searchScope != ASPinboardSearchScopeNone) {
         self.searchQuery = query;
-    }
-    else {
+    } else {
 #warning Make this recursive to handle queries like (url:anand OR url:wire) title:mac. Parse out parentheses and feed back in.
 
         NSError *error;
@@ -203,8 +202,7 @@ static BOOL kPinboardSyncInProgress = NO;
 
             if (isKeyword) {
                 [components addObject:[value uppercaseString]];
-            }
-            else {
+            } else {
                 if (![value hasSuffix:@"*"] && ![value hasSuffix:@")"]) {
                     value = [value stringByAppendingString:@"*"];
                 }
@@ -258,8 +256,7 @@ static BOOL kPinboardSyncInProgress = NO;
     if (needsUpdate) {
         if (self.searchQuery) {
             self.limit += 10;
-        }
-        else {
+        } else {
             self.limit += 50;
         }
     }
@@ -339,8 +336,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                    [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
                                    if (error) {
                                        completion(error);
-                                   }
-                                   else {
+                                   } else {
                                        NSArray *posts = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
                                        BookmarksSuccessBlock(posts, nil);
                                    }
@@ -510,8 +506,7 @@ static BOOL kPinboardSyncInProgress = NO;
         NSString *message;
         if ([posts count] == 1) {
             message = NSLocalizedString(@"Your bookmark was deleted.", nil);
-        }
-        else {
+        } else {
             message = [NSString stringWithFormat:@"%lu bookmarks were deleted.", (unsigned long)[posts count]];
         }
 
@@ -681,8 +676,7 @@ static BOOL kPinboardSyncInProgress = NO;
                         for (NSString *word in words) {
                             if ([word hasSuffix:@"*"] || [@[@"AND", @"OR", @"NOT"] containsObject:word]) {
                                 [wordsWithWildcards addObject:word];
-                            }
-                            else {
+                            } else {
                                 [wordsWithWildcards addObject:[word stringByAppendingString:@"*"]];
                             }
                         }
@@ -705,8 +699,7 @@ static BOOL kPinboardSyncInProgress = NO;
             }
             
             [whereComponents addObject:[NSString stringWithFormat:@"bookmark.hash IN (%@)", [subqueries componentsJoinedByString:@" INTERSECT "]]];
-        }
-        else {
+        } else {
             [whereComponents addObject:@"bookmark.hash = bookmark_fts.hash"];
             [whereComponents addObject:@"bookmark_fts MATCH ?"];
             [parameters addObject:self.searchQuery];
@@ -955,27 +948,23 @@ static BOOL kPinboardSyncInProgress = NO;
         if (imageNames.count > 1) {
             if (self.searchQuery) {
                 [titleButton setImageNames:imageNames title:[NSString stringWithFormat:@"+\"%@\"", self.searchQuery]];
-            }
-            else {
+            } else {
                 [titleButton setImageNames:imageNames title:nil];
             }
         }
         else if (imageNames.count == 1) {
             [titleButton setTitle:title imageName:imageNames[0]];
-        }
-        else {
+        } else {
             [titleButton setTitle:title imageName:nil];
         }
-    }
-    else {
+    } else {
         if (self.tags.count > 0) {
             NSMutableArray *htmlDecodedTags = [NSMutableArray array];
             for (NSString *tag in self.tags) {
                 [htmlDecodedTags addObject:[tag stringByDecodingHTMLEntities]];
             }
             [titleButton setTitle:[htmlDecodedTags componentsJoinedByString:@"+"] imageName:nil];
-        }
-        else {
+        } else {
             [titleButton setTitle:NSLocalizedString(@"All Bookmarks", nil) imageName:@"navigation-all"];
         }
     }
@@ -990,8 +979,7 @@ static BOOL kPinboardSyncInProgress = NO;
 - (BOOL)searchSupported {
     if (self.searchQuery) {
         return NO;
-    }
-    else {
+    } else {
 #warning Might want to tweak this.
         return YES;
     }
@@ -1096,8 +1084,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 NSString *firstHash;
                 if (posts.count > 0) {
                     firstHash = posts[0][@"hash"];
-                }
-                else {
+                } else {
                     firstHash = @"";
                 }
                 
@@ -1107,8 +1094,7 @@ static BOOL kPinboardSyncInProgress = NO;
                     NSDictionary *earliestPost = [self paramsForPost:[posts lastObject] dateError:NO];
                     results = [db executeQuery:@"SELECT meta, hash, url FROM bookmark WHERE created_at >= ? ORDER BY created_at DESC"
                           withArgumentsInArray:@[earliestPost[@"created_at"]]];
-                }
-                else {
+                } else {
                     results = [db executeQuery:@"SELECT meta, hash, url FROM bookmark ORDER BY created_at DESC"];
                 }
                 
@@ -1271,8 +1257,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                           if (skipStarred) {
                                               completion(updatesMade, nil);
                                               UpdateSpotlightSearchIndex();
-                                          }
-                                          else {
+                                          } else {
                                               [self updateStarredPostsWithCompletion:^(NSError *error) {
                                                   completion(updatesMade, error);
                                                   UpdateSpotlightSearchIndex();
@@ -1299,8 +1284,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                             success:^(NSArray *bookmarks, NSDictionary *parameters) {
                                                 if ([bookmarks count] == 0) {
                                                     completion(NO, [NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
-                                                }
-                                                else {
+                                                } else {
                                                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                                         BookmarksSuccessBlock(bookmarks, parameters);
                                                     });
@@ -1310,8 +1294,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                                 completion(NO, error);
                                             }];
                     });
-                }
-                else {
+                } else {
                     kPinboardSyncInProgress = NO;
                     [self updateStarredPostsWithCompletion:^(NSError *error) {
                         completion(NO, error);
@@ -1398,8 +1381,7 @@ static BOOL kPinboardSyncInProgress = NO;
             if (result) {
                 newTagsWithFrequencies = result.tagsWithFrequencies;
                 updatedBookmarks = result.bookmarks;
-            }
-            else {
+            } else {
                 [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                     FMResultSet *results = [db executeQuery:query withArgumentsInArray:parameters];
 
@@ -1477,8 +1459,7 @@ static BOOL kPinboardSyncInProgress = NO;
             if (cancel && cancel() && self.latestReloadTime != timeWhenReloadBegan) {
                 DLog(@"Cancelling search for query (%@)", self.searchQuery);
                 completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
-            }
-            else {
+            } else {
                 self.posts = updatedBookmarks;
                 self.metadata = newMetadata;
                 self.compressedMetadata = newCompressedMetadata;
@@ -1520,16 +1501,14 @@ static BOOL kPinboardSyncInProgress = NO;
                                                    }
                                                });
                                            }];
-            }
-            else {
+            } else {
                 if (!self.fullTextSearchAlertView.presentingViewController) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [[UIViewController lhs_topViewController] presentViewController:self.fullTextSearchAlertView animated:YES completion:nil];
                     });
                 }
             }
-        }
-        else {
+        } else {
             [self generateQueryAndParameters:HandleSearch];
         }
     });

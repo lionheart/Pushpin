@@ -119,14 +119,12 @@
                         if (urlString) {
                             if (title.length > 0) {
                                 AddBookmarkBlock(urlString, title);
-                            }
-                            else {
+                            } else {
                                 [PPUtilities retrievePageTitle:[NSURL URLWithString:urlString]
                                                       callback:^(NSString *title, NSString *description) {
                                                           if (title.length > 0) {
                                                               AddBookmarkBlock(urlString, title);
-                                                          }
-                                                          else {
+                                                          } else {
                                                               [self dismissViewControllerAnimated:YES completion:^{
                                                                   UIAlertController *controller = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"No Title Found", nil)
                                                                                                                                     message:NSLocalizedString(@"Pushpin couldn't retrieve a title for this bookmark. Would you like to add this bookmark with the URL as the title?", nil)];
@@ -144,14 +142,12 @@
                                                           }
                                                       }];
                             }
-                        }
-                        else {
+                        } else {
                             CompletionBlockInner(NSLocalizedString(@"Uh oh.", nil), NSLocalizedString(@"You can't add a bookmark without a URL.", nil));
                         }
                     });
                 });
-            }
-            else {
+            } else {
                 UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Invalid Token", nil)
                                                                                message:NSLocalizedString(@"Please open Pushpin to refresh your credentials.", nil)
                                                                         preferredStyle:UIAlertControllerStyleAlert];
@@ -160,8 +156,7 @@
                 }];
                 [self presentViewController:alert animated:YES completion:nil];
             }
-        }
-        else {
+        } else {
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Error", nil)
                                                                            message:NSLocalizedString(@"No Internet connection is available.", nil)
                                                                     preferredStyle:UIAlertControllerStyleAlert];

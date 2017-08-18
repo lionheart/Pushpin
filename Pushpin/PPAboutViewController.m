@@ -264,8 +264,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
                 [self presentViewController:self.actionSheet animated:YES completion:nil];
             }
-        }
-        else {
+        } else {
             [self dismissViewControllerAnimated:YES completion:nil];
             self.actionSheet = nil;
         }

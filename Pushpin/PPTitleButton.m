@@ -92,8 +92,7 @@
         
         if (title) {
             [self.containerView lhs_centerVerticallyForView:imageView height:20];
-        }
-        else {
+        } else {
             [self.containerView lhs_addConstraints:[NSString stringWithFormat:@"V:|[%@(width)]|", formatName] metrics:metrics views:views];
         }
         
@@ -126,12 +125,10 @@
         if (title) {
             self.titleLabel.text = title;
             [self addConstraintsForImageAndTitle];
-        }
-        else {
+        } else {
             [self addConstraintsForImageOnly];
         }
-    }
-    else {
+    } else {
         self.titleLabel.text = title;
         self.imageView.image = nil;
         [self addConstraintsForTitleOnly];
@@ -175,8 +172,7 @@
     if (self.delegate) {
         if (recognizer == self.tapGestureRecognizer) {
             [self.delegate titleButtonTouchUpInside:self];
-        }
-        else {
+        } else {
             [self.delegate titleButtonLongPress:self];
         }
     }

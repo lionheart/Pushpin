@@ -89,8 +89,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                                              
                                              if ([UIApplication isIPad]) {
                                                  [delegate.window setRootViewController:delegate.loginViewController];
-                                             }
-                                             else {
+                                             } else {
                                                  [self presentViewController:delegate.loginViewController
                                                                     animated:YES
                                                                   completion:nil];
@@ -121,8 +120,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                                                                                   withRowAnimation:UITableViewRowAnimationNone];
                                                             [self.tableView endUpdates];
                                                         });
-                                                    }
-                                                    else {
+                                                    } else {
                                                         self.numberOfRatings = 0;
                                                     }
                                                 }
@@ -208,8 +206,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
     }
     else if (indexPath.section == 1 && indexPath.row == PPOtherRatePushpin) {
         cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier forIndexPath:indexPath];
-    }
-    else {
+    } else {
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     }
 
@@ -270,8 +267,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                     }
                     else if (self.numberOfRatings < 10) {
                         cell.detailTextLabel.text = [NSString stringWithFormat:@"Only %lu ratings for this version.", (unsigned long)self.numberOfRatings];
-                    }
-                    else {
+                    } else {
                         cell.detailTextLabel.text = [NSString stringWithFormat:@"%lu ratings for this version.", (unsigned long)self.numberOfRatings];
                     }
                     break;

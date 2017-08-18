@@ -65,8 +65,7 @@ static NSString *PPCachingEnabledKey = @"PPCachingEnabled";
             NSMutableURLRequest *redirectedRequest = request.mutableCopy;
             redirectedRequest.URL = [NSURL URLWithString:redirectedURL];
             return [self cachedResponseByFollowingRedirects:redirectedRequest];
-        }
-        else {
+        } else {
             return cachedResponse;
         }
     }

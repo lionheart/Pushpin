@@ -63,8 +63,7 @@
                                                                                     }];
                                                          [[UIViewController lhs_topViewController] presentViewController:errorAlert animated:YES completion:nil];
                                                      });
-                                                 }
-                                                 else {
+                                                 } else {
                                                      dispatch_async(dispatch_get_main_queue(), ^{
                                                          UIAlertController *successAlert = [UIAlertController lhs_alertViewWithTitle:@"Subscription Successful!" message:@"You will now receive email updates for Pushpin Cloud."];
                                                          

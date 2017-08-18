@@ -65,8 +65,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
         return CGRectGetHeight([self.text boundingRectWithSize:CGSizeMake(CGRectGetWidth(self.tableView.frame) - 40, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: [PPTheme detailLabelFont]} context:nil]) + 40;
-    }
-    else {
+    } else {
         return CGRectGetHeight([self.examples[indexPath.section - 1][@"example"] boundingRectWithSize:CGSizeMake(CGRectGetWidth(self.tableView.frame)- 30, CGFLOAT_MAX) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: [PPTheme textLabelFont]} context:nil]) + 30;
     }
 }
@@ -83,8 +82,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         cell.textLabel.numberOfLines = 0;
         cell.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
         cell.textLabel.text = self.text;
-    }
-    else {
+    } else {
         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
 
         cell.textLabel.font = [PPTheme textLabelFont];
@@ -99,8 +97,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
     if (section == 0) {
         return nil;
-    }
-    else {
+    } else {
         return self.examples[section - 1][@"description"];
     }
 }

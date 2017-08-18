@@ -63,8 +63,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
     if ([UIApplication isIPad]) {
         
-    }
-    else {
+    } else {
         self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelBarButtonItemTouchUpInside:)];
         
         UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithTitle:@" " style:UIBarButtonItemStyleDone target:nil action:nil];
@@ -196,12 +195,10 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                                                             if ([settings.username length] == 0 || [settings.password length] == 0) {
                                                                 self.searchScope = PPSearchScopeMine;
                                                                 [self presentViewController:self.fullTextSearchAlert animated:YES completion:nil];
-                                                            }
-                                                            else {
+                                                            } else {
                                                                 self.pinboardSearchScope = ASPinboardSearchScopeFullText;
                                                             }
-                                                        }
-                                                        else {
+                                                        } else {
                                                             self.pinboardSearchScope = ASPinboardSearchScopeMine;
                                                         }
                                                         
@@ -546,8 +543,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                             
                             if (filter == kPushpinFilterTrue) {
                                 cell.textLabel.text = NSLocalizedString(@"Tagged", nil);
-                            }
-                            else {
+                            } else {
                                 cell.textLabel.text = NSLocalizedString(@"Untagged", nil);
                             }
                             
@@ -670,8 +666,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                             PPSettings *settings = [PPSettings sharedSettings];
                             if ([settings.username length] == 0 || [settings.password length] == 0) {
                                 [self presentViewController:self.fullTextSearchAlert animated:YES completion:nil];
-                            }
-                            else {
+                            } else {
                                 self.pinboardSearchScope = ASPinboardSearchScopeMine;
                             }
                             break;
@@ -860,8 +855,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
         if (popover) {
             [popover dismissPopoverAnimated:YES];
         }
-    }
-    else {
+    } else {
         [self.navigationController pushViewController:genericPostViewController animated:YES];
     }
 }

@@ -389,8 +389,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
             
             __weak id weakself = self;
             self.navigationController.interactivePopGestureRecognizer.delegate = weakself;
-        }
-        else {
+        } else {
             PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
             self.hamburgerBarButtonItem = delegate.navigationController.splitViewControllerBarButtonItem;
         }
@@ -417,8 +416,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                 [self.postDataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
                     if (error) {
                         [self responseFailureHandler:error];
-                    }
-                    else {
+                    } else {
                         if (updated) {
                             [self updateFromLocalDatabaseWithCallback:nil];
                         }
@@ -502,8 +500,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
             self.multipleDeleteButton.enabled = YES;
             self.multipleTagEditButton.enabled = YES;
             self.multipleMarkAsReadButton.enabled = YES;
-        }
-        else {
+        } else {
             self.multipleDeleteButton.enabled = NO;
             self.multipleTagEditButton.enabled = NO;
             self.multipleMarkAsReadButton.enabled = NO;
@@ -533,8 +530,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                                                          update:^{
                                                              [self updateMultipleEditUI];
                                                          }];
-    }
-    else {
+    } else {
         // If configured, always mark the post as read
         if (settings.markReadPosts) {
             self.selectedPost = [self.postDataSource postAtIndex:self.selectedIndexPath.row];
@@ -563,16 +559,13 @@ static NSInteger PPBookmarkEditMaximum = 25;
                 if (presentModally) {
                     if (self.searchController.isActive) {
                         [self.searchController presentViewController:self.webViewController animated:YES completion:nil];
-                    }
-                    else {
+                    } else {
                         [self presentViewController:self.webViewController animated:YES completion:nil];
                     }
-                }
-                else {
+                } else {
                     [self.navigationController pushViewController:self.webViewController animated:YES];
                 }
-            }
-            else {
+            } else {
                 if (httpRange.location == NSNotFound) {
                     // "http" couldn't be found anywhere in the URL.
                     UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Shucks", nil)
@@ -583,8 +576,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                                           handler:nil];
                     
                     [self presentViewController:alert animated:YES completion:nil];
-                }
-                else {
+                } else {
                     PPBrowserType browser = settings.browser;
                     switch (browser) {
                         case PPBrowserSafari: {
@@ -598,8 +590,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                                 NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"googlechrome-x-callback://x-callback-url/open/?url=%@&x-success=pushpin%%3A%%2F%%2F&&x-source=Pushpin", [urlString urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
                                 [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
                                 [[UIApplication sharedApplication] openURL:url];
-                            }
-                            else {
+                            } else {
                                 NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"googlechrome"]];
                                 [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
                                 [[UIApplication sharedApplication] openURL:url];
@@ -640,8 +631,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                     }
                 }
             }
-        }
-        else {
+        } else {
             // The post data source will provide a view controller to push.
             UIViewController *controller = [dataSource viewControllerForPostAtIndex:self.selectedIndexPath.row];
             
@@ -667,8 +657,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
             BOOL needsReload = NO;
             if (self.compressPosts) {
                 needsReload = self.pinchGestureRecognizer.scale > 1.5;
-            }
-            else {
+            } else {
                 needsReload = self.pinchGestureRecognizer.scale < 0.5;
             }
             
@@ -683,8 +672,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
     [self.postDataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
         if (error) {
             [self responseFailureHandler:error];
-        }
-        else {
+        } else {
             if (updated) {
                 [self updateFromLocalDatabase];
             }
@@ -726,13 +714,11 @@ static NSInteger PPBookmarkEditMaximum = 25;
                 BOOL isHidden = !self.isViewLoaded || self.view.window == nil;
                 if (isHidden && !self.viewIsAppearing) {
                     return YES;
-                }
-                else {
+                } else {
                     return [self.latestSearchTime compare:time] != NSOrderedSame;
                 }
             } width:self.currentWidth];
-        }
-        else {
+        } else {
             BOOL firstLoad = [self.postDataSource numberOfPosts] == 0;
             
             UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
@@ -756,8 +742,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                             self.tableView.tableHeaderView = self.searchController.searchBar;
                             [self.tableView setContentOffset:CGPointMake(0, CGRectGetHeight(self.searchController.searchBar.frame)) animated:NO];
                         }
-                    }
-                    else {
+                    } else {
                         [self.tableView reloadData];
                     }
                     
@@ -771,8 +756,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                 BOOL isHidden = !self.isViewLoaded || self.view.window == nil;
                 if (isHidden) {
                     return YES;
-                }
-                else {
+                } else {
                     return [time compare:self.latestSearchTime] != NSOrderedSame;
                 }
             } width:self.currentWidth];
@@ -788,8 +772,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
 
     if (self.searchController.searchBar.selectedScopeButtonIndex == PPSearchScopeFullText) {
         [(PPPinboardDataSource *)self.searchPostDataSource setSearchScope:ASPinboardSearchScopeFullText];
-    }
-    else {
+    } else {
         [(PPPinboardDataSource *)self.searchPostDataSource setSearchScope:ASPinboardSearchScopeNone];
     }
     
@@ -820,8 +803,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
         if ([self.postDataSource respondsToSelector:@selector(titleViewWithDelegate:)]) {
             PPTitleButton *titleView = (PPTitleButton *)[self.postDataSource titleViewWithDelegate:self];
             self.navigationItem.titleView = titleView;
-        }
-        else {
+        } else {
             self.navigationItem.titleView = nil;
         }
         
@@ -834,8 +816,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
             self.multipleEditToolbarBottomConstraint.constant = kToolbarHeight;
             [self.view layoutIfNeeded];
         }];
-    }
-    else {
+    } else {
         self.tableView.allowsMultipleSelectionDuringEditing = YES;
         [self.tableView setEditing:YES animated:YES];
         
@@ -894,8 +875,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
             
             if (dataSource == self.searchPostDataSource) {
                 [self.searchResultsController.tableView deselectRowAtIndexPath:indexPath animated:YES];
-            }
-            else {
+            } else {
                 [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
             }
             
@@ -994,8 +974,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                 if (needsUpdate) {
                     if (self.tableView == tableView) {
                         [self updateFromLocalDatabase];
-                    }
-                    else {
+                    } else {
                         [self updateSearchResultsForSearchPerformedAtTime:self.latestSearchTime];
                     }
                 }
@@ -1037,13 +1016,11 @@ static NSInteger PPBookmarkEditMaximum = 25;
         if ([UIApplication isIPad]) {
             [(UIActionSheet *)self.longPressActionSheet dismissWithClickedButtonIndex:-1 animated:YES];
         }
-    }
-    else {
+    } else {
         NSString *urlString;
         if ([self.selectedPost[@"url"] length] > 67) {
             urlString = [[self.selectedPost[@"url"] substringToIndex:67] stringByAppendingString:ellipsis];
-        }
-        else {
+        } else {
             urlString = self.selectedPost[@"url"];
         }
         
@@ -1117,8 +1094,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                                                           CGRect rect;
                                                           if (self.searchController.isActive) {
                                                               rect = [self.searchResultsController.tableView rectForRowAtIndexPath:self.selectedIndexPath];
-                                                          }
-                                                          else {
+                                                          } else {
                                                               rect = [self.tableView rectForRowAtIndexPath:self.selectedIndexPath];
                                                           }
                                                           
@@ -1138,8 +1114,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                                                               self.popover = [[UIPopoverController alloc] initWithContentViewController:self.activityView];
                                                               [self.popover presentPopoverFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.tableView
                                                                           permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-                                                          }
-                                                          else {
+                                                          } else {
                                                               [self presentViewController:self.activityView animated:YES completion:nil];
                                                           }
                                                       }];
@@ -1198,8 +1173,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
     
     if (!delegate.connectionAvailable) {
         [PPNotification notifyWithMessage:@"Connection unavailable"];
-    }
-    else {
+    } else {
         id <PPDataSource> dataSource = [self currentDataSource];
         
         if ([dataSource respondsToSelector:@selector(markPostAsRead:callback:)]) {
@@ -1226,15 +1200,13 @@ static NSInteger PPBookmarkEditMaximum = 25;
             // If we have any errors, update the local notification
             if (hasError) {
                 message = NSLocalizedString(@"There was an error marking your bookmarks as read.", nil);
-            }
-            else {
+            } else {
                 success = YES;
                 updated = YES;
                 
                 if (posts.count == 1) {
                     message = NSLocalizedString(@"Bookmark marked as read.", nil);
-                }
-                else {
+                } else {
                     message = [NSString stringWithFormat:@"%lu bookmarks marked as read.", (unsigned long)posts.count];
                 }
             }
@@ -1278,8 +1250,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                                                       // http://crashes.to/s/2565a27d5df
                                                       if (self.selectedPost) {
                                                           [self deletePosts:@[self.selectedPost]];
-                                                      }
-                                                      else {
+                                                      } else {
                                                           UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Error", nil)
                                                                                                                        message:NSLocalizedString(@"An error occurred and this bookmark could not be deleted. Please try again.", nil)];
                                                           [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil];
@@ -1306,8 +1277,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                                                         
                                                         if (self.searchController.isActive) {
                                                             [self deletePosts:@[self.selectedPost] dataSource:self.searchPostDataSource];
-                                                        }
-                                                        else {
+                                                        } else {
                                                             [self deletePostsAtIndexPaths:self.indexPathsToDelete];
                                                         }
                                                     }];
@@ -1330,8 +1300,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
         }
         
         [self updateMultipleEditUI];
-    }
-    else {
+    } else {
         NSInteger numberOfRows = [self.tableView numberOfRowsInSection:0];
         
         [self alertIfSelectedBookmarkCountExceedsRecommendation:numberOfRows
@@ -1361,8 +1330,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
         }];
         
         [self presentViewController:alert animated:YES completion:nil];
-    }
-    else {
+    } else {
         update();
     }
 }
@@ -1436,8 +1404,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
     id <PPDataSource> dataSource;
     if (tableView == self.tableView) {
         dataSource = self.postDataSource;
-    }
-    else {
+    } else {
         dataSource = self.searchPostDataSource;
     }
     return dataSource;
@@ -1447,8 +1414,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
     id <PPDataSource> dataSource;
     if (self.searchController.isActive) {
         dataSource = self.searchPostDataSource;
-    }
-    else {
+    } else {
         dataSource = self.postDataSource;
     }
     return dataSource;
@@ -1484,12 +1450,10 @@ static NSInteger PPBookmarkEditMaximum = 25;
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:badgeWrapperView.tag inSection:0];
         if ([self.tableView.indexPathsForSelectedRows containsObject:indexPath]) {
             [self.tableView deselectRowAtIndexPath:indexPath animated:NO];
-        }
-        else {
+        } else {
             [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionNone];
         }
-    }
-    else {
+    } else {
         NSArray *badgeViews = badgeWrapperView.subviews;
         NSMutableArray *badges = [badgeWrapperView.badges mutableCopy];
         
@@ -1547,8 +1511,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                 [self presentViewController:self.additionalTagsActionSheet animated:YES completion:^{
                     self.tableView.scrollEnabled = NO;
                 }];
-            }
-            else {
+            } else {
                 // Go to the tag link
                 id <PPDataSource> dataSource = [self currentDataSource];
                 if (!self.tableView.editing) {
@@ -1598,8 +1561,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
             NSInteger row;
             if ([(NSIndexPath *)indexPathsForVisibleRows[0] row] == 0 || ![indexPathsToReload isEqual:indexPathsForVisibleRows[0]]) {
                 row = 0;
-            }
-            else {
+            } else {
                 row = 1;
             }
             
@@ -1619,8 +1581,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                 }
                 self.isProcessingPosts = NO;
             });
-        }
-        else {
+        } else {
             self.isProcessingPosts = NO;
         }
     }
@@ -1631,8 +1592,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
         self.multipleDeleteButton.enabled = YES;
         self.multipleTagEditButton.enabled = YES;
         self.multipleMarkAsReadButton.enabled = YES;
-    }
-    else {
+    } else {
         self.multipleDeleteButton.enabled = NO;
         self.multipleTagEditButton.enabled = NO;
         self.multipleMarkAsReadButton.enabled = NO;
@@ -1668,8 +1628,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
     
     if (numberOfSelectedRows > 0) {
         self.navigationItem.leftBarButtonItem.title = NSLocalizedString(@"Mark None", nil);
-    }
-    else {
+    } else {
         self.navigationItem.leftBarButtonItem.title = NSLocalizedString(@"Mark All", nil);
     }
     
@@ -1684,8 +1643,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
     NSString *title;
     if (selectedRowCount == 1) {
         title = NSLocalizedString(@"1 bookmark", nil);
-    }
-    else {
+    } else {
         title = [NSString stringWithFormat:@"%lu %@", (unsigned long)selectedRowCount, NSLocalizedString(@"bookmarks", nil)];
     }
     
@@ -1701,8 +1659,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
     CGFloat width;
     if (UIInterfaceOrientationIsPortrait(orientation)) {
         width = MIN(CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame));
-    }
-    else {
+    } else {
         width = MAX(CGRectGetWidth(self.view.frame), CGRectGetHeight(self.view.frame));
     }
     return width;
@@ -1752,8 +1709,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
 - (NSArray *)keyCommands {
     if ([self.searchController.searchBar isFirstResponder]) {
         return @[self.enterKeyCommand];
-    }
-    else {
+    } else {
         return @[self.focusSearchKeyCommand, self.toggleCompressKeyCommand, self.escapeKeyCommand, self.moveUpKeyCommand, self.moveDownKeyCommand, self.openKeyCommand, self.editKeyCommand];
     }
 }
@@ -1783,8 +1739,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
             NSInteger row = self.selectedIndexPath.row;
             self.selectedIndexPath = [NSIndexPath indexPathForRow:MIN([self.tableView numberOfRowsInSection:0] - 1, row+1) inSection:0];
             [self moveCircleFocusToSelectedIndexPathWithPosition:UITableViewScrollPositionNone];
-        }
-        else {
+        } else {
             self.selectedIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
             [self moveCircleFocusToSelectedIndexPathWithPosition:UITableViewScrollPositionNone];
         }
@@ -1802,8 +1757,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
 - (NSArray *)posts {
     if (self.searchController.isActive) {
         return [self.searchPostDataSource posts];
-    }
-    else {
+    } else {
         return [self.postDataSource posts];
     }
 }
@@ -1813,15 +1767,13 @@ static NSInteger PPBookmarkEditMaximum = 25;
         [self.postDataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
             if (error) {
                 [self responseFailureHandler:error];
-            }
-            else {
+            } else {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (updated) {
                         [self updateFromLocalDatabaseWithCallback:^{
                             [self.refreshControl endRefreshing];
                         }];
-                    }
-                    else {
+                    } else {
                         [self.refreshControl endRefreshing];
                     }
                 });
@@ -1883,8 +1835,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
     id<PPDataSource> dataSource;
     if (tableView) {
         dataSource = [self dataSourceForTableView:tableView];
-    }
-    else {
+    } else {
         dataSource = self.currentDataSource;
     }
     
@@ -1904,8 +1855,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
         UIViewController *presentingViewController;
         if (self.searchController.active) {
             presentingViewController = self.searchController;
-        }
-        else {
+        } else {
             presentingViewController = self.navigationController;
         }
         
@@ -1916,8 +1866,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
 - (UITableView *)currentTableView {
     if (self.currentDataSource == self.postDataSource) {
         return self.tableView;
-    }
-    else {
+    } else {
         return self.searchResultsController.tableView;
     }
 }
@@ -1966,8 +1915,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                                                              userInfo:@{@"time": self.latestSearchTime}
                                                               repeats:NO];
             [[NSRunLoop mainRunLoop] addTimer:self.fullTextSearchTimer forMode:NSRunLoopCommonModes];
-        }
-        else {
+        } else {
             [self updateSearchResultsForSearchPerformedAtTime:self.latestSearchTime];
         }
     }

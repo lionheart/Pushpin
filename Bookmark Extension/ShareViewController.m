@@ -72,8 +72,7 @@
                                                            failure:^(NSError *error) {
                                                                InvalidCredentials(nc);
                                                            }];
-            }
-            else {
+            } else {
                 InvalidCredentials(nc);
             }
         }];
@@ -136,8 +135,7 @@
                                                                  PresentController(navigation);
                                                              });
                                                          }];
-                }
-                else {
+                } else {
                     UINavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:post
                                                                                                                      update:@(YES)
                                                                                                                    callback:nil];
@@ -165,8 +163,7 @@
                                       NSURL *url = [NSURL URLWithString:text];
                                       if (url) {
                                           CompletionHandler(text, @"", @"");
-                                      }
-                                      else {
+                                      } else {
                                           CompletionHandler(@"", text, @"");
                                       }
                                   }];

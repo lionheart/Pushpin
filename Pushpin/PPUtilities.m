@@ -75,8 +75,7 @@
             [BPlusMeta addObject:hashmeta];
             identifiersToChanges[hash] = meta;
         }
-    }
-    else {
+    } else {
         for (id obj in previousItems) {
             NSString *hash = extractHash(obj);
             [A addObject:hash];
@@ -182,8 +181,7 @@
     BOOL isSuccessfulResponse = httpResponse.statusCode != 404;
     if (isHTMLResponse && isSuccessfulResponse) {
         return [self staticAssetURLsForHTML:[[NSString alloc] initWithData:cachedURLResponse.data encoding:NSUTF8StringEncoding]];
-    }
-    else {
+    } else {
         return [NSMutableSet set];
     }
 }
@@ -225,21 +223,14 @@
 }
 
 + (NSString *)databasePath {
-    
-
     NSString *pathComponent = @"/pinboard.db";
-    
-#if TARGET_IPHONE_SIMULATOR
-    return [@"/tmp" stringByAppendingString:pathComponent];
-#else
+
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     if (paths.count > 0) {
         return [paths[0] stringByAppendingPathComponent:pathComponent];
-    }
-    else {
+    } else {
         return pathComponent;
     }
-#endif
 }
 
 + (FMDatabaseQueue *)databaseQueue {
@@ -524,8 +515,7 @@
                 }
                 
                 [db commit];
-            }
-            else {
+            } else {
                 [s close];
             }
         }];

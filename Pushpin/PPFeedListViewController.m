@@ -357,8 +357,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
     if (self.tableView.allowsMultipleSelectionDuringEditing) {
         return PPProviderPinboardSections;
-    }
-    else {
+    } else {
         return PPProviderPinboardSections - [self numberOfHiddenSections];
     }
 }
@@ -382,8 +381,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             case PPPinboardSectionSearches:
                 return self.searches.count;
         }
-    }
-    else {
+    } else {
         PPSettings *settings = [PPSettings sharedSettings];
         switch (sectionType) {
             case PPPinboardSectionPersonal: {
@@ -436,8 +434,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         else if (sectionType == PPPinboardSectionSearches) {
             return NO;
         }
-    }
-    else {
+    } else {
         switch (sectionType) {
             case PPPinboardSectionCommunity:
                 return NO;
@@ -627,14 +624,12 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     cell.textLabel.text = NSLocalizedString(@"Add Feed", nil);
                     cell.imageView.image = nil;
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-                }
-                else {
+                } else {
                     cell.textLabel.text = self.feeds[indexPath.row - 1][@"title"];
                     cell.imageView.image = [UIImage imageNamed:@"browse-saved"];
                     cell.accessoryType = UITableViewCellAccessoryNone;
                 }
-            }
-            else {
+            } else {
                 cell.textLabel.text = self.feeds[indexPath.row][@"title"];
                 cell.imageView.image = [UIImage imageNamed:@"browse-saved"];
                 cell.accessoryType = UITableViewCellAccessoryNone;
@@ -728,8 +723,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             default:
                 return sourceIndexPath;
         }
-    }
-    else {
+    } else {
         return proposedDestinationIndexPath;
     }
     
@@ -803,8 +797,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             default:
                 break;
         }
-    }
-    else {
+    } else {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
 
@@ -820,8 +813,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     for (NSInteger i=0; i<[PPPersonalFeeds() count]; i++) {
                         if ([settings.hiddenFeedNames containsObject:[@[@"personal", [self personalFeedNameForIndex:i]] componentsJoinedByString:@"-"]]) {
                             numFeedsSkipped++;
-                        }
-                        else {
+                        } else {
                             if (numFeedsNotSkipped == indexPath.row) {
                                 break;
                             }
@@ -886,8 +878,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                                           handler:nil];
                     
                     [self presentViewController:alert animated:YES completion:nil];
-                }
-                else {
+                } else {
                     PPPinboardCommunityFeedType feedType = [self communityFeedForIndexPath:indexPath];
 
                     switch (feedType) {
@@ -998,8 +989,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             if (popover) {
                 [feedListViewController dismissViewControllerAnimated:true completion:nil];
             }
-        }
-        else {
+        } else {
             [self.navigationController pushViewController:viewControllerToPush animated:YES];
         }
     }
@@ -1012,8 +1002,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 - (void)leftBarButtonItemTouchUpInside:(UIBarButtonItem *)sender {
     if (self.tableView.allowsMultipleSelectionDuringEditing) {
         [self toggleEditing:sender];
-    }
-    else {
+    } else {
         PPSettingsViewController *svc = [[PPSettingsViewController alloc] init];
         [self.navigationController pushViewController:svc animated:YES];
     }
@@ -1068,8 +1057,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
         if (sender == self.navigationItem.leftBarButtonItem) {
             // Don't commit updates. User pressed Cancel.
-        }
-        else {
+        } else {
             // Commit updates. User pressed Done.
             NSMutableArray *visibleFeedNames = [NSMutableArray array];
             NSMutableArray *hiddenFeedNames = [NSMutableArray array];
@@ -1175,8 +1163,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         if ([self feedSectionIsHidden]) {
             [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds]
                           withRowAnimation:UITableViewRowAnimationFade];
-        }
-        else {
+        } else {
             [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds]
                           withRowAnimation:UITableViewRowAnimationFade];
         }
@@ -1184,8 +1171,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         if ([self searchSectionIsHidden]) {
             [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSearches]
                           withRowAnimation:UITableViewRowAnimationFade];
-        }
-        else {
+        } else {
             [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSearches]
                           withRowAnimation:UITableViewRowAnimationFade];
         }
@@ -1209,8 +1195,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
         [self.tableView endUpdates];
         [CATransaction commit];
-    }
-    else {
+    } else {
         self.navigationItem.leftBarButtonItem.title = NSLocalizedString(@"Cancel", nil);
         self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Done", nil);
         
@@ -1235,8 +1220,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             if ([self feedSectionIsHidden]) {
                 [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSavedFeeds]
                               withRowAnimation:UITableViewRowAnimationFade];
-            }
-            else {
+            } else {
                 NSInteger hiddenSections = [self numberOfHiddenSections];
                 if ([self searchSectionIsHidden]) {
                     hiddenSections--;
@@ -1248,8 +1232,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             if ([self searchSectionIsHidden]) {
                 [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSearches]
                               withRowAnimation:UITableViewRowAnimationFade];
-            }
-            else {
+            } else {
                 [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionSearches - [self numberOfHiddenSections]]
                               withRowAnimation:UITableViewRowAnimationFade];
             }
@@ -1374,8 +1357,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         return [settings.hiddenFeedNames indexesOfObjectsPassingTest:^(NSString *feed, NSUInteger idx, BOOL *stop) {
             return [feed hasPrefix:@"community-"];
         }].count == [PPCommunityFeeds() count];
-    }
-    else {
+    } else {
         return YES;
     }
 }
@@ -1388,8 +1370,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         while (YES) {
             if ([self personalSectionIsHidden]) {
                 numSectionsSkipped++;
-            }
-            else {
+            } else {
                 if (numSectionsNotSkipped == section) {
                     break;
                 }
@@ -1399,8 +1380,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             
             if ([self communitySectionIsHidden]) {
                 numSectionsSkipped++;
-            }
-            else {
+            } else {
                 if (numSectionsNotSkipped == section) {
                     break;
                 }
@@ -1410,8 +1390,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             
             if ([self feedSectionIsHidden]) {
                 numSectionsSkipped++;
-            }
-            else {
+            } else {
                 if (numSectionsNotSkipped == section) {
                     break;
                 }
@@ -1436,8 +1415,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         for (NSInteger i=0; i<[PPPersonalFeeds() count]; i++) {
             if ([settings.hiddenFeedNames containsObject:[@[@"personal", [self personalFeedNameForIndex:i]] componentsJoinedByString:@"-"]]) {
                 numFeedsSkipped++;
-            }
-            else {
+            } else {
                 if (numFeedsNotSkipped == indexPath.row) {
                     break;
                 }
@@ -1458,8 +1436,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         for (NSInteger i=0; i<[PPCommunityFeeds() count]; i++) {
             if ([settings.hiddenFeedNames containsObject:[@[@"community", [self communityFeedNameForIndex:i]] componentsJoinedByString:@"-"]]) {
                 numFeedsSkipped++;
-            }
-            else {
+            } else {
                 if (numFeedsNotSkipped == indexPath.row) {
                     break;
                 }
@@ -1476,8 +1453,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
     if ([UIApplication isIPad]) {
         [self.navigationController pushViewController:search animated:YES];
-    }
-    else {
+    } else {
         PPNavigationController *nav = [[PPNavigationController alloc] initWithRootViewController:search];
         nav.transitioningDelegate = [PPShrinkBackTransition sharedInstance];
         [self presentViewController:nav animated:YES completion:nil];
@@ -1560,8 +1536,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         offset = 1;
         
         section = PPPinboardSectionSavedFeeds;
-    }
-    else {
+    } else {
         offset = 0;
         section = PPPinboardSectionSavedFeeds;
         
@@ -1661,8 +1636,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     CGFloat updatedConstant;
     if (self.toolbarBottomConstraint.constant == 0) {
         updatedConstant = 44;
-    }
-    else {
+    } else {
         updatedConstant = 0;
     }
     

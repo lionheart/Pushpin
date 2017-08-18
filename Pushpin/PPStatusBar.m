@@ -87,8 +87,7 @@
     
     if (controller.navigationController.navigationBarHidden) {
         [self.view lhs_addConstraints:@"V:|-52-[label]-10-|" views:views];
-    }
-    else {
+    } else {
         [self.view lhs_addConstraints:@"V:|-30-[label]-10-|" views:views];
     }
 

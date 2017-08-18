@@ -63,8 +63,7 @@
                         NSString *message = [NSString stringWithFormat:@"%@", response[@"errors"][0][@"message"]];
                         
                         alert = [UIAlertController lhs_alertViewWithTitle:code message:message];
-                    }
-                    else {
+                    } else {
                         alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Success", nil)
                                                                   message:[NSString stringWithFormat:@"You are now following @%@!", screenName]];
                     }
@@ -133,8 +132,7 @@
         
         if (twitter.accessGranted) {
             AccessGrantedBlock(nil);
-        }
-        else {
+        } else {
             dispatch_async(dispatch_get_main_queue(), ^{
                 UIAlertController *loadingAlertView = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Loading", nil)
                                                                                         message:NSLocalizedString(@"Requesting access to your Twitter accounts.", nil)];
@@ -146,8 +144,7 @@
                                                        completion:^(BOOL granted, NSError *error) {
                                                            if (granted) {
                                                                AccessGrantedBlock(loadingAlertView);
-                                                           }
-                                                           else {
+                                                           } else {
                                                                [loadingAlertView.presentingViewController dismissViewControllerAnimated:YES completion:nil];
                                                                
                                                                UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Error.", nil)

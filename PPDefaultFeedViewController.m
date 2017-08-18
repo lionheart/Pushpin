@@ -339,8 +339,7 @@ static NSString *CellIdentifier = @"Cell";
     
     if ([indexPath isEqual:self.defaultIndexPath]) {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
-    }
-    else {
+    } else {
         cell.accessoryType = UITableViewCellAccessoryNone;
     }
     
@@ -439,8 +438,7 @@ static NSString *CellIdentifier = @"Cell";
         
         // Update the default feed and pop the view
         [[PPSettings sharedSettings] setDefaultFeed:defaultFeed];
-    }
-    else {
+    } else {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
 }
@@ -462,8 +460,7 @@ static NSString *CellIdentifier = @"Cell";
 
         if (self.savedFeeds.count == 0) {
             numSectionsSkipped++;
-        }
-        else {
+        } else {
             numSectionsNotSkipped++;
 
             if (numSectionsNotSkipped == index) {
@@ -473,8 +470,7 @@ static NSString *CellIdentifier = @"Cell";
 
         if (self.searches.count == 0) {
             numSectionsSkipped++;
-        }
-        else {
+        } else {
             numSectionsNotSkipped++;
 
             if (numSectionsNotSkipped == index) {

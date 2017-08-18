@@ -136,16 +136,14 @@ static NSInteger kEditButtonOuterMargin = 20;
         self.descriptionLabel.numberOfLines = 2;
         self.descriptionLabel.lineBreakMode = NSLineBreakByWordWrapping;
         metadata = [dataSource compressedMetadataForPostAtIndex:index];
-    }
-    else {
+    } else {
         metadata = [dataSource metadataForPostAtIndex:index];
     }
 
     BOOL read;
     if (self.post[@"unread"]) {
         read = ![self.post[@"unread"] boolValue];
-    }
-    else {
+    } else {
         read = NO;
     }
 
@@ -168,8 +166,7 @@ static NSInteger kEditButtonOuterMargin = 20;
     if (self.isEditing) {
         self.editButton.hidden = YES;
         self.deleteButton.hidden = YES;
-    }
-    else {
+    } else {
         self.editButton.hidden = NO;
         self.deleteButton.hidden = NO;
     }
@@ -243,8 +240,7 @@ static NSInteger kEditButtonOuterMargin = 20;
 
         if (compressed) {
             self.badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:options compressed:YES];
-        }
-        else {
+        } else {
             self.badgeWrapperView = [[PPBadgeWrapperView alloc] initWithBadges:badges options:options];
         }
 
@@ -259,8 +255,7 @@ static NSInteger kEditButtonOuterMargin = 20;
         [mainContentView addSubview:self.badgeWrapperView];
         [mainContentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:views];
         [mainContentView lhs_addConstraints:@"V:|-5-[title(titleHeight)][link(linkHeight)][description(descriptionHeight)]-5-[badges(badgeHeight)]" metrics:postMetrics views:views];
-    }
-    else {
+    } else {
         [mainContentView lhs_addConstraints:@"V:|-5-[title(titleHeight)][link(linkHeight)][description(descriptionHeight)]" metrics:postMetrics views:views];
     }
 }

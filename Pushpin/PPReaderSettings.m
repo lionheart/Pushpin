@@ -73,8 +73,7 @@
 - (NSString *)imageCSS {
     if (self.displayImages) {
         return @"display:block;max-width:100% !important;";
-    }
-    else {
+    } else {
         return @"display:none;";
     }
 }

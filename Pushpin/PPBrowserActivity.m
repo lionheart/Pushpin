@@ -80,8 +80,7 @@
     if ([self.browserName isEqualToString:NSLocalizedString(@"Chrome", nil)]) {
         OpenInChromeController *openInChromeController = [OpenInChromeController sharedInstance];
         [openInChromeController openInChrome:self.url withCallbackURL:[NSURL URLWithString:@"pushpin://"] createNewTab:YES];
-    }
-    else {
+    } else {
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[self.url.absoluteString stringByReplacingCharactersInRange:range withString:self.urlScheme]]];
     }
     

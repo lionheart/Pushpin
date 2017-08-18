@@ -46,8 +46,7 @@ static NSString *CellIdentifier = @"Cell";
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == 0) {
         return 1;
-    }
-    else {
+    } else {
         return 2;
     }
 }
@@ -65,12 +64,10 @@ static NSString *CellIdentifier = @"Cell";
     cell.textLabel.font = [PPTheme textLabelFont];
     if (indexPath.section == 0) {
         cell.textLabel.text = NSLocalizedString(@"Copy bookmarklet to clipboard", nil);
-    }
-    else {
+    } else {
         if (indexPath.row == 0) {
             cell.textLabel.text = NSLocalizedString(@"How to install on Safari", nil);
-        }
-        else {
+        } else {
             cell.textLabel.text = NSLocalizedString(@"How to install on Chrome for iOS", nil);
         }
     }
@@ -86,12 +83,10 @@ static NSString *CellIdentifier = @"Cell";
         [PPNotification notifyWithMessage:NSLocalizedString(@"Bookmarklet copied to clipboard.", nil)
                                   success:YES
                                   updated:NO];
-    }
-    else {
+    } else {
         if (indexPath.row == 0) {
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://www.youtube.com/watch?v=svFHucdSjPI"]];
-        }
-        else {
+        } else {
             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://www.youtube.com/watch?v=y9hjzceX_FE"]];
         }
     }

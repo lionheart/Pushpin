@@ -320,8 +320,7 @@ static NSString *CellIdentifier = @"Cell";
                     if (![self.sectionIndexTitles containsObject:firstCharacter]) {
                         [self.sectionIndexTitles addObject:firstCharacter];
                         self.fontsForSectionIndex[firstCharacter] = [NSMutableArray arrayWithObject:fontName];
-                    }
-                    else {
+                    } else {
                         [self.fontsForSectionIndex[firstCharacter] addObject:fontName];
                     }
                 }
@@ -390,8 +389,7 @@ static NSString *CellIdentifier = @"Cell";
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     if (self.onlyShowPreferredFonts) {
         return 1;
-    }
-    else {
+    } else {
         return self.sectionIndexTitles.count;
     }
 }
@@ -400,17 +398,14 @@ static NSString *CellIdentifier = @"Cell";
     if (self.onlyShowPreferredFonts) {
         if (self.purchased) {
             return self.preferredFontNames.count;
-        }
-        else {
+        } else {
             return 1;
         }
-    }
-    else {
+    } else {
         NSString *sectionName = self.sectionIndexTitles[section];
         if (section == 0 && !self.purchased) {
             return 2;
-        }
-        else {
+        } else {
             return [self.fontsForSectionIndex[sectionName] count];
         }
     }
@@ -430,13 +425,11 @@ static NSString *CellIdentifier = @"Cell";
                                                                     options:NSStringDrawingUsesLineFragmentOrigin
                                                                     context:nil];
         height = CGRectGetHeight(rect);
-    }
-    else {
+    } else {
         NSString *fontName;
         if (self.onlyShowPreferredFonts) {
             fontName = self.preferredFontNames[indexPath.row];
-        }
-        else {
+        } else {
             NSString *sectionName = self.sectionIndexTitles[indexPath.section];
             fontName = self.fontsForSectionIndex[sectionName][indexPath.row];
         }
@@ -444,8 +437,7 @@ static NSString *CellIdentifier = @"Cell";
         NSNumber *fontHeight = self.heights[fontName];
         if (fontHeight) {
             height = [fontHeight floatValue];
-        }
-        else {
+        } else {
             height = 24;
         }
     }
@@ -467,8 +459,7 @@ static NSString *CellIdentifier = @"Cell";
     NSString *fontName;
     if (self.onlyShowPreferredFonts) {
         fontName = self.preferredFontNames[indexPath.row];
-    }
-    else {
+    } else {
         NSString *sectionName = self.sectionIndexTitles[indexPath.section];
         fontName = self.fontsForSectionIndex[sectionName][indexPath.row];
     }
@@ -516,8 +507,7 @@ static NSString *CellIdentifier = @"Cell";
                                                    views:@{@"view": priceButton}];
                     [cell.contentView lhs_centerVerticallyForView:priceButton];
                 }
-            }
-            else {
+            } else {
                 [attributedText addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor] range:range];
 
                 if (self.purchaseInProgress) {
@@ -527,13 +517,11 @@ static NSString *CellIdentifier = @"Cell";
             }
             
             cell.textLabel.attributedText = attributedText;
-        }
-        else {
+        } else {
             cell.textLabel.text = NSLocalizedString(@"Restore Purchases", nil);
             cell.textLabel.textColor = [UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0];
         }
-    }
-    else {
+    } else {
         cell.textLabel.textColor = [UIColor blackColor];
         cell.textLabel.text = fontDisplayName;
         cell.textLabel.font = font;
@@ -549,8 +537,7 @@ static NSString *CellIdentifier = @"Cell";
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {
     if (self.onlyShowPreferredFonts) {
         return nil;
-    }
-    else {
+    } else {
         return self.sectionIndexTitles;
     }
 }
@@ -563,8 +550,7 @@ static NSString *CellIdentifier = @"Cell";
     if (self.preferredFontNames.count > 0 && !self.purchased && indexPath.section == 0) {
         if (indexPath.row == 0) {
             [self purchasePremiumFonts:nil];
-        }
-        else {
+        } else {
             [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
             self.purchaseInProgress = YES;
             
@@ -572,15 +558,13 @@ static NSString *CellIdentifier = @"Cell";
             [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView endUpdates];
         }
-    }
-    else {
+    } else {
         NSArray *indexPathsForPreviouslySelectedFont = [self indexPathsForFontName:self.currentFontName];
         
         NSString *fontName;
         if (self.onlyShowPreferredFonts) {
             fontName = self.preferredFontNames[indexPath.row];
-        }
-        else {
+        } else {
             NSString *sectionName = self.sectionIndexTitles[indexPath.section];
             fontName = self.fontsForSectionIndex[sectionName][indexPath.row];
         }
@@ -610,8 +594,7 @@ static NSString *CellIdentifier = @"Cell";
             section = 0;
             [indexPaths addObject:[NSIndexPath indexPathForRow:row inSection:section]];
         }
-    }
-    else {
+    } else {
         if (self.preferredFontNames.count > 0) {
             if ([self.preferredFontNames containsObject:fontName]) {
                 row = [self.preferredFontNames indexOfObject:fontName];

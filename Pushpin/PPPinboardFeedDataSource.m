@@ -253,8 +253,7 @@
                                                                                           if (cancel && cancel()) {
                                                                                               completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                                                                                               return;
-                                                                                          }
-                                                                                          else {
+                                                                                          } else {
                                                                                               self.posts = newPosts;
                                                                                               self.metadata = newMetadata;
                                                                                               self.compressedMetadata = newCompressedMetadata;
@@ -280,8 +279,7 @@
         else if ([component hasPrefix:@"u:"]) {
             substring = [NSString stringWithFormat:@"u:%@", [[substring urlEncodeUsingEncoding:NSUTF8StringEncoding] urlEncodeUsingEncoding:NSUTF8StringEncoding]];
             [escapedComponents addObject:substring];
-        }
-        else {
+        } else {
             [escapedComponents addObject:component];
         }
     }
@@ -292,8 +290,7 @@
     // If it's our username, we need to use the feed token to get any private tags
     if ([escapedComponents[0] isEqualToString:[NSString stringWithFormat:@"u:%@", settings.username]]) {
         urlString = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/%@?count=%ld", settings.feedToken, [escapedComponents componentsJoinedByString:@"/"], (long)self.count];
-    }
-    else {
+    } else {
         urlString = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/%@?count=%ld", [escapedComponents componentsJoinedByString:@"/"], (long)self.count];
     }
     
@@ -353,15 +350,13 @@
                 [components addObject:userNameWithPrefix];
                 shouldPush = YES;
             }
-        }
-        else {
+        } else {
             if ([self.components[0] hasPrefix:@"t:"]) {
                 components = [NSMutableArray arrayWithArray:self.components];
             }
             else if ([self.components[0] hasPrefix:@"u:"]) {
                 components = [NSMutableArray arrayWithArray:self.components];
-            }
-            else {
+            } else {
                 components = [NSMutableArray array];
             }
             
@@ -395,8 +390,7 @@
 
         if ([result intForColumnIndex:0] > 0) {
             postViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Remove" style:UIBarButtonItemStylePlain target:postViewController action:@selector(removeBarButtonTouchUpside:)];
-        }
-        else {
+        } else {
             postViewController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStylePlain target:postViewController action:@selector(addBarButtonTouchUpside:)];
         }
 

@@ -237,8 +237,7 @@ static NSString *CellIdentifier = @"Cell";
                 }];
             }
         }
-    }
-    else {
+    } else {
         [self.navigationController pushViewController:[[BookmarkletInstallationViewController alloc] initWithStyle:UITableViewStyleGrouped] animated:YES];
     }
 }

@@ -304,8 +304,7 @@
             if (_browser == PPBrowserWebview) {
                 _browser = PPBrowserSafari;
             }
-        }
-        else {
+        } else {
             _browser = PPBrowserSafari;
         }
     }
@@ -341,8 +340,7 @@
         
         if (result) {
             _readLater = [result integerValue];
-        }
-        else {
+        } else {
             _readLater = PPReadLaterNone;
         }
     }
@@ -363,8 +361,7 @@
         
         if (result) {
             _mobilizer = [result integerValue];
-        }
-        else {
+        } else {
             _mobilizer = PPMobilizerInstapaper;
         }
     }

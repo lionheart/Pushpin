@@ -291,8 +291,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
         self.title = NSLocalizedString(@"Update Bookmark", nil);
         self.urlTextField.textColor = [UIColor grayColor];
-    }
-    else {
+    } else {
         self.updateOrAddBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Add", nil)
                                                                          style:UIBarButtonItemStyleDone
                                                                         target:self
@@ -342,16 +341,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
     
     if (bookmark[@"private"]) {
         self.setAsPrivate = [bookmark[@"private"] boolValue];
-    }
-    else {
+    } else {
         self.setAsPrivate = [PPSettings sharedSettings].privateByDefault;
     }
     
     if (bookmark[@"unread"]) {
         BOOL isRead = !([bookmark[@"unread"] boolValue]);
         self.markAsRead = isRead;
-    }
-    else {
+    } else {
         self.markAsRead = [PPSettings sharedSettings].readByDefault;
     }
     
@@ -382,8 +379,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     NSString *host;
     if ([url.host hasPrefix:@"www"]) {
         host = [url.host stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:@""];
-    }
-    else {
+    } else {
         host = url.host;
     }
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:host style:UIBarButtonItemStyleDone target:nil action:nil];
@@ -441,16 +437,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
             }
             else if (self.tagCompletions.count > 0) {
                 return self.tagCompletions.count + [self tagOffset];
-            }
-            else {
+            } else {
                 return [self tagOffset];
             }
-        }
-        else {
+        } else {
             return self.existingTags.count;
         }
-    }
-    else {
+    } else {
         switch (section) {
             case kBookmarkTopSection:
                 return kBookmarkTagRow + 1;
@@ -498,8 +491,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     cell.textLabel.text = tag;
                     cell.detailTextLabel.text = self.tagCounts[tag];
                 }
-            }
-            else {
+            } else {
                 // This is the tag entry row
                 if (index == -1) {
                     UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-tag"] lhs_imageWithColor:HEX(0xD8DDE4FF)]];
@@ -519,16 +511,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     NSDictionary *views = @{@"view": self.tagTextField};
                     [cell.contentView lhs_addConstraints:@"H:|-40-[view]-10-|" views:views];
                     [cell.contentView lhs_addConstraints:@"V:|-10-[view]" views:views];
-                }
-                else {
+                } else {
                     // If it's -2, it's the badge row
                     [cell.contentView addSubview:self.badgeWrapperView];
                     [cell.contentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:@{@"badges": self.badgeWrapperView}];
                     [cell.contentView lhs_addConstraints:@"V:|-12-[badges]" views:@{@"badges": self.badgeWrapperView}];
                 }
             }
-        }
-        else {
+        } else {
             NSString *tag = self.existingTags[self.existingTags.count - indexPath.row - 1];
             cell.textLabel.text = tag;
             
@@ -550,8 +540,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             [cell lhs_addConstraints:@"H:[button(70)]|" views:NSDictionaryOfVariableBindings(button)];
             [cell lhs_addConstraints:@"V:|[button]|" views:NSDictionaryOfVariableBindings(button)];
         }
-    }
-    else {
+    } else {
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
         
         [cell.contentView lhs_removeSubviews];
@@ -589,16 +578,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
                             [activity startAnimating];
                             cell.accessoryView = activity;
                             [cell.contentView lhs_addConstraints:@"H:|-40-[title]-30-|" views:views];
-                        }
-                        else {
+                        } else {
                             [cell.contentView lhs_addConstraints:@"H:|-40-[title]-10-|" views:views];
                         }
                         
                         if (self.isUpdate) {
                             self.urlTextField.font = [UIFont fontWithName:[PPTheme fontName] size:14];
                             self.urlTextField.textColor = [UIColor grayColor];
-                        }
-                        else {
+                        } else {
                             self.urlTextField.font = [UIFont fontWithName:[PPTheme fontName] size:16];
                             self.urlTextField.textColor = [UIColor blackColor];
                         }
@@ -621,13 +608,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
                             cell.accessoryView = activity;
                             self.descriptionAttributes[NSForegroundColorAttributeName] = HEX(0xc7c7cdff);
                             self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:@"Loading..." attributes:self.descriptionAttributes];
-                        }
-                        else {
+                        } else {
                             if ([self.postDescription isEqualToString:@""]) {
                                 self.descriptionAttributes[NSForegroundColorAttributeName] = HEX(0xc7c7cdff);
                                 self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Tap to add a description.", nil) attributes:self.descriptionAttributes];
-                            }
-                            else {
+                            } else {
                                 self.descriptionAttributes[NSForegroundColorAttributeName] = [UIColor blackColor];
                                 self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:self.postDescription attributes:self.descriptionAttributes];
                             }
@@ -659,8 +644,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         
                         if (self.existingTags.count == 0) {
                             self.tagTextField.hidden = NO;
-                        }
-                        else {
+                        } else {
                             self.tagTextField.hidden = YES;
                         }
                         break;
@@ -675,8 +659,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         
                         if (self.setAsPrivate) {
                             cell.textLabel.text = NSLocalizedString(@"Private", nil);
-                        }
-                        else {
+                        } else {
                             cell.textLabel.text = NSLocalizedString(@"Public", nil);
                         }
                         
@@ -692,8 +675,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         
                         if (self.markAsRead) {
                             cell.textLabel.text = NSLocalizedString(@"Read", nil);
-                        }
-                        else {
+                        } else {
                             cell.textLabel.text = NSLocalizedString(@"Unread", nil);
                         }
                         
@@ -726,16 +708,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
         if (self.existingTags.count > 0 && [indexPath isEqual:[NSIndexPath indexPathForRow:0 inSection:0]]) {
             return 20 + [self.badgeWrapperView calculateHeightForWidth:(CGRectGetWidth(self.tableView.frame) - 20)];
         }
-    }
-    else {
+    } else {
         switch (indexPath.section) {
             case kBookmarkTopSection:
                 switch (indexPath.row) {
                     case kBookmarkTitleRow:
                         if (self.isUpdate) {
                             return 58;
-                        }
-                        else {
+                        } else {
                             return 62;
                         }
                         
@@ -744,8 +724,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                             CGFloat width = self.view.frame.size.width - 50;
                             CGRect descriptionRect = [self.descriptionTextLabel textRectForBounds:CGRectMake(0, 0, width, CGFLOAT_MAX) limitedToNumberOfLines:3];
                             return CGRectGetHeight(descriptionRect) + 20;
-                        }
-                        else {
+                        } else {
                             return 42;
                         }
                     }
@@ -783,8 +762,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 if (self.existingTags.count == 0) {
                     [indexSetsToInsert addIndex:1];
                     [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
-                }
-                else {
+                } else {
                     [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:1]];
                     [indexPathsToReload addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
                 }
@@ -805,8 +783,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         
 #warning http://crashes.to/s/4988f817e3d
                         [self.popularTags removeObjectAtIndex:index];
-                    }
-                    else {
+                    } else {
                         completion = self.recommendedTags[index];
                         [self.recommendedTags removeObjectAtIndex:(index - self.popularTags.count)];
                     }
@@ -827,8 +804,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 });
             });
         }
-    }
-    else {
+    } else {
         switch (indexPath.section) {
             case kBookmarkTopSection:
                 switch (indexPath.row) {
@@ -850,8 +826,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         
                         if (self.existingTags.count > 0) {
                             [indexSetsToReload addIndex:1];
-                        }
-                        else {
+                        } else {
                             [indexSetsToDelete addIndex:1];
                         }
 
@@ -912,8 +887,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             if (self.filteredPopularAndRecommendedTagsVisible) {
                 finalAmount = self.filteredPopularAndRecommendedTags.count;
                 self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Suggest", nil);
-            }
-            else {
+            } else {
                 finalAmount = 0;
             }
             
@@ -931,13 +905,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                                [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationAutomatic];
                                                [self.tableView endUpdates];
                                            }];
-        }
-        else {
+        } else {
             self.searchString = [self.tagTextField.text stringByReplacingCharactersInRange:range withString:string];
             [self searchUpdatedWithString:self.searchString];
         }
-    }
-    else {
+    } else {
         NSCharacterSet *invalidCharacterSet = [NSCharacterSet whitespaceAndNewlineCharacterSet];
         if (textField == self.urlTextField) {
             if ([string rangeOfCharacterFromSet:invalidCharacterSet].location != NSNotFound) {
@@ -964,8 +936,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 if (self.existingTags.count == 0) {
                     [indexSetsToInsert addIndex:1];
                     [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
-                }
-                else {
+                } else {
                     [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:1]];
                     [indexPathsToReload addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
                 }
@@ -974,8 +945,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     [indexPathsToDelete addObjectsFromArray:[self indexPathsForPopularAndSuggestedRows]];
                     [self.popularTags removeAllObjects];
                     [self.recommendedTags removeAllObjects];
-                }
-                else {
+                } else {
                     [indexPathsToDelete addObjectsFromArray:[self indexPathsForAutocompletedRows]];
                     [self.tagCompletions removeAllObjects];
                 }
@@ -990,14 +960,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 [self.tableView insertSections:indexSetsToInsert withRowAnimation:UITableViewRowAnimationFade];
                 [self.tableView endUpdates];
             }
-        }
-        else {
+        } else {
             [self.navigationController popViewControllerAnimated:YES];
             return YES;
         }
         return NO;
-    }
-    else {
+    } else {
         [textField resignFirstResponder];
         
         if (textField == self.urlTextField) {
@@ -1184,8 +1152,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                     [db executeUpdate:@"INSERT OR IGNORE INTO tag (name) VALUES (?)" withArgumentsInArray:@[tagName]];
                                     [db executeUpdate:@"INSERT INTO tagging (tag_name, bookmark_hash) VALUES (?, ?)" withArgumentsInArray:@[tagName, hash]];
                                 }
-                            }
-                            else {
+                            } else {
 #warning The bookmark doesn't yet have a hash
                                 
                                 
@@ -1193,8 +1160,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                 [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, starred=:starred, meta=random() WHERE url=:url" withParameterDictionary:params];
                             }
                             bookmarkAdded = NO;
-                        }
-                        else {
+                        } else {
                             // We're adding this bookmark for the first time.
                             params[@"created_at"] = [NSDate date];
                             [mixpanel track:@"Added bookmark" properties:@{@"Private": @(private), @"Read": @(!unread)}];
@@ -1219,8 +1185,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     PPBookmarkEventType eventType;
                     if (bookmarkAdded) {
                         eventType = PPBookmarkEventAdd;
-                    }
-                    else {
+                    } else {
                         eventType = PPBookmarkEventUpdate;
                     }
 
@@ -1238,14 +1203,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                                                                                                                 userInfo:@{@"type": @(eventType) }];
                                                                           }];
                         });
-                    }
-                    else {
+                    } else {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             NSString *message;
                             if (bookmarkAdded) {
                                 message = NSLocalizedString(@"Your bookmark was added.", nil);
-                            }
-                            else {
+                            } else {
                                 message = NSLocalizedString(@"Your bookmark was updated.", nil);
                             }
                             
@@ -1363,8 +1326,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         
         if (self.existingTags.count > 0) {
             [indexSetsToReload addIndex:1];
-        }
-        else {
+        } else {
             [indexSetsToInsert addIndex:1];
         }
         
@@ -1375,8 +1337,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         
         self.navigationItem.leftBarButtonItem = self.cancelBarButtonItem;
         self.title = self.originalTitle;
-    }
-    else {
+    } else {
         UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
         activityIndicator.hidesWhenStopped = YES;
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:activityIndicator];
@@ -1428,8 +1389,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         if (response.statusCode == 401) {
                             title = NSLocalizedString(@"Invalid Credentials", nil);
                             message = NSLocalizedString(@"Your Pinboard credentials are currently out-of-date. Your auth token may have been reset. Please log out and back into Pushpin to continue syncing bookmarks.", nil);
-                        }
-                        else {
+                        } else {
                             title = NSLocalizedString(@"Uh oh.", nil);
                             message = NSLocalizedString(@"There was an error adding your bookmark.", nil);
                         }
@@ -1459,8 +1419,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
                 });
             });
-        }
-        else {
+        } else {
             [self addBookmark];
         }
     }
@@ -1472,8 +1431,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [shareViewController dismissViewControllerAnimated:YES completion:^{
             [self.extensionContext cancelRequestWithError:[NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]];
         }];
-    }
-    else {
+    } else {
         [self.parentViewController dismissViewControllerAnimated:YES completion:^{
             self.callback(@{});
         }];
@@ -1585,8 +1543,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     if (self.existingTags.count > 1) {
         [indexPathsToReload addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
         [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(self.existingTags.count - index - 1) inSection:1]];
-    }
-    else {
+    } else {
         [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
         [sectionIndicesToDelete addIndex:1];
     }
@@ -1703,8 +1660,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 if (self.presentedFromShareSheet) {
                     NSURL *containerURL = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:APP_GROUP];
                     [[FMDatabaseQueue databaseQueueWithPath:[containerURL URLByAppendingPathComponent:@"shared.db"].path] inDatabase:DatabaseBlock];
-                }
-                else {
+                } else {
                     [[PPUtilities databaseQueue] inDatabase:DatabaseBlock];
                 }
                 
@@ -1738,8 +1694,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             }
             else if (!self.filteredPopularAndRecommendedTagsVisible) {
                 self.autocompleteInProgress = NO;
-            }
-            else {
+            } else {
                 self.autocompleteInProgress = NO;
             }
         });
@@ -1749,8 +1704,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (NSInteger)maxTagsToAutocomplete {
     if ([UIApplication isIPad]) {
         return 8;
-    }
-    else {
+    } else {
         return 6;
     }
 }
@@ -1758,8 +1712,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (NSInteger)minTagsToAutocomplete {
     if ([UIApplication isIPad]) {
         return 8;
-    }
-    else {
+    } else {
         return 4;
     }
 }
@@ -1781,8 +1734,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         for (NSInteger i=start; i<final; i++) {
             [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:(i+offset) inSection:0]];
         }
-    }
-    else {
+    } else {
         for (NSInteger i=0; i<final; i++) {
             [indexPathsToReload addObject:[NSIndexPath indexPathForRow:(i+offset) inSection:0]];
         }
@@ -1807,8 +1759,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             else if (self.tagCompletions.count > 0) {
                 previousCount = self.tagCompletions.count;
                 [self.tagCompletions removeAllObjects];
-            }
-            else {
+            } else {
                 previousCount = 0;
             }
             
@@ -1882,8 +1833,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                        [self handleTagSuggestions];
                                    }];
         });
-    }
-    else {
+    } else {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self handleTagSuggestions];
         });

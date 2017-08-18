@@ -134,8 +134,7 @@ static NSString *CellIdentifier = @"Cell";
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     if (self.existingTags.count > 0) {
         return PPMultipleEditSectionCount;
-    }
-    else {
+    } else {
         return PPMultipleEditSectionCount - 1;
     }
 }
@@ -182,8 +181,7 @@ static NSString *CellIdentifier = @"Cell";
             
             if (self.tagsToAdd.count == 0) {
                 self.tagsToAddTextField.hidden = NO;
-            }
-            else {
+            } else {
                 self.tagsToAddTextField.hidden = YES;
             }
             break;
@@ -305,8 +303,7 @@ static NSString *CellIdentifier = @"Cell";
 
             if ([self.tagsToRemove containsObject:tag]) {
                 [self.tagsToRemove removeObject:tag];
-            }
-            else {
+            } else {
                 [self.tagsToRemove addObject:tag];
             }
 
@@ -505,8 +502,7 @@ static NSString *CellIdentifier = @"Cell";
                                                                     object:nil
                                                                   userInfo:nil];
             }];
-        }
-        else {
+        } else {
             self.navigationItem.leftBarButtonItem.enabled = YES;
             self.navigationItem.rightBarButtonItem = self.saveBarButtonItem;
         }
@@ -526,8 +522,7 @@ static NSString *CellIdentifier = @"Cell";
 
         if (self.existingTags.count == 0) {
             numSectionsSkipped++;
-        }
-        else {
+        } else {
             if (numSectionsNotSkipped == section) {
                 break;
             }

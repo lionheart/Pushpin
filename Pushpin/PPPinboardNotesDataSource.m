@@ -120,14 +120,12 @@
                         
 #warning XXX
                         if (note[@"updated_at"]) {
-                        }
-                        else {
+                        } else {
                             date = [NSDate date];
                         }
                         
                         if (title) {
-                        }
-                        else {
+                        } else {
                             title = @"Untitled";
                         }
                         
@@ -149,8 +147,7 @@
                         
                         if (![oldIDs containsObject:note[@"id"]]) {
                             [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
-                        }
-                        else {
+                        } else {
                             [indexPathsToReload addObject:[NSIndexPath indexPathForRow:[oldIDs indexOfObject:note[@"id"]] inSection:0]];
                         }
                         

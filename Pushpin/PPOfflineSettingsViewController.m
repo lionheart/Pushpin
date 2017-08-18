@@ -96,8 +96,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
             if (self.offlineReadingSwitch.on) {
                 cell.textLabel.textColor = [UIColor blackColor];
                 cell.userInteractionEnabled = YES;
-            }
-            else {
+            } else {
                 cell.textLabel.textColor = [UIColor grayColor];
                 cell.userInteractionEnabled = NO;
             }
@@ -167,8 +166,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
             if (self.offlineReadingSwitch.on) {
                 cell.textLabel.textColor = color;
                 cell.userInteractionEnabled = YES;
-            }
-            else {
+            } else {
                 cell.textLabel.textColor = [UIColor grayColor];
                 cell.userInteractionEnabled = NO;
             }
@@ -306,8 +304,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
                                       handler:nil];
                 
                 [self presentViewController:alert animated:YES completion:nil];
-            }
-            else {
+            } else {
                 PPOfflineDownloadViewController *offlineDownloadViewController = [[PPOfflineDownloadViewController alloc] init];
                 PPNavigationController *navigation = [[PPNavigationController alloc] initWithRootViewController:offlineDownloadViewController];
                 navigation.modalPresentationStyle = UIModalPresentationFormSheet;
@@ -371,8 +368,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
         PPSettings *settings = [PPSettings sharedSettings];
         if (settings.offlineReadingEnabled) {
             [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
-        }
-        else {
+        } else {
             [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalNever];
         }
 

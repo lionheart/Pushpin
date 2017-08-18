@@ -109,8 +109,7 @@ static NSString *CellIdentifier = @"Cell";
     if (self.feeds.count > 0) {
         cell.selectionStyle = UITableViewCellSelectionStyleGray;
         title = self.feeds[indexPath.row][@"title"];
-    }
-    else {
+    } else {
         title = NSLocalizedString(@"You have no saved feeds.", nil);
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
@@ -149,8 +148,7 @@ static NSString *CellIdentifier = @"Cell";
             [self.feeds removeObjectAtIndex:indexPath.row];
             if (self.feeds.count == 0) {
                 [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-            }
-            else {
+            } else {
                 [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
                 
                 if (indexPath.row == 0) {

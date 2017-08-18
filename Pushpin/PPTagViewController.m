@@ -143,8 +143,7 @@ static NSString *CellIdentifier = @"TagCell";
     if (tableView == self.tableView) {
         NSString *key = [self sortedSectionTitles:self.sectionTitles][section];
         return [(NSMutableArray *)self.sectionTitles[key] count];
-    }
-    else {
+    } else {
         return [self.filteredTags count];
     }
 }
@@ -156,8 +155,7 @@ static NSString *CellIdentifier = @"TagCell";
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     if (tableView == self.tableView) {
         return [self.sectionTitles count];
-    }
-    else {
+    } else {
         return 1;
     }
 }
@@ -165,8 +163,7 @@ static NSString *CellIdentifier = @"TagCell";
 - (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView {
     if (self.searchController.active) {
         return nil;
-    }
-    else {
+    } else {
         return [self sortedSectionTitles:self.sectionTitles];
     }
 }
@@ -197,8 +194,7 @@ static NSString *CellIdentifier = @"TagCell";
         tag = self.filteredTags[indexPath.row];
         cell.textLabel.text = tag;
         cell.textLabel.font = [PPTheme textLabelFont];
-    }
-    else {
+    } else {
         tag = [self tagForIndexPath:indexPath];
 
         NSArray *tags = self.duplicates[tag];
@@ -211,8 +207,7 @@ static NSString *CellIdentifier = @"TagCell";
                                                                                                             NSFontAttributeName: [PPTheme textLabelFont] }];
             [attributedText addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor] range:range];
             cell.textLabel.attributedText = attributedText;
-        }
-        else {
+        } else {
             cell.textLabel.text = tag;
             cell.textLabel.font = [PPTheme textLabelFont];
         }
@@ -306,8 +301,7 @@ static NSString *CellIdentifier = @"TagCell";
     NSArray *duplicates = self.duplicates[self.tagToDelete];
     if ([duplicates count] > 1) {
         [self showSelectTagToDeleteActionSheet];
-    }
-    else {
+    } else {
         [self showDeleteConfirmationAlertView];
     }
 }
@@ -321,8 +315,7 @@ static NSString *CellIdentifier = @"TagCell";
     if (tableView == self.tableView) {
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
         tag = [self tagForIndexPath:indexPath];
-    }
-    else {
+    } else {
         [self.searchResultsController.tableView deselectRowAtIndexPath:indexPath animated:YES];
         tag = self.filteredTags[indexPath.row];
     }
@@ -355,8 +348,7 @@ static NSString *CellIdentifier = @"TagCell";
         if (popover) {
             [popover dismissPopoverAnimated:YES];
         }
-    }
-    else {
+    } else {
         [self.navigationController pushViewController:postViewController animated:YES];
     }
 }
@@ -372,8 +364,7 @@ static NSString *CellIdentifier = @"TagCell";
             NSArray *duplicates = self.duplicates[self.tagToDelete];
             if ([duplicates count] > 1) {
                 [self showSelectTagToDeleteActionSheet];
-            }
-            else {
+            } else {
                 self.tagActionSheet = [UIAlertController lhs_actionSheetWithTitle:self.tagToDelete];
                 
                 [self.tagActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Delete", nil)
@@ -540,8 +531,7 @@ static NSString *CellIdentifier = @"TagCell";
 
                     if (firstLaunch) {
                         [self.tableView reloadData];
-                    }
-                    else {
+                    } else {
                         [self.tableView beginUpdates];
                         [self.tableView deleteSections:sectionIndicesToDelete withRowAnimation:UITableViewRowAnimationFade];
                         [self.tableView insertSections:sectionIndicesToInsert withRowAnimation:UITableViewRowAnimationFade];

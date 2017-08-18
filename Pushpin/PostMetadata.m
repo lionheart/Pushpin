@@ -67,8 +67,7 @@
     BOOL read;
     if (post[@"unread"]) {
         read = ![post[@"unread"] boolValue];
-    }
-    else {
+    } else {
         read = NO;
     }
 
@@ -110,12 +109,10 @@
         if (showDateByDescription) {
             if ([description isEqualToString:emptyString]) {
                 description = date;
-            }
-            else {
+            } else {
                 description = [NSString stringWithFormat:@"%@ · %@", date, description];
             }
-        }
-        else {
+        } else {
             linkHost = [NSString stringWithFormat:@"%@ · %@", date, linkHost];
         }
     }
@@ -125,8 +122,7 @@
     NSRange descriptionRange;
     if ([description isEqualToString:emptyString]) {
         descriptionRange = NSMakeRange(NSNotFound, 0);
-    }
-    else {
+    } else {
         descriptionRange = NSMakeRange(linkRange.location + linkRange.length + 1, description.length);
     }
 
@@ -155,8 +151,7 @@
         titleAttributes[NSForegroundColorAttributeName] = HEX(0xb3b3b3ff);
         linkAttributes[NSForegroundColorAttributeName] = HEX(0xcdcdcdff);
         descriptionAttributes[NSForegroundColorAttributeName] = HEX(0x96989Dff);
-    }
-    else {
+    } else {
         titleAttributes[NSForegroundColorAttributeName] = HEX(0x000000ff);
         linkAttributes[NSForegroundColorAttributeName] = HEX(0xb4b6b9ff);
         descriptionAttributes[NSForegroundColorAttributeName] = HEX(0x585858ff);
@@ -195,8 +190,7 @@
         descriptionSize = [TTTAttributedLabel sizeThatFitsAttributedString:descriptionString
                                                            withConstraints:constraintSize
                                                     limitedToNumberOfLines:2];
-    }
-    else {
+    } else {
         titleSize = [TTTAttributedLabel sizeThatFitsAttributedString:titleString
                                                      withConstraints:constraintSize
                                               limitedToNumberOfLines:0];
@@ -217,8 +211,7 @@
         privateColor = HEX(0xddddddff);
         starredColor = HEX(0xddddddff);
         offlineColor = HEX(0xddddddff);
-    }
-    else {
+    } else {
         privateColor = HEX(0xfdbb6dff);
         starredColor = HEX(0xf0b2f7ff);
         offlineColor = HEX(0x30A1C1FF);
@@ -260,8 +253,7 @@
             if ([tag hasPrefix:@"via:"]) {
                 if (lightOnDark) {
                     options[PPBadgeNormalBackgroundColor] = HEX(0x6EBBCCFF);
-                }
-                else {
+                } else {
                     options[PPBadgeNormalBackgroundColor] = HEX(0xECECECFF);
                     options[PPBadgeFontColor] = HEX(0x444444FF);
                 }

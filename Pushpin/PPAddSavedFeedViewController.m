@@ -92,8 +92,7 @@ static NSString *CellIdentifier = @"Cell";
         cell.imageView.image = [[UIImage imageNamed:@"single-person"] lhs_imageWithColor:[UIColor darkGrayColor]];
         self.userTextField.frame = CGRectMake((CGRectGetWidth(frame) - 240) / 2.0, (CGRectGetHeight(frame) - 31) / 2.0, 240, 31);
         [cell.contentView addSubview:self.userTextField];
-    }
-    else {
+    } else {
         cell.imageView.image = [[UIImage imageNamed:@"single-tag"] lhs_imageWithColor:[UIColor darkGrayColor]];
         self.tagsTextField.frame = CGRectMake((CGRectGetWidth(frame) - 240) / 2.0, (CGRectGetHeight(frame) - 31) / 2.0, 240, 31);
         [cell.contentView addSubview:self.tagsTextField];
@@ -108,8 +107,7 @@ static NSString *CellIdentifier = @"Cell";
     if (textField == self.tagsTextField) {
         self.tagsTextField.text = [self.tagsTextField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         [self addButtonTouchUpInside:nil];
-    }
-    else {
+    } else {
         [self.tagsTextField becomeFirstResponder];
     }
     return NO;
@@ -123,8 +121,7 @@ static NSString *CellIdentifier = @"Cell";
             }
             else if ([textField.text hasSuffix:@" "]) {
                 return NO;
-            }
-            else {
+            } else {
                 NSMutableString *mutableTags = [NSMutableString stringWithString:textField.text];
                 NSInteger numberOfSpaces = [mutableTags replaceOccurrencesOfString:@" " withString:@"." options:NSLiteralSearch range:NSMakeRange(0, mutableTags.length)];
                 if (numberOfSpaces > 2) {
@@ -132,8 +129,7 @@ static NSString *CellIdentifier = @"Cell";
                 }
             }
         }
-    }
-    else {
+    } else {
         if ([string isEqualToString:@" "]) {
             return NO;
         }
@@ -160,8 +156,7 @@ static NSString *CellIdentifier = @"Cell";
             if (tag.length > 0) {
                 if ([tag hasPrefix:@"from:"]) {
                     fromSuffix = tag;
-                }
-                else {
+                } else {
                     [components addObject:[NSString stringWithFormat:@"t:%@", tag]];
                 }
             }

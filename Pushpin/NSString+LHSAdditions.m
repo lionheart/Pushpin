@@ -14,8 +14,7 @@
 #warning XXX Does not work, since NSNull must have a category with the same name.
     if ([self isEqual:[NSNull null]]) {
         return 0;
-    }
-    else {
+    } else {
         return [self integerValue];
     }
 }
@@ -24,8 +23,7 @@
 #warning XXX Does not work, since NSNull must have a category with the same name.
     if ([self isEqual:[NSNull null]]) {
         return @"";
-    }
-    else {
+    } else {
         return [self stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     }
 }

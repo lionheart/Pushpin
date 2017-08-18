@@ -67,8 +67,7 @@ static const CGFloat PADDING_Y = 6;
                     // Hide the current badge and put the ellipsis in its place
                     break;
                 }
-            }
-            else {
+            } else {
                 BOOL hitsBoundary = offsetX > width;
                 if (hitsBoundary) {
                     // Wrap to the next line
@@ -150,8 +149,7 @@ static const CGFloat PADDING_Y = 6;
                     ellipsisView.frame = (CGRect){badgeFrame.origin, ellipsisFrame.size};
                     break;
                 }
-            }
-            else {
+            } else {
                 BOOL hitsBoundary = offsetX > CGRectGetWidth(self.frame);
                 if (hitsBoundary) {
                     // Wrap to the next line

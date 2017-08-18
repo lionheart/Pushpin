@@ -523,8 +523,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                     self.editButton.hidden = NO;
                     self.editButton.enabled = YES;
                     self.addButton.hidden = YES;
-                }
-                else {
+                } else {
                     self.editButton.hidden = YES;
                     self.addButton.hidden = NO;
                     self.addButton.enabled = YES;
@@ -543,8 +542,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         }
 
         [self.webView goBack];
-    }
-    else {
+    } else {
         if (!self.mobilized) {
             // Hide the reader web view.
             [self setReaderViewVisible:NO animated:NO completion:nil];
@@ -590,8 +588,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                                       inView:self.toolbar
                     permittedArrowDirections:UIPopoverArrowDirectionAny
                                     animated:YES];
-    }
-    else {
+    } else {
         [self presentViewController:self.activityView animated:YES completion:nil];
     }
 }
@@ -615,8 +612,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         [self.webViewTimeoutTimer invalidate];
         [self.webView stopLoading];
         [self.readerWebView loadHTMLString:@"<html><head><script type='text/javascript'>var isLoaded=false;</script></head></html>" baseURL:self.url];
-    }
-    else {
+    } else {
         [self.readerWebView stopLoading];
         self.webView.scrollView.scrollsToTop = YES;
         self.readerWebView.scrollView.scrollsToTop = NO;
@@ -731,8 +727,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         if (hideToolbar) {
             self.yOffsetToStartShowingToolbar = MAX(0, scrollView.contentOffset.y);
             [self setToolbarVisible:NO animated:YES];
-        }
-        else {
+        } else {
             self.yOffsetToStartShowingToolbar = MAX(0, scrollView.contentOffset.y) + kToolbarHeight;
             [self setToolbarVisible:YES animated:YES];
         }
@@ -767,20 +762,17 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                 if (isScrollingDown) {
                     self.toolbarConstraint.constant = MIN(kToolbarHeight, distanceFromToolbarShowingOffset);
                     [self.view layoutIfNeeded];
-                }
-                else {
+                } else {
                     self.yOffsetToStartShowingToolbar = scrollView.contentOffset.y + kToolbarHeight;
                 }
             }
             else if (isToolbarPartlyVisible) {
                 self.toolbarConstraint.constant = MIN(kToolbarHeight, distanceFromToolbarShowingOffset);
                 [self.view layoutIfNeeded];
-            }
-            else {
+            } else {
                 if (isScrollingDown) {
                     self.yOffsetToStartShowingToolbar = scrollView.contentOffset.y;
-                }
-                else {
+                } else {
                     self.toolbarConstraint.constant = MIN(kToolbarHeight, distanceFromToolbarShowingOffset);
                     [self.view layoutIfNeeded];
 
@@ -790,8 +782,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         else if (distanceFromBottomOfView < 0) {
             [self setToolbarVisible:YES animated:YES];
             self.yOffsetToStartShowingToolbar = MAX(0, scrollView.contentOffset.y);
-        }
-        else {
+        } else {
             self.yOffsetToStartShowingToolbar = MAX(0, scrollView.contentOffset.y) + kToolbarHeight;
         }
     }
@@ -823,8 +814,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     if (webView == self.webView) {
         if (self.mobilized) {
             return NO;
-        }
-        else {
+        } else {
             if ([@[@"http", @"https", @"file"] containsObject:request.URL.scheme] || [request.URL.scheme isEqualToString:@"about"]) {
                 self.numberOfRequestsCompleted = 0;
                 self.numberOfRequests = 0;
@@ -851,8 +841,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                 }
                 
                 return YES;
-            }
-            else {
+            } else {
 #warning is this right?
                 if (!self.openLinkExternallyAlertView.presentingViewController) {
                     self.openLinkExternallyAlertView = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Leave Pushpin?", nil)
@@ -873,16 +862,14 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                 return NO;
             }
         }
-    }
-    else {
+    } else {
         if (navigationType == UIWebViewNavigationTypeLinkClicked) {
             [self toggleMobilizerAnimated:YES loadOriginalURL:NO];
 
             NSURLRequest *newRequest = [NSURLRequest requestWithURL:request.URL];
             [self.webView loadRequest:newRequest];
             return NO;
-        }
-        else {
+        } else {
             return YES;
         }
     }
@@ -910,8 +897,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
             if ([[self.title stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@""]) {
                 self.titleLabel.text = self.url.host;
-            }
-            else {
+            } else {
                 self.titleLabel.text = self.title;
             }
             
@@ -921,8 +907,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                 for (NSString *component in titleComponents) {
                     if ([finalTitleComponents componentsJoinedByString:@" "].length + component.length + 1 < 24) {
                         [finalTitleComponents addObject:component];
-                    }
-                    else {
+                    } else {
                         break;
                     }
                 }
@@ -947,14 +932,12 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
             if ([self.webView canGoBack]) {
                 UIImage *backButtonImage = [[UIImage imageNamed:@"back_icon"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
                 [self.backButton setImage:backButtonImage forState:UIControlStateNormal];
-            }
-            else {
+            } else {
                 UIImage *stopButtonImage = [[UIImage imageNamed:@"stop"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
                 [self.backButton setImage:stopButtonImage forState:UIControlStateNormal];
             }
         }
-    }
-    else {
+    } else {
         BOOL isLoaded = [[self.readerWebView stringByEvaluatingJavaScriptFromString:@"isLoaded"] isEqualToString:@"true"];
         if (isLoaded) {
             [self updateInterfaceWithComputedWebPageBackgroundColor];
@@ -965,8 +948,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
             [self setReaderViewVisible:YES animated:YES completion:nil];
             [self addTouchOverridesForWebView:self.readerWebView];
             [self enableOrDisableButtons];
-        }
-        else {
+        } else {
             [PPWebViewController mobilizedPageForURL:self.url withCompletion:^(NSDictionary *article, NSError *error) {
                 if (!error) {
                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -974,8 +956,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                             NSString *content = [[PPSettings sharedSettings].readerSettings readerHTMLForArticle:article];
                             [self.readerWebView loadHTMLString:content baseURL:self.url];
                             self.readerWebView.hidden = NO;
-                        }
-                        else {
+                        } else {
                             self.mobilizeButton.selected = NO;
                         }
                     });
@@ -1064,8 +1045,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
             [self tintButtonsWithColor:[UIColor whiteColor]];
             self.titleLabel.textColor = [UIColor whiteColor];
             self.preferredStatusBarStyle = UIStatusBarStyleLightContent;
-        }
-        else {
+        } else {
             [self tintButtonsWithColor:HEX(0x555555FF)];
             self.titleLabel.textColor = [UIColor darkTextColor];
             self.preferredStatusBarStyle = UIStatusBarStyleDefault;
@@ -1088,8 +1068,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     CGFloat constant;
     if (visible) {
         constant = kToolbarHeight;
-    }
-    else {
+    } else {
         constant = 0;
     }
     
@@ -1113,8 +1092,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                             options:UIViewAnimationOptionCurveEaseInOut
                          animations:UpdateConstraint
                          completion:nil];
-    }
-    else {
+    } else {
         UpdateConstraint();
     }
 }
@@ -1141,8 +1119,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     UIWebView *webView;
     if (self.mobilized) {
         webView = self.readerWebView;
-    }
-    else {
+    } else {
         webView = self.webView;
     }
     return webView;
@@ -1190,12 +1167,10 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                                                     if ([article[@"work_count"] isEqualToNumber:@(0)]) {
 #warning TODO
                                                         completion(nil, nil);
-                                                    }
-                                                    else {
+                                                    } else {
                                                         completion(article, nil);
                                                     }
-                                                }
-                                                else {
+                                                } else {
                                                     completion(nil, error);
                                                 }
                                             }];
@@ -1211,8 +1186,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         animations = ^{
             self.readerWebView.alpha = 1;
         };
-    }
-    else {
+    } else {
         animations = ^{
             self.readerWebView.alpha = 0;
         };
@@ -1227,8 +1201,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                              if (visible) {
                                  [self.indicator stopAnimating];
                                  self.markAsReadButton.hidden = NO;
-                             }
-                             else {
+                             } else {
                                  self.readerWebView.hidden = YES;
                              }
                              
@@ -1236,8 +1209,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                                  completion(finished);
                              }
                          }];
-    }
-    else {
+    } else {
         animations();
     }
 }
@@ -1275,8 +1247,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                         success = NO;
                         updated = NO;
                         message = NSLocalizedString(@"There was an error marking your bookmarks as read.", nil);
-                    }
-                    else {
+                    } else {
                         self.markAsReadButton.enabled = NO;
                         message = NSLocalizedString(@"Bookmark marked as read.", nil);
                     }

@@ -175,12 +175,10 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
         case PPSectionOtherDisplaySettings:
             if (self.turnOffBookmarkPromptSwitch.on) {
                 return 1;
-            }
-            else {
+            } else {
                 if (!self.onlyPromptToAddOnceSwitch.on) {
                     return PPRowCountOtherSettings;
-                }
-                else {
+                } else {
                     return PPRowCountOtherSettings - 2;
                 }
             }
@@ -612,19 +610,16 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
         if (self.turnOffBookmarkPromptSwitch.on) {
             if (self.onlyPromptToAddOnceSwitch.on) {
                 [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:PPOtherOnlyPromptToAddBookmarksOnce inSection:PPSectionOtherDisplaySettings]];
-            }
-            else {
+            } else {
                 [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:PPOtherOnlyPromptToAddBookmarksOnce inSection:PPSectionOtherDisplaySettings]];
                 [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:PPOtherAlwaysShowAlert inSection:PPSectionOtherDisplaySettings]];
                 [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:PPOtherDisplayClearCache inSection:PPSectionOtherDisplaySettings]];
             }
             [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-        }
-        else {
+        } else {
             if (self.onlyPromptToAddOnceSwitch.on) {
                 [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:PPOtherOnlyPromptToAddBookmarksOnce inSection:PPSectionOtherDisplaySettings]];
-            }
-            else {
+            } else {
                 [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:PPOtherOnlyPromptToAddBookmarksOnce inSection:PPSectionOtherDisplaySettings]];
                 [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:PPOtherAlwaysShowAlert inSection:PPSectionOtherDisplaySettings]];
                 [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:PPOtherDisplayClearCache inSection:PPSectionOtherDisplaySettings]];
@@ -643,8 +638,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                                 [NSIndexPath indexPathForRow:PPOtherAlwaysShowAlert inSection:PPSectionOtherDisplaySettings]];
         if (!self.onlyPromptToAddOnceSwitch.on) {
             [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
-        }
-        else {
+        } else {
             [self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
         }
         
@@ -657,8 +651,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     
     if (sender == self.compressPostsSwitch) {
         [[NSNotificationCenter defaultCenter] postNotificationName:PPBookmarkCompressSettingUpdate object:nil];
-    }
-    else {
+    } else {
         [[NSNotificationCenter defaultCenter] postNotificationName:PPBookmarkDisplaySettingUpdated object:nil];
     }
 }

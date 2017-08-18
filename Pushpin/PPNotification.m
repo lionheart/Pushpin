@@ -77,8 +77,7 @@ static PPNotification *shared;
                                      kPPNotificationIsVisible = NO;
                                  }
                              }];
-        }
-        else {
+        } else {
             self.notificationView.frame = hiddenFrame;
             self.notificationView = nil;
             self.hiding = NO;

@@ -58,8 +58,7 @@ static NSString *CellIdentifier = @"Cell";
 
     if ([UIApplication isIPad]) {
         [self calculateHeightsForWidth:290];
-    }
-    else {
+    } else {
         [self calculateHeightsForWidth:CGRectGetWidth(self.view.frame) - 30];
     }
 

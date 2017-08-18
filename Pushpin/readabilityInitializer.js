@@ -37,8 +37,7 @@ for (var i=0; i<children.length; i++) {
     var child = children[i];
     if (child.id !== "readability-page-1") {
         childrenToAppend.push(child);
-    }
-    else {
+    } else {
         readabilityElement = child;
     }
 }

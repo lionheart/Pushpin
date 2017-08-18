@@ -16,12 +16,10 @@
     if (tableViewWidth > 20) {
         if (tableViewWidth < 400) {
             marginWidth = 10;
-        }
-        else {
+        } else {
             marginWidth = MAX(31, MIN(45, tableViewWidth*0.06));
         }
-    }
-    else {
+    } else {
         marginWidth = tableViewWidth - 10;
     }
     return marginWidth;

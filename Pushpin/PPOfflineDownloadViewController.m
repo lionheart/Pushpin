@@ -154,8 +154,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         assetProgress = (float)assetCurrent / (float)assetTotal;
                         [self.assetProgressView setProgress:assetProgress animated:YES];
                         self.assetLabel.text = [NSString stringWithFormat:@"%lu / %lu", (long)assetCurrent, (long)assetTotal];
-                    }
-                    else {
+                    } else {
                         assetProgress = 0;
                         [self.assetProgressView setProgress:assetProgress animated:NO];
                     }
@@ -163,8 +162,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     self.htmlDetail.text = [formatter stringFromNumber:@(htmlProgress)];
                     self.htmlLabel.text = [urlString originalURLString];
                     [self.htmlProgressView setProgress:htmlProgress animated:YES];
-                }
-                else {
+                } else {
                     Completion();
                 }
             });
@@ -175,8 +173,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (section == 0) {
         return @"HTML";
-    }
-    else {
+    } else {
         return NSLocalizedString(@"Static Assets", nil);
     }
 }
@@ -208,8 +205,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [cell.contentView lhs_addConstraints:@"V:|-4-[label][detail]-3-[progress(8)]|" views:views];
         [cell.contentView lhs_addConstraints:@"H:|-10-[label]-10-|" views:views];
         [cell.contentView lhs_addConstraints:@"H:|-10-[detail]-10-|" views:views];
-    }
-    else {
+    } else {
         progress = self.assetProgressView;
         label = self.assetLabel;
         detail = self.assetDetail;
@@ -238,8 +234,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     if (self.numberOfStaticAssets > 0 && self.downloadInProgress) {
         return 2;
-    }
-    else {
+    } else {
         return 1;
     }
 }

@@ -182,8 +182,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 cell.textLabel.text = tag;
                 cell.detailTextLabel.text = self.tagCounts[tag];
             }
-        }
-        else {
+        } else {
             // This is the tag entry row
             if (index == -1) {
                 UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-tag"] lhs_imageWithColor:HEX(0xD8DDE4FF)]];
@@ -203,16 +202,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 NSDictionary *views = @{@"view": self.tagTextField};
                 [cell.contentView lhs_addConstraints:@"H:|-40-[view]-10-|" views:views];
                 [cell.contentView lhs_addConstraints:@"V:|-10-[view]" views:views];
-            }
-            else {
+            } else {
                 // If it's -2, it's the badge row
                 [cell.contentView addSubview:self.badgeWrapperView];
                 [cell.contentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:@{@"badges": self.badgeWrapperView}];
                 [cell.contentView lhs_addConstraints:@"V:|-12-[badges]" views:@{@"badges": self.badgeWrapperView}];
             }
         }
-    }
-    else {
+    } else {
         NSString *tag = self.existingTags[self.existingTags.count - indexPath.row - 1];
         cell.textLabel.text = tag;
         
@@ -244,12 +241,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
         }
         else if (self.tagCompletions.count > 0) {
             return self.tagCompletions.count + [self tagOffset];
-        }
-        else {
+        } else {
             return [self tagOffset];
         }
-    }
-    else {
+    } else {
         return self.existingTags.count;
     }
 }
@@ -288,8 +283,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             if (self.existingTags.count == 0) {
                 [indexSetsToInsert addIndex:1];
                 [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
-            }
-            else {
+            } else {
                 [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:1]];
                 [indexPathsToReload addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
             }
@@ -310,8 +304,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 #warning http://crashes.to/s/4988f817e3d
                     [self.popularTags removeObjectAtIndex:index];
-                }
-                else {
+                } else {
                     completion = self.recommendedTags[index];
                     [self.recommendedTags removeObjectAtIndex:(index - self.popularTags.count)];
                 }
@@ -354,8 +347,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         if (self.filteredPopularAndRecommendedTagsVisible) {
             finalAmount = self.filteredPopularAndRecommendedTags.count;
             self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Suggest", nil);
-        }
-        else {
+        } else {
             finalAmount = 0;
         }
         
@@ -373,8 +365,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                            [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationAutomatic];
                                            [self.tableView endUpdates];
                                        }];
-    }
-    else {
+    } else {
         self.searchString = [self.tagTextField.text stringByReplacingCharactersInRange:range withString:string];
         [self searchUpdatedWithString:self.searchString];
     }
@@ -395,8 +386,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             if (self.existingTags.count == 0) {
                 [indexSetsToInsert addIndex:1];
                 [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
-            }
-            else {
+            } else {
                 [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:1]];
                 [indexPathsToReload addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
             }
@@ -405,8 +395,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 [indexPathsToDelete addObjectsFromArray:[self indexPathsForPopularAndSuggestedRows]];
                 [self.popularTags removeAllObjects];
                 [self.recommendedTags removeAllObjects];
-            }
-            else {
+            } else {
                 [indexPathsToDelete addObjectsFromArray:[self indexPathsForAutocompletedRows]];
                 [self.tagCompletions removeAllObjects];
             }
@@ -421,8 +410,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             [self.tableView insertSections:indexSetsToInsert withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView endUpdates];
         }
-    }
-    else {
+    } else {
         [self.navigationController popViewControllerAnimated:YES];
         return YES;
     }
@@ -466,8 +454,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         for (NSInteger i=start; i<final; i++) {
             [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:(i+offset) inSection:0]];
         }
-    }
-    else {
+    } else {
         for (NSInteger i=0; i<final; i++) {
             [indexPathsToReload addObject:[NSIndexPath indexPathForRow:(i+offset) inSection:0]];
         }
@@ -500,8 +487,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             else if (self.tagCompletions.count > 0) {
                 previousCount = self.tagCompletions.count;
                 [self.tagCompletions removeAllObjects];
-            }
-            else {
+            } else {
                 previousCount = 0;
             }
             
@@ -572,8 +558,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                        });
                                    }];
         });
-    }
-    else {
+    } else {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [self handleTagSuggestions];
         });
@@ -655,8 +640,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 if (self.presentedFromShareSheet) {
                     NSURL *containerURL = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:APP_GROUP];
                     [[FMDatabaseQueue databaseQueueWithPath:[containerURL URLByAppendingPathComponent:@"shared.db"].path] inDatabase:DatabaseBlock];
-                }
-                else {
+                } else {
                     [[PPUtilities databaseQueue] inDatabase:DatabaseBlock];
                 }
 
@@ -690,8 +674,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             }
             else if (!self.filteredPopularAndRecommendedTagsVisible) {
                 self.autocompleteInProgress = NO;
-            }
-            else {
+            } else {
                 self.autocompleteInProgress = NO;
             }
         });
@@ -712,8 +695,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     if (self.existingTags.count > 1) {
         [indexPathsToReload addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
         [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(self.existingTags.count - index - 1) inSection:1]];
-    }
-    else {
+    } else {
         [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
         [sectionIndicesToDelete addIndex:1];
     }
@@ -781,8 +763,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (NSInteger)maxTagsToAutocomplete {
     if ([UIApplication isIPad]) {
         return 8;
-    }
-    else {
+    } else {
         return 6;
     }
 }
@@ -790,8 +771,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (NSInteger)minTagsToAutocomplete {
     if ([UIApplication isIPad]) {
         return 8;
-    }
-    else {
+    } else {
         return 4;
     }
 }

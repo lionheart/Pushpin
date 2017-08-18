@@ -247,8 +247,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
             if (authTokenProvided) {
                 [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPLoginCredentialSection] withRowAnimation:UITableViewRowAnimationFade];
-            }
-            else {
+            } else {
                 [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPLoginAuthTokenSection] withRowAnimation:UITableViewRowAnimationFade];
             }
             
@@ -324,8 +323,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
                     if (authTokenProvided) {
                         [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPLoginCredentialSection] withRowAnimation:UITableViewRowAnimationFade];
-                    }
-                    else {
+                    } else {
                         [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPLoginAuthTokenSection] withRowAnimation:UITableViewRowAnimationFade];
                     }
 
@@ -342,8 +340,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                         [self.messageUpdateTimer invalidate];
                         self.activityIndicator.frame = self.activityIndicatorFrameTop;
                         self.textView.attributedText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Finalizing Metadata", nil) attributes:self.textViewAttributes];
-                    }
-                    else {
+                    } else {
                         CGFloat f = current / (float)total;
                         [self.progressView setProgress:f animated:YES];
                     }
@@ -358,8 +355,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                     
                     if ([UIApplication isIPad]) {
                         [delegate.window setRootViewController:delegate.splitViewController];
-                    }
-                    else {
+                    } else {
                         delegate.navigationController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
                         [self presentViewController:delegate.navigationController
                                            animated:YES
@@ -388,8 +384,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                     [dataSource syncBookmarksWithCompletion:^(BOOL updated, NSError *error) {
                         if (error) {
                             LoginFailureBlock(error);
-                        }
-                        else {
+                        } else {
                             SyncCompletedBlock();
                         }
                     } progress:UpdateProgressBlock];
@@ -407,8 +402,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                     LoginSuccessBlock();
                     PinboardAuthenticationSuccessBlock();
                 } failure:LoginFailureBlock];
-            }
-            else {
+            } else {
                 [pinboard authenticateWithUsername:self.usernameTextField.text
                                           password:self.passwordTextField.text
                                            success:^(NSString *token) {
@@ -440,8 +434,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             if (isGreaterThanOrEqualTo40Characters) {
                 return NO;
             }
-        }
-        else {
+        } else {
             if (string.length > 0) {
                 NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:@"^[\\w\\d-\\._]+$" options:0 error:nil];
                 NSInteger numMatches = [expression numberOfMatchesInString:string options:0 range:NSMakeRange(0, string.length)];
@@ -493,13 +486,11 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     if (self.loginInProgress) {
         DLog(@"A");
         return 1;
-    }
-    else {
+    } else {
         if ([self is1PasswordAvailable]) {
             DLog(@"B");
             return PPLoginSectionCount;
-        }
-        else {
+        } else {
             DLog(@"C");
             return PPLoginSectionCount - 1;
         }
@@ -540,12 +531,10 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
         case PPLoginCredentialSection:
             if (self.textView.hidden) {
                 return 0;
-            }
-            else {
+            } else {
                 if (self.loginInProgress) {
                     return 120;
-                }
-                else {
+                } else {
                     CGFloat width = CGRectGetWidth(tableView.frame) - 20;
                     CGRect rect = [self.textView.attributedText boundingRectWithSize:CGSizeMake(width, CGFLOAT_MAX)
                                                                              options:NSStringDrawingUsesLineFragmentOrigin
@@ -573,8 +562,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
         case PPLoginCredentialSection:
             if (self.textView.hidden) {
                 return nil;
-            }
-            else {
+            } else {
                 UIView *view = [[UIView alloc] init];
                 view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
                 [view addSubview:self.textView];
@@ -592,8 +580,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
         case PPLoginAuthTokenSection:
             if (self.authTokenFooterTextView.hidden) {
                 return nil;
-            }
-            else {
+            } else {
                 UIView *view = [[UIView alloc] init];
                 view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
                 [view addSubview:self.authTokenFooterTextView];
@@ -629,8 +616,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                         [cell.contentView addSubview:self.usernameTextField];
                         [cell.contentView lhs_addConstraints:@"H:|-15-[view]-5-|" views:views];
                         [cell.contentView lhs_addConstraints:@"V:|-5-[view]-5-|" views:views];
-                    }
-                    else {
+                    } else {
                         [cell.contentView addSubview:self.progressView];
                         NSDictionary *views = @{@"progress": self.progressView};
                         [cell.contentView lhs_addConstraints:@"V:|[progress]|" views:views];

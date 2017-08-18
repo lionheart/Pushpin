@@ -216,12 +216,10 @@
         self.urlsToDownload = [urlsToCache mutableCopy];
         if (self.urlsToDownload.count > 0) {
             [self queueNextHTMLDownload];
-        }
-        else {
+        } else {
             [self updateProgressWithCompletedValues];
         }
-    }
-    else {
+    } else {
         [self updateProgressWithCompletedValues];
     }
     
@@ -282,8 +280,7 @@
     
     if (data) {
         return [NSKeyedUnarchiver unarchiveObjectWithData:data];
-    }
-    else {
+    } else {
         __block NSString *path;
         __block NSInteger count;
         [[PPURLCache databaseQueue] inDatabase:^(FMDatabase *db) {
@@ -332,8 +329,7 @@
             if (count == 1) {
                 filePath = [PPURLCache filePathForChecksum:checksum];
             }
-        }
-        else {
+        } else {
             // No-op if the DB doesn't have an entry for the request.
         }
     }];
@@ -477,8 +473,7 @@
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
     if (paths.count > 0) {
         return [paths[0] stringByAppendingPathComponent:pathComponent];
-    }
-    else {
+    } else {
         return pathComponent;
     }
 #endif
@@ -546,12 +541,10 @@
             
 //            [challenge.sender useCredential:credential forAuthenticationChallenge:challenge];
             completionHandler(NSURLSessionAuthChallengeUseCredential, credential);
-        }
-        else {
+        } else {
             completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, NULL);
         }
-    }
-    else {
+    } else {
         completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, NULL);
     }
 }
@@ -561,8 +554,7 @@
     if (error && error.code == -1002) {
         // This is a bad URL. Retrieve the original one since task.originalRequest.URL will be nil.
         url = error.userInfo[@"NSErrorFailingURLKey"];
-    }
-    else {
+    } else {
         url = task.originalRequest.URL;
     }
 
@@ -575,8 +567,7 @@
             // Don't keep going until all assets have been processed.
             dispatch_semaphore_wait([PPURLCache assetsProcessedSemaphore], DISPATCH_TIME_FOREVER);
         }
-    }
-    else {
+    } else {
         [self.completedAssetURLs addObject:url];
     }
     
@@ -635,8 +626,7 @@
                                                            error:nil];
 
             assets = [PPUtilities staticAssetURLsForHTML:article[@"content"]];
-        }
-        else {
+        } else {
             assets = [PPUtilities staticAssetURLsForCachedURLResponse:cachedURLResponse];
         }
 
