@@ -685,6 +685,7 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults registerDefaults:@{
         @"io.aurora.pinboard.OpenLinksInApp": @(YES),
+        @"io.aurora.pinboard.UseSafariViewController": @(YES),
         @"io.aurora.pinboard.PrivateByDefault": @(NO),
         @"io.aurora.pinboard.ReadByDefault": @(NO),
         @"io.aurora.pinboard.Browser": @(PPBrowserSafari),
