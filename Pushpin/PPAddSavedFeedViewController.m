@@ -118,8 +118,7 @@ static NSString *CellIdentifier = @"Cell";
         if ([string isEqualToString:@" "]) {
             if ([textField.text length] == 0) {
                 return NO;
-            }
-            else if ([textField.text hasSuffix:@" "]) {
+            } else if ([textField.text hasSuffix:@" "]) {
                 return NO;
             } else {
                 NSMutableString *mutableTags = [NSMutableString stringWithString:textField.text];

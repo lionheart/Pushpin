@@ -159,8 +159,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     
     if (info[@"license"]) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    }
-    else if (indexPath.section == 0 && indexPath.row == 1) {
+    } else if (indexPath.section == 0 && indexPath.row == 1) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
 

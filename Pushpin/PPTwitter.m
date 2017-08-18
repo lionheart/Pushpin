@@ -123,8 +123,7 @@
                         self.actionSheet.popoverPresentationController.sourceRect = (CGRect){point, {1, 1}};
                         [[UIViewController lhs_topViewController] presentViewController:self.actionSheet animated:YES completion:nil];
                     });
-                }
-                else if ([accounts count] == 1) {
+                } else if ([accounts count] == 1) {
                     [self followScreenName:screenName withAccountScreenName:accountScreenName callback:callback];
                 }
             });

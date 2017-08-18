@@ -451,8 +451,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     if (textField == self.usernameTextField) {
         [self.passwordTextField becomeFirstResponder];
-    }
-    else if (textField == self.passwordTextField) {
+    } else if (textField == self.passwordTextField) {
         [self.passwordTextField resignFirstResponder];
         [self login];
     }

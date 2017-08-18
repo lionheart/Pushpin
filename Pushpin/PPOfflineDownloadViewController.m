@@ -122,13 +122,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
                             [self.tableView beginUpdates];
                             [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
                             [self.tableView endUpdates];
-                        }
-                        else if (oldStaticAssetTotal == 0) {
+                        } else if (oldStaticAssetTotal == 0) {
                             [self.tableView beginUpdates];
                             [self.tableView insertSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
                             [self.tableView endUpdates];
-                        }
-                        else if (!self.downloadInProgress && oldStaticAssetTotal > 0) {
+                        } else if (!self.downloadInProgress && oldStaticAssetTotal > 0) {
                             [self.tableView beginUpdates];
                             [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
                             [self.tableView endUpdates];

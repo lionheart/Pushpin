@@ -430,8 +430,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     if (tableView.allowsMultipleSelectionDuringEditing) {
         if (sectionType == PPPinboardSectionSavedFeeds) {
             return NO;
-        }
-        else if (sectionType == PPPinboardSectionSearches) {
+        } else if (sectionType == PPPinboardSectionSearches) {
             return NO;
         }
     } else {
@@ -710,8 +709,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     if (destinationSection < sourceSection) {
         // The row was moved to a section above the current one, so change the row to 0.
         return [NSIndexPath indexPathForRow:0 inSection:sourceSection];
-    }
-    else if (destinationSection > sourceSection) {
+    } else if (destinationSection > sourceSection) {
         // The row was moved to a section above the current one, so change the row to the last row.
         switch (sourceSection) {
             case PPPinboardSectionPersonal:

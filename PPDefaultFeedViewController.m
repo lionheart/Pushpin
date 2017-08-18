@@ -51,8 +51,7 @@ static NSString *CellIdentifier = @"Cell";
         feedDetails = [[PPSettings sharedSettings].defaultFeed substringFromIndex:9];
         row = [PPPersonalFeeds() indexOfObject:feedDetails];
         section = 0;
-    }
-    else if ([[PPSettings sharedSettings].defaultFeed hasPrefix:@"community"]) {
+    } else if ([[PPSettings sharedSettings].defaultFeed hasPrefix:@"community"]) {
         feedDetails = [[PPSettings sharedSettings].defaultFeed substringFromIndex:10];
         row = [PPCommunityFeeds() indexOfObject:feedDetails];
         section = 1;
@@ -79,8 +78,7 @@ static NSString *CellIdentifier = @"Cell";
             if ([[PPSettings sharedSettings].defaultFeed hasPrefix:@"saved-"]) {
                 feedDetails = [[PPSettings sharedSettings].defaultFeed substringFromIndex:6];
                 savedFeedIsDefaultFeed = YES;
-            }
-            else if ([[PPSettings sharedSettings].defaultFeed hasPrefix:@"search-"]) {
+            } else if ([[PPSettings sharedSettings].defaultFeed hasPrefix:@"search-"]) {
                 feedDetails = [[PPSettings sharedSettings].defaultFeed substringFromIndex:7];
                 searchIsDefaultFeed = YES;
             }

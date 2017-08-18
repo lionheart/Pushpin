@@ -158,8 +158,7 @@ static const CGFloat PADDING_Y = 2;
     if (recognizer == self.tapGestureRecognizer) {
         if (recognizer.state == UIGestureRecognizerStateBegan && self.enabled) {
             self.selected = YES;
-        }
-        else if (recognizer.state == UIGestureRecognizerStateEnded) {
+        } else if (recognizer.state == UIGestureRecognizerStateEnded) {
             self.selected = NO;
             
             if (self.enabled) {
@@ -168,8 +167,7 @@ static const CGFloat PADDING_Y = 2;
                 }
             }
         }
-    }
-    else if (recognizer == self.longPressGestureRecognizer) {
+    } else if (recognizer == self.longPressGestureRecognizer) {
         if (recognizer.state == UIGestureRecognizerStateBegan) {
             if ([self.delegate respondsToSelector:@selector(didTapAndHoldBadgeView:)]) {
                 [self.delegate didTapAndHoldBadgeView:self];

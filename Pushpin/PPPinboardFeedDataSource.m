@@ -275,8 +275,7 @@
         if ([component hasPrefix:@"t:"]) {
             substring = [NSString stringWithFormat:@"t:%@", [[substring urlEncodeUsingEncoding:NSUTF8StringEncoding] urlEncodeUsingEncoding:NSUTF8StringEncoding]];
             [escapedComponents addObject:substring];
-        }
-        else if ([component hasPrefix:@"u:"]) {
+        } else if ([component hasPrefix:@"u:"]) {
             substring = [NSString stringWithFormat:@"u:%@", [[substring urlEncodeUsingEncoding:NSUTF8StringEncoding] urlEncodeUsingEncoding:NSUTF8StringEncoding]];
             [escapedComponents addObject:substring];
         } else {
@@ -353,8 +352,7 @@
         } else {
             if ([self.components[0] hasPrefix:@"t:"]) {
                 components = [NSMutableArray arrayWithArray:self.components];
-            }
-            else if ([self.components[0] hasPrefix:@"u:"]) {
+            } else if ([self.components[0] hasPrefix:@"u:"]) {
                 components = [NSMutableArray arrayWithArray:self.components];
             } else {
                 components = [NSMutableArray array];
@@ -473,8 +471,7 @@
         case 1:
             if ([self.components[0] isEqualToString:@"popular?count=100"]) {
                 return HEX(0xFF9409FF);
-            }
-            else if ([self.components[0] isEqualToString:@"recent"]) {
+            } else if ([self.components[0] isEqualToString:@"recent"]) {
                 return HEX(0x2AC5FFFF);
             }
             
@@ -509,8 +506,7 @@
         case 1:
             if ([self.components[0] isEqualToString:@"popular?count=100"]) {
                 return NSLocalizedString(@"Popular", nil);
-            }
-            else if ([self.components[0] isEqualToString:@"recent"]) {
+            } else if ([self.components[0] isEqualToString:@"recent"]) {
                 return NSLocalizedString(@"Recent", nil);
             }
             break;
@@ -554,8 +550,7 @@
             if ([self.components[0] isEqualToString:@"popular?count=100"]) {
                 titleViewSet = YES;
                 [titleButton setTitle:NSLocalizedString(@"Popular", nil) imageName:@"navigation-popular"];
-            }
-            else if ([self.components[0] isEqualToString:@"recent"]) {
+            } else if ([self.components[0] isEqualToString:@"recent"]) {
                 titleViewSet = YES;
                 [titleButton setTitle:NSLocalizedString(@"Recent", nil) imageName:@"navigation-recent"];
             }

@@ -297,15 +297,13 @@ static NSInteger kEditButtonOuterMargin = 20;
             }
 
             [self.contentView layoutIfNeeded];
-        }
-        else if (recognizer.state == UIGestureRecognizerStateEnded) {
+        } else if (recognizer.state == UIGestureRecognizerStateEnded) {
             if (self.deleteButton.enabled) {
                 if ([self.delegate respondsToSelector:@selector(bookmarkCellDidActivateDeleteButton:forPost:)]) {
                     [self.delegate bookmarkCellDidActivateDeleteButton:self
                                                                forPost:self.post];
                 }
-            }
-            else if (self.editButton.enabled) {
+            } else if (self.editButton.enabled) {
                 if ([self.delegate respondsToSelector:@selector(bookmarkCellDidActivateEditButton:forPost:)]) {
                     [self.delegate bookmarkCellDidActivateEditButton:self
                                                              forPost:self.post];

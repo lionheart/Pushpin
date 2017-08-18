@@ -132,16 +132,14 @@
                                                        [application openURL:url];
                                                    }
                                                }];
-    }
-    else if ([url.host isEqualToString:@"search"]) {
+    } else if ([url.host isEqualToString:@"search"]) {
         NSDictionary *data = [self parseQueryParameters:url.query];
         PPGenericPostViewController *postViewController = [[PPGenericPostViewController alloc] init];
         PPPinboardDataSource *dataSource = [[PPPinboardDataSource alloc] init];
         dataSource.limit = 100;
         if (data[@"q"]) {
             dataSource.searchQuery = data[@"q"];
-        }
-        else if (data[@"name"]) {
+        } else if (data[@"name"]) {
             __block NSDictionary *search;
             [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                 FMResultSet *searchResults = [db executeQuery:@"SELECT * FROM searches WHERE name=?" withArgumentsInArray:@[data[@"name"]]];
@@ -201,8 +199,7 @@
         } else {
             PresentView(postViewController, navController);
         }
-    }
-    else if ([url.host isEqualToString:@"feed"]) {
+    } else if ([url.host isEqualToString:@"feed"]) {
         NSDictionary *data = [self parseQueryParameters:url.query];
         NSMutableArray *components = [NSMutableArray array];
         if (data[@"user"]) {
@@ -231,8 +228,7 @@
         } else {
             PresentView(postViewController, navController);
         }
-    }
-    else if ([url.host isEqualToString:@"x-callback-url"]) {
+    } else if ([url.host isEqualToString:@"x-callback-url"]) {
         didLaunchWithURL = YES;
         if ([url.path isEqualToString:@"/add"]) {
             NSMutableDictionary *queryParameters = [self parseQueryParameters:url.query];
@@ -249,8 +245,7 @@
                 }
             }];
         }
-    }
-    else if (url.host && ![url.host isEqualToString:@""]) {
+    } else if (url.host && ![url.host isEqualToString:@""]) {
         NSRange range = [url.absoluteString rangeOfString:@"pushpin"];
         NSString *urlString = [url.absoluteString stringByReplacingCharactersInRange:range withString:@"http"];
         PPWebViewController *webViewController = [PPWebViewController webViewControllerWithURL:urlString];
@@ -353,8 +348,7 @@
 
                     });
                 }
-            }
-            else if (alreadyExistsInBookmarks) {
+            } else if (alreadyExistsInBookmarks) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSString *message = [NSString stringWithFormat:@"%@\n\n%@", NSLocalizedString(@"Pushpin detected a link in your clipboard for an existing bookmark. Would you like to edit it?", nil), self.clipboardBookmarkURL];
                     
@@ -538,8 +532,7 @@
             }
 
             pinboardViewController.postDataSource = pinboardDataSource;
-        }
-        else if ([[PPSettings sharedSettings].defaultFeed hasPrefix:@"community-"]) {
+        } else if ([[PPSettings sharedSettings].defaultFeed hasPrefix:@"community-"]) {
             feedDetails = [settings.defaultFeed substringFromIndex:10];
             PPPinboardFeedDataSource *feedDataSource = [[PPPinboardFeedDataSource alloc] init];
             pinboardViewController.postDataSource = feedDataSource;
@@ -574,14 +567,12 @@
                 default:
                     break;
             }
-        }
-        else if ([settings.defaultFeed hasPrefix:@"saved-"]) {
+        } else if ([settings.defaultFeed hasPrefix:@"saved-"]) {
             feedDetails = [settings.defaultFeed substringFromIndex:6];
             NSArray *components = [feedDetails componentsSeparatedByString:@"+"];
             PPPinboardFeedDataSource *feedDataSource = [[PPPinboardFeedDataSource alloc] initWithComponents:components];
             pinboardViewController.postDataSource = feedDataSource;
-        }
-        else if ([settings.defaultFeed hasPrefix:@"search-"]) {
+        } else if ([settings.defaultFeed hasPrefix:@"search-"]) {
             feedDetails = [settings.defaultFeed substringFromIndex:7];
 
             __block NSDictionary *search;

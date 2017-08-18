@@ -652,8 +652,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
             self.selectedPost = [self.postDataSource postAtIndex:self.selectedIndexPath.row];
             [self openActionSheetForSelectedPost];
         }
-    }
-    else if (recognizer == self.pinchGestureRecognizer) {
+    } else if (recognizer == self.pinchGestureRecognizer) {
         if (recognizer.state != UIGestureRecognizerStateBegan) {
             BOOL needsReload = NO;
             if (self.compressPosts) {
@@ -1718,24 +1717,19 @@ static NSInteger PPBookmarkEditMaximum = 25;
 - (void)handleKeyCommand:(UIKeyCommand *)keyCommand {
     if (keyCommand == self.enterKeyCommand) {
         [self.searchController.searchBar resignFirstResponder];
-    }
-    else if (keyCommand == self.focusSearchKeyCommand) {
+    } else if (keyCommand == self.focusSearchKeyCommand) {
         [self.searchController.searchBar becomeFirstResponder];
-    }
-    else if (keyCommand == self.toggleCompressKeyCommand) {
+    } else if (keyCommand == self.toggleCompressKeyCommand) {
         [self toggleCompressedPosts];
-    }
-    else if (keyCommand == self.escapeKeyCommand) {
+    } else if (keyCommand == self.escapeKeyCommand) {
         [self.searchController.searchBar resignFirstResponder];
-    }
-    else if (keyCommand == self.moveUpKeyCommand) {
+    } else if (keyCommand == self.moveUpKeyCommand) {
         if (self.selectedIndexPath) {
             NSInteger row = self.selectedIndexPath.row;
             self.selectedIndexPath = [NSIndexPath indexPathForRow:MAX(0, row-1) inSection:0];
             [self moveCircleFocusToSelectedIndexPathWithPosition:UITableViewScrollPositionNone];
         }
-    }
-    else if (keyCommand == self.moveDownKeyCommand) {
+    } else if (keyCommand == self.moveDownKeyCommand) {
         if (self.selectedIndexPath) {
             NSInteger row = self.selectedIndexPath.row;
             self.selectedIndexPath = [NSIndexPath indexPathForRow:MIN([self.tableView numberOfRowsInSection:0] - 1, row+1) inSection:0];
@@ -1744,12 +1738,10 @@ static NSInteger PPBookmarkEditMaximum = 25;
             self.selectedIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
             [self moveCircleFocusToSelectedIndexPathWithPosition:UITableViewScrollPositionNone];
         }
-    }
-    else if (keyCommand == self.openKeyCommand) {
+    } else if (keyCommand == self.openKeyCommand) {
         self.selectedTableView = self.tableView;
         [self handleCellTap];
-    }
-    else if (keyCommand == self.editKeyCommand) {
+    } else if (keyCommand == self.editKeyCommand) {
         UIViewController *vc = [self editViewControllerForPostAtIndex:self.selectedIndexPath.row];
         [self presentViewControllerInFormSheetIfApplicable:vc];
     }
@@ -1795,8 +1787,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                                   handler:nil];
             
             [self presentViewController:alert animated:YES completion:nil];
-        }
-        else if (response.statusCode == 401) {
+        } else if (response.statusCode == 401) {
             UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Rate Limit Hit", nil)
                                                                          message:NSLocalizedString(@"Pushpin has currently hit the API rate limit for your account. Please wait at least 5 minutes before updating your bookmarks again.", nil)];
             
@@ -1805,8 +1796,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                                   handler:nil];
             
             [self presentViewController:alert animated:YES completion:nil];
-        }
-        else if (response.statusCode == 500) {
+        } else if (response.statusCode == 500) {
             UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Error", nil)
                                                                          message:NSLocalizedString(@"The Pinboard API was unable to complete this request.", nil)];
             

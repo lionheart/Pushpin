@@ -202,8 +202,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
     if (indexPath.section == PPSectionCacheSettings) {
         cell = [tableView dequeueReusableCellWithIdentifier:DeleteCellIdentifier forIndexPath:indexPath];
-    }
-    else if (indexPath.section == 1 && indexPath.row == PPOtherRatePushpin) {
+    } else if (indexPath.section == 1 && indexPath.row == PPOtherRatePushpin) {
         cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier forIndexPath:indexPath];
     } else {
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
@@ -260,11 +259,9 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
                     if (self.numberOfRatings == 0) {
                         cell.detailTextLabel.text = @"No ratings for this version.";
-                    }
-                    else if (self.numberOfRatings == 1) {
+                    } else if (self.numberOfRatings == 1) {
                         cell.detailTextLabel.text = @"Only 1 rating for this version.";
-                    }
-                    else if (self.numberOfRatings < 10) {
+                    } else if (self.numberOfRatings < 10) {
                         cell.detailTextLabel.text = [NSString stringWithFormat:@"Only %lu ratings for this version.", (unsigned long)self.numberOfRatings];
                     } else {
                         cell.detailTextLabel.text = [NSString stringWithFormat:@"%lu ratings for this version.", (unsigned long)self.numberOfRatings];

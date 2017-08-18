@@ -176,8 +176,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 cell.textLabel.text = self.filteredPopularAndRecommendedTags[index];
                 cell.detailTextLabel.textColor = HEX(0x96989DFF);
                 cell.detailTextLabel.text = self.tagDescriptions[cell.textLabel.text];
-            }
-            else if (self.tagCompletions.count > 0) {
+            } else if (self.tagCompletions.count > 0) {
                 NSString *tag = self.tagCompletions[index];
                 cell.textLabel.text = tag;
                 cell.detailTextLabel.text = self.tagCounts[tag];
@@ -238,8 +237,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     if (section == 0) {
         if (self.filteredPopularAndRecommendedTagsVisible) {
             return self.filteredPopularAndRecommendedTags.count + [self tagOffset];
-        }
-        else if (self.tagCompletions.count > 0) {
+        } else if (self.tagCompletions.count > 0) {
             return self.tagCompletions.count + [self tagOffset];
         } else {
             return [self tagOffset];
@@ -295,8 +293,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 [indexPathsToDelete addObjectsFromArray:[self indexPathsForAutocompletedRows]];
                 [self.tagCompletions removeAllObjects];
                 [self.existingTags addObject:completion];
-            }
-            else if (self.filteredPopularAndRecommendedTagsVisible) {
+            } else if (self.filteredPopularAndRecommendedTagsVisible) {
                 completion = self.filteredPopularAndRecommendedTags[index];
                 
                 if (index < self.popularTags.count) {
@@ -423,8 +420,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         indexPathsToDelete = [self indexPathsForPopularAndSuggestedRows];
         [self.popularTags removeAllObjects];
         [self.recommendedTags removeAllObjects];
-    }
-    else if (self.tagCompletions.count > 0) {
+    } else if (self.tagCompletions.count > 0) {
         indexPathsToDelete = [self indexPathsForAutocompletedRows];
         [self.tagCompletions removeAllObjects];
     }
@@ -483,8 +479,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             NSInteger previousCount;
             if (self.filteredPopularAndRecommendedTagsVisible) {
                 previousCount = self.filteredPopularAndRecommendedTags.count;
-            }
-            else if (self.tagCompletions.count > 0) {
+            } else if (self.tagCompletions.count > 0) {
                 previousCount = self.tagCompletions.count;
                 [self.tagCompletions removeAllObjects];
             } else {
@@ -646,8 +641,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
                 if (self.filteredPopularAndRecommendedTagsVisible) {
                     [indexPathsToDelete addObjectsFromArray:self.indexPathsForPopularAndSuggestedRows];
-                }
-                else if (oldTagCompletions.count > 0) {
+                } else if (oldTagCompletions.count > 0) {
                     for (NSInteger i=skipPivot; i<oldTagCompletions.count; i++) {
                         [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(i+[self tagOffset]) inSection:0]];
                     }
@@ -671,8 +665,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
                     self.autocompleteInProgress = NO;
                 });
-            }
-            else if (!self.filteredPopularAndRecommendedTagsVisible) {
+            } else if (!self.filteredPopularAndRecommendedTagsVisible) {
                 self.autocompleteInProgress = NO;
             } else {
                 self.autocompleteInProgress = NO;

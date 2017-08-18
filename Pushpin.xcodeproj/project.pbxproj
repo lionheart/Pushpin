@@ -427,7 +427,7 @@
 		374D91E019CE26A700995DF1 /* Share-AppStore.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = "Share-AppStore.entitlements"; path = "Pinboard/Share-AppStore.entitlements"; sourceTree = "<group>"; };
 		374E59FE197DADEF00B6EDF1 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		37516A04186C8AF700AEF7A6 /* PPBookmarkCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBookmarkCell.h; sourceTree = "<group>"; };
-		37516A05186C8AF700AEF7A6 /* PPBookmarkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPBookmarkCell.m; sourceTree = "<group>"; };
+		37516A05186C8AF700AEF7A6 /* PPBookmarkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPBookmarkCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3751D17E18346C0200E0A42A /* mobilize.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mobilize.png; path = Assets/mobilize.png; sourceTree = "<group>"; };
 		3751D17F18346C0200E0A42A /* mobilize@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mobilize@2x.png"; path = "Assets/mobilize@2x.png"; sourceTree = "<group>"; };
 		3751D18018346C0200E0A42A /* mobilized.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mobilized.png; path = Assets/mobilized.png; sourceTree = "<group>"; };
@@ -442,7 +442,7 @@
 		375B622F1A4DA9240045AFE7 /* PPURLCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PPURLCache.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		375B62301A4DA9240045AFE7 /* PPURLCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPURLCache.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3762CAC51A55A59600301C97 /* PPOfflineDownloadViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPOfflineDownloadViewController.h; sourceTree = "<group>"; };
-		3762CAC61A55A59600301C97 /* PPOfflineDownloadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPOfflineDownloadViewController.m; sourceTree = "<group>"; };
+		3762CAC61A55A59600301C97 /* PPOfflineDownloadViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPOfflineDownloadViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3762CACD1A59D04700301C97 /* NSString+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Additions.h"; sourceTree = "<group>"; };
 		3762CACE1A59D04700301C97 /* NSString+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Additions.m"; sourceTree = "<group>"; };
 		3769A5741879BCAF00AC8C44 /* PPMobilizerUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPMobilizerUtility.h; sourceTree = "<group>"; };
@@ -547,7 +547,7 @@
 		37BC1BD4188641D80022020A /* JSDOMParser.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; lineEnding = 0; name = JSDOMParser.js; path = Pushpin/JSDOMParser.js; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
 		37BC1BD7188642F90022020A /* readability.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = readability.js; path = Pushpin/readability.js; sourceTree = "<group>"; };
 		37BC1BD91889C6730022020A /* PPTwitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTwitter.h; sourceTree = "<group>"; };
-		37BC1BDA1889C6740022020A /* PPTwitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTwitter.m; sourceTree = "<group>"; };
+		37BC1BDA1889C6740022020A /* PPTwitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPTwitter.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37BC1DA71D3280EF00AC4607 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		37C012B71765423900938D81 /* PPMultipleEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPMultipleEditViewController.h; sourceTree = "<group>"; };
 		37C012B81765423A00938D81 /* PPMultipleEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPMultipleEditViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -581,7 +581,7 @@
 		37EE01721A07EA0600A03F3B /* PPCachingURLProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PPCachingURLProtocol.h; path = Pushpin/PPCachingURLProtocol.h; sourceTree = "<group>"; };
 		37EE01731A07EA0600A03F3B /* PPCachingURLProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PPCachingURLProtocol.m; path = Pushpin/PPCachingURLProtocol.m; sourceTree = "<group>"; };
 		37EE01761A093F2B00A03F3B /* PPOfflineSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPOfflineSettingsViewController.h; sourceTree = "<group>"; };
-		37EE01771A093F2B00A03F3B /* PPOfflineSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPOfflineSettingsViewController.m; sourceTree = "<group>"; };
+		37EE01771A093F2B00A03F3B /* PPOfflineSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPOfflineSettingsViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37F1E1B618C617940032B22B /* navigation-recent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-recent.png"; path = "Assets/navigation-recent.png"; sourceTree = "<group>"; };
 		37F1E1B718C617940032B22B /* navigation-recent@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-recent@2x.png"; path = "Assets/navigation-recent@2x.png"; sourceTree = "<group>"; };
 		37F1E1B818C617940032B22B /* navigation-search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-search.png"; path = "Assets/navigation-search.png"; sourceTree = "<group>"; };
@@ -681,7 +681,7 @@
 		E89001F4183EA43E00C1F969 /* PPBadgeWrapperView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBadgeWrapperView.h; sourceTree = "<group>"; };
 		E89001F5183EA43E00C1F969 /* PPBadgeWrapperView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPBadgeWrapperView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		E89001F7183EA5B500C1F969 /* PPBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBadgeView.h; sourceTree = "<group>"; };
-		E89001F8183EA5B500C1F969 /* PPBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPBadgeView.m; sourceTree = "<group>"; };
+		E89001F8183EA5B500C1F969 /* PPBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPBadgeView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		E89001FA183EB90100C1F969 /* bookmark-favorite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bookmark-favorite.png"; path = "Assets/bookmark-favorite.png"; sourceTree = "<group>"; };
 		E89001FB183EB90100C1F969 /* bookmark-favorite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bookmark-favorite@2x.png"; path = "Assets/bookmark-favorite@2x.png"; sourceTree = "<group>"; };
 		E89001FC183EB90100C1F969 /* bookmark-private.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bookmark-private.png"; path = "Assets/bookmark-private.png"; sourceTree = "<group>"; };

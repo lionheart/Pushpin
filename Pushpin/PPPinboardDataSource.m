@@ -951,8 +951,7 @@ static BOOL kPinboardSyncInProgress = NO;
             } else {
                 [titleButton setImageNames:imageNames title:nil];
             }
-        }
-        else if (imageNames.count == 1) {
+        } else if (imageNames.count == 1) {
             [titleButton setTitle:title imageName:imageNames[0]];
         } else {
             [titleButton setTitle:title imageName:nil];

@@ -251,8 +251,7 @@ static NSString *CellIdentifier = @"Cell";
     }];
     if ([equivalentObjects count] > 0) {
         return 90;
-    }
-    else if (indexPath.section == PPReaderSettingsSectionPreview && indexPath.row == PPReaderSettingsPreviewRowTheme) {
+    } else if (indexPath.section == PPReaderSettingsSectionPreview && indexPath.row == PPReaderSettingsPreviewRowTheme) {
         return 160;
     }
     return 44;
@@ -491,7 +490,6 @@ static NSString *CellIdentifier = @"Cell";
             LHSFontSelectionViewController *fontSelectionViewController = [[LHSFontSelectionViewController alloc] initWithPreferredFontNames:preferredFontNames
                                                                                                                       onlyShowPreferredFonts:NO];
             fontSelectionViewController.delegate = self;
-            fontSelectionViewController.preferredStatusBarStyle = UIStatusBarStyleLightContent;
             [self.navigationController pushViewController:fontSelectionViewController animated:YES];
             break;
         }
@@ -606,23 +604,19 @@ static NSString *CellIdentifier = @"Cell";
         readerSettings.backgroundColor = HEX(0xfbfbfbff);
         readerSettings.textColor = HEX(0x080000ff);
         [mixpanel.people set:@{@"Reader Background": @"White"}];
-    }
-    else if (sender == self.yellowThemeButton) {
+    } else if (sender == self.yellowThemeButton) {
         readerSettings.backgroundColor = HEX(0xfffff7ff);
         readerSettings.textColor = HEX(0x080000ff);
         [mixpanel.people set:@{@"Reader Background": @"Yellow"}];
-    }
-    else if (sender == self.greyThemeButton) {
+    } else if (sender == self.greyThemeButton) {
         readerSettings.backgroundColor = HEX(0xf5f5f5ff);
         readerSettings.textColor = HEX(0x282828ff);
         [mixpanel.people set:@{@"Reader Background": @"Grey"}];
-    }
-    else if (sender == self.darkGreyThemeButton) {
+    } else if (sender == self.darkGreyThemeButton) {
         readerSettings.backgroundColor = HEX(0x343a3aff);
         readerSettings.textColor = HEX(0xfdfdfdff);
         [mixpanel.people set:@{@"Reader Background": @"Dark Grey"}];
-    }
-    else if (sender == self.blackThemeButton) {
+    } else if (sender == self.blackThemeButton) {
         readerSettings.backgroundColor = HEX(0x080000ff);
         readerSettings.textColor = HEX(0xfdfdfdff);
         [mixpanel.people set:@{@"Reader Background": @"Black"}];
@@ -652,8 +646,7 @@ static NSString *CellIdentifier = @"Cell";
             self.fontSizeLabel.text = [NSString stringWithFormat:@"%0.0fpx", settings.readerSettings.fontSize];
             [self updateExampleWebView];
         }
-    }
-    else if (sender == self.lineSpacingSlider) {
+    } else if (sender == self.lineSpacingSlider) {
         float calculatedValue = (int)(10 * self.lineSpacingSlider.value) / 10.;
         if (readerSettings.lineSpacing != calculatedValue) {
             [mixpanel.people set:@{@"Reader Line Spacing": @(calculatedValue)}];
@@ -665,8 +658,7 @@ static NSString *CellIdentifier = @"Cell";
             self.lineSpacingLabel.text = [NSString stringWithFormat:@"%0.1fem", settings.readerSettings.lineSpacing];
             [self updateExampleWebView];
         }
-    }
-    else if (sender == self.marginSlider) {
+    } else if (sender == self.marginSlider) {
         float calculatedValue = (int)self.marginSlider.value;
         if (readerSettings.margin != calculatedValue) {
             [mixpanel.people set:@{@"Reader Margin": @(calculatedValue)}];

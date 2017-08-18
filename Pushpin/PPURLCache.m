@@ -637,11 +637,9 @@
                 if (originalURL.scheme) {
                     if ([finalURLString hasPrefix:@"//"]) {
                         finalURLString = [NSString stringWithFormat:@"%@:%@", originalURL.scheme, finalURLString];
-                    }
-                    else if ([finalURLString hasPrefix:@"/"]) {
+                    } else if ([finalURLString hasPrefix:@"/"]) {
                         finalURLString = [NSString stringWithFormat:@"%@://%@%@", originalURL.scheme, originalURL.host, finalURLString];
-                    }
-                    else if (![finalURLString hasPrefix:originalURL.scheme] && ![finalURLString hasPrefix:@"http://"] && ![finalURLString hasPrefix:@"https://"]) {
+                    } else if (![finalURLString hasPrefix:originalURL.scheme] && ![finalURLString hasPrefix:@"http://"] && ![finalURLString hasPrefix:@"https://"]) {
                         // This is a relative URL
                         NSMutableArray *trimmedComponents = [originalURL.pathComponents mutableCopy];
                         if ([[trimmedComponents firstObject] isEqualToString:@"/"]) {

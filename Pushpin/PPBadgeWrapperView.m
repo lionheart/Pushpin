@@ -103,8 +103,7 @@ static const CGFloat PADDING_Y = 6;
 
         if ([badge[@"type"] isEqualToString:@"image"]) {
             badgeView = [[PPBadgeView alloc] initWithImage:[UIImage imageNamed:badge[@"image"]] options:mergedOptions];
-        }
-        else if ([badge[@"type"] isEqualToString:@"tag"]) {
+        } else if ([badge[@"type"] isEqualToString:@"tag"]) {
             badgeView = [[PPBadgeView alloc] initWithText:badge[@"tag"] options:mergedOptions];
         }
         

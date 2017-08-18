@@ -283,20 +283,15 @@ static NSString *CellIdentifier = @"Cell";
 + (NSString *)fontNameToDisplayName:(NSString *)fontName {
     if ([fontName isEqualToString:@"Lyon Text App Regular"]) {
         fontName = @"Lyon";
-    }
-    else if ([fontName isEqualToString:@"Avenir Next Regular"]) {
+    } else if ([fontName isEqualToString:@"Avenir Next Regular"]) {
         fontName = @"Avenir Next";
-    }
-    else if ([fontName isEqualToString:@"Arial MT"]) {
+    } else if ([fontName isEqualToString:@"Arial MT"]) {
         fontName = @"Arial";
-    }
-    else if ([fontName isEqualToString:@"Futura Medium"]) {
+    } else if ([fontName isEqualToString:@"Futura Medium"]) {
         fontName = @"Futura";
-    }
-    else if ([fontName isEqualToString:@"Flex Regular"]) {
+    } else if ([fontName isEqualToString:@"Flex Regular"]) {
         fontName = @"Flex";
-    }
-    else if ([fontName isEqualToString:@"Brando Regular"]) {
+    } else if ([fontName isEqualToString:@"Brando Regular"]) {
         fontName = @"Brando";
     } else if ([fontName isEqualToString:[UIFont systemFontOfSize:10].fontName]) {
         fontName = @"San Francisco";

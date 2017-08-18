@@ -564,42 +564,33 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     PPSettings *settings = [PPSettings sharedSettings];
     if (sender == self.compressPostsSwitch) {
         [settings setCompressPosts:self.compressPostsSwitch.on];
-    }
-    else if (sender == self.doubleTapToEditSwitch) {
+    } else if (sender == self.doubleTapToEditSwitch) {
         [settings setDoubleTapToEdit:self.doubleTapToEditSwitch.on];
-    }
-    else if (sender == self.dimReadPostsSwitch) {
+    } else if (sender == self.dimReadPostsSwitch) {
         [settings setDimReadPosts:self.dimReadPostsSwitch.on];
 
         // We clear the cache since posts now look differently.
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [[PPPinboardMetadataCache sharedCache] removeAllObjects];
         });
-    }
-    else if (sender == self.markReadSwitch) {
+    } else if (sender == self.markReadSwitch) {
         [settings setMarkReadPosts:self.markReadSwitch.on];
-    }
-    else if (sender == self.hidePrivateLockSwitch) {
+    } else if (sender == self.hidePrivateLockSwitch) {
         settings.hidePrivateLock = self.hidePrivateLockSwitch.on;
 
         // We clear the cache since posts now look differently.
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [[PPPinboardMetadataCache sharedCache] removeAllObjects];
         });
-    }
-    else if (sender == self.autoCorrectionSwitch) {
+    } else if (sender == self.autoCorrectionSwitch) {
         settings.enableAutoCorrect = self.autoCorrectionSwitch.on;
-    }
-    else if (sender == self.tagAutoCorrectionSwitch) {
+    } else if (sender == self.tagAutoCorrectionSwitch) {
         settings.enableTagAutoCorrect = self.tagAutoCorrectionSwitch.on;
-    }
-    else if (sender == self.autoCapitalizationSwitch) {
+    } else if (sender == self.autoCapitalizationSwitch) {
         settings.enableAutoCapitalize = self.autoCapitalizationSwitch.on;
-    }
-    else if (sender == self.alwaysShowAlertSwitch) {
+    } else if (sender == self.alwaysShowAlertSwitch) {
         [settings setAlwaysShowClipboardNotification:self.alwaysShowAlertSwitch.on];
-    }
-    else if (sender == self.enableBookmarkPromptSwitch) {
+    } else if (sender == self.enableBookmarkPromptSwitch) {
         [settings setTurnOffBookmarkPrompt:!self.enableBookmarkPromptSwitch.on];
 
         [self.tableView beginUpdates];
@@ -627,8 +618,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
         }
         
         [self.tableView endUpdates];
-    }
-    else if (sender == self.onlyPromptToAddOnceSwitch) {
+    } else if (sender == self.onlyPromptToAddOnceSwitch) {
         [settings setOnlyPromptToAddOnce:!self.onlyPromptToAddOnceSwitch.on];
 
         [self.tableView beginUpdates];

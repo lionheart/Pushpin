@@ -401,8 +401,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         self.selectedActionSheet.popoverPresentationController.sourceView = self.view;
         self.selectedActionSheet.popoverPresentationController.sourceRect = (CGRect){webViewCoordinates, {1, 1}};
         [self presentViewController:self.selectedActionSheet animated:YES completion:nil];
-    }
-    else if (recognizer == self.backButtonLongPressGestureRecognizer) {
+    } else if (recognizer == self.backButtonLongPressGestureRecognizer) {
         if (recognizer.state == UIGestureRecognizerStateBegan) {
             self.backActionSheet = [UIAlertController lhs_actionSheetWithTitle:nil];
 
@@ -438,8 +437,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
             self.backActionSheet.popoverPresentationController.sourceRect = (CGRect){point, {1, 1}};
             [self presentViewController:self.backActionSheet animated:YES completion:nil];
         }
-    }
-    else if (recognizer == self.bottomTapGestureRecognizer) {
+    } else if (recognizer == self.bottomTapGestureRecognizer) {
         UIWebView *webView = self.currentWebView;
         self.yOffsetToStartShowingToolbar = webView.scrollView.contentOffset.y;
 
@@ -765,8 +763,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                 } else {
                     self.yOffsetToStartShowingToolbar = scrollView.contentOffset.y + kToolbarHeight;
                 }
-            }
-            else if (isToolbarPartlyVisible) {
+            } else if (isToolbarPartlyVisible) {
                 self.toolbarConstraint.constant = MIN(kToolbarHeight, distanceFromToolbarShowingOffset);
                 [self.view layoutIfNeeded];
             } else {
@@ -778,8 +775,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
                 }
             }
-        }
-        else if (distanceFromBottomOfView < 0) {
+        } else if (distanceFromBottomOfView < 0) {
             [self setToolbarVisible:YES animated:YES];
             self.yOffsetToStartShowingToolbar = MAX(0, scrollView.contentOffset.y);
         } else {
