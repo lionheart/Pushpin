@@ -35,7 +35,7 @@ static NSString *CellIdentifier = @"Cell";
     return UIStatusBarStyleLightContent;
 }
 
-- (NSUInteger)supportedInterfaceOrientations {
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
     return UIInterfaceOrientationMaskPortrait;
 }
 

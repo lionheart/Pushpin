@@ -90,6 +90,10 @@
     return self.textView;
 }
 
+- (BOOL)keyboardAdjustingAnimated {
+    return YES;
+}
+
 #pragma mark - UITextViewDelegate
 
 - (void)fixTextView:(UITextView *)textView {

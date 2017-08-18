@@ -662,6 +662,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     
                 case kPushpinFilterTrue:
                     [components addObject:@"private"];
+
+                case kPushpinFilterNone: break;
             }
 
             kPushpinFilterType unread = [search[@"unread"] integerValue];
@@ -671,6 +673,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     
                 case kPushpinFilterTrue:
                     [components addObject:@"unread"];
+
+                case kPushpinFilterNone: break;
             }
 
             kPushpinFilterType starred = [search[@"starred"] integerValue];
@@ -680,6 +684,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     
                 case kPushpinFilterTrue:
                     [components addObject:@"starred"];
+
+                case kPushpinFilterNone: break;
             }
 
             kPushpinFilterType tagged = [search[@"tagged"] integerValue];
@@ -689,6 +695,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     
                 case kPushpinFilterTrue:
                     [components addObject:@"tagged"];
+
+                case kPushpinFilterNone: break;
             }
 
             cell.detailTextLabel.text = [components componentsJoinedByString:@", "];
