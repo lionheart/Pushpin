@@ -352,7 +352,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
         case PPSectionOtherSettings: {
             switch ((PPOtherSettingsRowType)indexPath.row) {
                 case PPOtherRatePushpin:
-                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=548052590&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software"]];
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/pushpin-for-pinboard/id548052590?mt=8&uo=4&at=1l3vbEC&action=write-review"]];
                     break;
                     
                 case PPOtherFollow: {
