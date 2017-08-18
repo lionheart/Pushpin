@@ -142,7 +142,7 @@ static NSString *CellIdentifier = @"Cell";
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if (self.preferredFontNames.count > 0 && section == 0) {
-        return NSLocalizedString(@"Premium Fonts", nil);
+        return NSLocalizedString(@"Recommended Fonts", nil);
     }
     return self.sectionIndexTitles[section];
 }
