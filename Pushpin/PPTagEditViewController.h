@@ -21,6 +21,8 @@
 
 @interface PPTagEditViewController : UIViewController <PPBadgeWrapperDelegate,  UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate, LHSKeyboardAdjusting>
 
+@property (nonatomic, strong) NSLayoutConstraint *keyboardAdjustingBottomConstraint;
+
 @property (nonatomic) BOOL autocompleteInProgress;
 @property (nonatomic) BOOL loadingTags;
 @property (nonatomic) BOOL presentedFromShareSheet;
