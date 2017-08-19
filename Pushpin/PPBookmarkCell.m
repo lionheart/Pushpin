@@ -205,22 +205,9 @@ static NSInteger kEditButtonOuterMargin = 20;
     [self.contentView lhs_addConstraints:@"H:|-(<=outerMargin)-[edit]" metrics:metrics views:views];
     [self.contentView lhs_addConstraints:@"V:|[main]|" views:views];
 
-    self.mainWidthConstraint = [NSLayoutConstraint constraintWithItem:mainContentView
-                                                            attribute:NSLayoutAttributeWidth
-                                                            relatedBy:NSLayoutRelationEqual
-                                                               toItem:self.contentView
-                                                            attribute:NSLayoutAttributeWidth
-                                                           multiplier:1
-                                                             constant:0];
-    self.leftPositionConstraint = [NSLayoutConstraint constraintWithItem:mainContentView
-                                                               attribute:NSLayoutAttributeLeft
-                                                               relatedBy:NSLayoutRelationEqual
-                                                                  toItem:self.contentView
-                                                               attribute:NSLayoutAttributeLeft
-                                                              multiplier:1
-                                                                constant:0];
-    
-    [self.contentView addConstraints:@[self.mainWidthConstraint, self.leftPositionConstraint]];
+    self.mainWidthConstraint = [mainContentView.widthAnchor constraintEqualToAnchor:self.contentView.widthAnchor];
+    self.leftPositionConstraint = [mainContentView.leftAnchor constraintEqualToAnchor:self.contentView.leftAnchor];
+    [NSLayoutConstraint activateConstraints:@[self.mainWidthConstraint, self.leftPositionConstraint]];
 
     [mainContentView lhs_addConstraints:@"H:|-10-[title]-10-|" views:views];
     [mainContentView lhs_addConstraints:@"H:|-10-[link]-10-|" views:views];
