@@ -227,52 +227,39 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         @"border": toolbarBorderView
     };
 
-    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.indicator
-                                                             attribute:NSLayoutAttributeCenterX
-                                                             relatedBy:NSLayoutRelationEqual
-                                                                toItem:self.markAsReadButton
-                                                             attribute:NSLayoutAttributeCenterX
-                                                            multiplier:1
-                                                              constant:0]];
-
-    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.indicator
-                                                             attribute:NSLayoutAttributeCenterY
-                                                             relatedBy:NSLayoutRelationEqual
-                                                                toItem:self.markAsReadButton
-                                                             attribute:NSLayoutAttributeCenterY
-                                                            multiplier:1
-                                                              constant:0]];
+    [self.indicator.centerXAnchor constraintEqualToAnchor:self.markAsReadButton.centerXAnchor].active = YES;
+    [self.indicator.centerYAnchor constraintEqualToAnchor:self.markAsReadButton.centerYAnchor].active = YES;
 
     [self.toolbar lhs_addConstraints:@"H:|[back][read(==back)][mobilize(==back)][edit(==back)][action(==back)]|" views:toolbarViews];
-    [self.toolbar lhs_addConstraints:@"H:|[border]|" views:toolbarViews];
-    [self.toolbar lhs_addConstraints:@"H:|[background]|" views:toolbarViews];
     [self.toolbar lhs_addConstraints:@"V:|[background(height)]" metrics:@{@"height": @(kToolbarHeight + 60)} views:toolbarViews];
     [self.toolbar lhs_addConstraints:@"V:|[border(0.5)]" views:toolbarViews];
-    [self.toolbar lhs_addConstraints:@"V:|[back]|" views:toolbarViews];
-    [self.toolbar lhs_addConstraints:@"V:|[read]|" views:toolbarViews];
-    [self.toolbar lhs_addConstraints:@"V:|[mobilize]|" views:toolbarViews];
-    [self.toolbar lhs_addConstraints:@"V:|[action]|" views:toolbarViews];
-    [self.toolbar lhs_addConstraints:@"V:|[edit]|" views:toolbarViews];
-    [self.toolbar lhs_addConstraints:@"V:|[add]|" views:toolbarViews];
 
-    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.editButton
-                                                             attribute:NSLayoutAttributeLeft
-                                                             relatedBy:NSLayoutRelationEqual
-                                                                toItem:self.addButton
-                                                             attribute:NSLayoutAttributeLeft
-                                                            multiplier:1
-                                                              constant:0]];
-    
-    [self.toolbar addConstraint:[NSLayoutConstraint constraintWithItem:self.editButton
-                                                             attribute:NSLayoutAttributeRight
-                                                             relatedBy:NSLayoutRelationEqual
-                                                                toItem:self.addButton
-                                                             attribute:NSLayoutAttributeRight
-                                                            multiplier:1
-                                                              constant:0]];
-    
+    NSArray<UIView *> *fullHeightViews = @[
+                                     self.backButton,
+                                     self.markAsReadButton,
+                                     self.mobilizeButton,
+                                     self.actionButton,
+                                     self.editButton,
+                                     self.addButton,
+                                     ];
+
+    NSArray <UIView *> *fullWidthViews = @[
+                                           toolbarBorderView,
+                                           self.toolbarBackgroundView,
+                                           self.statusBarBackgroundView,
+                                           self.toolbar,
+                                           self.webView,
+                                           self.readerWebView,
+                                           self.showToolbarAndTitleBarHiddenView,
+                                           ];
+
+    [UIView lhs_addConstraints:@"V:|[view]|" views:fullHeightViews];
+    [UIView lhs_addConstraints:@"H:|[view]|" views:fullWidthViews];
+
+    [self.editButton.leftAnchor constraintEqualToAnchor:self.addButton.leftAnchor].active = YES;
+    [self.editButton.rightAnchor constraintEqualToAnchor:self.addButton.rightAnchor].active = YES;
+
     [self tintButtonsWithColor:[UIColor darkGrayColor]];
-
     [self.view addSubview:self.toolbar];
     
     NSDictionary *views = @{
@@ -283,62 +270,22 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         @"reader": self.readerWebView,
         @"bottom": self.bottomLayoutGuide
     };
-
-    // Setup auto-layout constraints
-    [self.view lhs_addConstraints:@"H:|[background]|" views:views];
-    [self.view lhs_addConstraints:@"H:|[toolbar]|" views:views];
-    [self.view lhs_addConstraints:@"H:|[webview]|" views:views];
-    [self.view lhs_addConstraints:@"H:|[reader]|" views:views];
-    [self.view lhs_addConstraints:@"H:|[show]|" views:views];
     
     // Make sure the height of the reader view is the same as the web view
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.readerWebView
-                                                          attribute:NSLayoutAttributeHeight
-                                                          relatedBy:NSLayoutRelationEqual
-                                                             toItem:self.webView
-                                                          attribute:NSLayoutAttributeHeight
-                                                         multiplier:1
-                                                           constant:0]];
-
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.readerWebView
-                                                          attribute:NSLayoutAttributeCenterX
-                                                          relatedBy:NSLayoutRelationEqual
-                                                             toItem:self.webView
-                                                          attribute:NSLayoutAttributeCenterX
-                                                         multiplier:1
-                                                           constant:0]];
-    
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.readerWebView
-                                                          attribute:NSLayoutAttributeCenterY
-                                                          relatedBy:NSLayoutRelationEqual
-                                                             toItem:self.webView
-                                                          attribute:NSLayoutAttributeCenterY
-                                                         multiplier:1
-                                                           constant:0]];
+    [self.readerWebView.heightAnchor constraintEqualToAnchor:self.webView.heightAnchor].active = YES;
+    [self.readerWebView.centerXAnchor constraintEqualToAnchor:self.webView.centerXAnchor].active = YES;
+    [self.readerWebView.centerYAnchor constraintEqualToAnchor:self.webView.centerYAnchor].active = YES;
     
     NSDictionary *metrics = @{@"height": @(kToolbarHeight)};
 
     [self.view lhs_addConstraints:@"V:[show(height)][bottom]" metrics:metrics views:views];
     [self.view lhs_addConstraints:@"V:|[background][webview][bottom]" metrics:metrics views:views];
     [self.view lhs_addConstraints:@"V:[toolbar(>=height)]" metrics:metrics views:views];
-    
-    self.toolbarConstraint = [NSLayoutConstraint constraintWithItem:self.bottomLayoutGuide
-                                                          attribute:NSLayoutAttributeBottom
-                                                          relatedBy:NSLayoutRelationEqual
-                                                             toItem:self.toolbar
-                                                          attribute:NSLayoutAttributeTop
-                                                         multiplier:1
-                                                           constant:kToolbarHeight];
 
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.bottomLayoutGuide
-                                                          attribute:NSLayoutAttributeBottom
-                                                          relatedBy:NSLayoutRelationLessThanOrEqual
-                                                             toItem:self.toolbar
-                                                          attribute:NSLayoutAttributeBottom
-                                                         multiplier:1
-                                                           constant:0]];
-    [self.view addConstraint:self.toolbarConstraint];
+    self.toolbarConstraint = [self.bottomLayoutGuide.bottomAnchor constraintEqualToAnchor:self.toolbar.topAnchor constant:kToolbarHeight];
+    self.toolbarConstraint.active = YES;
 
+    [self.bottomLayoutGuide.bottomAnchor constraintLessThanOrEqualToAnchor:self.toolbar.bottomAnchor];
     self.topLayoutConstraint = [self.statusBarBackgroundView lhs_setHeight:0];
 }
 

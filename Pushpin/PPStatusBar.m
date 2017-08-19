@@ -99,7 +99,7 @@
     [self.superview layoutIfNeeded];
 
     CGFloat height = CGRectGetHeight(self.view.frame) + 20;
-    self.topConstraint = [NSLayoutConstraint constraintWithItem:self.view attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:controller.view attribute:NSLayoutAttributeTop multiplier:1 constant:-height];
+    self.topConstraint = [self.view.topAnchor constraintEqualToAnchor:controller.view.topAnchor constant:-height];
     [self.superview addConstraint:self.topConstraint];
     [self.superview layoutIfNeeded];
 

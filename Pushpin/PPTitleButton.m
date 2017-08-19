@@ -76,8 +76,8 @@
     NSInteger i = 0;
 
     self.imageView.hidden = YES;
-    
-    [self.containerView removeConstraints:self.containerView.constraints];
+
+    [NSLayoutConstraint deactivateConstraints:self.containerView.constraints];
     
     NSDictionary *metrics = @{@"width": @(20),
                               @"textWidth": @([UIApplication currentSize].width - 120)};
@@ -103,7 +103,7 @@
         self.titleLabel.text = title;
         views[@"title"] = self.titleLabel;
         [formatComponents addObject:@"[title(<=textWidth)]"];
-        [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.containerView attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
+        [self.titleLabel.centerYAnchor constraintEqualToAnchor:self.containerView.centerYAnchor constant:1].active = YES;
     }
     
     NSString *format = [NSString stringWithFormat:@"H:|%@|", [formatComponents componentsJoinedByString:@"-5-"]];
@@ -144,26 +144,26 @@
 
     NSDictionary *metrics = @{@"width": @([UIApplication currentSize].width - 120)};
 
-    [self.containerView removeConstraints:self.containerView.constraints];
+    [NSLayoutConstraint deactivateConstraints:self.containerView.constraints];
     [self.containerView lhs_addConstraints:@"H:|[image(20)]-5-[title(<=width)]|" metrics:metrics views:views];
     [self.containerView lhs_centerVerticallyForView:self.imageView height:20];
-    [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.containerView attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
+    [self.titleLabel.centerYAnchor constraintEqualToAnchor:self.containerView.centerYAnchor constant:1].active = YES;
 }
 
 - (void)addConstraintsForTitleOnly {
     NSDictionary *views = @{@"title": self.titleLabel};
     NSDictionary *metrics = @{@"width": @([UIApplication currentSize].width - 95)};
 
-    [self.containerView removeConstraints:self.containerView.constraints];
+    [NSLayoutConstraint deactivateConstraints:self.containerView.constraints];
     [self.containerView lhs_addConstraints:@"H:|[title(<=width)]|" metrics:metrics views:views];
-    [self.containerView addConstraint:[NSLayoutConstraint constraintWithItem:self.titleLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.containerView attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
+    [self.titleLabel.centerYAnchor constraintEqualToAnchor:self.containerView.centerYAnchor constant:1].active = YES;
 }
 
 - (void)addConstraintsForImageOnly {
     NSDictionary *views = @{@"image": self.imageView};
     NSDictionary *metrics = @{@"width": @(30)};
 
-    [self.containerView removeConstraints:self.containerView.constraints];
+    [NSLayoutConstraint deactivateConstraints:self.containerView.constraints];
     [self.containerView lhs_addConstraints:@"H:|[image(width)]|" metrics:metrics views:views];
     [self.containerView lhs_addConstraints:@"V:|[image(width)]|" metrics:metrics views:views];
 }

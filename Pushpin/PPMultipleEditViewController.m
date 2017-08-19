@@ -109,8 +109,8 @@ static NSString *CellIdentifier = @"Cell";
     self.tableView.backgroundColor = HEX(0xF7F9FDff);
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.tableView];
-    
-    self.bottomConstraint = [NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bottomLayoutGuide attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+
+    self.bottomConstraint = [self.tableView.bottomAnchor constraintEqualToAnchor:self.bottomLayoutGuide.topAnchor];
     [self.view addConstraint:self.bottomConstraint];
     
     UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:16];

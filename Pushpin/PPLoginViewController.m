@@ -41,14 +41,8 @@ static NSString * const CellIdentifier = @"CellIdentifier";
                             @"table": self.tableView};
     
     [self.view addSubview:self.tableView];
-    
-    self.bottomConstraint = [NSLayoutConstraint constraintWithItem:self.tableView
-                                                         attribute:NSLayoutAttributeBottom
-                                                         relatedBy:NSLayoutRelationEqual
-                                                            toItem:self.bottomLayoutGuide
-                                                         attribute:NSLayoutAttributeTop
-                                                        multiplier:1
-                                                          constant:0];
+
+    self.bottomConstraint = [self.tableView.bottomAnchor constraintEqualToAnchor:self.bottomLayoutGuide.topAnchor];
     
     [self.view addConstraint:self.bottomConstraint];
     [self.view lhs_addConstraints:@"V:[top][table]" views:views];

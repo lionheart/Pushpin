@@ -227,10 +227,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                             @"bar": self.toolbar,
                             @"search": self.searchButton,
                             @"tags": self.tagsButton,
-
                             @"notes": self.noteButton
                         };
-
 
     NSMutableArray *constraints = [[NSLayoutConstraint constraintsWithVisualFormat:@"H:[notes]-(>=12)-[search]-(>=12)-[tags]"
                                                                            options:0
@@ -244,17 +242,11 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                                                         attribute:NSLayoutAttributeCenterY
                                                        multiplier:1
                                                          constant:0]];
-    
-    NSLayoutConstraint *notesLeftConstraint = [NSLayoutConstraint constraintWithItem:self.noteButton
-                                                                           attribute:NSLayoutAttributeLeft
-                                                                           relatedBy:NSLayoutRelationEqual
-                                                                              toItem:self.toolbar
-                                                                           attribute:NSLayoutAttributeLeft
-                                                                          multiplier:1
-                                                                            constant:12];
+
+    NSLayoutConstraint *notesLeftConstraint = [self.noteButton.leftAnchor constraintEqualToAnchor:self.toolbar.leftAnchor
+                                                                                         constant:12];
     
     self.leftOrientationConstraints = [constraints arrayByAddingObject:notesLeftConstraint];
-    
 
     [constraints addObject:[NSLayoutConstraint constraintWithItem:self.tagsButton
                                                         attribute:NSLayoutAttributeCenterY
@@ -271,39 +263,20 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                                                         attribute:NSLayoutAttributeCenterY
                                                        multiplier:1
                                                          constant:0]];
-    
-    NSLayoutConstraint *tagsRightConstraint = [NSLayoutConstraint constraintWithItem:self.tagsButton
-                                                                           attribute:NSLayoutAttributeRight
-                                                                           relatedBy:NSLayoutRelationEqual
-                                                                              toItem:self.toolbar
-                                                                           attribute:NSLayoutAttributeRight
-                                                                          multiplier:1
-                                                                            constant:-12];
+
+    NSLayoutConstraint *tagsRightConstraint = [self.tagsButton.rightAnchor constraintEqualToAnchor:self.toolbar.rightAnchor
+                                                                                          constant:-12];
 
     self.rightOrientationConstraints = [constraints arrayByAddingObject:tagsRightConstraint];
-    
 
-    NSLayoutConstraint *searchCenterConstraint = [NSLayoutConstraint constraintWithItem:self.searchButton
-                                                                              attribute:NSLayoutAttributeCenterX
-                                                                              relatedBy:NSLayoutRelationEqual
-                                                                                 toItem:self.toolbar
-                                                                              attribute:NSLayoutAttributeCenterX
-                                                                             multiplier:1
-                                                                               constant:0];
+    NSLayoutConstraint *searchCenterConstraint = [self.searchButton.centerXAnchor constraintEqualToAnchor:self.toolbar.centerXAnchor];
 
     self.centerOrientationConstraints = [constraints arrayByAddingObjectsFromArray:@[notesLeftConstraint, tagsRightConstraint, searchCenterConstraint]];
 
-    
     [self.toolbar addConstraints:self.centerOrientationConstraints];
-    
-    self.toolbarBottomConstraint = [NSLayoutConstraint constraintWithItem:self.toolbar
-                                                                  attribute:NSLayoutAttributeBottom
-                                                                  relatedBy:NSLayoutRelationEqual
-                                                                     toItem:self.bottomLayoutGuide
-                                                                  attribute:NSLayoutAttributeBottom
-                                                                 multiplier:1
-                                                                   constant:0];
-    
+
+    self.toolbarBottomConstraint = [self.toolbar.bottomAnchor constraintEqualToAnchor:self.bottomLayoutGuide.bottomAnchor];
+
     [self.view addConstraint:self.toolbarBottomConstraint];
     [self.toolbar lhs_fillWidthOfSuperview];
     [self.tableView lhs_fillWidthOfSuperview];

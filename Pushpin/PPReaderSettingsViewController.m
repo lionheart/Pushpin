@@ -228,14 +228,8 @@ static NSString *CellIdentifier = @"Cell";
     [self.view addSubview:self.webViewContainer];
     [self.webViewContainer lhs_fillWidthOfSuperview];
     [self.view lhs_addConstraints:@"V:[container(>=160)][bottom]" views:views];
-    
-    self.webViewContainerPinnedToTopConstraint = [NSLayoutConstraint constraintWithItem:self.webViewContainer
-                                                                              attribute:NSLayoutAttributeTop
-                                                                              relatedBy:NSLayoutRelationEqual
-                                                                                 toItem:self.topLayoutGuide
-                                                                              attribute:NSLayoutAttributeBottom
-                                                                             multiplier:1
-                                                                               constant:0];
+
+    self.webViewContainerPinnedToTopConstraint = [self.webViewContainer.topAnchor constraintEqualToAnchor:self.topLayoutGuide.bottomAnchor];
 
     [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
 }
@@ -706,10 +700,10 @@ static NSString *CellIdentifier = @"Cell";
     [UIView animateWithDuration:0.4
                      animations:^{
                          if ([self.view.constraints containsObject:self.webViewContainerPinnedToTopConstraint]) {
-                             [self.view removeConstraint:self.webViewContainerPinnedToTopConstraint];
+                             self.webViewContainerPinnedToTopConstraint.active = NO;
                              self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Preview", nil);
                          } else {
-                             [self.view addConstraint:self.webViewContainerPinnedToTopConstraint];
+                             self.webViewContainerPinnedToTopConstraint.active = YES;
                              self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Minimize", nil);
                          }
                          

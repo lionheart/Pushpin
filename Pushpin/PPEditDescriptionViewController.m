@@ -45,17 +45,11 @@
         self.textView.font = font;
         self.textView.text = description;
         self.textView.delegate = self;
-        
+
         [self.view addSubview:self.textView];
-        
-        self.bottomConstraint = [NSLayoutConstraint constraintWithItem:self.textView
-                                                             attribute:NSLayoutAttributeBottom
-                                                             relatedBy:NSLayoutRelationEqual
-                                                                toItem:self.view
-                                                             attribute:NSLayoutAttributeBottom
-                                                            multiplier:1
-                                                              constant:0];
-        [self.view addConstraint:self.bottomConstraint];
+
+        self.bottomConstraint = [self.textView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor];
+        self.bottomConstraint.active = YES;
     }
     return self;
 }
