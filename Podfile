@@ -15,8 +15,6 @@ pod 'ASPinboard', :path => 'Vendor/ASPinboard'
 pod 'HTMLParser'
 pod 'AFNetworking', '~> 3.0'
 pod 'RNCryptor-objc', '~> 3'
-pod '1PasswordExtension', '~> 1.8'
-pod 'YHRoundBorderedButton', '~> 0.1'
 pod 'LHSCategoryCollection', :path => '../LHSCategoryCollection'
 pod 'LHSKeyboardAdjusting', :path => '../LHSKeyboardAdjusting'
 pod 'LHSFMDatabaseAdditions', '~> 0.0'
@@ -27,6 +25,8 @@ target 'Pushpin' do
   pod 'Mixpanel'
   pod 'ChimpKit'
   pod 'OpenInChrome', '~> 0.0'
+  pod 'Google-Mobile-Ads-SDK'
+  pod '1PasswordExtension', '~> 1.8'
 end
 
 target 'Bookmark Extension' do

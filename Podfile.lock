@@ -22,6 +22,7 @@ PODS:
   - FMDB (2.7.2):
     - FMDB/standard (= 2.7.2)
   - FMDB/standard (2.7.2)
+  - Google-Mobile-Ads-SDK (7.22.0)
   - hpple (0.2.0)
   - HTMLParser (0.1.2)
   - KeychainItemWrapper (1.2)
@@ -45,7 +46,6 @@ PODS:
   - RNCryptor-objc (3.0.5)
   - TMReachability (3.2)
   - TTTAttributedLabel (1.13.4)
-  - YHRoundBorderedButton (0.1.0)
 
 DEPENDENCIES:
   - 1PasswordExtension (~> 1.8)
@@ -54,6 +54,7 @@ DEPENDENCIES:
   - BRYHTMLParser
   - ChimpKit
   - FMDB
+  - Google-Mobile-Ads-SDK
   - HTMLParser
   - KeychainItemWrapper (~> 1.2)
   - LHSCategoryCollection (from `../LHSCategoryCollection`)
@@ -67,7 +68,6 @@ DEPENDENCIES:
   - RNCryptor-objc (~> 3)
   - TMReachability (from `https://github.com/albertbori/Reachability`, commit `e34782b386307e386348b481c02c176d58ba45e6`)
   - TTTAttributedLabel (~> 1.13)
-  - YHRoundBorderedButton (~> 0.1)
 
 EXTERNAL SOURCES:
   ASPinboard:
@@ -92,6 +92,7 @@ SPEC CHECKSUMS:
   BRYHTMLParser: f26cabad255a7115842d7b9c1cad8f612cf66deb
   ChimpKit: d020126089544daa349397a91f1489a3f271b791
   FMDB: 6198a90e7b6900cfc046e6bc0ef6ebb7be9236aa
+  Google-Mobile-Ads-SDK: 1bdf1a4244d0553b1840239874c209c01aef055f
   hpple: 3b765f96fc2cd56ad1a49aef6f7be5cb2aa64b57
   HTMLParser: 0aff2823b285cfe41996d55d1ae742a27ff89305
   KeychainItemWrapper: 67a240172ed669842bc6bc13ed554dcd50469fa2
@@ -106,8 +107,7 @@ SPEC CHECKSUMS:
   RNCryptor-objc: a65b15493de05dda4af0f392c70372b7a5625aab
   TMReachability: 48c99d728a8b0ad4493800592484b8cbb65c896c
   TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
-  YHRoundBorderedButton: 2180f04094db264cace8db88eae977d78a3b4633
 
-PODFILE CHECKSUM: feda5bd81fe565fc860bb5681a001ea2b293f973
+PODFILE CHECKSUM: 2cc7be357f7982395fa7133925f351915bc82a66
 
 COCOAPODS: 1.3.1
