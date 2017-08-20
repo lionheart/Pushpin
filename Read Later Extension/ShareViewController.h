@@ -6,8 +6,8 @@
 //  Copyright © 2017 Lionheart Software. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-#import <Social/Social.h>
+@import UIKit;
+@import Social;
 
 @interface ShareViewController : UIViewController
 
