@@ -1815,9 +1815,9 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin-resources.sh",
-				$PODS_CONFIGURATION_BUILD_DIR/1PasswordExtension/OnePasswordExtensionResources.bundle,
+				"$PODS_CONFIGURATION_BUILD_DIR/1PasswordExtension/OnePasswordExtensionResources.bundle",
 				"${PODS_ROOT}/ChimpKit/ChimpKit3/Helper Objects/CKAuthViewController.xib",
-				$PODS_CONFIGURATION_BUILD_DIR/HTMLParser/HTMLParser.bundle,
+				"$PODS_CONFIGURATION_BUILD_DIR/HTMLParser/HTMLParser.bundle",
 				"${PODS_ROOT}/Mixpanel/Mixpanel/Images/MPArrowLeft.png",
 				"${PODS_ROOT}/Mixpanel/Mixpanel/Images/MPArrowLeft@2x.png",
 				"${PODS_ROOT}/Mixpanel/Mixpanel/Images/MPArrowRight.png",
@@ -1922,7 +1922,6 @@
 				"${BUILT_PRODUCTS_DIR}/RNCryptor-objc/RNCryptor_objc.framework",
 				"${BUILT_PRODUCTS_DIR}/TMReachability/TMReachability.framework",
 				"${BUILT_PRODUCTS_DIR}/TTTAttributedLabel/TTTAttributedLabel.framework",
-				"${BUILT_PRODUCTS_DIR}/YHRoundBorderedButton/YHRoundBorderedButton.framework",
 				"${BUILT_PRODUCTS_DIR}/hpple/hpple.framework",
 				"${BUILT_PRODUCTS_DIR}/Mixpanel-AppExtension/Mixpanel_AppExtension.framework",
 			);
@@ -1946,7 +1945,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RNCryptor_objc.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TMReachability.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TTTAttributedLabel.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YHRoundBorderedButton.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hpple.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mixpanel_AppExtension.framework",
 			);
