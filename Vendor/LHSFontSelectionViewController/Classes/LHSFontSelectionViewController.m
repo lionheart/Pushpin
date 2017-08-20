@@ -8,7 +8,6 @@
 
 @import LHSTableViewCells;
 @import LHSCategoryCollection;
-@import YHRoundBorderedButton;
 
 #import "PPAppDelegate.h"
 #import "PPSettings.h"
