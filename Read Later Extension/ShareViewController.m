@@ -78,12 +78,12 @@
                         }
                     }
 
-                    void (^CompletionBlockInnerInner)(NSString *title, NSString *message) = ^(NSString *title, NSString *message) {
+                    void (^CompletionBlockInner)(NSString *title, NSString *message) = ^(NSString *title, NSString *message) {
                         UIAlertController *alert2 = [UIAlertController alertControllerWithTitle:title
                                                                                         message:message
                                                                                  preferredStyle:UIAlertControllerStyleAlert];
 
-                        [self presentViewController:alert2 animated:YES completion:^{
+                        [self dismissViewControllerIfPresented:loadingAlert newController:alert2 withCompletion:^{
                             double delayInSeconds = 1;
                             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
                             dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
@@ -92,16 +92,6 @@
                                 }];
                             });
                         }];
-                    };
-
-                    void (^CompletionBlockInner)(NSString *title, NSString *message) = ^(NSString *title, NSString *message) {
-                        if (loadingAlert.isBeingPresented) {
-                            [loadingAlert dismissViewControllerAnimated:YES completion:^{
-                                CompletionBlockInnerInner(title, message);
-                            }];
-                        } else {
-                            CompletionBlockInnerInner(title, message);
-                        }
                     };
 
                     NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
@@ -135,20 +125,18 @@
                                                           if (title.length > 0) {
                                                               AddBookmarkBlock(urlString, title);
                                                           } else {
-                                                              [loadingAlert dismissViewControllerAnimated:YES completion:^{
-                                                                  UIAlertController *controller = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"No Title Found", nil)
-                                                                                                                                    message:NSLocalizedString(@"Pushpin couldn't retrieve a title for this bookmark. Would you like to add this bookmark with the URL as the title?", nil)];
+                                                              UIAlertController *controller = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"No Title Found", nil)
+                                                                                                                                message:NSLocalizedString(@"Pushpin couldn't retrieve a title for this bookmark. Would you like to add this bookmark with the URL as the title?", nil)];
 
-                                                                  [controller lhs_addActionWithTitle:@"Add" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                                                                      AddBookmarkBlock(urlString, urlString);
-                                                                  }];
-
-                                                                  [controller lhs_addActionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-                                                                      [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
-                                                                  }];
-
-                                                                  [self presentViewController:controller animated:YES completion:nil];
+                                                              [controller lhs_addActionWithTitle:@"Add" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+                                                                  AddBookmarkBlock(urlString, urlString);
                                                               }];
+
+                                                              [controller lhs_addActionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+                                                                  [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
+                                                              }];
+
+                                                              [self dismissViewControllerIfPresented:loadingAlert newController:controller withCompletion:nil];
                                                           }
                                                       }];
                             }
@@ -164,7 +152,8 @@
                 [alert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                     [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
                 }];
-                [self presentViewController:alert animated:YES completion:nil];
+
+                [self dismissViewControllerIfPresented:loadingAlert newController:alert withCompletion:nil];
             }
         } else {
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Error", nil)
@@ -173,9 +162,20 @@
             [alert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
                 [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
             }];
-            [self presentViewController:alert animated:YES completion:nil];
+
+            [self dismissViewControllerIfPresented:loadingAlert newController:alert withCompletion:nil];
         }
     }];
+}
+
+- (void)dismissViewControllerIfPresented:(UIViewController *)controller newController:(UIViewController *)newController withCompletion:(void (^)())completion {
+    if (controller.presentingViewController) {
+        [controller dismissViewControllerAnimated:YES completion:^{
+            [self presentViewController:newController animated:YES completion:completion];
+        }];
+    } else {
+        [self presentViewController:newController animated:YES completion:completion];
+    }
 }
 
 @end
