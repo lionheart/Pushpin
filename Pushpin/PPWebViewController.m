@@ -208,6 +208,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     toolbarBorderView.backgroundColor = HEX(0xb2b2b2ff);
     toolbarBorderView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.toolbar addSubview:toolbarBorderView];
+    [self.view addSubview:self.toolbar];
     
     self.titleLabel = [[UILabel alloc] init];
     self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
@@ -260,7 +261,6 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     [self.editButton.rightAnchor constraintEqualToAnchor:self.addButton.rightAnchor].active = YES;
 
     [self tintButtonsWithColor:[UIColor darkGrayColor]];
-    [self.view addSubview:self.toolbar];
     
     NSDictionary *views = @{
         @"toolbar": self.toolbar,
