@@ -14,6 +14,10 @@
 @import Mixpanel;
 @import SafariServices;
 
+#ifdef ENABLE_ADS
+@import GoogleMobileAds;
+#endif
+
 #import "PPGenericPostViewController.h"
 #import "PPConstants.h"
 #import "PPSettings.h"
@@ -75,6 +79,10 @@ static NSInteger PPBookmarkEditMaximum = 25;
 @property (nonatomic, strong) UIKeyCommand *editKeyCommand;
 @property (nonatomic, strong) UIKeyCommand *enterKeyCommand;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
+
+#ifdef ENABLE_ADS
+@property (nonatomic) GADBannerView *googleAdBannerView;
+#endif
 
 @property (nonatomic, strong) UIView *circle;
 @property (nonatomic, strong) UISnapBehavior *circleSnapBehavior;
@@ -282,22 +290,37 @@ static NSInteger PPBookmarkEditMaximum = 25;
     [self.multipleDeleteButton addTarget:self action:@selector(multiDelete:) forControlEvents:UIControlEventTouchUpInside];
     [self.multiToolbarView addSubview:self.multipleDeleteButton];
     self.multipleDeleteButton.enabled = NO;
+
+#ifdef ENABLE_ADS
+    self.googleAdBannerView = [[GADBannerView alloc] initWithAdSize:kGADAdSizeFullBanner];
+    self.googleAdBannerView.translatesAutoresizingMaskIntoConstraints = NO;
+
+#ifdef DEBUG
+    // DEBUG ad
+    self.googleAdBannerView.adUnitID = @"ca-app-pub-3940256099942544/6300978111";
+#else
+    self.googleAdBannerView.adUnitID = @"ca-app-pub-3085392865413583/7137255977";
+#endif
+    self.googleAdBannerView.rootViewController = self;
+    [self.view addSubview:self.googleAdBannerView];
+    [self.googleAdBannerView loadRequest:[GADRequest request]];
+#endif
     
     // Multi edit status and toolbar
     [self.view addSubview:self.tableView];
     [self.view addSubview:self.multiToolbarView];
     [self.view addSubview:self.circle];
-    
+
     self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];
-    
+
     self.circleSnapBehavior = [[UISnapBehavior alloc] initWithItem:self.circle snapToPoint:CGPointMake(0, -100)];
     [self.animator addBehavior:self.circleSnapBehavior];
-    
+
     NSDictionary *toolbarViews = @{ @"border": multiToolbarBorderView,
                                     @"read": self.multipleMarkAsReadButton,
                                     @"edit": self.multipleTagEditButton,
                                     @"delete": self.multipleDeleteButton };
-    
+
     [self.multiToolbarView lhs_addConstraints:@"H:|[read][edit(==read)][delete(==read)]|" views:toolbarViews];
     [self.multiToolbarView lhs_addConstraints:@"V:|[read]|" views:toolbarViews];
     [self.multiToolbarView lhs_addConstraints:@"V:|[edit]|" views:toolbarViews];
@@ -307,9 +330,21 @@ static NSInteger PPBookmarkEditMaximum = 25;
     
     NSDictionary *views = @{@"toolbarView": self.multiToolbarView,
                             @"table": self.tableView};
-    
-    [self.tableView lhs_fillHeightOfSuperview];
-    [self.tableView lhs_fillWidthOfSuperview];
+
+    [self.tableView.topAnchor constraintEqualToAnchor:self.view.topAnchor].active = YES;
+    [self.tableView.rightAnchor constraintEqualToAnchor:self.view.rightAnchor].active = YES;
+    [self.tableView.leftAnchor constraintEqualToAnchor:self.view.leftAnchor].active = YES;
+
+#ifdef ENABLE_ADS
+    [self.tableView.bottomAnchor constraintEqualToAnchor:self.googleAdBannerView.topAnchor].active = YES;
+
+    [self.googleAdBannerView.rightAnchor constraintEqualToAnchor:self.view.rightAnchor].active = YES;
+    [self.googleAdBannerView.leftAnchor constraintEqualToAnchor:self.view.leftAnchor].active = YES;
+    [self.googleAdBannerView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor].active = YES;
+#else
+    [self.tableView.bottomAnchor constraintEqualToAnchor:self.bottomLayoutGuide.topAnchor].active = YES;
+#endif
+
     [self.multiToolbarView lhs_fillWidthOfSuperview];
     [self.view lhs_addConstraints:@"V:[toolbarView(height)]" metrics:@{ @"height": @(kToolbarHeight) } views:views];
     

@@ -17,6 +17,10 @@
 @import KeychainItemWrapper;
 @import FMDB;
 
+#ifdef ENABLE_ADS
+@import GoogleMobileAds;
+#endif
+
 #import "PPAppDelegate.h"
 #import "PPLoginViewController.h"
 #import "PPGenericPostViewController.h"
@@ -655,6 +659,14 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     PPSettings *settings = [PPSettings sharedSettings];
+
+#ifdef ENABLE_ADS
+    [GADMobileAds configureWithApplicationID:@"ca-app-pub-3085392865413583~9093566980"];
+#ifdef DEBUG
+    GADRequest *request = [GADRequest request];
+    request.testDevices = @[kGADSimulatorID];
+#endif
+#endif
 
     [[ChimpKit sharedKit] setApiKey:@"f3bfc69f8d267252c14d76664432f968-us7"];
 
