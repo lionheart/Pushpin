@@ -52,6 +52,12 @@
 		<string>twitter</string>
 		<string>pushpin</string>
 		<string>org-appextension-feature-password-management</string>
+		<string>ohttp</string>
+		<string>dolphin</string>
+		<string>cyber</string>
+		<string>icabmobile</string>
+		<string>googlechrome</string>
+		<string>googlechrome-x-callback</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
