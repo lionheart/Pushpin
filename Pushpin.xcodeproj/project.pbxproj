@@ -1815,9 +1815,9 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin-resources.sh",
-				"$PODS_CONFIGURATION_BUILD_DIR/1PasswordExtension/OnePasswordExtensionResources.bundle",
+				$PODS_CONFIGURATION_BUILD_DIR/1PasswordExtension/OnePasswordExtensionResources.bundle,
 				"${PODS_ROOT}/ChimpKit/ChimpKit3/Helper Objects/CKAuthViewController.xib",
-				"$PODS_CONFIGURATION_BUILD_DIR/HTMLParser/HTMLParser.bundle",
+				$PODS_CONFIGURATION_BUILD_DIR/HTMLParser/HTMLParser.bundle,
 				"${PODS_ROOT}/Mixpanel/Mixpanel/Images/MPArrowLeft.png",
 				"${PODS_ROOT}/Mixpanel/Mixpanel/Images/MPArrowLeft@2x.png",
 				"${PODS_ROOT}/Mixpanel/Mixpanel/Images/MPArrowRight.png",
