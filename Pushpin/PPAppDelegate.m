@@ -30,7 +30,6 @@
 #import "PPWebViewController.h"
 #import "PPPinboardFeedDataSource.h"
 #import "PPTheme.h"
-#import "PPTitleButton.h"
 #import "PPStatusBar.h"
 #import "PPSettings.h"
 #import "PPCachingURLProtocol.h"

@@ -16,7 +16,6 @@
 #import "PPSearchExamplesViewController.h"
 #import "PPGenericPostViewController.h"
 #import "PPPinboardDataSource.h"
-#import "PPTitleButton.h"
 #import "PPAppDelegate.h"
 #import "PPFeedListViewController.h"
 #import "PPSettings.h"

@@ -18,13 +18,11 @@
 #import "PPAppDelegate.h"
 #import "PPSettingsViewController.h"
 #import "PPPinboardLoginViewController.h"
-//#import "NSString+URLEncoding.h"
 #import "PPBrowserSettingsViewController.h"
 #import "PPDisplaySettingsViewController.h"
 #import "PPAboutViewController.h"
 #import "PPTheme.h"
 #import "PPNavigationController.h"
-#import "PPTitleButton.h"
 #import "PPMobilizerUtility.h"
 #import "PPConstants.h"
 #import "PPSettings.h"
@@ -56,9 +54,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    PPTitleButton *titleView = [PPTitleButton button];
-    [titleView setTitle:NSLocalizedString(@"Settings", nil) imageName:nil];
-    self.navigationItem.titleView = titleView;
+    self.navigationItem.title = NSLocalizedString(@"Settings", nil);
 
     UIBarButtonItem *barButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"About Navigation Bar", nil)
                                                                       style:UIBarButtonItemStylePlain

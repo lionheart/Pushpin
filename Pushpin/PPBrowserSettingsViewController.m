@@ -16,7 +16,6 @@
 #import "BookmarkletInstallationViewController.h"
 #import "PPAppDelegate.h"
 #import "PPTheme.h"
-#import "PPTitleButton.h"
 #import "PPTableViewTitleView.h"
 #import "PPConstants.h"
 #import "PPSettings.h"
@@ -52,9 +51,7 @@ static NSString *CellIdentifier = @"Cell";
         self.useSafariViewControllerSwitch.enabled = false;
     }
 
-    PPTitleButton *titleView = [PPTitleButton button];
-    [titleView setTitle:NSLocalizedString(@"Browser Settings", nil) imageName:nil];
-    self.navigationItem.titleView = titleView;
+    self.navigationItem.title = NSLocalizedString(@"Browser Settings", nil);
     
     self.browserActionSheet = [UIAlertController lhs_actionSheetWithTitle:nil];
     

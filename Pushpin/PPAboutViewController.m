@@ -17,7 +17,6 @@
 #import "PPAboutViewController.h"
 #import "PPChangelogViewController.h"
 #import "PPTheme.h"
-#import "PPTitleButton.h"
 #import "PPPlainTextViewController.h"
 
 static NSString *CellIdentifier = @"CellIdentifier";
@@ -51,9 +50,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     NSString *title = [NSString stringWithFormat:@"Pushpin %@ (%@)", info[@"CFBundleShortVersionString"], info[@"CFBundleVersion"]];
     NSString* aboutPlist = [[NSBundle mainBundle] pathForResource:@"About" ofType:@"plist"];
 
-    PPTitleButton *titleView = [PPTitleButton button];
-    [titleView setTitle:title imageName:nil];
-    self.navigationItem.titleView = titleView;
+    self.navigationItem.title = title;
 
     self.sections = [NSArray arrayWithContentsOfFile:aboutPlist];
 

@@ -12,7 +12,6 @@
 #import "PPAppDelegate.h"
 #import "BookmarkletInstallationViewController.h"
 #import "PPTheme.h"
-#import "PPTitleButton.h"
 #import "PPTableViewTitleView.h"
 #import "PPNotification.h"
 
@@ -30,10 +29,8 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    PPTitleButton *titleView = [PPTitleButton button];
-    [titleView setTitle:NSLocalizedString(@"Browser Integration", nil) imageName:nil];
-    self.navigationItem.titleView = titleView;
+
+    self.navigationItem.title = NSLocalizedString(@"Browser Integration", nil);
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
 }
 

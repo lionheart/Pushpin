@@ -9,7 +9,6 @@
 @import Mixpanel;
 
 #import "PPReaderSettingsViewController.h"
-#import "PPTitleButton.h"
 #import "PPTheme.h"
 #import "PPSettings.h"
 #import "PPWebViewController.h"

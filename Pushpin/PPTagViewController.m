@@ -16,7 +16,6 @@
 #import "PPGenericPostViewController.h"
 #import "PPPinboardDataSource.h"
 #import "PPNavigationController.h"
-#import "PPTitleButton.h"
 #import "PPTheme.h"
 #import "PPTableViewTitleView.h"
 #import "PPFeedListViewController.h"

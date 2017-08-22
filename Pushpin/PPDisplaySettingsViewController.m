@@ -15,7 +15,6 @@
 #import "PPDisplaySettingsViewController.h"
 #import "PPDefaultFeedViewController.h"
 #import "PPTheme.h"
-#import "PPTitleButton.h"
 #import "PPSettings.h"
 #import "PPPinboardMetadataCache.h"
 #import "PPUtilities.h"
@@ -63,9 +62,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    PPTitleButton *titleView = [PPTitleButton button];
-    [titleView setTitle:NSLocalizedString(@"Advanced Settings", nil) imageName:nil];
-    self.navigationItem.titleView = titleView;
+    self.navigationItem.title = NSLocalizedString(@"Advanced Settings", nil);
     
     self.fontSizeAdjustmentActionSheet = [UIAlertController lhs_actionSheetWithTitle:NSLocalizedString(@"Font Adjustment", nil)];
     
