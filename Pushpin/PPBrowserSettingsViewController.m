@@ -239,7 +239,7 @@ static NSString *CellIdentifier = @"Cell";
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (indexPath.section == 0) {
         if (indexPath.row == 0) {
-            if (!self.actionSheet) {
+            if (!self.actionSheet && self.browserActionSheet.actions.count > 2) {
                 UIView *cell = [tableView cellForRowAtIndexPath:indexPath];
 
                 self.browserActionSheet.popoverPresentationController.sourceRect = [cell lhs_centerRect];
