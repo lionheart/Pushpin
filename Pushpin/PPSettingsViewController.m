@@ -73,8 +73,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                                              PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
                                              settings.lastUpdated = nil;
                                              [delegate logout];
-                                             
-                                             
 
                                              [[ASPinboard sharedInstance] resetAuthentication];
                                              
@@ -122,7 +120,9 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                                             }];
         [task resume];
     }
-    
+
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
+    self.tableView.estimatedRowHeight = 44;
     [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
     [self.tableView registerClass:[LHSTableViewCellSubtitle class] forCellReuseIdentifier:SubtitleCellIdentifier];
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:DeleteCellIdentifier];
@@ -131,10 +131,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [[Mixpanel sharedInstance] track:@"Opened settings"];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
 }
 
 -(BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
@@ -147,14 +143,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
 - (void)showAboutPage {
     [[Mixpanel sharedInstance] track:@"Opened about page"];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        PPAboutViewController *aboutViewController = [[PPAboutViewController alloc] init];
-        [self.navigationController pushViewController:aboutViewController animated:YES];
-    });
-}
-
-- (void)closeAboutPage {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    PPAboutViewController *aboutViewController = [[PPAboutViewController alloc] init];
+    [self.navigationController pushViewController:aboutViewController animated:YES];
 }
 
 #pragma mark - UITableViewDataSource
@@ -186,19 +176,12 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
     }
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 1 && indexPath.row == PPOtherRatePushpin) {
-        return 54;
-    }
-    return 44;
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell;
 
     if (indexPath.section == PPSectionCacheSettings) {
         cell = [tableView dequeueReusableCellWithIdentifier:DeleteCellIdentifier forIndexPath:indexPath];
-    } else if (indexPath.section == 1 && indexPath.row == PPOtherRatePushpin) {
+    } else if (indexPath.section == 1 && (indexPath.row == PPOtherRatePushpin || indexPath.row == PPOtherTipJar)) {
         cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier forIndexPath:indexPath];
     } else {
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
@@ -250,6 +233,12 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
             cell.selectionStyle = UITableViewCellSelectionStyleDefault;
 
             switch ((PPOtherSettingsRowType)indexPath.row) {
+                case PPOtherTipJar:
+                    cell.textLabel.text = NSLocalizedString(@"Tip Jar <3", nil);
+                    cell.detailTextLabel.text = NSLocalizedString(@"Help support continued Pushpin development!", nil);
+                    cell.detailTextLabel.numberOfLines = 0;
+                    break;
+
                 case PPOtherRatePushpin:
                     cell.textLabel.text = NSLocalizedString(@"Rate Pushpin on the App Store", nil);
 
