@@ -221,13 +221,13 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
             switch ((PPMainSettingsRowType)indexPath.row) {
                 case PPMainReader:
-                    cell.imageView.image = [UIImage imageNamed:@"874-newspaper"];
+                    cell.imageView.image = [UIImage imageNamed:@"News"];
                     cell.textLabel.text = NSLocalizedString(@"Reader View", nil);
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
 
                 case PPMainAdvanced:
-                    cell.imageView.image = [UIImage imageNamed:@"740-gear"];
+                    cell.imageView.image = [UIImage imageNamed:@"Gear"];
                     cell.textLabel.text = NSLocalizedString(@"Advanced", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -236,13 +236,13 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                     break;
 
                 case PPMainBrowser:
-                    cell.imageView.image = [UIImage imageNamed:@"782-compass"];
+                    cell.imageView.image = [UIImage imageNamed:@"Compass"];
                     cell.textLabel.text = NSLocalizedString(@"Browser", nil);
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
                     
                 case PPMainOffline:
-                    cell.imageView.image = [UIImage imageNamed:@"731-cloud-download"];
+                    cell.imageView.image = [UIImage imageNamed:@"Download"];
                     cell.textLabel.text = NSLocalizedString(@"Offline", nil);
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
