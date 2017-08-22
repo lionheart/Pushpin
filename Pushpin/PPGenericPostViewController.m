@@ -322,9 +322,10 @@ static NSInteger PPBookmarkEditMaximum = 25;
                                     @"delete": self.multipleDeleteButton };
 
     [self.multiToolbarView lhs_addConstraints:@"H:|[read][edit(==read)][delete(==read)]|" views:toolbarViews];
-    [self.multiToolbarView lhs_addConstraints:@"V:|[read]|" views:toolbarViews];
-    [self.multiToolbarView lhs_addConstraints:@"V:|[edit]|" views:toolbarViews];
-    [self.multiToolbarView lhs_addConstraints:@"V:|[delete]|" views:toolbarViews];
+    [UIView lhs_addConstraints:@"V:|[view]|" views:@[self.multipleMarkAsReadButton,
+                                                     self.multipleTagEditButton,
+                                                     self.multipleDeleteButton]];
+
     [self.multiToolbarView lhs_addConstraints:@"H:|[border]|" views:toolbarViews];
     [self.multiToolbarView lhs_addConstraints:@"V:|[border(0.5)]" views:toolbarViews];
     
