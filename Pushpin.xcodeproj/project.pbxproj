@@ -2492,6 +2492,12 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pushpin/Pushpin for Pinboard-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+					"$(inherited)",
+					MIXPANEL_APP_EXTENSION,
+				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = Pushpin/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
@@ -2608,6 +2614,12 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pushpin/Pushpin for Pinboard-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+					"$(inherited)",
+					MIXPANEL_APP_EXTENSION,
+				);
 				INFOPLIST_FILE = Pushpin/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) \"@executable_path/Frameworks\" @loader_path/Frameworks";
@@ -2809,6 +2821,12 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pushpin/Pushpin for Pinboard-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+					"$(inherited)",
+					MIXPANEL_APP_EXTENSION,
+				);
 				INFOPLIST_FILE = Pushpin/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) \"@executable_path/Frameworks\" @loader_path/Frameworks";
@@ -2844,6 +2862,12 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pushpin/Pushpin for Pinboard-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"COCOAPODS=1",
+					"$(inherited)",
+					MIXPANEL_APP_EXTENSION,
+				);
 				INFOPLIST_FILE = Pushpin/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) \"@executable_path/Frameworks\" @loader_path/Frameworks";
