@@ -569,7 +569,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
 
                 TMReachability *reach = [TMReachability reachabilityForInternetConnection];
                 if (settings.useSafariViewController && reach.isReachable) {
-                    SFSafariViewController *controller = [[SFSafariViewController alloc] initWithURL:[NSURL URLWithString:urlString] entersReaderIfAvailable:settings.openLinksWithMobilizer];
+                    SFSafariViewController *controller = [[SFSafariViewController alloc] initWithURL:[NSURL URLWithString:urlString] entersReaderIfAvailable:NO];
                     [self presentViewController:controller animated:YES completion:nil];
                 } else {
                     self.webViewController = [PPWebViewController webViewControllerWithURL:urlString];
