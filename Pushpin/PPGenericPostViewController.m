@@ -13,6 +13,7 @@
 @import LHSCategoryCollection;
 @import Mixpanel;
 @import SafariServices;
+@import TMReachability;
 
 #ifdef ENABLE_ADS
 @import GoogleMobileAds;
@@ -566,7 +567,8 @@ static NSInteger PPBookmarkEditMaximum = 25;
             if (settings.openLinksInApp) {
                 [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
 
-                if (settings.useSafariViewController) {
+                TMReachability *reach = [TMReachability reachabilityForInternetConnection];
+                if (settings.useSafariViewController && reach.isReachable) {
                     SFSafariViewController *controller = [[SFSafariViewController alloc] initWithURL:[NSURL URLWithString:urlString]];
                     [self presentViewController:controller animated:YES completion:nil];
                 } else {
