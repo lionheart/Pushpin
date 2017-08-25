@@ -270,7 +270,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         @"reader": self.readerWebView,
         @"bottom": self.bottomLayoutGuide
     };
-    
+
     // Make sure the height of the reader view is the same as the web view
     [self.readerWebView.heightAnchor constraintEqualToAnchor:self.webView.heightAnchor].active = YES;
     [self.readerWebView.centerXAnchor constraintEqualToAnchor:self.webView.centerXAnchor].active = YES;
