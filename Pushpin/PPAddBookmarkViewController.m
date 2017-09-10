@@ -1186,9 +1186,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     }
 
                     if (self.callback) {
-
                         self.callback(post);
-                        
 
                         dispatch_async(dispatch_get_main_queue(), ^{
 #warning This used to be "NO". Why?
