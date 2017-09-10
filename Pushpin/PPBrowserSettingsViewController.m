@@ -79,6 +79,9 @@ static NSString *CellIdentifier = @"Cell";
         } else if ([action.title isEqualToString:NSLocalizedString(@"Opera", nil)]) {
             [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Opera"];
             settings.browser = PPBrowserOpera;
+        } else if ([action.title isEqualToString:NSLocalizedString(@"Firefox", nil)]) {
+            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Firefox"];
+            settings.browser = PPBrowserFirefox;
         }
         
         [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]]
@@ -115,11 +118,17 @@ static NSString *CellIdentifier = @"Cell";
                                                                         style:UIAlertActionStyleDefault
                                                                       handler:BrowserAlertActionHandler];
     }
-    
+
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"cyber://"]]) {
         [self.browserActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cyberspace", nil)
-                                                                        style:UIAlertActionStyleDefault
-                                                                      handler:BrowserAlertActionHandler];
+                                                  style:UIAlertActionStyleDefault
+                                                handler:BrowserAlertActionHandler];
+    }
+
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"firefox://"]]) {
+        [self.browserActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Firefox", nil)
+                                                  style:UIAlertActionStyleDefault
+                                                handler:BrowserAlertActionHandler];
     }
     
     [self.browserActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
@@ -192,6 +201,10 @@ static NSString *CellIdentifier = @"Cell";
 
                         case PPBrowserOpera:
                             cell.detailTextLabel.text = NSLocalizedString(@"Cyberspace", nil);
+                            break;
+
+                        case PPBrowserFirefox:
+                            cell.detailTextLabel.text = NSLocalizedString(@"Firefox", nil);
                             break;
                     }
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;

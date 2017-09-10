@@ -19,6 +19,7 @@
 @import GoogleMobileAds;
 #endif
 
+#import "PPBrowserActivity.h"
 #import "PPGenericPostViewController.h"
 #import "PPConstants.h"
 #import "PPSettings.h"
@@ -642,9 +643,12 @@ static NSInteger PPBookmarkEditMaximum = 25;
                             [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];;
                             break;
                         }
-                            
-                        default:
+
+                        case PPBrowserFirefox: {
+                            NSString *string = [NSString stringWithFormat:@"firefox://open-url?url=%@", encodeByAddingPercentEscapes(urlString)];
+                            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:string] options:@{} completionHandler:nil];
                             break;
+                        }
                     }
                 }
             }

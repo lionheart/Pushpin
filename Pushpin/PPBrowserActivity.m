@@ -75,12 +75,14 @@
 }
 
 - (void)performActivity {
-    NSRange range = [self.url.absoluteString rangeOfString:@"http"];
-
     if ([self.browserName isEqualToString:NSLocalizedString(@"Chrome", nil)]) {
         OpenInChromeController *openInChromeController = [OpenInChromeController sharedInstance];
         [openInChromeController openInChrome:self.url withCallbackURL:[NSURL URLWithString:@"pushpin://"] createNewTab:YES];
+    } else if ([self.browserName isEqualToString:NSLocalizedString(@"Firefox", nil)]) {
+        NSString *urlString = [NSString stringWithFormat:@"firefox://open-url?url=%@", encodeByAddingPercentEscapes(self.url.absoluteString)];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString] options:@{} completionHandler:nil];
     } else {
+        NSRange range = [self.url.absoluteString rangeOfString:@"http"];
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[self.url.absoluteString stringByReplacingCharactersInRange:range withString:self.urlScheme]] options:@{} completionHandler:nil];;
     }
     

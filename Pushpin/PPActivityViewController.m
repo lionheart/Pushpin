@@ -48,9 +48,14 @@
         browserActivity = [[PPBrowserActivity alloc] initWithUrlScheme:@"dolphin" browser:@"Dolphin"];
         [browserActivites addObject:browserActivity];
     }
-    
+
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"cyber://"]]) {
         browserActivity = [[PPBrowserActivity alloc] initWithUrlScheme:@"cyber" browser:@"Cyberspace"];
+        [browserActivites addObject:browserActivity];
+    }
+
+    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"firefox://"]]) {
+        browserActivity = [[PPBrowserActivity alloc] initWithUrlScheme:@"firefox" browser:@"Firefox"];
         [browserActivites addObject:browserActivity];
     }
 
