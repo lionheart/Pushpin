@@ -1,3 +1,5 @@
+# vim: set ft=ruby
+
 platform :ios, '10.3'
 
 source 'https://github.com/CocoaPods/Specs.git'
