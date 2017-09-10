@@ -49,6 +49,7 @@
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
+		<string>firefox</string>
 		<string>twitter</string>
 		<string>pushpin</string>
 		<string>org-appextension-feature-password-management</string>
