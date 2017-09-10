@@ -187,7 +187,6 @@
 		37F1E1BD18C617940032B22B /* navigation-search@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37F1E1B918C617940032B22B /* navigation-search@2x.png */; };
 		37F9D0961D32FDE1002A168D /* BookmarkletInstallationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37561D9316AE0C7500D69CDE /* BookmarkletInstallationViewController.m */; };
 		37F9D0971D32FDF9002A168D /* PPSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37171A2B18B16C77007FF164 /* PPSearchViewController.m */; };
-		37F9D0981D32FDFB002A168D /* PPTwitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 37BC1BDA1889C6740022020A /* PPTwitter.m */; };
 		37F9D0991D32FDFE002A168D /* PPPinboardFeedDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3722155E16FCDB430036AA20 /* PPPinboardFeedDataSource.m */; };
 		37F9D09A1D32FE00002A168D /* PPWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 377E46E1174C85C500CE3813 /* PPWebViewController.m */; };
 		37F9D09B1D32FE03002A168D /* PPSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E40162B2EDA009FCB17 /* PPSettingsViewController.m */; };
@@ -531,8 +530,6 @@
 		37BC1BD3188641D80022020A /* readabilityInitializer.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = readabilityInitializer.js; path = Pushpin/readabilityInitializer.js; sourceTree = "<group>"; };
 		37BC1BD4188641D80022020A /* JSDOMParser.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; lineEnding = 0; name = JSDOMParser.js; path = Pushpin/JSDOMParser.js; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
 		37BC1BD7188642F90022020A /* readability.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = readability.js; path = Pushpin/readability.js; sourceTree = "<group>"; };
-		37BC1BD91889C6730022020A /* PPTwitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTwitter.h; sourceTree = "<group>"; };
-		37BC1BDA1889C6740022020A /* PPTwitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPTwitter.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37BC1DA71D3280EF00AC4607 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		37C012B71765423900938D81 /* PPMultipleEditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPMultipleEditViewController.h; sourceTree = "<group>"; };
 		37C012B81765423A00938D81 /* PPMultipleEditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPMultipleEditViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -1214,8 +1211,6 @@
 				370B1B781864FADC00319A20 /* PPTitleButton.m */,
 				370F92ED17500722005F0AD7 /* PPToolbar.h */,
 				370F92EE17500722005F0AD7 /* PPToolbar.m */,
-				37BC1BD91889C6730022020A /* PPTwitter.h */,
-				37BC1BDA1889C6740022020A /* PPTwitter.m */,
 				375B622F1A4DA9240045AFE7 /* PPURLCache.h */,
 				375B62301A4DA9240045AFE7 /* PPURLCache.m */,
 				37B4FFE11923AD18002F8558 /* PPUtilities.h */,
@@ -2023,7 +2018,6 @@
 				37B620071F4520AB005DE789 /* PPTheme.m in Sources */,
 				37B620081F4520B1005DE789 /* PPTitleButton.m in Sources */,
 				37B620161F4520F7005DE789 /* PPToolbar.m in Sources */,
-				37F9D0981D32FDFB002A168D /* PPTwitter.m in Sources */,
 				37B620111F4520DC005DE789 /* PPURLCache.m in Sources */,
 				37B620091F4520B4005DE789 /* PPUtilities.m in Sources */,
 				37F9D09A1D32FE00002A168D /* PPWebViewController.m in Sources */,
