@@ -494,6 +494,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     }
                     break;
                 }
+
+                default: break;
             }
             break;
             
@@ -528,6 +530,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     
                     break;
                 }
+
+                default: break;
             }
             break;
         }

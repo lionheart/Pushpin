@@ -140,6 +140,10 @@
             
         case NSTextAlignmentJustified:
             return @"justify";
+
+        default:
+#warning XXX
+            return @"";
     }
     
     return @"";

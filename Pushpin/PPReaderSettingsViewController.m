@@ -532,6 +532,8 @@ static NSString *CellIdentifier = @"Cell";
                     case NSTextAlignmentJustified:
                         readerSettings.textAlignment = NSTextAlignmentLeft;
                         break;
+
+                    default: break;
                 }
                 
                 settings.readerSettings = readerSettings;
@@ -549,6 +551,8 @@ static NSString *CellIdentifier = @"Cell";
             
         case PPReaderSettingsMainRowDisplayImages:
             break;
+
+        default: break;
     }
 }
 

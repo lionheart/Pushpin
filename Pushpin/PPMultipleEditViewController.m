@@ -454,6 +454,8 @@ static NSString *CellIdentifier = @"Cell";
             case kPushpinFilterTrue:
                 updatedBookmark[@"private"] = @(YES);
                 break;
+
+            default: break;
         }
 
         switch (self.read) {
@@ -464,6 +466,8 @@ static NSString *CellIdentifier = @"Cell";
             case kPushpinFilterTrue:
                 updatedBookmark[@"unread"] = @(NO);
                 break;
+
+            default: break;
         }
         
         NSString *updatedTags = [PPUtilities stringByTrimmingWhitespace:[tagList componentsJoinedByString:@" "]];
