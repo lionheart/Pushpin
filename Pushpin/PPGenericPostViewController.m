@@ -1645,13 +1645,13 @@ static NSInteger PPBookmarkEditMaximum = 25;
 
 - (void)updateMultipleEditUI {
     NSInteger numberOfSelectedRows = [self.tableView indexPathsForSelectedRows].count > 0;
-    
+
     if (numberOfSelectedRows > 0) {
         self.navigationItem.leftBarButtonItem.title = NSLocalizedString(@"Mark None", nil);
     } else {
         self.navigationItem.leftBarButtonItem.title = NSLocalizedString(@"Mark All", nil);
     }
-    
+
     [self setMultipleEditButtonsEnabled:numberOfSelectedRows];
     [self updateTitleViewText];
 }
@@ -1659,14 +1659,14 @@ static NSInteger PPBookmarkEditMaximum = 25;
 - (void)updateTitleViewText {
     NSInteger selectedRowCount = [self.tableView indexPathsForSelectedRows].count;
     PPTitleButton *button = [PPTitleButton button];
-    
+
     NSString *title;
     if (selectedRowCount == 1) {
         title = NSLocalizedString(@"1 bookmark", nil);
     } else {
         title = [NSString stringWithFormat:@"%lu %@", (unsigned long)selectedRowCount, NSLocalizedString(@"bookmarks", nil)];
     }
-    
+
     [button setTitle:title imageName:nil];
     self.navigationItem.titleView = button;
 }
@@ -1687,11 +1687,11 @@ static NSInteger PPBookmarkEditMaximum = 25;
 
 - (void)moveCircleFocusToSelectedIndexPathWithPosition:(UITableViewScrollPosition)position {
     self.circle.alpha = 1;
-    
+
     if (self.circleHideTimer) {
         [self.circleHideTimer invalidate];
     }
-    
+
     [UIView animateWithDuration:0.25
                      animations:^{
                          [self.tableView scrollToRowAtIndexPath:self.selectedIndexPath atScrollPosition:position animated:NO];
@@ -1700,12 +1700,12 @@ static NSInteger PPBookmarkEditMaximum = 25;
                          CGRect rect = [self.tableView rectForRowAtIndexPath:self.selectedIndexPath];
                          CGRect viewRect = [self.tableView convertRect:rect toView:self.view];
                          CGPoint point = CGPointMake(CGRectGetMidX(viewRect), CGRectGetMidY(viewRect));
-                         
+
                          [self.animator removeBehavior:self.circleSnapBehavior];
                          self.circleSnapBehavior = [[UISnapBehavior alloc] initWithItem:self.circle snapToPoint:point];
                          self.circleSnapBehavior.damping = 0.7;
                          [self.animator addBehavior:self.circleSnapBehavior];
-                         
+
                          if (self.circleHideTimer) {
                              [self.circleHideTimer invalidate];
                          }
@@ -1801,32 +1801,32 @@ static NSInteger PPBookmarkEditMaximum = 25;
         if (response.statusCode == 401) {
             UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Invalid Credentials", nil)
                                                                          message:NSLocalizedString(@"Your Pinboard credentials are currently out-of-date. Your auth token may have been reset. Please log out and back into Pushpin to continue syncing bookmarks.", nil)];
-            
+
             [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
                                     style:UIAlertActionStyleDefault
                                   handler:nil];
-            
+
             [self presentViewController:alert animated:YES completion:nil];
         } else if (response.statusCode == 401) {
             UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Rate Limit Hit", nil)
                                                                          message:NSLocalizedString(@"Pushpin has currently hit the API rate limit for your account. Please wait at least 5 minutes before updating your bookmarks again.", nil)];
-            
+
             [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
                                     style:UIAlertActionStyleDefault
                                   handler:nil];
-            
+
             [self presentViewController:alert animated:YES completion:nil];
         } else if (response.statusCode == 500) {
             UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Error", nil)
                                                                          message:NSLocalizedString(@"The Pinboard API was unable to complete this request.", nil)];
-            
+
             [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
                                     style:UIAlertActionStyleDefault
                                   handler:nil];
-            
+
             [self presentViewController:alert animated:YES completion:nil];
         }
-        
+
         [self.refreshControl endRefreshing];
     });
 }
@@ -1835,7 +1835,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
     UIViewController *vc = (UIViewController *)[dataSource editViewControllerForPostAtIndex:index callback:^{
         [self updateFromLocalDatabase];
     }];
-    
+
     if (![UIApplication isIPad]) {
         vc.transitioningDelegate = [PPShrinkBackTransition sharedInstance];
     }
@@ -1849,7 +1849,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
     } else {
         dataSource = self.currentDataSource;
     }
-    
+
     return [self editViewControllerForPostAtIndex:index dataSource:dataSource];
 }
 
@@ -1861,7 +1861,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
     if ([UIApplication isIPad]) {
         vc.modalPresentationStyle = UIModalPresentationFormSheet;
     }
-    
+
     if ([self.navigationController topViewController] == self) {
         UIViewController *presentingViewController;
         if (self.searchController.active) {
@@ -1869,7 +1869,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
         } else {
             presentingViewController = self.navigationController;
         }
-        
+
         [presentingViewController presentViewController:vc animated:YES completion:nil];
     }
 }
@@ -1886,40 +1886,39 @@ static NSInteger PPBookmarkEditMaximum = 25;
 
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
     NSString *searchText = searchController.searchBar.text;
-    
+
     if (![searchText isEqualToString:emptyString]) {
         switch (self.searchController.searchBar.selectedScopeButtonIndex) {
             case PPSearchScopeTitles:
                 self.formattedSearchString = [NSString stringWithFormat:@"title:\"%@\"", searchText];
                 break;
-                
+
             case PPSearchScopeDescriptions:
                 self.formattedSearchString = [NSString stringWithFormat:@"description:\"%@\"", searchText];
                 break;
-                
+
             case PPSearchScopeTags:
                 self.formattedSearchString = [NSString stringWithFormat:@"tags:\"%@\"", searchText];
                 break;
-                
+
             default:
                 self.formattedSearchString = searchText;
                 break;
         }
-        
+
         BOOL shouldSearchFullText = NO;
-        
 
         if ([self.searchPostDataSource respondsToSelector:@selector(shouldSearchFullText)]) {
             shouldSearchFullText = self.searchController.searchBar.selectedScopeButtonIndex == PPSearchScopeFullText;
         }
-        
+
         self.latestSearchTime = [NSDate date];
         if (shouldSearchFullText) {
             // Put this on a timer, since we don't want to kill Pinboard servers.
             if (self.fullTextSearchTimer) {
                 [self.fullTextSearchTimer invalidate];
             }
-            
+
             self.fullTextSearchTimer = [NSTimer timerWithTimeInterval:0.4
                                                                target:self
                                                              selector:@selector(updateSearchResultsForSearchPerformed:)
