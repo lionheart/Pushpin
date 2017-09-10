@@ -8,7 +8,7 @@
 
 @import Foundation;
 
-@interface NSString (LHSAdditions)
+@interface NSString (LHSAdditions2)
 
 - (NSInteger)lhs_IntegerIfNotNull;
 - (NSString *)lhs_stringByTrimmingWhitespace;

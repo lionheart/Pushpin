@@ -8,7 +8,7 @@
 
 #import "NSString+LHSAdditions.h"
 
-@implementation NSString (LHSAdditions)
+@implementation NSString (LHSAdditions2)
 
 - (NSInteger)lhs_IntegerIfNotNull {
 #warning XXX Does not work, since NSNull must have a category with the same name.
