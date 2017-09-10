@@ -116,8 +116,6 @@ static NSString *CellIdentifier = @"Cell";
     
     PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
     delegate.hideURLPrompt = NO;
-
-    [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
 }
 
 #pragma mark - Table view data source
