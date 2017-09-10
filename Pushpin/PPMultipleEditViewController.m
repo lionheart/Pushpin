@@ -418,7 +418,7 @@ static NSString *CellIdentifier = @"Cell";
     [self.tableView beginUpdates];
     [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:[self.existingTags indexOfObject:tag] inSection:PPMultipleEditSectionAddedTags]] withRowAnimation:UITableViewRowAnimationNone];
     [self.tableView endUpdates];
-#warning xxx
+#warning XXX
 }
 
 - (void)leftBarButtonTouchUpInside:(id)sender {
