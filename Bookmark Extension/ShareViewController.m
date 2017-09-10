@@ -20,6 +20,8 @@
 
 @property (nonatomic) BOOL hasToken;
 
+- (void)displayNoURLAlert;
+
 @end
 
 @implementation ShareViewController
@@ -146,40 +148,85 @@
     };
 
     NSExtensionItem *item = self.extensionContext.inputItems.firstObject;
+    NSItemProvider *titleItemProvider;
+    NSItemProvider *urlItemProvider;
+    NSItemProvider *propertyListItemProvider;
     for (NSItemProvider *itemProvider in item.attachments) {
         if ([itemProvider hasItemConformingToTypeIdentifier:(__bridge NSString *)kUTTypeURL]) {
-            [itemProvider loadItemForTypeIdentifier:(__bridge NSString *)kUTTypeURL
-                                            options:0
-                                  completionHandler:^(NSURL *url, NSError *error) {
-                                      CompletionHandler(url.absoluteString, @"", @"");
-                                  }];
-            break;
+            urlItemProvider = itemProvider;
+            continue;
         }
 
         if ([itemProvider hasItemConformingToTypeIdentifier:(__bridge NSString *)kUTTypePlainText]) {
-            [itemProvider loadItemForTypeIdentifier:(__bridge NSString *)kUTTypePlainText
-                                            options:0
-                                  completionHandler:^(NSString *text, NSError *error) {
-                                      NSURL *url = [NSURL URLWithString:text];
-                                      if (url) {
-                                          CompletionHandler(text, @"", @"");
-                                      } else {
-                                          CompletionHandler(@"", text, @"");
-                                      }
-                                  }];
-            break;
+            titleItemProvider = itemProvider;
+            continue;
         }
 
         if ([itemProvider hasItemConformingToTypeIdentifier:(__bridge NSString *)kUTTypePropertyList]) {
-            [itemProvider loadItemForTypeIdentifier:(__bridge NSString *)kUTTypePropertyList
-                                            options:0
-                                  completionHandler:^(NSDictionary *results, NSError *error) {
-                                      NSDictionary *data = results[NSExtensionJavaScriptPreprocessingResultsKey];
-                                      CompletionHandler(data[@"url"], data[@"title"], data[@"selection"]);
-                                  }];
+            propertyListItemProvider = itemProvider;
             break;
         }
     }
+
+
+    if (propertyListItemProvider) {
+        [propertyListItemProvider loadItemForTypeIdentifier:(__bridge NSString *)kUTTypePropertyList
+                                                    options:0
+                                          completionHandler:^(NSDictionary *results, NSError *error) {
+                                              NSDictionary *data = results[NSExtensionJavaScriptPreprocessingResultsKey];
+                                              CompletionHandler(data[@"url"], data[@"title"], data[@"selection"]);
+                                          }];
+    } else if (titleItemProvider != nil || urlItemProvider != nil) {
+        dispatch_group_t group = dispatch_group_create();
+
+        __block NSString *urlString;
+        __block NSString *title;
+
+        dispatch_group_enter(group);
+        dispatch_group_enter(group);
+        [urlItemProvider loadItemForTypeIdentifier:(__bridge NSString *)kUTTypeURL
+                                           options:0
+                                 completionHandler:^(NSURL *url, NSError *error) {
+                                     urlString = url.absoluteString;
+
+                                     dispatch_group_leave(group);
+                                 }];
+
+        [titleItemProvider loadItemForTypeIdentifier:(__bridge NSString *)kUTTypePlainText
+                                             options:0
+                                   completionHandler:^(NSString *text, NSError *error) {
+                                       NSURL *url = [NSURL URLWithString:text];
+                                       if (url) {
+                                           urlString = text;
+                                       } else {
+                                           title = text;
+                                       }
+
+                                       dispatch_group_leave(group);
+                                   }];
+
+        dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+            if (title == nil) {
+                title = @"";
+            }
+
+            if (urlString) {
+                CompletionHandler(urlString, title, @"");
+            } else {
+                [self displayNoURLAlert];
+            }
+        });
+    } else {
+        [self displayNoURLAlert];
+    }
+}
+
+- (void)displayNoURLAlert {
+    UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:@"No URL Found" message:@"No URL was provided for this webpage. Please try using another browser. If you still experience issues, please contact support."];
+    [alert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
+    }];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 @end
