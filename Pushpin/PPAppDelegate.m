@@ -75,7 +75,7 @@
     }
 }
 
-- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback {
+- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)(NSDictionary *))callback {
     PPNavigationController *addBookmarkViewController = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark
                                                                                                                     update:isUpdate
                                                                                                                   callback:callback];
@@ -128,7 +128,7 @@
         didLaunchWithURL = YES;
         [self showAddBookmarkViewControllerWithBookmark:[self parseQueryParameters:url.query]
                                                  update:@(NO)
-                                               callback:^{
+                                               callback:^(NSDictionary *post) {
                                                    NSDictionary *data = [self parseQueryParameters:url.query];
                                                    if (data[@"x-success"]) {
                                                        NSURL *url = [NSURL URLWithString:[data[@"x-success"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
@@ -235,7 +235,7 @@
         didLaunchWithURL = YES;
         if ([url.path isEqualToString:@"/add"]) {
             NSMutableDictionary *queryParameters = [self parseQueryParameters:url.query];
-            [self showAddBookmarkViewControllerWithBookmark:queryParameters update:@(NO) callback:^{
+            [self showAddBookmarkViewControllerWithBookmark:queryParameters update:@(NO) callback:^(NSDictionary *post) {
                 if (queryParameters[@"url"]) {
                     NSURL *url = [NSURL URLWithString:queryParameters[@"url"]];
 
@@ -817,7 +817,7 @@
 
 #pragma mark - Helpers
 
-- (void)closeModal:(UIViewController *)sender success:(void (^)())success {
+- (void)closeModal:(UIViewController *)sender success:(void (^)(void))success {
     [self.navigationController dismissViewControllerAnimated:YES completion:success];
 }
 
@@ -915,7 +915,7 @@
     } progress:nil];
 }
 
-- (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)())completionHandler {
+- (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)(void))completionHandler {
     self.urlCache.backgroundURLSessionCompletionHandlers[identifier] = completionHandler;
     completionHandler();
 }

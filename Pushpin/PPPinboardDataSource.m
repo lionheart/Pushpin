@@ -417,8 +417,8 @@ static BOOL kPinboardSyncInProgress = NO;
                       }];
 }
 
-- (void)deletePostsAtIndexPaths:(NSArray *)indexPaths callback:(void (^)())callback {
-    void (^SuccessBlock)();
+- (void)deletePostsAtIndexPaths:(NSArray *)indexPaths callback:(void (^)(void))callback {
+    void (^SuccessBlock)(void);
     void (^ErrorBlock)(NSError *);
 
     dispatch_group_t group = dispatch_group_create();
@@ -467,7 +467,7 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (void)deletePosts:(NSArray *)posts callback:(void (^)(NSIndexPath *))callback {
-    void (^SuccessBlock)();
+    void (^SuccessBlock)(void);
     void (^ErrorBlock)(NSError *);
     
     dispatch_group_t group = dispatch_group_create();
@@ -527,7 +527,7 @@ static BOOL kPinboardSyncInProgress = NO;
     return actions;
 }
 
-- (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index callback:(void (^)())callback {
+- (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index callback:(void (^)(void))callback {
     return [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:self.posts[index] update:@(YES) callback:^(NSDictionary *post) {
         [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
             [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, meta=:meta WHERE hash=:hash" withParameterDictionary:post];
@@ -1025,7 +1025,7 @@ static BOOL kPinboardSyncInProgress = NO;
         ASPinboard *pinboard = [ASPinboard sharedInstance];
         Mixpanel *mixpanel = [Mixpanel sharedInstance];
         
-        void (^UpdateSpotlightSearchIndex)() = ^{
+        void (^UpdateSpotlightSearchIndex)(void) = ^{
             [[PPUtilities databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
                 CSSearchableIndex *index = [CSSearchableIndex defaultSearchableIndex];
                 NSMutableArray <CSSearchableItem *> *items = [NSMutableArray array];
@@ -1343,7 +1343,7 @@ static BOOL kPinboardSyncInProgress = NO;
 }
 
 - (void)reloadBookmarksWithCompletion:(void (^)(NSError *))completion
-                               cancel:(BOOL (^)())cancel
+                               cancel:(BOOL (^)(void))cancel
                                 width:(CGFloat)width {
     NSDate *timeWhenReloadBegan = [NSDate date];
     self.latestReloadTime = timeWhenReloadBegan;

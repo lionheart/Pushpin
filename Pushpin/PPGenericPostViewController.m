@@ -104,8 +104,8 @@ static NSInteger PPBookmarkEditMaximum = 25;
 - (CGFloat)currentWidthForOrientation:(UIInterfaceOrientation)orientation;
 
 - (void)updateFromLocalDatabase;
-- (void)updateFromLocalDatabaseWithCallback:(void (^)())callback;
-- (void)updateFromLocalDatabaseWithCallback:(void (^)())callback time:(NSDate *)time;
+- (void)updateFromLocalDatabaseWithCallback:(void (^)(void))callback;
+- (void)updateFromLocalDatabaseWithCallback:(void (^)(void))callback time:(NSDate *)time;
 - (void)updateSearchResultsForSearchPerformed:(NSNotification *)notification;
 - (void)updateSearchResultsForSearchPerformedAtTime:(NSDate *)time;
 
@@ -130,7 +130,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
 - (void)deletePosts:(NSArray *)posts;
 
 - (void)toggleSelectAllBookmarks:(id)sender;
-- (void)alertIfSelectedBookmarkCountExceedsRecommendation:(NSInteger)count cancel:(void (^)())cancel update:(void (^)())update;
+- (void)alertIfSelectedBookmarkCountExceedsRecommendation:(NSInteger)count cancel:(void (^)(void))cancel update:(void (^)(void))update;
 
 - (UITableView *)currentTableView;
 
@@ -700,11 +700,11 @@ static NSInteger PPBookmarkEditMaximum = 25;
     [self updateFromLocalDatabaseWithCallback:nil];
 }
 
-- (void)updateFromLocalDatabaseWithCallback:(void (^)())callback {
+- (void)updateFromLocalDatabaseWithCallback:(void (^)(void))callback {
     [self updateFromLocalDatabaseWithCallback:callback time:nil];
 }
 
-- (void)updateFromLocalDatabaseWithCallback:(void (^)())callback time:(NSDate *)time {
+- (void)updateFromLocalDatabaseWithCallback:(void (^)(void))callback time:(NSDate *)time {
     if (!time) {
         time = [NSDate date];
     }
@@ -1158,7 +1158,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
     [self closeModal:sender success:nil];
 }
 
-- (void)closeModal:(UIViewController *)sender success:(void (^)())success {
+- (void)closeModal:(UIViewController *)sender success:(void (^)(void))success {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.navigationController dismissViewControllerAnimated:YES completion:^{
             if (success) {
@@ -1332,7 +1332,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
     }
 }
 
-- (void)alertIfSelectedBookmarkCountExceedsRecommendation:(NSInteger)count cancel:(void (^)())cancel update:(void (^)())update {
+- (void)alertIfSelectedBookmarkCountExceedsRecommendation:(NSInteger)count cancel:(void (^)(void))cancel update:(void (^)(void))update {
     if (count > PPBookmarkEditMaximum) {
         UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:@"Warning"
                                                                      message:[NSString stringWithFormat:@"Bulk-editing more than %lu bookmarks at a time might take a while to complete and will probably incur the wrath of the Pinboard API gods. Are you absolutely sure you want to continue?", (long)PPBookmarkEditMaximum]];

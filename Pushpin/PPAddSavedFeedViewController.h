@@ -13,7 +13,7 @@
 
 @property (nonatomic, strong) UITextField *userTextField;
 @property (nonatomic, strong) UITextField *tagsTextField;
-@property (nonatomic, copy) void (^SuccessCallback)();
+@property (nonatomic, copy) void (^SuccessCallback)(void);
 
 - (void)addButtonTouchUpInside:(id)sender;
 - (void)closeButtonTouchUpInside:(id)sender;

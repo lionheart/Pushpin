@@ -84,7 +84,7 @@
 }
 
 - (void)reloadBookmarksWithCompletion:(void (^)(NSError *))completion
-                               cancel:(BOOL (^)())cancel
+                               cancel:(BOOL (^)(void))cancel
                                 width:(CGFloat)width {
     NSMutableArray *indexPathsToAdd = [NSMutableArray array];
     NSMutableArray *indexPathsToRemove = [NSMutableArray array];

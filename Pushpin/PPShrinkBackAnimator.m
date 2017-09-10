@@ -35,7 +35,7 @@ static CGFloat kPPShrinkBackAnimationDuration = 0.6;
     transform3D = CATransform3DTranslate(transform3D, 0, 0, -100);
     transform3D = CATransform3DScale(transform3D, 0.925, 0.925, 0);
 
-    void (^animations)();
+    void (^animations)(void);
     if (self.reverse) {
         cover.alpha = 0.4;
 

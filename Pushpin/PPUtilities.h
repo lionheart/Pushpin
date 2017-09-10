@@ -37,7 +37,7 @@
                                                    unread:(kPushpinFilterType)unread
                                                   starred:(kPushpinFilterType)starred
                                                    tagged:(kPushpinFilterType)tagged
-                                               completion:(void (^)())completion;
+                                               completion:(void (^)(void))completion;
 
 + (NSMutableSet *)staticAssetURLsForHTML:(NSString *)html;
 + (NSMutableSet *)staticAssetURLsForCachedURLResponse:(NSCachedURLResponse *)cachedURLResponse;

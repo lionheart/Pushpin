@@ -642,7 +642,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     });
 }
 
-- (void)closeModal:(UIViewController *)sender success:(void (^)())success {
+- (void)closeModal:(UIViewController *)sender success:(void (^)(void))success {
     [self dismissViewControllerAnimated:YES completion:success];
 }
 
@@ -1015,7 +1015,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         constant = 0;
     }
     
-    void (^UpdateConstraint)() = ^{
+    void (^UpdateConstraint)(void) = ^{
         self.toolbarConstraint.constant = constant;
         [self.view layoutIfNeeded];
         
@@ -1121,7 +1121,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 }
 
 - (void)setReaderViewVisible:(BOOL)visible animated:(BOOL)animated completion:(void (^)(BOOL finished))completion {
-    void (^animations)();
+    void (^animations)(void);
 
     if (visible) {
         self.readerWebView.hidden = NO;

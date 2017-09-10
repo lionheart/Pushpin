@@ -88,7 +88,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    void (^Completion)() = ^{
+    void (^Completion)(void) = ^{
         self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Done", nil);
         self.navigationItem.leftBarButtonItem = nil;
         

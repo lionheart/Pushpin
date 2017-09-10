@@ -62,7 +62,7 @@ static dispatch_queue_t PPBookmarkReloadQueue() {
 
 // Refreshes local cache.
 - (void)reloadBookmarksWithCompletion:(void (^)(NSError *error))completion
-                               cancel:(BOOL (^)())cancel
+                               cancel:(BOOL (^)(void))cancel
                                 width:(CGFloat)width;
 
 - (PPPostActionType)actionsForPost:(NSDictionary *)post;
@@ -78,12 +78,12 @@ static dispatch_queue_t PPBookmarkReloadQueue() {
 
 - (NSArray *)badgesForPostAtIndex:(NSInteger)index;
 
-- (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index callback:(void (^)())callback;
+- (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index callback:(void (^)(void))callback;
 - (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index;
 - (id <PPDataSource>)searchDataSource;
 - (void)filterWithQuery:(NSString *)query;
-- (void)addDataSource:(void (^)())callback;
-- (void)removeDataSource:(void (^)())callback;
+- (void)addDataSource:(void (^)(void))callback;
+- (void)removeDataSource:(void (^)(void))callback;
 
 // A data source may alternatively provide a UIViewController to push
 - (NSInteger)sourceForPostAtIndex:(NSInteger)index;
@@ -93,7 +93,7 @@ static dispatch_queue_t PPBookmarkReloadQueue() {
 - (PPNavigationController *)addViewControllerForPostAtIndex:(NSInteger)index;
 - (void)markPostAsRead:(NSString *)url callback:(void (^)(NSError *))callback;
 - (void)deletePosts:(NSArray *)posts callback:(void (^)(NSIndexPath *))callback;
-- (void)deletePostsAtIndexPaths:(NSArray *)indexPaths callback:(void (^)())callback;
+- (void)deletePostsAtIndexPaths:(NSArray *)indexPaths callback:(void (^)(void))callback;
 
 /**
  * Called when post at a specific index path is called

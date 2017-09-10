@@ -46,12 +46,10 @@
 
 - (NSMutableDictionary *)parseQueryParameters:(NSString *)query;
 
-- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)())callback;
+- (void)showAddBookmarkViewControllerWithBookmark:(NSDictionary *)bookmark update:(NSNumber *)isUpdate callback:(void (^)(NSDictionary *))callback;
 
 - (void)promptUserToAddBookmark;
 - (void)logout;
-
-- (NSString *)defaultFeedDescription;
 
 + (PPAppDelegate *)sharedDelegate;
 

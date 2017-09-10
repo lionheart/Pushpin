@@ -64,7 +64,7 @@
 @property (nonatomic, strong) UIView *toolbar;
 @property (nonatomic, strong) NSTimer *webViewTimeoutTimer;
 
-@property (nonatomic, copy) void (^callback)();
+@property (nonatomic, copy) void (^callback)(void);
 
 - (void)gestureDetected:(UIGestureRecognizer *)recognizer;
 - (void)actionButtonTouchUp:(id)sender;
