@@ -93,10 +93,10 @@
     NSString *textColorString = [self hexStringFromColor:self.textColor];
     NSString *backgroundColorString = [self hexStringFromColor:self.backgroundColor];
     NSString *customReaderCSS = [NSString stringWithFormat:baseReaderCSS, backgroundColorString, textColorString, self.lineSpacing, self.fontName, self.fontSize, self.margin, self.textAlignmentString, self.headerFontName, textColorString, textColorString, self.imageCSS];
-    BOOL success = [customReaderCSS writeToFile:[self customReaderCSSFilePath]
-                                     atomically:YES
-                                       encoding:NSUTF8StringEncoding
-                                          error:nil];
+    [customReaderCSS writeToFile:[self customReaderCSSFilePath]
+                      atomically:YES
+                        encoding:NSUTF8StringEncoding
+                           error:nil];
 }
 
 - (NSString *)readerCSSFilePath {
