@@ -85,7 +85,7 @@
     return self.visibleViewController;
 }
 
-- (NSUInteger)supportedInterfaceOrientation {
+- (UIInterfaceOrientationMask)supportedInterfaceOrientation {
 #ifndef APP_EXTENSION_SAFE
     if ([[self.topViewController class] isSubclassOfClass:[PPAboutViewController class]]) {
         return UIInterfaceOrientationMaskPortrait;
