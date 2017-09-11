@@ -1,9 +1,6 @@
 [submodule "Localizations"]
 	path = Localizations
 	url = git@github.com:lionheart/pushpin-localizations.git
-[submodule "Vendor/ASPinboard"]
-	path = Vendor/ASPinboard
-	url = git@github.com:lionheart/ASPinboard.git
 [submodule "Vendor/LHSDiigo"]
 	path = Vendor/LHSDiigo
 	url = git@github.com:lionheart/LHSDiigo
