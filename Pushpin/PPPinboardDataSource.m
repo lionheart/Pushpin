@@ -329,18 +329,18 @@ static BOOL kPinboardSyncInProgress = NO;
         NSURL *endpoint = [NSURL URLWithString:[NSString stringWithFormat:@"https://feeds.pinboard.in/json/secret:%@/u:%@/starred/?count=400", settings.feedToken, settings.username]];
         NSURLRequest *request = [NSURLRequest requestWithURL:endpoint];
         [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
-        
-        [NSURLConnection sendAsynchronousRequest:request
-                                           queue:[NSOperationQueue mainQueue]
-                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-                                   [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
-                                   if (error) {
-                                       completion(error);
-                                   } else {
-                                       NSArray *posts = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                                       BookmarksSuccessBlock(posts, nil);
-                                   }
-                               }];
+
+        NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:request
+                                                                     completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                                                                         [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
+                                                                         if (error) {
+                                                                             completion(error);
+                                                                         } else {
+                                                                             NSArray *posts = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                                                                             BookmarksSuccessBlock(posts, nil);
+                                                                         }
+                                                                     }];
+        [task resume];
     });
 }
 

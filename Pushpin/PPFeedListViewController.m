@@ -470,6 +470,10 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             });
             break;
         }
+
+        case PPPinboardSectionPersonal:
+        case PPPinboardSectionCommunity:
+            break;
     }
 }
 
@@ -1004,7 +1008,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)closeModal:(UIViewController *)sender success:(void (^)())success {
+- (void)closeModal:(UIViewController *)sender success:(void (^)(void))success {
     [self dismissViewControllerAnimated:YES completion:success];
 }
 

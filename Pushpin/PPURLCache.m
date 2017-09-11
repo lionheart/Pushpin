@@ -400,13 +400,13 @@
     BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:[self databasePath]];
     NSError *error;
     if (exists) {
-        BOOL success = [[NSFileManager defaultManager] removeItemAtPath:[self databasePath] error:&error];
+        [[NSFileManager defaultManager] removeItemAtPath:[self databasePath] error:&error];
     }
     
     NSString *dataPath = [[self directoryPath] stringByAppendingFormat:@"/data/"];
     exists = [[NSFileManager defaultManager] fileExistsAtPath:dataPath];
     if (exists) {
-        BOOL success = [[NSFileManager defaultManager] removeItemAtPath:dataPath error:&error];
+        [[NSFileManager defaultManager] removeItemAtPath:dataPath error:&error];
     }
 }
 
@@ -523,7 +523,7 @@
 
 - (void)URLSessionDidFinishEventsForBackgroundURLSession:(NSURLSession *)session {
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-        void (^completionHandler)() = self.backgroundURLSessionCompletionHandlers[session.configuration.identifier];
+        void (^completionHandler)(void) = self.backgroundURLSessionCompletionHandlers[session.configuration.identifier];
         if (completionHandler) {
             completionHandler();
         }

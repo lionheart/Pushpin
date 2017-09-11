@@ -47,7 +47,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
 - (void)searchBarButtonItemTouchUpInside:(id)sender;
 - (void)cancelBarButtonItemTouchUpInside:(id)sender;
-- (void)switchValueChanged:(UISwitch *)sender;
 
 @end
 

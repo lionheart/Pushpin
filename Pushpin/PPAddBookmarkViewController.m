@@ -1103,7 +1103,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         BOOL unread = !self.markAsRead;
 
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            void (^BookmarkSuccessBlock)() = ^{
+            void (^BookmarkSuccessBlock)(void) = ^{
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     Mixpanel *mixpanel = [Mixpanel sharedInstance];
                     __block BOOL bookmarkAdded;
@@ -1364,7 +1364,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 BOOL unread = !self.markAsRead;
 
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    void (^BookmarkSuccessBlock)() = ^{
+                    void (^BookmarkSuccessBlock)(void) = ^{
                         dispatch_async(dispatch_get_main_queue(), ^{
                             UIViewController *shareViewController = self.parentViewController.presentingViewController;
                             [shareViewController dismissViewControllerAnimated:YES completion:^{

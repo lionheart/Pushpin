@@ -1122,7 +1122,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                                                           self.activityView = [[PPActivityViewController alloc] initWithActivityItems:activityItems];
                                                           
                                                           __weak PPGenericPostViewController *weakself = self;
-                                                          self.activityView.completionHandler = ^(NSString *activityType, BOOL completed) {
+                                                          self.activityView.completionWithItemsHandler = ^(UIActivityType activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
                                                               [weakself setNeedsStatusBarAppearanceUpdate];
                                                               
                                                               if (weakself.popover) {

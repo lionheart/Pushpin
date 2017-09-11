@@ -347,7 +347,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                 });
             };
             
-            void (^SyncCompletedBlock)() = ^{
+            void (^SyncCompletedBlock)(void) = ^{
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.messageUpdateTimer invalidate];
 

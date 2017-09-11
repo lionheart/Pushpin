@@ -168,7 +168,7 @@
     }];
 }
 
-- (void)dismissViewControllerIfPresented:(UIViewController *)controller newController:(UIViewController *)newController withCompletion:(void (^)())completion {
+- (void)dismissViewControllerIfPresented:(UIViewController *)controller newController:(UIViewController *)newController withCompletion:(void (^)(void))completion {
     if (controller.presentingViewController) {
         [controller dismissViewControllerAnimated:YES completion:^{
             [self presentViewController:newController animated:YES completion:completion];

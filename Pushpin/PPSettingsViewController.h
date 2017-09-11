@@ -47,6 +47,5 @@ enum : NSInteger {
 @property (nonatomic, retain) NSMutableArray *readLaterServices;
 
 - (void)showAboutPage;
-- (void)closeAboutPage;
 
 @end

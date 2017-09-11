@@ -361,6 +361,10 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                     [self presentViewController:self.logOutAlertView animated:YES completion:nil];
                     [tableView deselectRowAtIndexPath:indexPath animated:YES];
                     break;
+
+                case PPOtherTipJar:
+#warning TODO
+                    break;
             }
             break;
         }

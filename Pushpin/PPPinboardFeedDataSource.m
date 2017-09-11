@@ -136,7 +136,7 @@
 }
 
 - (void)reloadBookmarksWithCompletion:(void (^)(NSError *))completion
-                               cancel:(BOOL (^)())cancel
+                               cancel:(BOOL (^)(void))cancel
                                 width:(CGFloat)width {
     dispatch_async(PPPinboardFeedReloadQueue(), ^{
         
@@ -403,7 +403,7 @@
     return NO;
 }
 
-- (void)addDataSource:(void (^)())callback {
+- (void)addDataSource:(void (^)(void))callback {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSString *componentString = [self.components componentsJoinedByString:@" "];
 
@@ -424,7 +424,7 @@
     });
 }
 
-- (void)removeDataSource:(void (^)())callback {
+- (void)removeDataSource:(void (^)(void))callback {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSString *componentString = [self.components componentsJoinedByString:@" "];
 

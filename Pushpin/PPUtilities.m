@@ -246,7 +246,7 @@
 
     BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:[self databasePath]];
     if (exists) {
-        BOOL success = [[NSFileManager defaultManager] removeItemAtPath:[self databasePath] error:nil];
+        [[NSFileManager defaultManager] removeItemAtPath:[self databasePath] error:nil];
     }
 }
 
@@ -545,7 +545,7 @@
                                                    unread:(kPushpinFilterType)unread
                                                   starred:(kPushpinFilterType)starred
                                                    tagged:(kPushpinFilterType)tagged
-                                               completion:(void (^)())completion {
+                                               completion:(void (^)(void))completion {
     if (!query) {
         query = @"";
     }
