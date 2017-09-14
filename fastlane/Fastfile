@@ -1,7 +1,7 @@
 # vim: set ft=ruby:
 
 fastlane_version "2.28.1"
-xcversion(version: "8.3.3")
+xcode_select "/Applications/Xcode 9 GM.app"
 default_platform :ios
 
 platform :ios do
