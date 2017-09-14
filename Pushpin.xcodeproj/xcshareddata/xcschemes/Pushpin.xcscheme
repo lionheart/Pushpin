@@ -53,6 +53,7 @@
       debugDocumentVersioning = "YES"
       debugXPCServices = "NO"
       enableOpenGLPerformanceAnalysisMode = "1"
+      stopOnEveryMainThreadCheckerIssue = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "NO"
       viewDebuggingEnabled = "No">

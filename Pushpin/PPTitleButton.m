@@ -31,7 +31,7 @@
 
 + (instancetype)buttonWithDelegate:(id)delegate {
     PPTitleButton *titleButton = [[PPTitleButton alloc] init];
-    titleButton.frame = CGRectMake(0, 0, [UIApplication currentSize].width - 20, 24);
+    titleButton.translatesAutoresizingMaskIntoConstraints = NO;
     titleButton.containerView = [[UIView alloc] init];
     titleButton.containerView.translatesAutoresizingMaskIntoConstraints = NO;
     
@@ -48,6 +48,7 @@
     [titleButton.containerView addSubview:titleButton.imageView];
     
     [titleButton addSubview:titleButton.containerView];
+    [titleButton.containerView lhs_expandToFillSuperview];
     [titleButton lhs_centerVerticallyForView:titleButton.containerView];
     [titleButton lhs_centerHorizontallyForView:titleButton.containerView];
     [titleButton addConstraintsForImageAndTitle];

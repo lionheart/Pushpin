@@ -40,7 +40,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 @property (nonatomic, strong) NSMutableArray *feeds;
 @property (nonatomic, strong) NSMutableArray *searches;
-@property (nonatomic, strong) PPToolbar *toolbar;
+@property (nonatomic, strong) UIView *toolbar;
 @property (nonatomic, strong) NSLayoutConstraint *toolbarBottomConstraint;
 @property (nonatomic, strong) NSArray *rightOrientationConstraints;
 @property (nonatomic, strong) NSArray *leftOrientationConstraints;
@@ -52,20 +52,14 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 @property (nonatomic, strong) UIButton *searchButton;
 @property (nonatomic, strong) UIButton *tagsButton;
 
-@property (nonatomic, strong) UIBarButtonItem *searchBarButtonItem;
-@property (nonatomic, strong) UIBarButtonItem *tagsBarButtonItem;
-@property (nonatomic, strong) UIBarButtonItem *flexibleSpace;
-
-
 @property (nonatomic, strong) UIButton *noteButton;
-@property (nonatomic, strong) UIBarButtonItem *noteBarButtonItem;
 
 - (void)openNotes;
 - (void)openSettings;
 - (void)openTags;
 - (void)toggleEditing:(UIBarButtonItem *)sender;
 - (void)leftBarButtonItemTouchUpInside:(UIBarButtonItem *)sender;
-- (void)searchBarButtonItemTouchUpInside:(UIBarButtonItem *)sender;
+- (void)searchButtonTouchUpInside:(UIBarButtonItem *)sender;
 
 - (NSArray *)indexPathsForHiddenFeeds;
 - (NSArray *)indexPathsForVisibleFeeds;
@@ -74,8 +68,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 - (NSInteger)numberOfHiddenSections;
 
 - (NSString *)personalFeedNameForIndex:(NSInteger)index;
-
-
 
 - (PPPinboardPersonalFeedType)personalFeedForIndexPath:(NSIndexPath *)indexPath;
 - (NSString *)communityFeedNameForIndex:(NSInteger)index;
@@ -123,8 +115,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
     self.bookmarkCounts = [NSMutableArray array];
 
-    
-
     NSInteger rows = PPPinboardPersonalRows;
     
     for (NSInteger i=0; i<rows; i++) {
@@ -169,58 +159,48 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     self.tableView.allowsMultipleSelectionDuringEditing = NO;
     self.tableView.backgroundColor = HEX(0xF7F9FDff);
     self.tableView.opaque = YES;
+
+    if (@available(iOS 11.0, *)) {
+        self.tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+    }
+
     [self.view addSubview:self.tableView];
     
-    self.toolbar = [[PPToolbar alloc] init];
-    [self.toolbar setBarTintColor:[UIColor whiteColor]];
+    self.toolbar = [[UIView alloc] init];
+    self.toolbar.translatesAutoresizingMaskIntoConstraints = NO;
     self.toolbar.tintColor = [UIColor darkGrayColor];
-    self.toolbar.delegate = self;
-    self.toolbar.extraColorLayerOpacity = 0.1;
-    
-    self.flexibleSpace = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+
+    UIView *topBorder = [[UIView alloc] init];
+    topBorder.translatesAutoresizingMaskIntoConstraints = NO;
+    topBorder.backgroundColor = [UIColor lightGrayColor];
 
     NSDictionary *barButtonTitleTextAttributes = @{NSForegroundColorAttributeName:[UIColor darkGrayColor],
                                                    NSFontAttributeName: [UIFont fontWithName:[PPTheme boldFontName] size:16] };
 
-
-    self.searchBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Search", nil)
-                                                                            style:UIBarButtonItemStyleDone
-                                                                           target:self
-                                                               action:@selector(searchBarButtonItemTouchUpInside:)];
-    
-    self.noteBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Notes", nil) style:UIBarButtonItemStylePlain target:self action:@selector(openNotes)];
-    [self.noteBarButtonItem setTitleTextAttributes:barButtonTitleTextAttributes forState:UIControlStateNormal];
-    
-
-    self.searchBarButtonItem.tintColor = [UIColor darkGrayColor];
-    [self.searchBarButtonItem setTitleTextAttributes:barButtonTitleTextAttributes forState:UIControlStateNormal];
-
-    self.tagsBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Tags", nil) style:UIBarButtonItemStylePlain target:self action:@selector(openTags)];
-    [self.tagsBarButtonItem setTitleTextAttributes:barButtonTitleTextAttributes forState:UIControlStateNormal];
-    
-    self.tagsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.tagsButton = [UIButton buttonWithType:UIButtonTypeSystem];
     self.tagsButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.tagsButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Tags", nil) attributes:barButtonTitleTextAttributes]
+    [self.tagsButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Tags", nil)
+                                                                        attributes:barButtonTitleTextAttributes]
                                forState:UIControlStateNormal];
-    [self.tagsButton addTarget:self action:@selector(openTags) forControlEvents:UIControlEventTouchUpInside];
+    [self.tagsButton addTarget:self action:@selector(openTags) forControlEvents:UIControlEventAllEvents];
     [self.toolbar addSubview:self.tagsButton];
 
-    self.searchButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.searchButton = [UIButton buttonWithType:UIButtonTypeSystem];
     self.searchButton.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.searchButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Search", nil) attributes:barButtonTitleTextAttributes]
+    [self.searchButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Search", nil)
+                                                                          attributes:barButtonTitleTextAttributes]
                                  forState:UIControlStateNormal];
-    [self.searchButton addTarget:self action:@selector(searchBarButtonItemTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
+    [self.searchButton addTarget:self action:@selector(searchButtonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
     [self.toolbar addSubview:self.searchButton];
 
-
-    self.noteButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.noteButton = [UIButton buttonWithType:UIButtonTypeSystem];
     self.noteButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.noteButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Notes", nil) attributes:barButtonTitleTextAttributes] forState:UIControlStateNormal];
     [self.noteButton addTarget:self action:@selector(openNotes) forControlEvents:UIControlEventTouchUpInside];
     [self.toolbar addSubview:self.noteButton];
 
-    self.toolbar.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.toolbar];
+    [self.toolbar addSubview:topBorder];
 
     NSDictionary *views = @{@"table": self.tableView,
                             @"top": self.topLayoutGuide,
@@ -230,47 +210,25 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                             @"notes": self.noteButton
                         };
 
-    NSMutableArray *constraints = [[NSLayoutConstraint constraintsWithVisualFormat:@"H:[notes]-(>=12)-[search]-(>=12)-[tags]"
-                                                                           options:0
-                                                                           metrics:nil
-                                                                             views:views] mutableCopy];
-    
-    [constraints addObject:[NSLayoutConstraint constraintWithItem:self.noteButton
-                                                        attribute:NSLayoutAttributeCenterY
-                                                        relatedBy:NSLayoutRelationEqual
-                                                           toItem:self.toolbar
-                                                        attribute:NSLayoutAttributeCenterY
-                                                       multiplier:1
-                                                         constant:0]];
+    [topBorder.topAnchor constraintEqualToAnchor:self.toolbar.topAnchor].active = YES;
+    [topBorder.leftAnchor constraintEqualToAnchor:self.toolbar.leftAnchor].active = YES;
+    [topBorder.rightAnchor constraintEqualToAnchor:self.toolbar.rightAnchor].active = YES;
+    [topBorder.heightAnchor constraintEqualToConstant:1].active = YES;
 
-    NSLayoutConstraint *notesLeftConstraint = [self.noteButton.leftAnchor constraintEqualToAnchor:self.toolbar.leftAnchor
-                                                                                         constant:12];
-    
+    NSMutableArray <NSLayoutConstraint *> *constraints = [@[
+                                                           [self.searchButton.centerXAnchor constraintEqualToAnchor:self.toolbar.centerXAnchor],
+                                                           [self.noteButton.centerYAnchor constraintEqualToAnchor:self.toolbar.centerYAnchor],
+                                                           [self.searchButton.centerYAnchor constraintEqualToAnchor:self.toolbar.centerYAnchor],
+                                                           [self.tagsButton.centerYAnchor constraintEqualToAnchor:self.toolbar.centerYAnchor]
+                                                           ] mutableCopy];
+
+    NSLayoutConstraint *notesLeftConstraint = [self.noteButton.leftAnchor constraintEqualToAnchor:self.toolbar.leftAnchor constant:12];
     self.leftOrientationConstraints = [constraints arrayByAddingObject:notesLeftConstraint];
 
-    [constraints addObject:[NSLayoutConstraint constraintWithItem:self.tagsButton
-                                                        attribute:NSLayoutAttributeCenterY
-                                                        relatedBy:NSLayoutRelationEqual
-                                                           toItem:self.toolbar
-                                                        attribute:NSLayoutAttributeCenterY
-                                                       multiplier:1
-                                                         constant:0]];
-
-    [constraints addObject:[NSLayoutConstraint constraintWithItem:self.searchButton
-                                                        attribute:NSLayoutAttributeCenterY
-                                                        relatedBy:NSLayoutRelationEqual
-                                                           toItem:self.toolbar
-                                                        attribute:NSLayoutAttributeCenterY
-                                                       multiplier:1
-                                                         constant:0]];
-
-    NSLayoutConstraint *tagsRightConstraint = [self.tagsButton.rightAnchor constraintEqualToAnchor:self.toolbar.rightAnchor
-                                                                                          constant:-12];
-
+    NSLayoutConstraint *tagsRightConstraint = [self.tagsButton.rightAnchor constraintEqualToAnchor:self.toolbar.rightAnchor constant:-12];
     self.rightOrientationConstraints = [constraints arrayByAddingObject:tagsRightConstraint];
 
     NSLayoutConstraint *searchCenterConstraint = [self.searchButton.centerXAnchor constraintEqualToAnchor:self.toolbar.centerXAnchor];
-
     self.centerOrientationConstraints = [constraints arrayByAddingObjectsFromArray:@[notesLeftConstraint, tagsRightConstraint, searchCenterConstraint]];
 
     [self.toolbar addConstraints:self.centerOrientationConstraints];
@@ -1431,7 +1389,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     return (PPPinboardCommunityFeedType)([settings.communityFeedOrder[indexPath.row + numFeedsSkipped] integerValue]);
 }
 
-- (void)searchBarButtonItemTouchUpInside:(UIBarButtonItem *)sender {
+- (void)searchButtonTouchUpInside:(UIBarButtonItem *)sender {
     PPSearchViewController *search = [[PPSearchViewController alloc] initWithStyle:UITableViewStyleGrouped];
 
     if ([UIApplication isIPad]) {
@@ -1442,8 +1400,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         [self presentViewController:nav animated:YES completion:nil];
     }
 }
-
-
 
 - (void)updateSavedFeeds:(FMDatabase *)db {
     // Check if we have any updates from iCloud

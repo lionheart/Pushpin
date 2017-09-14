@@ -6,6 +6,8 @@
 //  Copyright (c) 2014 Lionheart Software. All rights reserved.
 //
 
+@import TMReachability;
+
 #import "PPCachingURLProtocol.h"
 #import "PPAppDelegate.h"
 
@@ -33,7 +35,8 @@ static NSString *PPCachingEnabledKey = @"PPCachingEnabled";
             return NO;
         }
 
-        if (![PPAppDelegate sharedDelegate].connectionAvailable) {
+        TMReachability *reach = [TMReachability reachabilityForInternetConnection];
+        if (![reach isReachable]) {
             if ([request allHTTPHeaderFields] == nil) {
                 return YES;
             }

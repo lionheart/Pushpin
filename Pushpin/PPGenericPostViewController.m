@@ -214,6 +214,10 @@ static NSInteger PPBookmarkEditMaximum = 25;
     self.tableView.allowsSelectionDuringEditing = YES;
     self.tableView.allowsMultipleSelectionDuringEditing = NO;
     self.tableView.separatorColor = HEX(0xE0E0E0FF);
+
+    if (@available(iOS 11.0, *)) {
+        self.tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+    }
     
     // Add in the refresh control
     UITableViewController *tableViewController = [[UITableViewController alloc] init];
@@ -773,6 +777,10 @@ static NSInteger PPBookmarkEditMaximum = 25;
                     self.isProcessingPosts = NO;
                 });
             } cancel:^BOOL{
+                return [time compare:self.latestSearchTime] != NSOrderedSame;
+
+#warning TODO: self.view.window not called on Main Thread
+
                 BOOL isHidden = !self.isViewLoaded || self.view.window == nil;
                 if (isHidden) {
                     return YES;
