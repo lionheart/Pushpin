@@ -15,7 +15,6 @@ platform :ios do
   lane :appstore do
     ensure_git_status_clean
     increment_build_number(xcodeproj: project_file)
-    generate_license_json
     version_number = get_version_number(xcodeproj: project_file, target: "Pushpin")
     build_number = get_build_number(xcodeproj: project_file)
     commit_version_bump(message: "bump to #{build_number}", xcodeproj: "./#{project_file}")
