@@ -1,8 +1,10 @@
 # vim: set ft=ruby:
 
 fastlane_version "2.28.1"
-xcode_select "/Applications/Xcode 9 GM.app"
+xcode_select "/Applications/Xcode.app"
 default_platform :ios
+
+project_file = "Pushpin.xcodeproj"
 
 platform :ios do
   lane :beta do
@@ -12,7 +14,11 @@ platform :ios do
 
   lane :appstore do
     ensure_git_status_clean
-    increment_build_number(xcodeproj: "Pushpin.xcodeproj")
+    increment_build_number(xcodeproj: project_file)
+    generate_license_json
+    version_number = get_version_number(xcodeproj: project_file, target: "Pushpin")
+    build_number = get_build_number(xcodeproj: project_file)
+    commit_version_bump(message: "bump to #{build_number}", xcodeproj: "./#{project_file}")
 
     gym
 
@@ -20,9 +26,6 @@ platform :ios do
     # snapshot
     deliver
 
-    version_number = get_version_number(xcodeproj: "Pushpin.xcodeproj", target: "Pushpin")
-    build_number = get_build_number(xcodeproj: "Pushpin.xcodeproj")
-    commit_version_bump(message: "bump to #{build_number}", xcodeproj: "./Pushpin.xcodeproj")
     add_git_tag tag: "v#{version_number}+#{build_number}"
     push_to_git_remote
   end
