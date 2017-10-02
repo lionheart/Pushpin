@@ -2573,7 +2573,7 @@
 			baseConfigurationReference = E7F03000D414AAC81272FB02 /* Pods-Pushpin.beta.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				ASSETCATALOG_COMPILER_APPICON_NAME = PinboardBeta;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_MODULES_AUTOLINK = NO;
 				CODE_SIGN_ENTITLEMENTS = Pushpin/Beta.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
