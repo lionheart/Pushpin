@@ -1040,18 +1040,20 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [self.tableView endUpdates];
         [PPUtilities retrievePageTitle:url
                               callback:^(NSString *title, NSString *description) {
-                                  self.titleTextField.text = title;
-                                  
-                                  if (shouldPrefillDescription) {
-                                      self.postDescription = description;
-                                      self.descriptionAttributes[NSForegroundColorAttributeName] = [UIColor blackColor];
-                                      self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:self.postDescription attributes:self.descriptionAttributes];
-                                  }
-                                  self.loadingTitle = NO;
-                                  
-                                  [self.tableView beginUpdates];
-                                  [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
-                                  [self.tableView endUpdates];
+                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                      self.titleTextField.text = title;
+
+                                      if (shouldPrefillDescription) {
+                                          self.postDescription = description;
+                                          self.descriptionAttributes[NSForegroundColorAttributeName] = [UIColor blackColor];
+                                          self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:self.postDescription attributes:self.descriptionAttributes];
+                                      }
+                                      self.loadingTitle = NO;
+
+                                      [self.tableView beginUpdates];
+                                      [self.tableView reloadRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
+                                      [self.tableView endUpdates];
+                                  });
                               }];
     }
 }
