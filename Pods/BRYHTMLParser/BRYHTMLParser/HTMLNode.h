@@ -87,7 +87,7 @@ typedef NS_ENUM(unsigned int, HTMLNodeType) {
 /// Returns all children of class
 - (NSArray *)findChildrenOfClass:(NSString *)className;
 
-/// Finds a single child with a matching attribute. Set `allowPartial` to match partial matches, e.g. <img src="http://www.google.com> [findChildWithAttribute:@"src" matchingName:"google.com" allowPartial:TRUE]
+/// Finds a single child with a matching attribute. Set `allowPartial` to match partial matches, e.g. <img src="http://www.google.com"> [findChildWithAttribute:@"src" matchingName:"google.com" allowPartial:TRUE]
 - (id <HTMLNode>)findChildWithAttribute:(NSString *)attribute matchingName:(NSString *)className allowPartial:(BOOL)partial;
 
 /// Finds all children with a matching attribute

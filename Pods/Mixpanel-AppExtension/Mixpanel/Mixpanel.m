@@ -6,14 +6,17 @@
 
 #import <objc/runtime.h>
 #import "Mixpanel.h"
-#import "MixpanelPrivate.h"
 #import "MixpanelPeople.h"
 #import "MixpanelPeoplePrivate.h"
+#import "MixpanelPrivate.h"
+#import "MPFoundation.h"
+#import "MPLogger.h"
 #import "MPNetworkPrivate.h"
 
-#import "MPLogger.h"
-#import "MPFoundation.h"
-
+#if !MIXPANEL_NO_NOTIFICATION_AB_TEST_SUPPORT
+#import <UserNotifications/UserNotifications.h>
+#import "NSThread+MPHelpers.h"
+#endif
 #if defined(MIXPANEL_WATCHOS)
 #import "MixpanelWatchProperties.h"
 #import <WatchKit/WatchKit.h>
@@ -25,15 +28,14 @@
 #error The Mixpanel library must be compiled with ARC enabled
 #endif
 
-#define VERSION @"3.1.9"
+#define VERSION @"3.2.2"
 
 @implementation Mixpanel
 
 static NSMutableDictionary *instances;
 static NSString *defaultProjectToken;
 
-+ (Mixpanel *)sharedInstanceWithToken:(NSString *)apiToken launchOptions:(NSDictionary *)launchOptions
-{
++ (Mixpanel *)sharedInstanceWithToken:(NSString *)apiToken launchOptions:(NSDictionary *)launchOptions {
     if (instances[apiToken]) {
         return instances[apiToken];
     }
@@ -47,13 +49,11 @@ static NSString *defaultProjectToken;
     return [[self alloc] initWithToken:apiToken launchOptions:launchOptions andFlushInterval:flushInterval];
 }
 
-+ (Mixpanel *)sharedInstanceWithToken:(NSString *)apiToken
-{
++ (Mixpanel *)sharedInstanceWithToken:(NSString *)apiToken {
     return [Mixpanel sharedInstanceWithToken:apiToken launchOptions:nil];
 }
 
-+ (nullable Mixpanel *)sharedInstance
-{
++ (nullable Mixpanel *)sharedInstance {
     if (instances.count == 0) {
         MPLogWarning(@"sharedInstance called before creating a Mixpanel instance");
         return nil;
@@ -66,8 +66,7 @@ static NSString *defaultProjectToken;
     return instances[defaultProjectToken];
 }
 
-- (instancetype)init:(NSString *)apiToken
-{
+- (instancetype)init:(NSString *)apiToken {
     if (self = [super init]) {
         self.eventsQueue = [NSMutableArray array];
         self.peopleQueue = [NSMutableArray array];
@@ -84,8 +83,10 @@ static NSString *defaultProjectToken;
     return self;
 }
 
-- (instancetype)initWithToken:(NSString *)apiToken launchOptions:(NSDictionary *)launchOptions andFlushInterval:(NSUInteger)flushInterval
-{
+- (instancetype)initWithToken:(NSString *)apiToken
+                launchOptions:(NSDictionary *)launchOptions
+                flushInterval:(NSUInteger)flushInterval
+                 trackCrashes:(BOOL)trackCrashes {
     if (apiToken.length == 0) {
         if (apiToken == nil) {
             apiToken = @"";
@@ -94,8 +95,10 @@ static NSString *defaultProjectToken;
     }
     if (self = [self init:apiToken]) {
 #if !MIXPANEL_NO_AUTOMATIC_EVENTS_SUPPORT
-        // Install uncaught exception handlers first
-        [[MixpanelExceptionHandler sharedHandler] addMixpanelInstance:self];
+        if (trackCrashes) {
+            // Install signal and exception handlers first
+            [[MixpanelExceptionHandler sharedHandler] addMixpanelInstance:self];
+        }
 #endif
 #if !MIXPANEL_NO_REACHABILITY_SUPPORT
         self.telephonyInfo = [[CTTelephonyNetworkInfo alloc] init];
@@ -155,13 +158,20 @@ static NSString *defaultProjectToken;
     return self;
 }
 
-- (instancetype)initWithToken:(NSString *)apiToken andFlushInterval:(NSUInteger)flushInterval
-{
+- (instancetype)initWithToken:(NSString *)apiToken
+                launchOptions:(NSDictionary *)launchOptions
+             andFlushInterval:(NSUInteger)flushInterval {
+    return [self initWithToken:apiToken
+                 launchOptions:launchOptions
+                 flushInterval:flushInterval
+                  trackCrashes:YES];
+}
+
+- (instancetype)initWithToken:(NSString *)apiToken andFlushInterval:(NSUInteger)flushInterval {
     return [self initWithToken:apiToken launchOptions:nil andFlushInterval:flushInterval];
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
 #if !MIXPANEL_NO_REACHABILITY_SUPPORT
@@ -174,6 +184,12 @@ static NSString *defaultProjectToken;
         }
         CFRelease(_reachability);
         _reachability = NULL;
+    }
+#endif
+
+#if !MIXPANEL_NO_AUTOMATIC_EVENTS_SUPPORT
+    if (self.hasAddedObserver) {
+        [[UNUserNotificationCenter currentNotificationCenter] removeObserver:self forKeyPath:@"delegate"];
     }
 #endif
 }
@@ -300,7 +316,13 @@ static NSString *defaultProjectToken;
     return distinctId;
 }
 
-- (void)identify:(NSString *)distinctId
+
+- (void)identify:(NSString *)distinctId;
+{
+    [self identify:distinctId usePeople:YES];
+}
+
+- (void)identify:(NSString *)distinctId usePeople:(BOOL)usePeople;
 {
     if (distinctId.length == 0) {
         MPLogWarning(@"%@ cannot identify blank distinct id: %@", self, distinctId);
@@ -315,17 +337,21 @@ static NSString *defaultProjectToken;
                 self.alias = nil;
                 self.distinctId = distinctId;
             }
-            self.people.distinctId = distinctId;
-        }
-        if (self.people.unidentifiedQueue.count > 0) {
-            for (NSMutableDictionary *r in self.people.unidentifiedQueue) {
-                r[@"$distinct_id"] = self.distinctId;
-                @synchronized (self) {
-                    [self.peopleQueue addObject:r];
+            if (usePeople) {
+                self.people.distinctId = distinctId;
+                if (self.people.unidentifiedQueue.count > 0) {
+                    for (NSMutableDictionary *r in self.people.unidentifiedQueue) {
+                        r[@"$distinct_id"] = self.distinctId;
+                        @synchronized (self) {
+                            [self.peopleQueue addObject:r];
+                        }
+                    }
+                    [self.people.unidentifiedQueue removeAllObjects];
+                    [self archivePeople];
                 }
+            } else {
+                self.people.distinctId = nil;
             }
-            [self.people.unidentifiedQueue removeAllObjects];
-            [self archivePeople];
         }
         [self archiveProperties];
     });
@@ -430,21 +456,61 @@ static NSString *defaultProjectToken;
 
 #if !MIXPANEL_NO_NOTIFICATION_AB_TEST_SUPPORT
 - (void)setupAutomaticPushTracking {
-    SEL selector = nil;
-    Class cls = [[UIApplication sharedApplication].delegate class];
-    if (class_getInstanceMethod(cls, NSSelectorFromString(@"application:didReceiveRemoteNotification:fetchCompletionHandler:"))) {
-        selector = NSSelectorFromString(@"application:didReceiveRemoteNotification:fetchCompletionHandler:");
-    } else if (class_getInstanceMethod(cls, NSSelectorFromString(@"application:didReceiveRemoteNotification:"))) {
-        selector = NSSelectorFromString(@"application:didReceiveRemoteNotification:");
-    }
+    [NSThread mp_safelyRunOnMainThreadSync:^{
+        SEL selector = nil;
+        Class newCls = [[UNUserNotificationCenter currentNotificationCenter].delegate class];
+        Class cls = [[UIApplication sharedApplication].delegate class];
 
-    if (selector) {
-        [MPSwizzler swizzleSelector:selector
-                            onClass:cls
-                          withBlock:^(id view, SEL command, UIApplication *application, NSDictionary *userInfo) {
-                              [self trackPushNotification:userInfo];
-                          }
-                              named:@"notification opened"];
+        if ([UNUserNotificationCenter class] && !newCls) {
+            [[UNUserNotificationCenter currentNotificationCenter] addObserver:self forKeyPath:@"delegate" options:0 context:nil];
+            self.hasAddedObserver = YES;
+        }
+
+        BOOL selectorFromNewClass = NO;
+        if (class_getInstanceMethod(newCls, NSSelectorFromString(@"userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:"))) {
+            selector = NSSelectorFromString(@"userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:");
+            selectorFromNewClass = YES;
+        } else if (class_getInstanceMethod(cls, NSSelectorFromString(@"application:didReceiveRemoteNotification:fetchCompletionHandler:"))) {
+            selector = NSSelectorFromString(@"application:didReceiveRemoteNotification:fetchCompletionHandler:");
+        } else if (class_getInstanceMethod(cls, NSSelectorFromString(@"application:didReceiveRemoteNotification:"))) {
+            selector = NSSelectorFromString(@"application:didReceiveRemoteNotification:");
+        }
+
+        if (selector) {
+            if (selectorFromNewClass) {
+                [MPSwizzler swizzleSelector:selector
+                                    onClass:newCls
+                                  withBlock:^(id view, SEL command, UIApplication *application, UNNotificationResponse *response) {
+                                      [self trackPushNotification:response.notification.request.content.userInfo];
+                                  }
+                                      named:@"notification opened"];
+            } else {
+                [MPSwizzler swizzleSelector:selector
+                                    onClass:cls
+                                  withBlock:^(id view, SEL command, UIApplication *application, NSDictionary *userInfo) {
+                                      [self trackPushNotification:userInfo];
+                                  }
+                                      named:@"notification opened"];
+            }
+        }
+    }];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"delegate"]) {
+        Class cls = [[UNUserNotificationCenter currentNotificationCenter].delegate class];
+        if (class_getInstanceMethod(cls, NSSelectorFromString(@"userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:"))) {
+            SEL selector = NSSelectorFromString(@"userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:");
+            if (selector) {
+                [MPSwizzler swizzleSelector:selector
+                                    onClass:cls
+                                  withBlock:^(id view, SEL command, UIApplication *application, UNNotificationResponse *response) {
+                                      [self trackPushNotification:response.notification.request.content.userInfo];
+                                  }
+                                      named:@"notification opened"];
+            }
+        }
     }
 }
 
@@ -1669,18 +1735,33 @@ static void MixpanelReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.miniNotificationPresentationTime * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^{
-        [self notificationController:controller wasDismissedWithCtaUrl:nil];
+        [self notificationController:controller wasDismissedWithCtaUrl:nil shouldTrack:NO additionalTrackingProperties:nil];
     });
     return YES;
 }
 
-- (void)notificationController:(MPNotificationViewController *)controller wasDismissedWithCtaUrl:(NSURL *)ctaUrl
-{
+- (void)notificationController:(MPNotificationViewController *)controller
+        wasDismissedWithCtaUrl:(NSURL *)ctaUrl
+                   shouldTrack:(BOOL)shouldTrack
+  additionalTrackingProperties:(NSDictionary *)trackingProperties {
     if (controller == nil || self.currentlyShowingNotification != controller.notification) {
         return;
     }
 
-    void (^completionBlock)() = ^void() {
+    void (^completionBlock)(void) = ^{
+        if (shouldTrack) {
+            NSMutableDictionary *properties = nil;
+            if (trackingProperties) {
+                properties = [trackingProperties mutableCopy];
+            }
+            if (ctaUrl) {
+                if (!properties) {
+                    properties = [[NSMutableDictionary alloc] init];
+                }
+                properties[@"url"] = ctaUrl.absoluteString;
+            }
+            [self trackNotification:controller.notification event:@"$campaign_open" properties:properties];
+        }
         self.currentlyShowingNotification = nil;
         self.notificationViewController = nil;
     };
@@ -1693,7 +1774,6 @@ static void MixpanelReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
                 MPLogError(@"Mixpanel failed to open given URL: %@", ctaUrl);
             }
 
-            [self trackNotification:controller.notification event:@"$campaign_open"];
             completionBlock();
         }];
     } else {
@@ -1701,16 +1781,23 @@ static void MixpanelReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
     }
 }
 
-- (void)trackNotification:(MPNotification *)notification event:(NSString *)event
-{
-    [self track:event properties:@{@"campaign_id": @(notification.ID),
-                                   @"message_id": @(notification.messageID),
-                                   @"message_type": @"inapp",
-                                   @"message_subtype": notification.type}];
+- (void)trackNotification:(MPNotification *)notification
+                    event:(NSString *)event
+               properties:(NSDictionary *)properties {
+    NSMutableDictionary *mutableProperties;
+    if (!properties) {
+        mutableProperties = [[NSMutableDictionary alloc] init];
+    } else {
+        mutableProperties = [properties mutableCopy];
+    }
+    [mutableProperties addEntriesFromDictionary:@{@"campaign_id": @(notification.ID),
+                                                  @"message_id": @(notification.messageID),
+                                                  @"message_type": @"inapp",
+                                                  @"message_subtype": notification.type}];
+    [self track:event properties:mutableProperties];
 }
 
-- (void)markNotificationShown:(MPNotification *)notification
-{
+- (void)markNotificationShown:(MPNotification *)notification {
     MPLogInfo(@"%@ marking notification shown: %@, %@", self, @(notification.ID), self.shownNotifications);
 
     dispatch_async(self.serialQueue, ^{
@@ -1730,7 +1817,7 @@ static void MixpanelReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
 
     [self.people append:properties];
 
-    [self trackNotification:notification event:@"$campaign_delivery"];
+    [self trackNotification:notification event:@"$campaign_delivery" properties:nil];
 }
 
 #pragma mark - Mixpanel A/B Testing and Codeless (Designer)
