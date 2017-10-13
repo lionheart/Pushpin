@@ -29,7 +29,6 @@ target 'Pushpin' do
   pod 'Mixpanel'
   pod 'ChimpKit'
   pod 'OpenInChrome', '~> 0.0'
-  pod 'Google-Mobile-Ads-SDK'
   pod '1PasswordExtension', '~> 1.8'
   pod 'LionheartExtensions'
 end

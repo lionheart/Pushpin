@@ -22,7 +22,6 @@ PODS:
   - FMDB (2.7.2):
     - FMDB/standard (= 2.7.2)
   - FMDB/standard (2.7.2)
-  - Google-Mobile-Ads-SDK (7.24.1)
   - hpple (0.2.0)
   - HTMLParser (0.1.2)
   - KeyboardAdjuster (1.4.1)
@@ -63,7 +62,6 @@ DEPENDENCIES:
   - BRYHTMLParser
   - ChimpKit
   - FMDB
-  - Google-Mobile-Ads-SDK
   - HTMLParser
   - KeychainItemWrapper (~> 1.2)
   - LHSCategoryCollection (from `../LHSCategoryCollection`)
@@ -102,7 +100,6 @@ SPEC CHECKSUMS:
   BRYHTMLParser: c84b3e5aa4fd6706271c48ed480af13ab0d71afb
   ChimpKit: d020126089544daa349397a91f1489a3f271b791
   FMDB: 6198a90e7b6900cfc046e6bc0ef6ebb7be9236aa
-  Google-Mobile-Ads-SDK: ed8004a7265b424568dc84f3d2bbe3ea3fff958f
   hpple: 3b765f96fc2cd56ad1a49aef6f7be5cb2aa64b57
   HTMLParser: 0aff2823b285cfe41996d55d1ae742a27ff89305
   KeyboardAdjuster: 666736e102cee8e4a6aa45264077cff4383a4baf
@@ -122,6 +119,6 @@ SPEC CHECKSUMS:
   TMReachability: 48c99d728a8b0ad4493800592484b8cbb65c896c
   TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
 
-PODFILE CHECKSUM: 7f2693b55042e24c2ae55f375be0456bb16ffb68
+PODFILE CHECKSUM: 2d8e323c735da00f944d4257242ab055b3d1a2ec
 
 COCOAPODS: 1.1.1
