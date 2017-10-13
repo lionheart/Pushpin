@@ -22,6 +22,8 @@ pod 'LHSFMDatabaseAdditions', '~> 0.0'
 pod 'LHSTableViewCells'
 pod 'FMDB'
 pod 'ASPinboard', '~> 1.0'
+pod 'QuickTableView'
+pod 'SuperLayout'
 
 target 'Pushpin' do
   pod 'Mixpanel'
@@ -29,6 +31,7 @@ target 'Pushpin' do
   pod 'OpenInChrome', '~> 0.0'
   pod 'Google-Mobile-Ads-SDK'
   pod '1PasswordExtension', '~> 1.8'
+  pod 'LionheartExtensions'
 end
 
 target 'Bookmark Extension' do
