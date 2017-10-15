@@ -201,15 +201,9 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
         BOOL authTokenProvided = [self authTokenProvided];
 
         BOOL usernameAndPasswordProvided = self.usernameTextField.text.length > 0 && self.passwordTextField.text.length > 0;
-#ifdef PINBOARD
         BOOL validCredentialsProvided = usernameAndPasswordProvided || authTokenProvided;
-#else
-        BOOL validCredentialsProvided = usernameAndPasswordProvided;
-#endif
 
         if (!validCredentialsProvided) {
-
-
             NSString *message = NSLocalizedString(@"Please enter both a username and password to sign into Pinboard.", nil);
 
             UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:nil
