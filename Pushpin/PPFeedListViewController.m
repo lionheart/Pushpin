@@ -186,7 +186,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     [self.tagsButton setAttributedTitle:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Tags", nil)
                                                                         attributes:barButtonTitleTextAttributes]
                                forState:UIControlStateNormal];
-    [self.tagsButton addTarget:self action:@selector(openTags) forControlEvents:UIControlEventAllEvents];
+    [self.tagsButton addTarget:self action:@selector(openTags) forControlEvents:UIControlEventTouchUpInside];
     [self.toolbar addSubview:self.tagsButton];
 
     self.searchButton = [UIButton buttonWithType:UIButtonTypeSystem];
