@@ -324,6 +324,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                     if ([self is1PasswordAvailable]) {
                         [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPLogin1PasswordSection] withRowAnimation:UITableViewRowAnimationFade];
                     }
+
                     [self.tableView endUpdates];
                 });
             };
@@ -367,7 +368,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
             [PPUtilities resetDatabase];
             [PPUtilities migrateDatabase];
-
 
             ASPinboard *pinboard = [ASPinboard sharedInstance];
             
