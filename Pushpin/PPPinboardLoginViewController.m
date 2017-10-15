@@ -282,44 +282,43 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             
             void (^LoginFailureBlock)(NSError *) = ^(NSError *error) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    switch (error.code) {
-                        case PinboardErrorInvalidCredentials: {
-                            UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Authentication Error", nil)
-                                                                                         message:NSLocalizedString(@"We couldn't log you in. Please make sure you've provided valid credentials.", nil)];
-                            
-                            [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
-                                                    style:UIAlertActionStyleDefault
-                                                  handler:nil];
-                            
-                            [self presentViewController:alert animated:YES completion:nil];
-                            
-                            [[Mixpanel sharedInstance] track:@"Failed to log in"];
-                            break;
-                        }
-                            
-                        case PinboardErrorTimeout: {
-                            
+                    if (error != nil) {
+                        switch (error.code) {
+                            case PinboardErrorInvalidCredentials: {
+                                UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Authentication Error", nil)
+                                                                                             message:NSLocalizedString(@"We couldn't log you in. Please make sure you've provided valid credentials.", nil)];
 
-                            NSString *message = NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil);
-                            
-                            UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:nil
-                                                                                         message:message];
-                            
-                            [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
-                                                    style:UIAlertActionStyleDefault
-                                                  handler:nil];
-                            
-                            [self presentViewController:alert animated:YES completion:nil];
-                            
-                            [[Mixpanel sharedInstance] track:@"Cancelled log in"];
-                            break;
+                                [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
+                                                        style:UIAlertActionStyleDefault
+                                                      handler:nil];
+
+                                [self presentViewController:alert animated:YES completion:nil];
+
+                                [[Mixpanel sharedInstance] track:@"Failed to log in"];
+                                break;
+                            }
+
+                            case PinboardErrorTimeout: {
+                                NSString *message = NSLocalizedString(@"Pinboard is currently down. Please try logging in later.", nil);
+
+                                UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:nil
+                                                                                             message:message];
+
+                                [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
+                                                        style:UIAlertActionStyleDefault
+                                                      handler:nil];
+
+                                [self presentViewController:alert animated:YES completion:nil];
+
+                                [[Mixpanel sharedInstance] track:@"Cancelled log in"];
+                                break;
+                            }
                         }
                     }
                     
                     [self resetLoginScreen];
                     
                     [self.tableView beginUpdates];
-
 
                     if (authTokenProvided) {
                         [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPLoginCredentialSection] withRowAnimation:UITableViewRowAnimationFade];
@@ -396,11 +395,21 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                 // Check if the auth token passes.
                 pinboard.token = self.authTokenTextField.text;
                 [pinboard rssKeyWithSuccess:^(NSString *feedToken) {
-                    settings.feedToken = feedToken;
-                    settings.token = self.authTokenTextField.text;
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if (feedToken) {
+                            NSString *token = self.authTokenTextField.text;
 
-                    LoginSuccessBlock();
-                    PinboardAuthenticationSuccessBlock();
+                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                settings.feedToken = feedToken;
+                                settings.token = token;
+
+                                LoginSuccessBlock();
+                                PinboardAuthenticationSuccessBlock();
+                            });
+                        } else {
+                            LoginFailureBlock([NSError errorWithDomain:ASPinboardErrorDomain code:PinboardErrorInvalidCredentials userInfo:nil]);
+                        }
+                    });
                 } failure:LoginFailureBlock];
             } else {
                 [pinboard authenticateWithUsername:self.usernameTextField.text

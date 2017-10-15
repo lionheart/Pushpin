@@ -269,7 +269,10 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
         [[ASPinboard sharedInstance] rssKeyWithSuccess:^(NSString *feedToken) {
             settings.feedToken = feedToken;
-            [self.tableView reloadData];
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.tableView reloadData];
+            });
         } failure:nil];
     }
 }
