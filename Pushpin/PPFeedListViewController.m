@@ -109,6 +109,10 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.navigationItem.titleView = titleView;
     self.view.backgroundColor = [UIColor whiteColor];
+
+    if (@available(iOS 11, *)) {
+        self.tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+    }
     
     self.motionManager = [[CMMotionManager alloc] init];
     self.motionManager.deviceMotionUpdateInterval = 6.0 / 60.0;

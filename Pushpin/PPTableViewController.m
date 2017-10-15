@@ -38,6 +38,10 @@
         self.tableView.opaque = NO;
         self.tableView.delegate = self;
         self.tableView.dataSource = self;
+
+        if (@available(iOS 11, *)) {
+            self.tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        }
     }
     return self;
 }
