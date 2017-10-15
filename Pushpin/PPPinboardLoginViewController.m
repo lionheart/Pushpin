@@ -95,6 +95,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     self.authTokenTextField.keyboardType = UIKeyboardTypeAlphabet;
     self.authTokenTextField.returnKeyType = UIReturnKeyDone;
     self.authTokenTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    self.authTokenTextField.autocorrectionType = UITextAutocorrectionTypeNo;
     self.authTokenTextField.placeholder = NSLocalizedString(@"username:NNNNNN", nil);
 
     self.textView = [[UITextView alloc] init];
