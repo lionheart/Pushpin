@@ -31,6 +31,7 @@ target 'Pushpin' do
   pod 'OpenInChrome', '~> 0.0'
   pod '1PasswordExtension', '~> 1.8'
   pod 'LionheartExtensions'
+  pod 'QuickTableView'
 end
 
 target 'Bookmark Extension' do
