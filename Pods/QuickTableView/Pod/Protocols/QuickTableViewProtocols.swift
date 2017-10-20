@@ -35,22 +35,16 @@ public protocol HasTableView {
     var tableView: UITableView! { get }
 }
 
-public protocol QuickTableViewSection {
-    static var lastSection: Self { get }
-}
+public protocol QuickTableViewSection { }
 
-public protocol QuickTableViewSectionWithConditions {
+public protocol QuickTableViewSectionWithConditions: QuickTableViewSection {
     associatedtype Container
-    static func conditionalSections(forContainer container: Container) -> [(Self, Bool)]
-    static var lastSection: Self { get }
+    static func conditionalSections(for container: Container) -> [(Self, Bool)]
 }
 
-public protocol QuickTableViewRow {
-    static var lastRow: Self { get }
-}
+public protocol QuickTableViewRow { }
 
-public protocol QuickTableViewRowWithConditions {
+public protocol QuickTableViewRowWithConditions: QuickTableViewRow {
     associatedtype Container
-    static func conditionalRows(forContainer container: Container) -> [(Self, Bool)]
-    static var lastRow: Self { get }
+    static func conditionalRows(for container: Container) -> [(Self, Bool)]
 }

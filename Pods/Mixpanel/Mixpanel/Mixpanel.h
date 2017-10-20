@@ -6,12 +6,12 @@
 #endif
 #import "MixpanelPeople.h"
 
-#define MIXPANEL_FLUSH_IMMEDIATELY (defined(MIXPANEL_APP_EXTENSION) || defined(MIXPANEL_WATCHOS))
-#define MIXPANEL_NO_REACHABILITY_SUPPORT (defined(MIXPANEL_APP_EXTENSION) || defined(MIXPANEL_TVOS) || defined(MIXPANEL_WATCHOS) || defined(MIXPANEL_MACOS))
-#define MIXPANEL_NO_AUTOMATIC_EVENTS_SUPPORT (defined(MIXPANEL_APP_EXTENSION) || defined(MIXPANEL_TVOS) || defined(MIXPANEL_WATCHOS) || defined(MIXPANEL_MACOS))
-#define MIXPANEL_NO_NOTIFICATION_AB_TEST_SUPPORT (defined(MIXPANEL_APP_EXTENSION) || defined(MIXPANEL_TVOS) || defined(MIXPANEL_WATCHOS) || defined(MIXPANEL_MACOS))
-#define MIXPANEL_NO_APP_LIFECYCLE_SUPPORT (defined(MIXPANEL_APP_EXTENSION) || defined(MIXPANEL_WATCHOS))
-#define MIXPANEL_NO_UIAPPLICATION_ACCESS (defined(MIXPANEL_APP_EXTENSION) || defined(MIXPANEL_WATCHOS) || defined(MIXPANEL_MACOS))
+#define MIXPANEL_FLUSH_IMMEDIATELY defined(MIXPANEL_WATCHOS)
+#define MIXPANEL_NO_REACHABILITY_SUPPORT (defined(MIXPANEL_TVOS) || defined(MIXPANEL_WATCHOS) || defined(MIXPANEL_MACOS))
+#define MIXPANEL_NO_AUTOMATIC_EVENTS_SUPPORT (defined(MIXPANEL_TVOS) || defined(MIXPANEL_WATCHOS) || defined(MIXPANEL_MACOS))
+#define MIXPANEL_NO_NOTIFICATION_AB_TEST_SUPPORT (defined(MIXPANEL_TVOS) || defined(MIXPANEL_WATCHOS) || defined(MIXPANEL_MACOS))
+#define MIXPANEL_NO_APP_LIFECYCLE_SUPPORT defined(MIXPANEL_WATCHOS)
+#define MIXPANEL_NO_UIAPPLICATION_ACCESS (defined(MIXPANEL_WATCHOS) || defined(MIXPANEL_MACOS))
 
 @class    MixpanelPeople;
 @protocol MixpanelDelegate;
@@ -521,9 +521,8 @@ NS_ASSUME_NONNULL_BEGIN
  This method is used to map an identifier called an alias to the existing Mixpanel
  distinct id. This causes all events and people requests sent with the alias to be
  mapped back to the original distinct id. The recommended usage pattern is to call
- both createAlias: and identify: when the user signs up, and only identify: (with
- their new user ID) when they log in. This will keep your signup funnels working
- correctly.
+ createAlias: and then identify: (with their new user ID) when they log in the next time.
+ This will keep your signup funnels working correctly.
 
  <pre>
  // This makes the current ID (an auto-generated GUID)
@@ -542,12 +541,26 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)createAlias:(NSString *)alias forDistinctID:(NSString *)distinctID;
 
 /*!
- Returns the Mixpanel library version number as a string, e.g. "3.2.2".
+ Creates a distinct_id alias from alias to original id.
+
+ This method is not intended to be used unless you wish to prevent updating the Mixpanel
+ People distinct ID value by passing a value of NO to the usePeople param. This can be
+ useful if the user wishes to prevent People updates from being sent until the identify
+ method is called.
+
+ @param alias         the new distinct_id that should represent original
+ @param distinctID     the old distinct_id that alias will be mapped to
+ @param usePeople bool controls whether or not to set the people distinctId to the event distinctId
+ */
+- (void)createAlias:(NSString *)alias forDistinctID:(NSString *)distinctID usePeople:(BOOL)usePeople;
+
+/*!
+ Returns the Mixpanel library version number as a string, e.g. "3.2.3".
  */
 - (NSString *)libVersion;
 
 /*!
- Returns the Mixpanel library version number as a string, e.g. "3.2.2".
+ Returns the Mixpanel library version number as a string, e.g. "3.2.3".
  */
 + (NSString *)libVersion;
 

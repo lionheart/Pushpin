@@ -27,6 +27,19 @@ public extension QuickTableViewRow where Self: RawRepresentable, Self.RawValue =
     static var count: Int {
         return lastRow.rawValue + 1
     }
+
+    static var lastRow: Self {
+        var row = Self(rawValue: 0)!
+        for i in 0..<Int.max {
+            guard let _row = Self(rawValue: i) else {
+                return row
+            }
+
+            row = _row
+        }
+
+        return row
+    }
 }
 
 public extension QuickTableViewRowWithConditions where Self: RawRepresentable, Self.RawValue == Int {
@@ -36,7 +49,7 @@ public extension QuickTableViewRowWithConditions where Self: RawRepresentable, S
 
     init(row: Int, container: Container) {
         var row = row
-        let _conditionalRows = Self.conditionalRows(forContainer: container)
+        let _conditionalRows = Self.conditionalRows(for: container)
         for (conditionalRow, test) in _conditionalRows {
             if row >= conditionalRow.rawValue && !test {
                 row += 1
@@ -47,7 +60,7 @@ public extension QuickTableViewRowWithConditions where Self: RawRepresentable, S
     }
 
     static func index(row: Self, container: Container) -> Int? {
-        for i in 0..<count(container: container) {
+        for i in 0..<count(for: container) {
             if row == Self(row: i, container: container) {
                 return i
             }
@@ -56,9 +69,9 @@ public extension QuickTableViewRowWithConditions where Self: RawRepresentable, S
         return nil
     }
 
-    static func count(container: Container) -> Int {
+    static func count(for container: Container) -> Int {
         var count = lastRow.rawValue + 1
-        let _conditionalRows = conditionalRows(forContainer: container)
+        let _conditionalRows = conditionalRows(for: container)
         for (_, test) in _conditionalRows {
             if !test {
                 count -= 1

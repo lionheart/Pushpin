@@ -14,23 +14,6 @@
 //  limitations under the License.
 
 public extension UITableView {
-    // MARK: !!!
-    func registerClasses<T>(_ cellClasses: [T.Type]) where T: QuickTableViewCellIdentifiableFixedHeight {
-        for cellClass in cellClasses {
-            registerClass(cellClass)
-        }
-    }
-
-    // MARK: !!!
-    func registerClasses<T>(_ cellClasses: [T.Type], withEstimatedRowHeight estimatedRowHeight: CGFloat = 44) where T: QuickTableViewCellIdentifiableAutomaticHeight {
-        for cellClass in cellClasses {
-            registerClass(cellClass)
-        }
-
-        self.estimatedRowHeight = estimatedRowHeight
-        rowHeight = UITableViewAutomaticDimension
-    }
-
     func registerClass(_ cellClass: QuickTableViewCellIdentifiable.Type) {
         let identifier = cellClass.identifier
         guard let cellClass = cellClass as? AnyClass else {
@@ -40,7 +23,7 @@ public extension UITableView {
         register(cellClass, forCellReuseIdentifier: identifier)
     }
 
-    func dequeueReusableCell<T>(forIndexPath indexPath: IndexPath) -> T where T: QuickTableViewCellIdentifiable {
+    func dequeueReusableCell<T>(for indexPath: IndexPath) -> T where T: QuickTableViewCellIdentifiable {
         return dequeueReusableCell(withIdentifier: T.identifier, for: indexPath) as! T
     }
 }

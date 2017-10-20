@@ -26,12 +26,11 @@ import UIKit
  - date: April 12, 2016
  */
 open class BaseTableViewController: UIViewController, KeyboardAdjuster, HasTableView {
-    open var keyboardAdjusterConstraint: NSLayoutConstraint?
     open var tableViewTopConstraint: NSLayoutConstraint!
     open var tableViewLeftConstraint: NSLayoutConstraint!
     open var tableViewRightConstraint: NSLayoutConstraint!
 
-    open var keyboardAdjusterAnimated: Bool? = false
+    open var keyboardAdjustmentHelper = KeyboardAdjustmentHelper()
     open var tableView: UITableView!
 
     public init(style: UITableViewStyle = .grouped) {
@@ -44,11 +43,20 @@ open class BaseTableViewController: UIViewController, KeyboardAdjuster, HasTable
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.delegate = self as? UITableViewDelegate
         tableView.dataSource = self as? UITableViewDataSource
+
+        if #available(iOS 11, *) {
+            // Handle odd content inset adjustment animation on iOS 11
+            tableView.contentInsetAdjustmentBehavior = .never
+        } else {
+            // iOS 11 and below need to have auto-layout specified manually
+            tableView.estimatedRowHeight = 44
+            tableView.rowHeight = UITableViewAutomaticDimension
+        }
     }
 
     @available(*, unavailable)
     required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: aDecoder)
     }
 
     override open func viewWillAppear(_ animated: Bool) {
@@ -73,7 +81,7 @@ open class BaseTableViewController: UIViewController, KeyboardAdjuster, HasTable
         tableViewLeftConstraint.isActive = true
         tableViewTopConstraint.isActive = true
         tableViewRightConstraint.isActive = true
-        keyboardAdjusterConstraint = view.bottomAnchor.constraint(equalTo: tableView.bottomAnchor)
+        keyboardAdjustmentHelper.constraint = view.bottomAnchor.constraint(equalTo: tableView.bottomAnchor)
     }
 
     // MARK: -
