@@ -32,7 +32,6 @@
 		3730260A1F461BBB007014EF /* PPBadgeWrapperView.m in Sources */ = {isa = PBXBuildFile; fileRef = E89001F5183EA43E00C1F969 /* PPBadgeWrapperView.m */; };
 		3730260B1F461BC1007014EF /* PPNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = E8DA7974183D2EC5002B1D0B /* PPNavigationBar.m */; };
 		3730260C1F461BCA007014EF /* PPPinboardMetadataCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 3743B7371875DAA800B97E6D /* PPPinboardMetadataCache.m */; };
-		3730260D1F461BD0007014EF /* PPAddBookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E44162B389B009FCB17 /* PPAddBookmarkViewController.m */; };
 		3730260F1F461C31007014EF /* PPShortcutEnabledDescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 373D6F561965E85A006833D2 /* PPShortcutEnabledDescriptionViewController.m */; };
 		373026101F461C38007014EF /* PPEditDescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3728CF3F1872880A00155791 /* PPEditDescriptionViewController.m */; };
 		373026111F461C3D007014EF /* PPBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = E89001F8183EA5B500C1F969 /* PPBadgeView.m */; };
@@ -180,6 +179,8 @@
 		37B6201D1F45211D005DE789 /* PPEditDescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3728CF3F1872880A00155791 /* PPEditDescriptionViewController.m */; };
 		37CBB7411881B44B000F9C36 /* About.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7401881B44B000F9C36 /* About.plist */; };
 		37CBB7551881FFBC000F9C36 /* About.json in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7541881FFBC000F9C36 /* About.json */; };
+		37D620561F9A9D060020B52A /* StoreReviewPointsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D620551F9A9D060020B52A /* StoreReviewPointsManager.swift */; };
+		37D620581F9AB4BA0020B52A /* PPAddBookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E44162B389B009FCB17 /* PPAddBookmarkViewController.m */; };
 		37DE5AAA174EF8AF0073A2F4 /* back_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 37DE5AA0174EF8AE0073A2F4 /* back_icon.png */; };
 		37DE5AAB174EF8AF0073A2F4 /* back_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37DE5AA1174EF8AE0073A2F4 /* back_icon@2x.png */; };
 		37F1E1BA18C617940032B22B /* navigation-recent.png in Resources */ = {isa = PBXBuildFile; fileRef = 37F1E1B618C617940032B22B /* navigation-recent.png */; };
@@ -550,6 +551,7 @@
 		37D4B000188325B000E07EB3 /* PPStatusBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPStatusBar.h; sourceTree = "<group>"; };
 		37D4B001188325B000E07EB3 /* PPStatusBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPStatusBar.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37D4B00318833BC800E07EB3 /* readability.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = readability.css; sourceTree = "<group>"; };
+		37D620551F9A9D060020B52A /* StoreReviewPointsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreReviewPointsManager.swift; sourceTree = "<group>"; };
 		37DAAA80199FFDE40050350D /* LyonTextApp-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LyonTextApp-Regular.ttf"; sourceTree = "<group>"; };
 		37DAAA8219A001F90050350D /* Charter Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Charter Regular.ttf"; sourceTree = "<group>"; };
 		37DAAA8419A002380050350D /* Courier Prime.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Courier Prime.ttf"; sourceTree = "<group>"; };
@@ -1221,6 +1223,7 @@
 				37B4FFE11923AD18002F8558 /* PPUtilities.h */,
 				37B4FFE21923AD18002F8558 /* PPUtilities.m */,
 				37D4B00318833BC800E07EB3 /* readability.css */,
+				37D620551F9A9D060020B52A /* StoreReviewPointsManager.swift */,
 			);
 			path = Pushpin;
 			sourceTree = "<group>";
@@ -1940,7 +1943,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				373026061F461AF7007014EF /* PostMetadata.m in Sources */,
-				3730260D1F461BD0007014EF /* PPAddBookmarkViewController.m in Sources */,
 				373026111F461C3D007014EF /* PPBadgeView.m in Sources */,
 				3730260A1F461BBB007014EF /* PPBadgeWrapperView.m in Sources */,
 				373026101F461C38007014EF /* PPEditDescriptionViewController.m in Sources */,
@@ -1948,6 +1950,7 @@
 				373026031F461980007014EF /* PPNavigationController.m in Sources */,
 				373026121F461C42007014EF /* PPNotification.m in Sources */,
 				373026051F4619ED007014EF /* PPPinboardDataSource.m in Sources */,
+				37D620581F9AB4BA0020B52A /* PPAddBookmarkViewController.m in Sources */,
 				3730260C1F461BCA007014EF /* PPPinboardMetadataCache.m in Sources */,
 				373025FF1F4610EA007014EF /* PPReaderSettings.m in Sources */,
 				373025FE1F4610E3007014EF /* PPSettings.m in Sources */,
@@ -2012,6 +2015,7 @@
 				37F9D0971D32FDF9002A168D /* PPSearchViewController.m in Sources */,
 				37B620121F4520E0005DE789 /* PPSettings.m in Sources */,
 				37F9D09B1D32FE03002A168D /* PPSettingsViewController.m in Sources */,
+				37D620561F9A9D060020B52A /* StoreReviewPointsManager.swift in Sources */,
 				37B6201A1F452109005DE789 /* PPShortcutEnabledDescriptionViewController.m in Sources */,
 				37B6201C1F452119005DE789 /* PPShrinkBackAnimator.m in Sources */,
 				37B620171F4520FD005DE789 /* PPShrinkBackTransition.m in Sources */,
@@ -2467,6 +2471,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 63553QQ62F;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2598,6 +2603,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = YES;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 63553QQ62F;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2820,6 +2826,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 63553QQ62F;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2863,6 +2870,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = YES;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 63553QQ62F;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (

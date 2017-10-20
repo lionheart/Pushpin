@@ -73,6 +73,15 @@
     return nil;
 }
 
+- (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    // Credit the user when they navigate in the navigation stack
+#ifndef APP_EXTENSION_SAFE
+    NSDecimalNumber *threshold = [NSDecimalNumber decimalNumberWithString:@"500"];
+    StoreReviewPointsManager *manager = [[StoreReviewPointsManager alloc] initWithThreshold:threshold];
+    [manager addActionWithValue:StoreReviewValueLow halfLife:StoreReviewHalfLifeMonth];
+#endif
+}
+
 #pragma mark Status Bar Styles
 
 // Overriding these methods ensure that child view controllers can set their own status bar styles

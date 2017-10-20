@@ -1790,6 +1790,10 @@ static NSInteger PPBookmarkEditMaximum = 25;
                 [self responseFailureHandler:error];
             } else {
                 dispatch_async(dispatch_get_main_queue(), ^{
+                    NSDecimalNumber *threshold = [NSDecimalNumber decimalNumberWithString:@"500"];
+                    StoreReviewPointsManager *manager = [[StoreReviewPointsManager alloc] initWithThreshold:threshold];
+                    [manager addActionWithValue:StoreReviewValueMedium halfLife:StoreReviewHalfLifeWeek];
+
                     if (updated) {
                         [self updateFromLocalDatabaseWithCallback:^{
                             [self.refreshControl endRefreshing];
@@ -1827,6 +1831,15 @@ static NSInteger PPBookmarkEditMaximum = 25;
         } else if (response.statusCode == 500) {
             UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Error", nil)
                                                                          message:NSLocalizedString(@"The Pinboard API was unable to complete this request.", nil)];
+
+            [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
+                                    style:UIAlertActionStyleDefault
+                                  handler:nil];
+
+            [self presentViewController:alert animated:YES completion:nil];
+        } else {
+            UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Error", nil)
+                                                                         message:NSLocalizedString(error.userInfo[@"NSLocalizedDescription"], nil)];
 
             [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
                                     style:UIAlertActionStyleDefault

@@ -1011,8 +1011,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             NSMutableArray *hiddenFeedNames = [NSMutableArray array];
             
             for (NSIndexPath *indexPath in indexPathsForSelectedRows) {
-                
-
                 PPPinboardSectionType sectionType = (PPPinboardSectionType)indexPath.section;
                 NSString *feedName;
                 
@@ -1036,8 +1034,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             
             for (NSInteger section=0; section<[PPSections() count]; section++) {
                 NSInteger numberOfRows;
-                
-
 
                 PPPinboardSectionType sectionType = (PPPinboardSectionType)section;
 
@@ -1097,8 +1093,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         [CATransaction begin];
         [self.tableView beginUpdates];
         [self.tableView deleteRowsAtIndexPaths:[self indexPathsForHiddenFeeds] withRowAnimation:UITableViewRowAnimationFade];
-        
-        
 
         if ([self personalSectionIsHidden]) {
             [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionPersonal] withRowAnimation:UITableViewRowAnimationFade];\
@@ -1155,11 +1149,8 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
             [self.tableView beginUpdates];
 
             if ([self personalSectionIsHidden]) {
-
                 [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionPersonal] withRowAnimation:UITableViewRowAnimationFade];
-
             }
-
 
             if ([self communitySectionIsHidden]) {
                 [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPPinboardSectionCommunity] withRowAnimation:UITableViewRowAnimationFade];

@@ -235,7 +235,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         self.toggleReadKeyCommand = [UIKeyCommand keyCommandWithInput:@"5"
                                                         modifierFlags:UIKeyModifierCommand
                                                                action:@selector(handleKeyCommand:)];
-        
+
         self.saveKeyCommand = [UIKeyCommand keyCommandWithInput:@"s"
                                                   modifierFlags:UIKeyModifierCommand
                                                          action:@selector(handleKeyCommand:)];
@@ -1194,6 +1194,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
 #warning This used to be "NO". Why?
                             [self.parentViewController dismissViewControllerAnimated:YES
                                                                           completion:^{
+#ifndef APP_EXTENSION_SAFE
+                                                                              NSDecimalNumber *threshold = [NSDecimalNumber decimalNumberWithString:@"500"];
+                                                                              StoreReviewPointsManager *manager = [[StoreReviewPointsManager alloc] initWithThreshold:threshold];
+                                                                              [manager addActionWithValue:StoreReviewValueHigh halfLife:StoreReviewHalfLifeWeek];
+#endif
+
                                                                               [[NSNotificationCenter defaultCenter] postNotificationName:PPBookmarkEventNotificationName
                                                                                                                                   object:nil
                                                                                                                                 userInfo:@{@"type": @(eventType) }];
@@ -1211,6 +1217,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
                             [PPNotification notifyWithMessage:message success:YES updated:YES];
 
                             [self.parentViewController dismissViewControllerAnimated:YES completion:^{
+#ifndef APP_EXTENSION_SAFE
+                                NSDecimalNumber *threshold = [NSDecimalNumber decimalNumberWithString:@"500"];
+                                StoreReviewPointsManager *manager = [[StoreReviewPointsManager alloc] initWithThreshold:threshold];
+                                [manager addActionWithValue:StoreReviewValueHigh halfLife:StoreReviewHalfLifeWeek];
+#endif
+
                                 [[NSNotificationCenter defaultCenter] postNotificationName:PPBookmarkEventNotificationName
                                                                                     object:nil
                                                                                   userInfo:@{@"type": @(eventType) }];
@@ -1235,8 +1247,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     [self presentViewController:alert animated:YES completion:nil];
                 });
             };
-            
-
 
             ASPinboard *pinboard = [ASPinboard sharedInstance];
             [pinboard addBookmarkWithURL:url
