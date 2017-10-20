@@ -1943,6 +1943,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				373026061F461AF7007014EF /* PostMetadata.m in Sources */,
+				37D620581F9AB4BA0020B52A /* PPAddBookmarkViewController.m in Sources */,
 				373026111F461C3D007014EF /* PPBadgeView.m in Sources */,
 				3730260A1F461BBB007014EF /* PPBadgeWrapperView.m in Sources */,
 				373026101F461C38007014EF /* PPEditDescriptionViewController.m in Sources */,
@@ -1950,7 +1951,6 @@
 				373026031F461980007014EF /* PPNavigationController.m in Sources */,
 				373026121F461C42007014EF /* PPNotification.m in Sources */,
 				373026051F4619ED007014EF /* PPPinboardDataSource.m in Sources */,
-				37D620581F9AB4BA0020B52A /* PPAddBookmarkViewController.m in Sources */,
 				3730260C1F461BCA007014EF /* PPPinboardMetadataCache.m in Sources */,
 				373025FF1F4610EA007014EF /* PPReaderSettings.m in Sources */,
 				373025FE1F4610E3007014EF /* PPSettings.m in Sources */,
@@ -2015,7 +2015,6 @@
 				37F9D0971D32FDF9002A168D /* PPSearchViewController.m in Sources */,
 				37B620121F4520E0005DE789 /* PPSettings.m in Sources */,
 				37F9D09B1D32FE03002A168D /* PPSettingsViewController.m in Sources */,
-				37D620561F9A9D060020B52A /* StoreReviewPointsManager.swift in Sources */,
 				37B6201A1F452109005DE789 /* PPShortcutEnabledDescriptionViewController.m in Sources */,
 				37B6201C1F452119005DE789 /* PPShrinkBackAnimator.m in Sources */,
 				37B620171F4520FD005DE789 /* PPShrinkBackTransition.m in Sources */,
@@ -2031,6 +2030,7 @@
 				37B620111F4520DC005DE789 /* PPURLCache.m in Sources */,
 				37B620091F4520B4005DE789 /* PPUtilities.m in Sources */,
 				37F9D09A1D32FE00002A168D /* PPWebViewController.m in Sources */,
+				37D620561F9A9D060020B52A /* StoreReviewPointsManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
