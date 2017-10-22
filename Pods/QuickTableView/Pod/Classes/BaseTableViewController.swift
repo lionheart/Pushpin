@@ -25,7 +25,7 @@ import UIKit
  - copyright: ©2016 Lionheart Software LLC
  - date: April 12, 2016
  */
-open class BaseTableViewController: UIViewController, KeyboardAdjuster, HasTableView {
+@objc open class BaseTableViewController: UIViewController, KeyboardAdjuster, HasTableView {
     open var tableViewTopConstraint: NSLayoutConstraint!
     open var tableViewLeftConstraint: NSLayoutConstraint!
     open var tableViewRightConstraint: NSLayoutConstraint!
@@ -33,7 +33,7 @@ open class BaseTableViewController: UIViewController, KeyboardAdjuster, HasTable
     open var keyboardAdjustmentHelper = KeyboardAdjustmentHelper()
     open var tableView: UITableView!
 
-    public init(style: UITableViewStyle = .grouped) {
+    @objc public init(style: UITableViewStyle = .grouped) {
         super.init(nibName: nil, bundle: nil)
 
         edgesForExtendedLayout = []
@@ -54,9 +54,8 @@ open class BaseTableViewController: UIViewController, KeyboardAdjuster, HasTable
         }
     }
 
-    @available(*, unavailable)
     required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+        fatalError()
     }
 
     override open func viewWillAppear(_ animated: Bool) {

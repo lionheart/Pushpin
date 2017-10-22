@@ -8,6 +8,7 @@
 
 @import UIKit;
 @import MessageUI.MFMailComposeViewController;
+@import StoreKit;
 
 #import "PPPinboardLoginViewController.h"
 #import "PPConstants.h"
@@ -17,7 +18,7 @@
 @class PPFeedListViewController;
 @class PPNavigationController;
 
-@interface PPAppDelegate : UIResponder <UIApplicationDelegate,  UISplitViewControllerDelegate, MFMailComposeViewControllerDelegate> {
+@interface PPAppDelegate : UIResponder <UIApplicationDelegate,  UISplitViewControllerDelegate, MFMailComposeViewControllerDelegate, SKPaymentTransactionObserver> {
     BOOL didLaunchWithURL;
     BOOL timerPaused;
     NSInteger secondsLeft;

@@ -239,7 +239,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
             switch ((PPOtherSettingsRowType)indexPath.row) {
                 case PPOtherTipJar:
-                    cell.textLabel.text = NSLocalizedString(@"Tip Jar <3", nil);
+                    cell.textLabel.text = NSLocalizedString(@"Tip Jar", nil);
                     cell.detailTextLabel.text = NSLocalizedString(@"Help support continued Pushpin development!", nil);
                     cell.detailTextLabel.numberOfLines = 0;
                     break;
@@ -367,9 +367,11 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                     [tableView deselectRowAtIndexPath:indexPath animated:YES];
                     break;
 
-                case PPOtherTipJar:
-#warning TODO
+                case PPOtherTipJar: {
+                    PPTipJarViewController *controller = [[PPTipJarViewController alloc] initWithStyle:UITableViewStyleGrouped];
+                    [self.navigationController pushViewController:controller animated:YES];
                     break;
+                }
             }
             break;
         }

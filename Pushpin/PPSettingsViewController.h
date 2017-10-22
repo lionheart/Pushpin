@@ -29,11 +29,10 @@ typedef NS_ENUM(NSInteger, PPMainSettingsRowType) {
 
 typedef NS_ENUM(NSInteger, PPOtherSettingsRowType) {
     PPOtherRatePushpin,
+    PPOtherTipJar,
     PPOtherFollow,
     PPOtherFeedback,
     PPOtherLogout,
-
-    PPOtherTipJar,
 };
 
 enum : NSInteger {

@@ -201,12 +201,16 @@ public enum QuickTableViewSectionBuilder: ExpressibleByArrayLiteral {
 
 open class QuickTableViewController<Container: QuickTableViewContainer>: BaseTableViewController, UITableViewDataSource, UITableViewDelegate {
     required public init() {
-        super.init(style: Container.style)
+        super.init(style: .grouped)
 
         if Container.shouldAutoResizeCells {
             tableView.estimatedRowHeight = 44
             tableView.rowHeight = UITableViewAutomaticDimension
         }
+    }
+
+    public required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
     }
 
     override open func viewDidLoad() {

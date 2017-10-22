@@ -16,6 +16,7 @@
 @import ChimpKit;
 @import KeychainItemWrapper;
 @import FMDB;
+@import StoreKit;
 
 #ifdef ENABLE_ADS
 @import GoogleMobileAds;
@@ -280,6 +281,10 @@
                                                 toURL:newDatabaseURL
                                                 error:&error];
     }
+}
+
+- (void)applicationWillTerminate:(UIApplication *)application {
+    [[SKPaymentQueue defaultQueue] removeTransactionObserver:self];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
@@ -657,6 +662,8 @@
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
+
     PPSettings *settings = [PPSettings sharedSettings];
 
     [[ChimpKit sharedKit] setApiKey:@"f3bfc69f8d267252c14d76664432f968-us7"];
@@ -932,6 +939,26 @@
     }
 
     return YES;
+}
+
+#pragma mark - SKPaymentTransactionObserver
+
+- (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray<SKPaymentTransaction *> *)transactions {
+    for (SKPaymentTransaction *transaction in transactions) {
+        switch (transaction.transactionState) {
+            case SKPaymentTransactionStatePurchasing: break;
+
+            case SKPaymentTransactionStatePurchased:
+            case SKPaymentTransactionStateRestored:
+                //            purchased = true
+                [queue finishTransaction:transaction];
+                break;
+
+            default:
+                [queue finishTransaction:transaction];
+                break;
+        }
+    }
 }
 
 @end
