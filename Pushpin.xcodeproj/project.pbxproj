@@ -957,10 +957,10 @@
 				3728CF3C18726EC900155791 /* PPTagEditViewController.m */,
 				3727558A161A66A2001A857B /* PPTagViewController.h */,
 				3727558B161A66A2001A857B /* PPTagViewController.m */,
+				37D620591F9ABB040020B52A /* PPTipJarViewController.swift */,
 				377E46E0174C85C500CE3813 /* PPWebViewController.h */,
 				377E46E1174C85C500CE3813 /* PPWebViewController.m */,
 				373FC3421F83DCE50031B282 /* Pushpin-Bridging-Header.h */,
-				37D620591F9ABB040020B52A /* PPTipJarViewController.swift */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -978,12 +978,12 @@
 			isa = PBXGroup;
 			children = (
 				37C4D5191F9BD4FE000F50CB /* ActivityIndicatorTableViewCell.swift */,
-				37D6205B1F9AC06A0020B52A /* PPTipJarTableViewCell.swift */,
-				37C4D51B1F9BEB40000F50CB /* MultilineTableViewCell.swift */,
 				37171A2D18B1714E007FF164 /* LHSBooleanTableViewCell.h */,
 				37171A2E18B1714E007FF164 /* LHSBooleanTableViewCell.m */,
+				37C4D51B1F9BEB40000F50CB /* MultilineTableViewCell.swift */,
 				37516A04186C8AF700AEF7A6 /* PPBookmarkCell.h */,
 				37516A05186C8AF700AEF7A6 /* PPBookmarkCell.m */,
+				37D6205B1F9AC06A0020B52A /* PPTipJarTableViewCell.swift */,
 			);
 			name = "Table View Cells";
 			sourceTree = "<group>";
@@ -1982,10 +1982,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37C4D51A1F9BD4FE000F50CB /* ActivityIndicatorTableViewCell.swift in Sources */,
 				37F9D0961D32FDE1002A168D /* BookmarkletInstallationViewController.m in Sources */,
-				37C4D51C1F9BEB40000F50CB /* MultilineTableViewCell.swift in Sources */,
 				37F9D0DB1D3304A9002A168D /* LHSFontSelectionViewController.m in Sources */,
 				37FB4F981D32ED60004D5C12 /* main.m in Sources */,
+				37C4D51C1F9BEB40000F50CB /* MultilineTableViewCell.swift in Sources */,
 				370B75DB1F45FE5200391769 /* NSString+Additions.m in Sources */,
 				37B620061F45206D005DE789 /* NSString+LHSAdditions.m in Sources */,
 				37B6200E1F4520D0005DE789 /* PostMetadata.m in Sources */,
@@ -2005,7 +2006,6 @@
 				37F9D0A61D32FE55002A168D /* PPDisplaySettingsViewController.m in Sources */,
 				37B6201D1F45211D005DE789 /* PPEditDescriptionViewController.m in Sources */,
 				37F9D0A51D32FE50002A168D /* PPFeedListViewController.m in Sources */,
-				37C4D51A1F9BD4FE000F50CB /* ActivityIndicatorTableViewCell.swift in Sources */,
 				37F9D0BC1D330115002A168D /* PPGenericPostViewController.m in Sources */,
 				37B620151F4520F3005DE789 /* PPLoadingView.m in Sources */,
 				37F9D0BB1D330113002A168D /* PPLoginViewController.m in Sources */,
@@ -2013,7 +2013,6 @@
 				37F9D0B41D330054002A168D /* PPMailChimp.m in Sources */,
 				37B6200A1F4520B8005DE789 /* PPMobilizerUtility.m in Sources */,
 				37F9D0A71D32FE57002A168D /* PPMultipleEditViewController.m in Sources */,
-				37D6205A1F9ABB040020B52A /* PPTipJarViewController.swift in Sources */,
 				37B620141F4520ED005DE789 /* PPNavigationBar.m in Sources */,
 				37F9D0A11D32FE2A002A168D /* PPNavigationController.m in Sources */,
 				37B6200D1F4520CC005DE789 /* PPNoteViewController.m in Sources */,
@@ -2021,7 +2020,6 @@
 				37F9D0AA1D32FEDB002A168D /* PPOfflineDownloadViewController.m in Sources */,
 				37F9D0A01D32FE28002A168D /* PPOfflineSettingsViewController.m in Sources */,
 				37F9D0A81D32FE5D002A168D /* PPPinboardDataSource.m in Sources */,
-				37D6205C1F9AC06A0020B52A /* PPTipJarTableViewCell.swift in Sources */,
 				37F9D0991D32FDFE002A168D /* PPPinboardFeedDataSource.m in Sources */,
 				37F9D09D1D32FE08002A168D /* PPPinboardLoginViewController.m in Sources */,
 				37B6200F1F4520D5005DE789 /* PPPinboardMetadataCache.m in Sources */,
@@ -2044,6 +2042,8 @@
 				37F9D09F1D32FE11002A168D /* PPTagEditViewController.m in Sources */,
 				37F9D0A41D32FE34002A168D /* PPTagViewController.m in Sources */,
 				37B620071F4520AB005DE789 /* PPTheme.m in Sources */,
+				37D6205C1F9AC06A0020B52A /* PPTipJarTableViewCell.swift in Sources */,
+				37D6205A1F9ABB040020B52A /* PPTipJarViewController.swift in Sources */,
 				37B620081F4520B1005DE789 /* PPTitleButton.m in Sources */,
 				37B620161F4520F7005DE789 /* PPToolbar.m in Sources */,
 				37B620111F4520DC005DE789 /* PPURLCache.m in Sources */,
