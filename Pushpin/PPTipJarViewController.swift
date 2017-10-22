@@ -48,6 +48,7 @@ final class PPTipJarViewController: BaseTableViewController {
         case oneTime
         case loading
         case thankYou
+        case manageSubscription
 
         static func conditionalSections(for container: PPTipJarViewController.Section.Container) -> [(PPTipJarViewController.Section, Bool)] {
             return [
@@ -55,7 +56,8 @@ final class PPTipJarViewController: BaseTableViewController {
                 (.subscription, container.productsLoaded && !container.purchased),
                 (.oneTime, container.productsLoaded && !container.purchased),
                 (.loading, !container.productsLoaded),
-                (.thankYou, container.purchased)
+                (.thankYou, container.purchased),
+                (.manageSubscription, container.purchased)
             ]
         }
     }
@@ -109,20 +111,57 @@ final class PPTipJarViewController: BaseTableViewController {
         title = "Tip Jar"
 
         let identifiers = SubscriptionRow.productIdentifiers + OneTimeRow.productIdentifiers
-        let request = SKProductsRequest(productIdentifiers: Set(identifiers))
-        request.delegate = self
-        request.start()
+        let productsRequest = SKProductsRequest(productIdentifiers: Set(identifiers))
+        productsRequest.delegate = self
+        productsRequest.start()
 
-//        let receiptURL = Bundle.main.appStoreReceiptURL
-//        let receipt = NSData(contentsOf: receiptURL!)
-//        let requestContents: [String: Any] = [
-//            "receipt-data": receipt!.base64EncodedString(options: []),
-//            "password": "your iTunes Connect shared secret"
-//        ]
+        if let receiptURL = Bundle.main.appStoreReceiptURL,
+            let data = try? Data(contentsOf: receiptURL) {
+            let encodedData = data.base64EncodedData(options: [])
+            let url = URL(string: "http://iap-receipt-verifier.herokuapp.com/verify")!
+            var request = URLRequest(url: url)
+            request.httpBody = encodedData
+            request.httpMethod = "POST"
+
+            let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+                guard let data = data,
+                    let object = try? JSONSerialization.jsonObject(with: data, options: []),
+                    let json = object as? [String: Any],
+                    let receiptInfo = json["latest_receipt_info"] as? [[String: Any]] else {
+                        return
+                }
+
+//                let formatter = DateFormatter()
+//                formatter.dateFormat = "YYYY-MM-dd HH:mm:ss VV"
+
+                let now = Date()
+                for info in receiptInfo {
+                    guard let productID = info["product_id"] as? String,
+                        let expiresDateMSString = info["expires_date_ms"] as? String,
+                        SubscriptionRow.productIdentifiers.contains(productID) else {
+                        continue
+                    }
+
+                    let expiresDateMS = NSDecimalNumber(string: expiresDateMSString)
+                    let date = Date(timeIntervalSince1970: expiresDateMS.doubleValue / 1000)
+
+                    guard date.compare(now) == .orderedAscending else {
+                        self.purchased = true
+                        break
+                    }
+                }
+
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+            task.resume()
+        }
 
         tableView.registerClass(MultilineTableViewCell.self)
         tableView.registerClass(ActivityIndicatorTableViewCell.self)
         tableView.registerClass(PPTipJarTableViewCell.self)
+        tableView.registerClass(QuickTableViewCellValue1.self)
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -160,6 +199,14 @@ final class PPTipJarViewController: BaseTableViewController {
 extension PPTipJarViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+
+        switch Section(at: indexPath, container: sectionContainer) {
+        case .manageSubscription:
+            let url = URL(string: "https://buy.itunes.apple.com/WebObjects/MZFinance.woa/wa/manageSubscriptions")!
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+
+        default: break
+        }
     }
 }
 
@@ -176,6 +223,7 @@ extension PPTipJarViewController: UITableViewDataSource {
         case .subscription: return SubscriptionRow.count
         case .oneTime: return OneTimeRow.count
         case .thankYou: return 1
+        case .manageSubscription: return 1
         }
     }
 
@@ -186,6 +234,7 @@ extension PPTipJarViewController: UITableViewDataSource {
         case .subscription: return SubscriptionRow.title
         case .oneTime: return OneTimeRow.title
         case .thankYou: return nil
+        case .manageSubscription: return nil
         }
     }
 
@@ -204,6 +253,7 @@ Your account will be charged for renewal within 24-hours prior to the end of the
 You can manage your subscriptions and turn off auto-renewal by going to your Account Settings on the App Store after purchase.
 """
         case .thankYou: return nil
+        case .manageSubscription: return nil
         }
     }
 
@@ -224,6 +274,13 @@ If you've been enjoying Pushpin for a while, and would like to show your support
             // Fun fact: Pushpin has never had a paid update since it was released in November 28, 2012. Pretty cool, right?
             cell.textLabel?.text = "Thank You!"
             cell.detailTextLabel?.text = "Your generous tip goes such a long way. Thank you so much for your support!"
+            return cell
+
+        case .manageSubscription:
+            let cell = tableView.dequeueReusableCell(for: indexPath) as QuickTableViewCellValue1
+            cell.textLabel?.text = "Manage Subscriptions"
+            cell.textLabel?.textAlignment = .center
+            cell.textLabel?.textColor = PPTipJarButton.blue
             return cell
 
         case .loading:
