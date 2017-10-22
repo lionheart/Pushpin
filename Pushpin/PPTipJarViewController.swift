@@ -118,7 +118,7 @@ final class PPTipJarViewController: BaseTableViewController {
         if let receiptURL = Bundle.main.appStoreReceiptURL,
             let data = try? Data(contentsOf: receiptURL) {
             let encodedData = data.base64EncodedData(options: [])
-            let url = URL(string: "http://iap-receipt-verifier.herokuapp.com/verify")!
+            let url = URL(string: "https://iap-receipt-verifier.herokuapp.com/verify")!
             var request = URLRequest(url: url)
             request.httpBody = encodedData
             request.httpMethod = "POST"
