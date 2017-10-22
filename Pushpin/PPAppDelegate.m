@@ -688,7 +688,7 @@
         [defaults setBool:YES forKey:@"HasLaunchedOnce"];
         [defaults synchronize];
 
-        NSDecimalNumber *threshold = [NSDecimalNumber decimalNumberWithString:@"500"];
+        NSDecimalNumber *threshold = [NSDecimalNumber decimalNumberWithString:@"10000"];
         StoreReviewPointsManager *manager = [[StoreReviewPointsManager alloc] initWithThreshold:threshold];
         [manager addActionWithValue:StoreReviewValueHigh halfLife:StoreReviewHalfLifeMonth];
     }

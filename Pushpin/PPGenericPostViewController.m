@@ -1790,7 +1790,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                 [self responseFailureHandler:error];
             } else {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    NSDecimalNumber *threshold = [NSDecimalNumber decimalNumberWithString:@"500"];
+                    NSDecimalNumber *threshold = [NSDecimalNumber decimalNumberWithString:@"10000"];
                     StoreReviewPointsManager *manager = [[StoreReviewPointsManager alloc] initWithThreshold:threshold];
                     [manager addActionWithValue:StoreReviewValueMedium halfLife:StoreReviewHalfLifeWeek];
 

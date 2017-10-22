@@ -1195,7 +1195,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                             [self.parentViewController dismissViewControllerAnimated:YES
                                                                           completion:^{
 #ifndef APP_EXTENSION_SAFE
-                                                                              NSDecimalNumber *threshold = [NSDecimalNumber decimalNumberWithString:@"500"];
+                                                                              NSDecimalNumber *threshold = [NSDecimalNumber decimalNumberWithString:@"10000"];
                                                                               StoreReviewPointsManager *manager = [[StoreReviewPointsManager alloc] initWithThreshold:threshold];
                                                                               [manager addActionWithValue:StoreReviewValueHigh halfLife:StoreReviewHalfLifeWeek];
 #endif
@@ -1218,7 +1218,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
                             [self.parentViewController dismissViewControllerAnimated:YES completion:^{
 #ifndef APP_EXTENSION_SAFE
-                                NSDecimalNumber *threshold = [NSDecimalNumber decimalNumberWithString:@"500"];
+                                NSDecimalNumber *threshold = [NSDecimalNumber decimalNumberWithString:@"10000"];
                                 StoreReviewPointsManager *manager = [[StoreReviewPointsManager alloc] initWithThreshold:threshold];
                                 [manager addActionWithValue:StoreReviewValueHigh halfLife:StoreReviewHalfLifeWeek];
 #endif
