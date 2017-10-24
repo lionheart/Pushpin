@@ -34,16 +34,18 @@ final class PPTipJarViewController: BaseTableViewController {
     var purchased = false
     var products: [String: SKProduct]?
     var sectionContainer: Section.Container {
-        return Section.Container(productsLoaded: products != nil, purchased: purchased)
+        return Section.Container(productsLoaded: products != nil, hasProducts: (products ?? [:]).count > 0, purchased: purchased)
     }
 
     enum Section: Int, QuickTableViewSectionWithConditions {
         struct Container {
             var productsLoaded: Bool
+            var hasProducts: Bool
             var purchased: Bool
         }
 
         case top
+        case couldNotLoad
         case subscription
         case oneTime
         case loading
@@ -52,9 +54,10 @@ final class PPTipJarViewController: BaseTableViewController {
 
         static func conditionalSections(for container: PPTipJarViewController.Section.Container) -> [(PPTipJarViewController.Section, Bool)] {
             return [
-                (.top, !container.purchased),
-                (.subscription, container.productsLoaded && !container.purchased),
-                (.oneTime, container.productsLoaded && !container.purchased),
+                (.top, !container.purchased || (container.productsLoaded && container.hasProducts)),
+                (.couldNotLoad, container.productsLoaded && !container.hasProducts),
+                (.subscription, container.productsLoaded && container.hasProducts && !container.purchased),
+                (.oneTime, container.productsLoaded && container.hasProducts && !container.purchased),
                 (.loading, !container.productsLoaded),
                 (.thankYou, container.purchased),
                 (.manageSubscription, container.purchased)
@@ -219,6 +222,7 @@ extension PPTipJarViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch Section(section: section, container: sectionContainer) {
         case .top: return 1
+        case .couldNotLoad: return 1
         case .loading: return 1
         case .subscription: return SubscriptionRow.count
         case .oneTime: return OneTimeRow.count
@@ -230,6 +234,7 @@ extension PPTipJarViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch Section(section: section, container: sectionContainer) {
         case .top: return nil
+        case .couldNotLoad: return nil
         case .loading: return nil
         case .subscription: return SubscriptionRow.title
         case .oneTime: return OneTimeRow.title
@@ -241,6 +246,7 @@ extension PPTipJarViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         switch Section(section: section, container: sectionContainer) {
         case .top: return nil
+        case .couldNotLoad: return nil
         case .loading: return nil
         case .subscription: return nil
         case .oneTime: return """
@@ -267,6 +273,12 @@ You can manage your subscriptions and turn off auto-renewal by going to your Acc
             cell.detailTextLabel?.text = """
 If you've been enjoying Pushpin for a while, and would like to show your support, please consider a tip. They go such a long way, and every little bit helps. Thanks! :)
 """
+            return cell
+
+        case .couldNotLoad:
+            let cell = tableView.dequeueReusableCell(for: indexPath) as MultilineTableViewCell
+            cell.textLabel?.text = "Oh no!"
+            cell.detailTextLabel?.text = "There was an error loading In-App Purchase information."
             return cell
 
         case .thankYou:
