@@ -17,7 +17,7 @@
 - (NSString *)originalURLString {
     NSString *url = [self copy];
     if ([self isReadabilityURL]) {
-        NSRange range = NSMakeRange(0, 55);
+        NSRange range = NSMakeRange(0, 56);
         NSRange range2 = NSMakeRange(self.length - 19, 19);
 
         url = [url stringByReplacingCharactersInRange:range2 withString:@""];
