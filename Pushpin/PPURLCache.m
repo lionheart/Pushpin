@@ -609,7 +609,7 @@
     NSData *data = [NSData dataWithContentsOfURL:location options:NSDataReadingUncached error:&error];
     NSHTTPURLResponse *httpURLResponse = (NSHTTPURLResponse *)downloadTask.response;
     BOOL hasValidData = data && data.length > 0;
-    BOOL hasValidResponse = httpURLResponse && httpURLResponse.statusCode != 504;
+    BOOL hasValidResponse = httpURLResponse && httpURLResponse.statusCode == 200;
     if (hasValidData && hasValidResponse) {
         BOOL isReaderURL = [originalURL.absoluteString isReadabilityURL];
         NSCachedURLResponse *cachedURLResponse = [[NSCachedURLResponse alloc] initWithResponse:downloadTask.response data:data];
