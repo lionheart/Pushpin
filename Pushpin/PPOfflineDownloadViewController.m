@@ -101,9 +101,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
         
         [[PPPinboardMetadataCache sharedCache] removeAllObjects];
     };
-    
+
+    PPURLCache *cache = [PPAppDelegate sharedDelegate].urlCache;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        PPURLCache *cache = [PPAppDelegate sharedDelegate].urlCache;
         [cache initiateBackgroundDownloadsWithCompletion:^(NSInteger count) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (count == 0) {
