@@ -87,6 +87,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+
+    // Turn off idle application timer since downloading bookmarks can take a while
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     
     void (^Completion)(void) = ^{
         self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Done", nil);
@@ -100,6 +103,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [self.tableView reloadData];
         
         [[PPPinboardMetadataCache sharedCache] removeAllObjects];
+
+        [[UIApplication sharedApplication] setIdleTimerDisabled:NO];
     };
 
     PPURLCache *cache = [PPAppDelegate sharedDelegate].urlCache;
