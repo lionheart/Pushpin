@@ -75,15 +75,15 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                                                                    PPFontAdjustmentType fontAdjustment = (PPFontAdjustmentType)index;
                                                                    PPSettings *settings = [PPSettings sharedSettings];
                                                                    settings.fontAdjustment = fontAdjustment;
-                                                                   
-                                                                   [self.tableView beginUpdates];
-                                                                   [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPBrowseFontSizeRow inSection:PPSectionBrowseSettings]]
-                                                                                         withRowAnimation:UITableViewRowAnimationAutomatic];
-                                                                   [self.tableView endUpdates];
+
+                                                                   [self.tableView reloadData];
                                                                    
                                                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                                                        [[PPPinboardMetadataCache sharedCache] reset];
-                                                                       [[NSNotificationCenter defaultCenter] postNotificationName:PPBookmarkDisplaySettingUpdated object:nil];
+
+                                                                       dispatch_async(dispatch_get_main_queue(), ^{
+                                                                           [[NSNotificationCenter defaultCenter] postNotificationName:PPBookmarkDisplaySettingUpdated object:nil];
+                                                                       });
                                                                    });
                                                                }
                                                            }];
