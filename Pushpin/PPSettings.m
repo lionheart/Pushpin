@@ -609,8 +609,6 @@
 }
 
 - (BOOL)isAuthenticated {
-    
-
     return self.token != nil;
 }
 
