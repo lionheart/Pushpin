@@ -237,7 +237,14 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
     [self.toolbar addConstraints:self.centerOrientationConstraints];
 
-    self.toolbarBottomConstraint = [self.toolbar.bottomAnchor constraintEqualToAnchor:self.bottomLayoutGuide.bottomAnchor];
+    NSLayoutYAxisAnchor *bottomAnchor;
+    if (@available(iOS 11, *)) {
+        bottomAnchor = self.view.safeAreaLayoutGuide.bottomAnchor;
+    } else {
+        bottomAnchor = self.bottomLayoutGuide.bottomAnchor;
+    }
+
+    self.toolbarBottomConstraint = [self.toolbar.bottomAnchor constraintEqualToAnchor:bottomAnchor];
 
     [self.view addConstraint:self.toolbarBottomConstraint];
     [self.toolbar lhs_fillWidthOfSuperview];

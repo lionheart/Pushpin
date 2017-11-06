@@ -110,7 +110,7 @@ static NSString *CellIdentifier = @"Cell";
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.tableView];
 
-    self.bottomConstraint = [self.tableView.bottomAnchor constraintEqualToAnchor:self.bottomLayoutGuide.topAnchor];
+    self.bottomConstraint = [self.tableView.bottomAnchor constraintEqualToAnchor:self.bottomLayoutGuide.bottomAnchor];
     [self.view addConstraint:self.bottomConstraint];
     
     UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:16];

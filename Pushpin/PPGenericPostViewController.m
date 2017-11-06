@@ -41,7 +41,6 @@
 #import "NSString+URLEncoding2.h"
 
 static NSString *BookmarkCellIdentifier = @"BookmarkCellIdentifier";
-static NSInteger kToolbarHeight = 44;
 static NSInteger PPBookmarkEditMaximum = 25;
 
 @interface PPGenericPostViewController ()
@@ -56,7 +55,8 @@ static NSInteger PPBookmarkEditMaximum = 25;
 @property (nonatomic, strong) UIAlertController *confirmDeletionActionSheet;
 @property (nonatomic, strong) UIAlertController *confirmMultipleDeletionActionSheet;
 
-@property (nonatomic, strong) NSLayoutConstraint *multipleEditToolbarBottomConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *multipleEditToolbarHiddenConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *multipleEditToolbarVisibleConstraint;
 @property (nonatomic, retain) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, strong) NSArray *indexPathsToDelete;
 @property (nonatomic) BOOL prefersStatusBarHidden;
@@ -255,7 +255,6 @@ static NSInteger PPBookmarkEditMaximum = 25;
         self.searchController.searchBar.searchBarStyle = UISearchBarStyleProminent;
         self.searchController.searchBar.isAccessibilityElement = YES;
         self.searchController.searchBar.accessibilityLabel = NSLocalizedString(@"Search Bar", nil);
-        
 
         self.searchController.searchBar.scopeButtonTitles = @[NSLocalizedString(@"All", nil), NSLocalizedString(@"Title", nil), NSLocalizedString(@"Desc.", nil), NSLocalizedString(@"Tags", nil), NSLocalizedString(@"Full Text", nil)];
         
@@ -328,7 +327,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                                     @"delete": self.multipleDeleteButton };
 
     [self.multiToolbarView lhs_addConstraints:@"H:|[read][edit(==read)][delete(==read)]|" views:toolbarViews];
-    [UIView lhs_addConstraints:@"V:|[view]|" views:@[self.multipleMarkAsReadButton,
+    [UIView lhs_addConstraints:@"V:|-8-[view]-80-|" views:@[self.multipleMarkAsReadButton,
                                                      self.multipleTagEditButton,
                                                      self.multipleDeleteButton]];
 
@@ -342,18 +341,9 @@ static NSInteger PPBookmarkEditMaximum = 25;
     [self.tableView.rightAnchor constraintEqualToAnchor:self.view.rightAnchor].active = YES;
     [self.tableView.leftAnchor constraintEqualToAnchor:self.view.leftAnchor].active = YES;
 
-#ifdef ENABLE_ADS
-    [self.tableView.bottomAnchor constraintEqualToAnchor:self.googleAdBannerView.topAnchor].active = YES;
-
-    [self.googleAdBannerView.rightAnchor constraintEqualToAnchor:self.view.rightAnchor].active = YES;
-    [self.googleAdBannerView.leftAnchor constraintEqualToAnchor:self.view.leftAnchor].active = YES;
-    [self.googleAdBannerView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor].active = YES;
-#else
-    [self.tableView.bottomAnchor constraintEqualToAnchor:self.bottomLayoutGuide.topAnchor].active = YES;
-#endif
+    [self.tableView.bottomAnchor constraintEqualToAnchor:self.bottomLayoutGuide.bottomAnchor].active = YES;
 
     [self.multiToolbarView lhs_fillWidthOfSuperview];
-    [self.view lhs_addConstraints:@"V:[toolbarView(height)]" metrics:@{ @"height": @(kToolbarHeight) } views:views];
     
     // Initial database update
     [self.tableView registerClass:[PPBookmarkCell class] forCellReuseIdentifier:BookmarkCellIdentifier];
@@ -378,16 +368,18 @@ static NSInteger PPBookmarkEditMaximum = 25;
             PPTitleButton *titleView = (PPTitleButton *)[self.postDataSource titleViewWithDelegate:self];
             self.navigationItem.titleView = titleView;
         }
-        
-        if (![self.view.constraints containsObject:self.multipleEditToolbarBottomConstraint]) {
-            self.multipleEditToolbarBottomConstraint = [NSLayoutConstraint constraintWithItem:self.multiToolbarView
-                                                                                    attribute:NSLayoutAttributeBottom
-                                                                                    relatedBy:NSLayoutRelationEqual
-                                                                                       toItem:self.tableView
-                                                                                    attribute:NSLayoutAttributeBottom
-                                                                                   multiplier:1
-                                                                                     constant:kToolbarHeight];
-            [self.view addConstraint:self.multipleEditToolbarBottomConstraint];
+
+        if (!self.multipleEditToolbarVisibleConstraint.active && !self.multipleEditToolbarHiddenConstraint.active) {
+            self.multipleEditToolbarHiddenConstraint = [self.multiToolbarView.topAnchor constraintEqualToAnchor:self.bottomLayoutGuide.bottomAnchor constant:0];
+            self.multipleEditToolbarHiddenConstraint.active = YES;
+
+            if (@available(iOS 11, *)) {
+                self.multipleEditToolbarVisibleConstraint = [self.multipleDeleteButton.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor];
+            } else {
+                self.multipleEditToolbarVisibleConstraint = [self.multiToolbarView.bottomAnchor constraintEqualToAnchor:self.bottomLayoutGuide.bottomAnchor];
+            }
+
+            self.multipleEditToolbarVisibleConstraint.active = NO;
         }
         
         UIViewController *backViewController = (self.navigationController.viewControllers.count >= 2) ? self.navigationController.viewControllers[self.navigationController.viewControllers.count - 2] : nil;
@@ -841,7 +833,9 @@ static NSInteger PPBookmarkEditMaximum = 25;
             searchTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
             
             self.tableView.contentInset = UIEdgeInsetsZero;
-            self.multipleEditToolbarBottomConstraint.constant = kToolbarHeight;
+
+            self.multipleEditToolbarVisibleConstraint.active = NO;
+            self.multipleEditToolbarHiddenConstraint.active = YES;
             [self.view layoutIfNeeded];
         }];
     } else {
@@ -866,9 +860,9 @@ static NSInteger PPBookmarkEditMaximum = 25;
             
             UITextField *searchTextField = [self.searchController.searchBar valueForKey:@"_searchField"];
             searchTextField.enabled = NO;
-            
-            self.tableView.contentInset = UIEdgeInsetsMake(0, 0, kToolbarHeight, 0);
-            self.multipleEditToolbarBottomConstraint.constant = 0;
+
+            self.multipleEditToolbarVisibleConstraint.active = YES;
+            self.multipleEditToolbarHiddenConstraint.active = NO;
             [self.view layoutIfNeeded];
         }];
     }

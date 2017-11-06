@@ -214,7 +214,6 @@ static NSString *CellIdentifier = @"Cell";
                             @"dark": self.darkGreyThemeButton,
                             @"black": self.blackThemeButton,
                             @"webview": self.exampleWebView,
-                            @"bottom": self.bottomLayoutGuide,
                             @"container": self.webViewContainer };
     
     [self.webViewContainer lhs_addConstraints:@"V:|[white(44)][webview]|" views:views];
@@ -226,7 +225,16 @@ static NSString *CellIdentifier = @"Cell";
     
     [self.view addSubview:self.webViewContainer];
     [self.webViewContainer lhs_fillWidthOfSuperview];
-    [self.view lhs_addConstraints:@"V:[container(>=160)][bottom]" views:views];
+    [self.view lhs_addConstraints:@"V:[container(>=160)]" views:views];
+
+    NSLayoutYAxisAnchor *bottomAnchor;
+    if (@available(iOS 11, *)) {
+        bottomAnchor = self.view.safeAreaLayoutGuide.bottomAnchor;
+    } else {
+        bottomAnchor = self.bottomLayoutGuide.bottomAnchor;
+    }
+
+    [self.webViewContainer.bottomAnchor constraintEqualToAnchor:bottomAnchor];
 
     self.webViewContainerPinnedToTopConstraint = [self.webViewContainer.topAnchor constraintEqualToAnchor:self.topLayoutGuide.bottomAnchor];
 

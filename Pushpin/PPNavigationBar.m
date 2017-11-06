@@ -10,8 +10,8 @@
 
 @implementation PPNavigationBar
 
-static CGFloat const kDefaultColorLayerOpacity = 0.4f;
-static CGFloat const kSpaceToCoverStatusBars = 20.0f;
+static CGFloat const kDefaultColorLayerOpacity = 0.4;
+static CGFloat const kSpaceToCoverStatusBars = 44;
 
 - (void)setBarTintColor:(UIColor *)barTintColor {
     [super setBarTintColor:barTintColor];
