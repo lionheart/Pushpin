@@ -56,7 +56,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
 @property (nonatomic, strong) UIAlertController *confirmMultipleDeletionActionSheet;
 
 @property (nonatomic, strong) NSLayoutConstraint *multipleEditToolbarHiddenConstraint;
-@property (nonatomic, strong) NSLayoutConstraint *multipleEditToolbarVisibleConstraint;
+@property (nonatomic, strong) NSArray <NSLayoutConstraint *> * multipleEditToolbarVisibleConstraints;
 @property (nonatomic, retain) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property (nonatomic, strong) NSArray *indexPathsToDelete;
 @property (nonatomic) BOOL prefersStatusBarHidden;
@@ -368,17 +368,20 @@ static NSInteger PPBookmarkEditMaximum = 25;
             self.navigationItem.titleView = titleView;
         }
 
-        if (!self.multipleEditToolbarVisibleConstraint.active && !self.multipleEditToolbarHiddenConstraint.active) {
+        if (self.multipleEditToolbarVisibleConstraints.count == 0 && !self.multipleEditToolbarHiddenConstraint.active) {
             self.multipleEditToolbarHiddenConstraint = [self.multiToolbarView.topAnchor constraintEqualToAnchor:self.bottomLayoutGuide.bottomAnchor];
             self.multipleEditToolbarHiddenConstraint.active = YES;
 
             if (@available(iOS 11, *)) {
-                self.multipleEditToolbarVisibleConstraint = [self.multipleDeleteButton.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor constant:-12];
+                self.multipleEditToolbarVisibleConstraints = @[
+                                                              [self.multipleDeleteButton.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor],
+                                                              [self.multiToolbarView.bottomAnchor constraintEqualToAnchor:self.bottomLayoutGuide.bottomAnchor]
+                                                              ];
             } else {
-                self.multipleEditToolbarVisibleConstraint = [self.multiToolbarView.bottomAnchor constraintEqualToAnchor:self.bottomLayoutGuide.bottomAnchor];
+                self.multipleEditToolbarVisibleConstraints = @[[self.multiToolbarView.bottomAnchor constraintEqualToAnchor:self.bottomLayoutGuide.bottomAnchor]];
             }
 
-            self.multipleEditToolbarVisibleConstraint.active = NO;
+            [NSLayoutConstraint deactivateConstraints:self.multipleEditToolbarVisibleConstraints];
         }
         
         UIViewController *backViewController = (self.navigationController.viewControllers.count >= 2) ? self.navigationController.viewControllers[self.navigationController.viewControllers.count - 2] : nil;
@@ -833,7 +836,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
             
             self.tableView.contentInset = UIEdgeInsetsZero;
 
-            self.multipleEditToolbarVisibleConstraint.active = NO;
+            [NSLayoutConstraint deactivateConstraints:self.multipleEditToolbarVisibleConstraints];
             self.multipleEditToolbarHiddenConstraint.active = YES;
             [self.view layoutIfNeeded];
         }];
@@ -861,7 +864,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
             searchTextField.enabled = NO;
 
             self.multipleEditToolbarHiddenConstraint.active = NO;
-            self.multipleEditToolbarVisibleConstraint.active = YES;
+            [NSLayoutConstraint activateConstraints:self.multipleEditToolbarVisibleConstraints];
             [self.view layoutIfNeeded];
         }];
     }

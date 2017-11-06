@@ -1192,7 +1192,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
         [UIView animateWithDuration:0.3
                          animations:^{
-                             self.toolbarBottomConstraint.constant = 44;
+                             self.toolbarBottomConstraint.constant = 88;
                              [self.view layoutIfNeeded];
                          }];
 
@@ -1579,7 +1579,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 - (void)titleButtonTouchUpInside:(PPTitleButton *)titleButton {
     CGFloat updatedConstant;
     if (self.toolbarBottomConstraint.constant == 0) {
-        updatedConstant = 44;
+        updatedConstant = 88;
     } else {
         updatedConstant = 0;
     }
