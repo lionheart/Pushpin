@@ -26,7 +26,7 @@ typedef enum BookmarkSections {
     kBookmarkBottomSection,
 } BookmarkSectionType;
 
-@interface PPAddBookmarkViewController : UITableViewController <PPBadgeWrapperDelegate, UITextFieldDelegate, UITextViewDelegate, PPDescriptionEditing> {
+@interface PPAddBookmarkViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, PPBadgeWrapperDelegate, UITextFieldDelegate, UITextViewDelegate, PPDescriptionEditing> {
     UIEdgeInsets _oldContentInset;
 }
 

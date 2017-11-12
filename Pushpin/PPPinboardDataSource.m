@@ -529,9 +529,11 @@ static BOOL kPinboardSyncInProgress = NO;
 
 - (PPNavigationController *)editViewControllerForPostAtIndex:(NSInteger)index callback:(void (^)(void))callback {
     return [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:self.posts[index] update:@(YES) callback:^(NSDictionary *post) {
-        [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
-            [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, meta=:meta WHERE hash=:hash" withParameterDictionary:post];
-        }];
+        if (post) {
+            [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
+                [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, meta=:meta WHERE hash=:hash" withParameterDictionary:post];
+            }];
+        }
 
         callback();
     }];

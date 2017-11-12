@@ -42,6 +42,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 @interface PPAddBookmarkViewController ()
 
+@property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSMutableDictionary *descriptionAttributes;
 @property (nonatomic, strong) UIKeyCommand *focusTitleKeyCommand;
 @property (nonatomic, strong) UIKeyCommand *focusDescriptionKeyCommand;
@@ -112,8 +113,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
 #pragma mark - Instantiation
 
 - (id)init {
-    self = [super initWithStyle:UITableViewStyleGrouped];
+    self = [super init];
     if (self) {
+        self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+        self.tableView.translatesAutoresizingMaskIntoConstraints = false;
         self.tableView.backgroundColor = HEX(0xF7F9FDff);
         self.tableView.scrollEnabled = YES;
         
@@ -367,34 +370,34 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    self.view.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:self.tableView];
+
+    [[self.tableView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor] setActive:YES];
+    [[self.tableView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor] setActive:YES];
+    [[self.tableView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor] setActive:YES];
+
+    if (@available(iOS 11, *)) {
+        [[self.tableView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor] setActive:YES];
+    } else {
+        [[self.tableView.topAnchor constraintEqualToAnchor:self.view.topAnchor] setActive:YES];
+    }
+
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
     
     self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
     [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-
-    NSURL *url = [NSURL URLWithString:self.bookmarkData[@"url"]];
-    NSString *host;
-    if ([url.host hasPrefix:@"www"]) {
-        host = [url.host stringByReplacingCharactersInRange:NSMakeRange(0, 4) withString:@""];
-    } else {
-        host = url.host;
-    }
-    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:host style:UIBarButtonItemStyleDone target:nil action:nil];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(urlTextFieldDidChange:) name:UITextFieldTextDidChangeNotification object:self.urlTextField];
-    [self.tableView reloadData];
+- (void)viewDidLayoutSubviews {
+    // We need to set this here, since on iPad the table view's frame isn't set until this happens.
+    self.descriptionTextLabel.preferredMaxLayoutWidth = self.tableView.frame.size.width - 50;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    [self setNeedsStatusBarAppearanceUpdate];
-
-    // We need to set this here, since on iPad the table view's frame isn't set until this happens.
-    self.descriptionTextLabel.preferredMaxLayoutWidth = self.tableView.frame.size.width - 50;
 
     if (self.tokenOverride) {
         [[ASPinboard sharedInstance] setToken:self.tokenOverride];
@@ -1141,8 +1144,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
                             if (hashExists) {
                                 [params removeObjectForKey:@"url"];
                                 params[@"hash"] = hash;
-                                
-                                
 
                                 [db executeUpdate:@"UPDATE bookmark SET title=:title, description=:description, tags=:tags, unread=:unread, private=:private, starred=:starred, meta=random() WHERE hash=:hash" withParameterDictionary:params];
                                 [db executeUpdate:@"DELETE FROM tagging WHERE bookmark_hash=?" withArgumentsInArray:@[hash]];
