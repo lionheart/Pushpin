@@ -167,7 +167,7 @@ static NSString *CellIdentifier = @"Cell";
     
     self.blackThemeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.blackThemeButton.translatesAutoresizingMaskIntoConstraints = NO;
-    self.blackThemeButton.backgroundColor = HEX(0x080000ff);
+    self.blackThemeButton.backgroundColor = HEX(0x000000ff);
     [self.blackThemeButton addTarget:self action:@selector(themeButtonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
 
     self.fontSizeLabel = [[UILabel alloc] init];
@@ -607,11 +607,11 @@ static NSString *CellIdentifier = @"Cell";
 
     if (sender == self.whiteThemeButton) {
         readerSettings.backgroundColor = HEX(0xfbfbfbff);
-        readerSettings.textColor = HEX(0x080000ff);
+        readerSettings.textColor = HEX(0x000000ff);
         [mixpanel.people set:@{@"Reader Background": @"White"}];
     } else if (sender == self.yellowThemeButton) {
         readerSettings.backgroundColor = HEX(0xfffff7ff);
-        readerSettings.textColor = HEX(0x080000ff);
+        readerSettings.textColor = HEX(0x000000ff);
         [mixpanel.people set:@{@"Reader Background": @"Yellow"}];
     } else if (sender == self.greyThemeButton) {
         readerSettings.backgroundColor = HEX(0xf5f5f5ff);
@@ -622,7 +622,7 @@ static NSString *CellIdentifier = @"Cell";
         readerSettings.textColor = HEX(0xfdfdfdff);
         [mixpanel.people set:@{@"Reader Background": @"Dark Grey"}];
     } else if (sender == self.blackThemeButton) {
-        readerSettings.backgroundColor = HEX(0x080000ff);
+        readerSettings.backgroundColor = HEX(0x000000ff);
         readerSettings.textColor = HEX(0xfdfdfdff);
         [mixpanel.people set:@{@"Reader Background": @"Black"}];
     }
