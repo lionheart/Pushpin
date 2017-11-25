@@ -374,15 +374,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.view.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.tableView];
 
-    [[self.tableView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor] setActive:YES];
-    [[self.tableView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor] setActive:YES];
-    [[self.tableView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor] setActive:YES];
-
-    if (@available(iOS 11, *)) {
-        [[self.tableView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor] setActive:YES];
-    } else {
-        [[self.tableView.topAnchor constraintEqualToAnchor:self.view.topAnchor] setActive:YES];
-    }
+    [self.tableView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor].active = YES;
+    [self.tableView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor].active = YES;
+    [self.tableView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor].active = YES;
+    [self.tableView.topAnchor constraintEqualToAnchor:self.view.topAnchor].active = YES;
 
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
