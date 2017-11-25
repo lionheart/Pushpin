@@ -387,6 +387,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 - (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+
     // We need to set this here, since on iPad the table view's frame isn't set until this happens.
     self.descriptionTextLabel.preferredMaxLayoutWidth = self.tableView.frame.size.width - 50;
 }
