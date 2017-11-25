@@ -604,49 +604,11 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     } else if (sender == self.enableBookmarkPromptSwitch) {
         [settings setTurnOffBookmarkPrompt:!self.enableBookmarkPromptSwitch.on];
 
-        [self.tableView beginUpdates];
-        
-        NSMutableArray *indexPathsToDelete = [NSMutableArray array];
-        NSMutableArray *indexPathsToInsert = [NSMutableArray array];
-        if (self.enableBookmarkPromptSwitch.on) {
-            if (self.onlyPromptToAddOnceSwitch.on) {
-                [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:PPOtherOnlyPromptToAddBookmarksOnce inSection:PPSectionOtherDisplaySettings]];
-            } else {
-                [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:PPOtherOnlyPromptToAddBookmarksOnce inSection:PPSectionOtherDisplaySettings]];
-                [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:PPOtherAlwaysShowAlert inSection:PPSectionOtherDisplaySettings]];
-                [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:PPOtherDisplayClearCache inSection:PPSectionOtherDisplaySettings]];
-            }
-            [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-        } else {
-            if (self.onlyPromptToAddOnceSwitch.on) {
-                [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:PPOtherOnlyPromptToAddBookmarksOnce inSection:PPSectionOtherDisplaySettings]];
-            } else {
-                [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:PPOtherOnlyPromptToAddBookmarksOnce inSection:PPSectionOtherDisplaySettings]];
-                [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:PPOtherAlwaysShowAlert inSection:PPSectionOtherDisplaySettings]];
-                [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:PPOtherDisplayClearCache inSection:PPSectionOtherDisplaySettings]];
-            }
-            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-        }
-        
-        [self.tableView endUpdates];
+        [self.tableView reloadData];
     } else if (sender == self.onlyPromptToAddOnceSwitch) {
         [settings setOnlyPromptToAddOnce:!self.onlyPromptToAddOnceSwitch.on];
 
-        [self.tableView beginUpdates];
-        
-        NSArray *indexPaths = @[[NSIndexPath indexPathForRow:PPOtherDisplayClearCache inSection:PPSectionOtherDisplaySettings],
-                                [NSIndexPath indexPathForRow:PPOtherAlwaysShowAlert inSection:PPSectionOtherDisplaySettings]];
-        if (!self.onlyPromptToAddOnceSwitch.on) {
-            [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
-        } else {
-            [self.tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationFade];
-        }
-        
-        [self.tableView endUpdates];
-        
-        if (!self.onlyPromptToAddOnceSwitch.on) {
-            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:PPOtherDisplayClearCache inSection:PPSectionOtherDisplaySettings] atScrollPosition:UITableViewScrollPositionMiddle animated:YES];
-        }
+        [self.tableView reloadData];
     }
     
     if (sender == self.compressPostsSwitch) {
