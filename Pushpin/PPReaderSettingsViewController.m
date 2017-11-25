@@ -699,6 +699,11 @@ static NSString *CellIdentifier = @"Cell";
                               "<p>This formally ended the world war, which lasted just thirty-seven days less than five years. Today, the day of peace, was the fifth anniversary of the murder of Archduke Francis Ferdinand by a Serbian student at Serajevo.</p>"
                               "<p>The peace was signed under circumstances which somewhat dimmed the expectations of those who had worked and fought during long years of war and months of negotiations for its achievement.</p>"
                               };
+
+    PPSettings *settings = [PPSettings sharedSettings];
+    PPReaderSettings *readerSettings = settings.readerSettings;
+
+    self.webViewContainer.backgroundColor = readerSettings.backgroundColor;
     [self.exampleWebView loadHTMLString:[[PPSettings sharedSettings].readerSettings readerHTMLForArticle:article] baseURL:nil];
 }
 
