@@ -197,16 +197,18 @@ static NSString *CellIdentifier = @"Cell";
     self.exampleWebView = [[UIWebView alloc] init];
     self.exampleWebView.backgroundColor = [PPSettings sharedSettings].readerSettings.backgroundColor;
     self.exampleWebView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self updateExampleWebView];
 
     self.webViewContainer = [[UIView alloc] init];
     self.webViewContainer.translatesAutoresizingMaskIntoConstraints = NO;
+
+    [self updateExampleWebView];
 
     [self.webViewContainer addSubview:self.whiteThemeButton];
     [self.webViewContainer addSubview:self.yellowThemeButton];
     [self.webViewContainer addSubview:self.darkGreyThemeButton];
     [self.webViewContainer addSubview:self.blackThemeButton];
     [self.webViewContainer addSubview:self.exampleWebView];
+    [self.exampleWebView lhs_fillWidthOfSuperview];
     
     NSDictionary *views = @{@"white": self.whiteThemeButton,
                             @"yellow": self.yellowThemeButton,
@@ -216,28 +218,27 @@ static NSString *CellIdentifier = @"Cell";
                             @"webview": self.exampleWebView,
                             @"container": self.webViewContainer };
     
-    [self.webViewContainer lhs_addConstraints:@"V:|[white(44)][webview]|" views:views];
+    [self.webViewContainer lhs_addConstraints:@"V:|[white(44)][webview]" views:views];
     [self.webViewContainer lhs_addConstraints:@"V:|[yellow(==white)]" views:views];
     [self.webViewContainer lhs_addConstraints:@"V:|[dark(==white)]" views:views];
     [self.webViewContainer lhs_addConstraints:@"V:|[black(==white)]" views:views];
-    [self.webViewContainer lhs_addConstraints:@"|[webview]|" views:views];
     [self.webViewContainer lhs_addConstraints:@"|[white][yellow(==white)][dark(==white)][black(==white)]|" views:views];
-    
+
     [self.view addSubview:self.webViewContainer];
     [self.webViewContainer lhs_fillWidthOfSuperview];
-    [self.view lhs_addConstraints:@"V:[container(>=160)]" views:views];
+    [self.view lhs_addConstraints:@"V:[container(>=200)]" views:views];
 
     NSLayoutYAxisAnchor *bottomAnchor;
     if (@available(iOS 11, *)) {
         bottomAnchor = self.view.safeAreaLayoutGuide.bottomAnchor;
     } else {
-        bottomAnchor = self.bottomLayoutGuide.bottomAnchor;
+        bottomAnchor = self.view.bottomAnchor;
     }
 
-    [self.webViewContainer.bottomAnchor constraintEqualToAnchor:bottomAnchor];
+    [self.exampleWebView.bottomAnchor constraintEqualToAnchor:bottomAnchor].active = YES;
+    [self.webViewContainer.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor].active = YES;
 
-    self.webViewContainerPinnedToTopConstraint = [self.webViewContainer.topAnchor constraintEqualToAnchor:self.topLayoutGuide.bottomAnchor];
-
+    self.webViewContainerPinnedToTopConstraint = [self.webViewContainer.topAnchor constraintEqualToAnchor:self.view.topAnchor];
     [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
 }
 
