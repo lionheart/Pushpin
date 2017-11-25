@@ -1848,7 +1848,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
     });
 }
 
-- (UIViewController *)editViewControllerForPostAtIndex:(NSInteger)index dataSource:(id<PPDataSource>)dataSource {
+- (UIViewController *)editViewControllerForPostAtIndex:(NSInteger)index dataSource:(id <PPDataSource>)dataSource {
     UIViewController *vc = (UIViewController *)[dataSource editViewControllerForPostAtIndex:index callback:^{
         [self updateFromLocalDatabase];
     }];
