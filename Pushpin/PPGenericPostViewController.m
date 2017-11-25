@@ -1856,6 +1856,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
     if (![UIApplication isIPad]) {
         vc.transitioningDelegate = [PPShrinkBackTransition sharedInstance];
     }
+
     return vc;
 }
 
