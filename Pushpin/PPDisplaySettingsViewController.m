@@ -630,7 +630,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 
 - (void)setFontName:(NSString *)fontName forFontSelectionViewController:(LHSFontSelectionViewController *)viewController {
     [PPSettings sharedSettings].fontName = fontName;
-    
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [[PPPinboardMetadataCache sharedCache] reset];
         [[NSNotificationCenter defaultCenter] postNotificationName:PPBookmarkDisplaySettingUpdated object:nil];
