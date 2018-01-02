@@ -24,6 +24,7 @@ pod 'FMDB'
 pod 'ASPinboard', '~> 1.0'
 pod 'QuickTableView'
 pod 'SuperLayout'
+pod 'LionheartExtensions'
 
 target 'Pushpin' do
   pod 'Mixpanel'
