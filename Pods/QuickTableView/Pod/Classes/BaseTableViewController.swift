@@ -25,7 +25,7 @@ import UIKit
  - copyright: ©2016 Lionheart Software LLC
  - date: April 12, 2016
  */
-@objc open class BaseTableViewController: UIViewController, KeyboardAdjuster, HasTableView {
+open class BaseTableViewController: UIViewController, KeyboardAdjuster, HasTableView {
     open var tableViewTopConstraint: NSLayoutConstraint!
     open var tableViewLeftConstraint: NSLayoutConstraint!
     open var tableViewRightConstraint: NSLayoutConstraint!
@@ -33,7 +33,7 @@ import UIKit
     open var keyboardAdjustmentHelper = KeyboardAdjustmentHelper()
     open var tableView: UITableView!
 
-    @objc public init(style: UITableViewStyle = .grouped) {
+    public init(style: UITableViewStyle = .grouped) {
         super.init(nibName: nil, bundle: nil)
 
         edgesForExtendedLayout = []
@@ -54,8 +54,9 @@ import UIKit
         }
     }
 
+    @available(*, unavailable)
     required public init?(coder aDecoder: NSCoder) {
-        fatalError()
+        super.init(coder: aDecoder)
     }
 
     override open func viewWillAppear(_ animated: Bool) {
@@ -84,11 +85,11 @@ import UIKit
     }
 
     // MARK: -
-    open func leftBarButtonItemDidTouchUpInside(_ sender: AnyObject?) {
+    @objc open func leftBarButtonItemDidTouchUpInside(_ sender: AnyObject?) {
         parent?.dismiss(animated: true, completion: nil)
     }
 
-    open func rightBarButtonItemDidTouchUpInside(_ sender: AnyObject?) {
+    @objc open func rightBarButtonItemDidTouchUpInside(_ sender: AnyObject?) {
         parent?.dismiss(animated: true, completion: nil)
     }
 

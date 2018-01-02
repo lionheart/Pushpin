@@ -10,6 +10,7 @@
 #define MIXPANEL_NO_REACHABILITY_SUPPORT (defined(MIXPANEL_TVOS) || defined(MIXPANEL_WATCHOS) || defined(MIXPANEL_MACOS))
 #define MIXPANEL_NO_AUTOMATIC_EVENTS_SUPPORT (defined(MIXPANEL_TVOS) || defined(MIXPANEL_WATCHOS) || defined(MIXPANEL_MACOS))
 #define MIXPANEL_NO_NOTIFICATION_AB_TEST_SUPPORT (defined(MIXPANEL_TVOS) || defined(MIXPANEL_WATCHOS) || defined(MIXPANEL_MACOS))
+#define MIXPANEL_NO_CONNECT_INTEGRATION_SUPPORT (defined(MIXPANEL_TVOS) || defined(MIXPANEL_WATCHOS) || defined(MIXPANEL_MACOS))
 #define MIXPANEL_NO_APP_LIFECYCLE_SUPPORT defined(MIXPANEL_WATCHOS)
 #define MIXPANEL_NO_UIAPPLICATION_ACCESS (defined(MIXPANEL_WATCHOS) || defined(MIXPANEL_MACOS))
 
@@ -269,6 +270,26 @@ NS_ASSUME_NONNULL_BEGIN
                 launchOptions:(nullable NSDictionary *)launchOptions
                 flushInterval:(NSUInteger)flushInterval
                  trackCrashes:(BOOL)trackCrashes;
+
+/*!
+ Initializes an instance of the API with the given project token. This also sets
+ it as a shared instance so you can use <code>sharedInstance</code> or
+ <code>sharedInstanceWithToken:</code> to retrieve this object later.
+
+ Creates and initializes a new API object. See also <code>sharedInstanceWithToken:</code>.
+
+ @param apiToken        your project token
+ @param launchOptions   optional app delegate launchOptions
+ @param flushInterval   interval to run background flushing
+ @param trackCrashes    whether or not to track crashes in Mixpanel. may want to disable if you're seeing
+ issues with your crash reporting for either signals or exceptions
+ @param automaticPushTracking    whether or not to automatically track pushes sent from Mixpanel
+ */
+- (instancetype)initWithToken:(NSString *)apiToken
+                launchOptions:(nullable NSDictionary *)launchOptions
+                flushInterval:(NSUInteger)flushInterval
+                 trackCrashes:(BOOL)trackCrashes
+        automaticPushTracking:(BOOL)automaticPushTracking;
 
 /*!
  Initializes an instance of the API with the given project token.

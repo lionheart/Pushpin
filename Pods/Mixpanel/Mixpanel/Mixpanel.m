@@ -28,7 +28,7 @@
 #error The Mixpanel library must be compiled with ARC enabled
 #endif
 
-#define VERSION @"3.2.3"
+#define VERSION @"3.2.5"
 
 @implementation Mixpanel
 
@@ -86,7 +86,8 @@ static NSString *defaultProjectToken;
 - (instancetype)initWithToken:(NSString *)apiToken
                 launchOptions:(NSDictionary *)launchOptions
                 flushInterval:(NSUInteger)flushInterval
-                 trackCrashes:(BOOL)trackCrashes {
+                 trackCrashes:(BOOL)trackCrashes
+        automaticPushTracking:(BOOL)automaticPushTracking {
     if (apiToken.length == 0) {
         if (apiToken == nil) {
             apiToken = @"";
@@ -149,13 +150,18 @@ static NSString *defaultProjectToken;
             self.automaticEvents.delegate = self;
             [self.automaticEvents initializeEvents:self.people];
 #endif
+#if !MIXPANEL_NO_CONNECT_INTEGRATION_SUPPORT
+        self.connectIntegrations = [[MPConnectIntegrations alloc] initWithMixpanel:self];
+#endif
 #if !MIXPANEL_NO_NOTIFICATION_AB_TEST_SUPPORT
             [self executeCachedVariants];
             [self executeCachedEventBindings];
-            [self setupAutomaticPushTracking];
-            NSDictionary *remoteNotification = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
-            if (remoteNotification) {
-                [self trackPushNotification:remoteNotification event:@"$app_open"];
+            if (automaticPushTracking) {
+                [self setupAutomaticPushTracking];
+                NSDictionary *remoteNotification = launchOptions[UIApplicationLaunchOptionsRemoteNotificationKey];
+                if (remoteNotification) {
+                    [self trackPushNotification:remoteNotification event:@"$app_open"];
+                }
             }
 #endif
         }
@@ -171,6 +177,17 @@ static NSString *defaultProjectToken;
                  launchOptions:launchOptions
                  flushInterval:flushInterval
                   trackCrashes:YES];
+}
+
+- (instancetype)initWithToken:(NSString *)apiToken
+                launchOptions:(NSDictionary *)launchOptions
+                flushInterval:(NSUInteger)flushInterval
+                 trackCrashes:(BOOL)trackCrashes {
+    return [self initWithToken:apiToken
+                 launchOptions:launchOptions
+                 flushInterval:flushInterval
+                  trackCrashes:trackCrashes
+         automaticPushTracking:YES];
 }
 
 - (instancetype)initWithToken:(NSString *)apiToken andFlushInterval:(NSUInteger)flushInterval {
@@ -692,6 +709,9 @@ static NSString *defaultProjectToken;
             self.decideResponseCached = NO;
             self.variants = [NSSet set];
             self.eventBindings = [NSSet set];
+#if !MIXPANEL_NO_CONNECT_INTEGRATION_SUPPORT
+            [self.connectIntegrations reset];
+#endif
 #if !MIXPANEL_NO_NOTIFICATION_AB_TEST_SUPPORT
             if (![Mixpanel isAppExtension]) {
                 [[MPTweakStore sharedInstance] reset];
@@ -1589,6 +1609,13 @@ static void MixpanelReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
                     }
                 }
 
+#if !MIXPANEL_NO_CONNECT_INTEGRATION_SUPPORT
+                id integrations = object[@"integrations"];
+                if ([integrations isKindOfClass:[NSArray class]]) {
+                    [self.connectIntegrations setupIntegrations:integrations];
+                }
+#endif
+
                 // Variants that are already running (may or may not have been marked as finished).
                 NSSet *runningVariants = [NSSet setWithSet:[self.variants objectsPassingTest:^BOOL(MPVariant *var, BOOL *stop) { return var.running; }]];
                 // Variants that are marked as finished, (may or may not be running still).
@@ -1980,7 +2007,7 @@ static void MixpanelReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
         [shownVariants addEntriesFromDictionary:shownVariant];
         [superProperties addEntriesFromDictionary:@{@"$experiments": [shownVariants copy]}];
         self.superProperties = [superProperties copy];
-#if !MIXPANEL_NO_UI_APPLICATION_ACCESS
+#if !MIXPANEL_NO_UIAPPLICATION_ACCESS
         if (![Mixpanel isAppExtension]) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if ([Mixpanel sharedUIApplication].applicationState == UIApplicationStateBackground) {
