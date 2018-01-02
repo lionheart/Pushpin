@@ -1,5 +1,5 @@
 PODS:
-  - 1PasswordExtension (1.8.4)
+  - 1PasswordExtension (1.8.5)
   - AFNetworking (3.1.0):
     - AFNetworking/NSURLSession (= 3.1.0)
     - AFNetworking/Reachability (= 3.1.0)
@@ -31,10 +31,10 @@ PODS:
     - FMDB
   - LHSKeyboardAdjusting (2.0.1)
   - LHSTableViewCells (0.0.1)
-  - LionheartExtensions (3.8.1):
-    - LionheartExtensions/Core (= 3.8.1)
-  - LionheartExtensions/Core (3.8.1)
-  - Mixpanel (3.2.3)
+  - LionheartExtensions (3.9.0):
+    - LionheartExtensions/Core (= 3.9.0)
+  - LionheartExtensions/Core (3.9.0)
+  - Mixpanel (3.2.5)
   - Mixpanel-AppExtension (3.2.2)
   - MWFeedParser (1.0.1):
     - MWFeedParser/FeedParser (= 1.0.1)
@@ -46,7 +46,7 @@ PODS:
   - MWFeedParser/NSDate+InternetDateTime (1.0.1)
   - MWFeedParser/NSString+HTML (1.0.1)
   - OpenInChrome (0.0.1)
-  - QuickTableView (2.5.1):
+  - QuickTableView (2.5.2):
     - KeyboardAdjuster (~> 2)
   - RNCryptor-objc (3.0.5)
   - SuperLayout (1.0.0):
@@ -94,7 +94,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/lionheart/Reachability
 
 SPEC CHECKSUMS:
-  1PasswordExtension: e775a29310c65851e5a6cec1afc349ab4e334e47
+  1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
   ASPinboard: 04dbe1357a1ebc6a8ec63bc8e9a06a06308ee8d1
   BRYHTMLParser: c84b3e5aa4fd6706271c48ed480af13ab0d71afb
@@ -108,12 +108,12 @@ SPEC CHECKSUMS:
   LHSFMDatabaseAdditions: aba229cb0db6aea013a64c3be1542cd13b0a069e
   LHSKeyboardAdjusting: 8f9b8d6e80315e653bf3188ae62963874d342d68
   LHSTableViewCells: 47b4d33382cb4a09960371267e2142970afdfdd6
-  LionheartExtensions: e350080643996ff4b5c7b3f9a4133df0a061d9f4
-  Mixpanel: 7bd8e176f088936bf6e283ade0d1f512f8e723bc
+  LionheartExtensions: ab78c9015d37d7cd2487419d80abf83a96832ea8
+  Mixpanel: 7445c8e19c00df6d792ea8dda1b4d32f5acd4ac2
   Mixpanel-AppExtension: 655ad12573dd81b6794fb74dcfa449cfbd495d43
   MWFeedParser: 2cf646014c1baf6ad1b08c480b40a08180079247
   OpenInChrome: f1f3f9dec682216fe78a0d7fe0b5b263d6312c32
-  QuickTableView: 42cdcf1924049ce99d46fd53dc5cef984cbb71b0
+  QuickTableView: 293e32d97875f07083c6a312594f19bd6cfcebf6
   RNCryptor-objc: a65b15493de05dda4af0f392c70372b7a5625aab
   SuperLayout: 1c273e339a8f0b98ee33f5504e1a81a95108d7fd
   TMReachability: 48c99d728a8b0ad4493800592484b8cbb65c896c
