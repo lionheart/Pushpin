@@ -37,6 +37,10 @@ final class PPTipJarViewController: BaseTableViewController {
         return Section.Container(productsLoaded: products != nil, hasProducts: (products ?? [:]).count > 0, purchased: purchased)
     }
 
+    @objc override init(style: UITableViewStyle) {
+        super.init(style: style)
+    }
+
     enum Section: Int, QuickTableViewSectionWithConditions {
         struct Container {
             var productsLoaded: Bool
