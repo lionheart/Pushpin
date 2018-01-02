@@ -190,28 +190,33 @@
         __block NSString *urlString;
         __block NSString *title;
 
-        dispatch_group_enter(group);
-        dispatch_group_enter(group);
-        [urlItemProvider loadItemForTypeIdentifier:(__bridge NSString *)kUTTypeURL
-                                           options:0
-                                 completionHandler:^(NSURL *url, NSError *error) {
-                                     urlString = url.absoluteString;
+        if (urlItemProvider) {
+            dispatch_group_enter(group);
+            [urlItemProvider loadItemForTypeIdentifier:(__bridge NSString *)kUTTypeURL
+                                               options:0
+                                     completionHandler:^(NSURL *url, NSError *error) {
+                                         urlString = url.absoluteString;
 
-                                     dispatch_group_leave(group);
-                                 }];
+                                         dispatch_group_leave(group);
+                                     }];
+        }
 
-        [titleItemProvider loadItemForTypeIdentifier:(__bridge NSString *)kUTTypePlainText
-                                             options:0
-                                   completionHandler:^(NSString *text, NSError *error) {
-                                       NSURL *url = [NSURL URLWithString:text];
-                                       if (url) {
-                                           urlString = text;
-                                       } else {
-                                           title = text;
-                                       }
+        if (titleItemProvider) {
+            dispatch_group_enter(group);
 
-                                       dispatch_group_leave(group);
-                                   }];
+            [titleItemProvider loadItemForTypeIdentifier:(__bridge NSString *)kUTTypePlainText
+                                                 options:0
+                                       completionHandler:^(NSString *text, NSError *error) {
+                                           NSURL *url = [NSURL URLWithString:text];
+                                           if (url) {
+                                               urlString = text;
+                                           } else {
+                                               title = text;
+                                           }
+
+                                           dispatch_group_leave(group);
+                                       }];
+        }
 
         dispatch_group_notify(group, dispatch_get_main_queue(), ^{
             if (title == nil) {
