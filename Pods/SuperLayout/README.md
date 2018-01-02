@@ -13,20 +13,18 @@ What It Does
 
 In short, SuperLayout turns this:
 
-<img src='old1.png' width='589px' />
+<img src='https://github.com/lionheart/SuperLayout/raw/master/old1.png' width='589px' />
 
 Into this:
 
-<img src='new1.png' width='355px' />
+<img src='https://github.com/lionheart/SuperLayout/raw/master/new1.png' width='355px' />
 
 How it works
 ------------
 
-SuperLayout defines just three custom operators: `~`, `≥`, and `≤`. `~` roughly corresponds to `equalTo`, `≥` to `greaterThanOrEqualTo`, and `≤` to `lessThanOrEqualTo`. The greater than and less than operators were chosen with practicality in mind; `≥` and `≤` have simple keyboard shortcuts (just `Option` + `<` and `Option` + `>` in Xcode), so there's no need to copy-paste characters when writing constraints.
+SuperLayout defines three custom operators: `~~`, `≥≥`, and `≤≤` that correspond to `equalTo`, `≥` to `greaterThanOrEqualTo`, and `≤` to `lessThanOrEqualTo`, respectively.
 
-You might be wondering: why create new operators instead of using `==`, `<=`, and `>=`?
-
-I have an easy answer: those operators already have meaning, and don't have assignment semantics. You would never write `1 == 2` with the expectation that it would return anything other than a `Bool` indicating equality.
+The greater than and less than operators were chosen with practicality in mind; `≥` and `≤` have simple keyboard shortcuts (just `Option` + `<` and `Option` + `>` in macOS), so there's no need to copy-paste characters when writing constraints.
 
 Installation
 ------------
@@ -216,4 +214,4 @@ To use this library, you should have a basic understanding of the [`NSLayoutAnch
 
 ## License
 
-LionheartExtensions is available under the Apache 2.0 license. See [LICENSE](LICENSE) for more info.
+SuperLayout is available under the Apache 2.0 license. See [LICENSE](LICENSE) for more info.

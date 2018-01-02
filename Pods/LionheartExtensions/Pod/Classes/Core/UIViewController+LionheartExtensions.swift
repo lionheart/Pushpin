@@ -26,11 +26,7 @@ public extension UIViewController {
      - Date: February 17, 2016
      */
     class var topViewController: UIViewController? {
-        #if APP_EXTENSION
-            return nil
-        #else
-            return UIApplication.shared.keyWindow?.rootViewController?.topViewController
-        #endif
+        return UIApplication.shared.keyWindow?.rootViewController?.topViewController
     }
 
     /**

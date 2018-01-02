@@ -29,6 +29,27 @@ public extension UIWindow {
      - Date: February 17, 2016
      */
     class func takeScreenshotAndSaveToPath(_ path: String) -> Bool {
-        return false
+        guard let window = UIApplication.shared.keyWindow else {
+            return false
+        }
+
+        let bounds = window.bounds
+        UIGraphicsBeginImageContextWithOptions(bounds.size, false, 0)
+        window.drawHierarchy(in: bounds, afterScreenUpdates: true)
+        let _image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        guard let image = _image,
+            let data = UIImagePNGRepresentation(image) else {
+                return false
+        }
+
+        let url = URL(fileURLWithPath: path)
+
+        guard let _ = try? data.write(to: url, options: []) else {
+            return false
+        }
+
+        return true
     }
 }
