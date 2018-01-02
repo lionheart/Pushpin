@@ -9,6 +9,7 @@
 @import FMDB;
 @import LHSCategoryCollection;
 
+#import "Pushpin-Swift.h"
 #import "PPNavigationController.h"
 #import "PPNavigationBar.h"
 

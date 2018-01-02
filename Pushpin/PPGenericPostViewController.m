@@ -19,6 +19,7 @@
 @import GoogleMobileAds;
 #endif
 
+#import "Pushpin-Swift.h"
 #import "PPBrowserActivity.h"
 #import "PPGenericPostViewController.h"
 #import "PPConstants.h"

@@ -15,10 +15,6 @@
     #import "PPConstants.h"
 #endif
 
-#ifndef APP_EXTENSION_SAFE
-#import "Pushpin-Swift.h"
-#endif
-
 #define __FILENAME__ (strrchr(__FILE__, '/') ?: __FILE__ - 1) + 1
 
 #ifdef DEBUG

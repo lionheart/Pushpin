@@ -15,6 +15,7 @@
 @import LHSTableViewCells;
 @import OnePasswordExtension;
 
+#import "Pushpin-Swift.h"
 #import "PPAppDelegate.h"
 #import "PPSettingsViewController.h"
 #import "PPPinboardLoginViewController.h"

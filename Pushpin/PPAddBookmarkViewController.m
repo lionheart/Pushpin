@@ -14,6 +14,7 @@
 @import LHSCategoryCollection;
 @import FMDB;
 
+#import "Pushpin-Swift.h"
 #import "PPAddBookmarkViewController.h"
 #import "PPNotification.h"
 #import "PPUtilities.h"
