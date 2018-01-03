@@ -55,6 +55,7 @@ final class PPTipJarViewController: BaseTableViewController {
         case loading
         case thankYou
         case manageSubscription
+        case legal
 
         static func conditionalSections(for container: PPTipJarViewController.Section.Container) -> [(PPTipJarViewController.Section, Bool)] {
             return [
@@ -66,6 +67,31 @@ final class PPTipJarViewController: BaseTableViewController {
                 (.thankYou, container.purchased),
                 (.manageSubscription, container.purchased)
             ]
+        }
+    }
+    
+    enum LegalRow: Int, QuickTableViewRow {
+        case termsOfUse
+        case privacy
+        
+        static var title: String { return "Legal" }
+
+        var title: String {
+            switch self {
+            case .termsOfUse: return "Terms of Use"
+            case .privacy: return "Privacy Policy"
+            }
+        }
+
+        var urlString: String {
+            switch self {
+            case .termsOfUse: return "https://lionheartsw.com/software/pushpin/terms.html"
+            case .privacy: return "https://lionheartsw.com/software/pushpin/privacy.html"
+            }
+        }
+        
+        var url: URL {
+            return URL(string: urlString)!
         }
     }
 
@@ -208,6 +234,10 @@ extension PPTipJarViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         switch Section(at: indexPath, container: sectionContainer) {
+        case .legal:
+            let legalRow = LegalRow(at: indexPath)
+            UIApplication.shared.open(legalRow.url, options: [:], completionHandler: nil)
+
         case .manageSubscription:
             let url = URL(string: "https://buy.itunes.apple.com/WebObjects/MZFinance.woa/wa/manageSubscriptions")!
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
@@ -226,6 +256,7 @@ extension PPTipJarViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch Section(section: section, container: sectionContainer) {
         case .top: return 1
+        case .legal: return LegalRow.count
         case .couldNotLoad: return 1
         case .loading: return 1
         case .subscription: return SubscriptionRow.count
@@ -238,6 +269,7 @@ extension PPTipJarViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch Section(section: section, container: sectionContainer) {
         case .top: return nil
+        case .legal: return LegalRow.title
         case .couldNotLoad: return nil
         case .loading: return nil
         case .subscription: return SubscriptionRow.title
@@ -250,6 +282,7 @@ extension PPTipJarViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         switch Section(section: section, container: sectionContainer) {
         case .top: return nil
+        case .legal: return nil
         case .couldNotLoad: return nil
         case .loading: return nil
         case .subscription: return nil
@@ -278,7 +311,15 @@ You can manage your subscriptions and turn off auto-renewal by going to your Acc
 If you've been enjoying Pushpin for a while, and would like to show your support, please consider a tip. They go such a long way, and every little bit helps. Thanks! :)
 """
             return cell
-
+            
+        case .legal:
+            let legalRow = LegalRow(at: indexPath)
+            let cell = tableView.dequeueReusableCell(for: indexPath) as QuickTableViewCellValue1
+            cell.textLabel?.text = legalRow.title
+            cell.textLabel?.textAlignment = .left
+            cell.textLabel?.textColor = PPTipJarButton.blue
+            return cell
+            
         case .couldNotLoad:
             let cell = tableView.dequeueReusableCell(for: indexPath) as MultilineTableViewCell
             cell.textLabel?.text = "Oh no!"
