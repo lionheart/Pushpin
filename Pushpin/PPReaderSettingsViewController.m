@@ -70,7 +70,7 @@ static NSString *CellIdentifier = @"Cell";
     
     self.title = NSLocalizedString(@"Reader Settings", nil);
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Preview"
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Preview", nil)
                                                                               style:UIBarButtonItemStyleDone
                                                                              target:self
                                                                              action:@selector(toggleFullScreenExampleWebView)];

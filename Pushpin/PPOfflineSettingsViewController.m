@@ -351,7 +351,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
             return NSLocalizedString(@"This will delete any stored articles on your device.", nil);
 
         case PPOfflineSettingsSectionManualDownload:
-            return NSLocalizedString(@"By default, Pushpin will download bookmarks matching your fetch criteria in the background. If you don't want to wait, the button above will start a sync manually.", nil);
+            return NSLocalizedString(@"Offline Settings Section Footer", nil);
             
         default:
             return nil;

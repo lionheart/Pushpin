@@ -213,11 +213,11 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
                 case PPMainAdvanced:
                     cell.imageView.image = [UIImage imageNamed:@"Gear"];
-                    cell.textLabel.text = NSLocalizedString(@"Advanced", nil);
+                    cell.textLabel.text = NSLocalizedString(@"Advanced Settings - Short", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     cell.isAccessibilityElement = YES;
-                    cell.accessibilityLabel = NSLocalizedString(@"Advanced", nil);
+                    cell.accessibilityLabel = NSLocalizedString(@"Advanced Settings - Short", nil);
                     break;
 
                 case PPMainBrowser:
@@ -249,7 +249,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                     cell.textLabel.text = NSLocalizedString(@"Rate Pushpin on the App Store", nil);
 
                     if (self.numberOfRatings == 0) {
-                        cell.detailTextLabel.text = @"No ratings for this version.";
+                        cell.detailTextLabel.text = NSLocalizedString(@"No ratings for this version.", nil);
                     } else if (self.numberOfRatings == 1) {
                         cell.detailTextLabel.text = @"Only 1 rating for this version.";
                     } else if (self.numberOfRatings < 10) {
@@ -260,7 +260,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                     break;
                     
                 case PPOtherFollow:
-                    cell.textLabel.text = [NSString stringWithFormat:@"Follow @%@ on Twitter", PPTwitterUsername];
+                    cell.textLabel.text = NSLocalizedString(@"Follow @Pushpin_app on Twitter", nil);
                     break;
 
                 case PPOtherFeedback:

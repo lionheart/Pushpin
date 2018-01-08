@@ -371,7 +371,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
             return nil;
             
         case PPSearchSectionFilters:
-            return @"Filters";
+            return NSLocalizedString(@"Filters", nil);
             
         case PPSearchSectionSave:
             return nil;
@@ -416,7 +416,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
             cell.textLabel.font = [PPTheme textLabelFont];
             cell.textLabel.textColor = [UIColor blackColor];
             cell.textLabel.hidden = NO;
-            cell.textLabel.text = @"Search method";
+            cell.textLabel.text = NSLocalizedString(@"Search method", nil);
 
             cell.detailTextLabel.font = [PPTheme detailLabelFont];
             cell.detailTextLabel.text = PPSearchScopes()[self.searchScope];

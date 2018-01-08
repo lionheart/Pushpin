@@ -62,7 +62,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.navigationItem.title = NSLocalizedString(@"Advanced Settings", nil);
+    self.title = NSLocalizedString(@"Advanced Settings", nil);
     
     self.fontSizeAdjustmentActionSheet = [UIAlertController lhs_actionSheetWithTitle:NSLocalizedString(@"Font Adjustment", nil)];
     
@@ -404,7 +404,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.detailTextLabel.textColor = [UIColor grayColor];
                     cell.accessoryView = nil;
 
-                    cell.textLabel.text = NSLocalizedString(@"Default feed", nil);
+                    cell.textLabel.text = NSLocalizedString(@"Default Feed", nil);
                     cell.detailTextLabel.text = [PPSettings sharedSettings].defaultFeedDescription;
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
