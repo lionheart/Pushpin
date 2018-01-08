@@ -38,6 +38,8 @@
 		373026111F461C3D007014EF /* PPBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = E89001F8183EA5B500C1F969 /* PPBadgeView.m */; };
 		373026121F461C42007014EF /* PPNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 374698BF174B33CF00407345 /* PPNotification.m */; };
 		373FC3441F83DCE60031B282 /* PPLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373FC3431F83DCE60031B282 /* PPLoginViewController.swift */; };
+		374167B82003CC5200B3DEBF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23916863CF000F95D82 /* Localizable.strings */; };
+		374167B92003CC5300B3DEBF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23916863CF000F95D82 /* Localizable.strings */; };
 		3747C6F219CCDB1F00FAD488 /* 56_Key-alt.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E312E31868CCD600B944F1 /* 56_Key-alt.png */; };
 		3747C6F319CCDB1F00FAD488 /* 56_Key-alt@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E312E41868CCD600B944F1 /* 56_Key-alt@2x.png */; };
 		3747C6F419CCDB1F00FAD488 /* add.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A7B5D2183463410038677E /* add.png */; };
@@ -1568,6 +1570,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				373026011F46136E007014EF /* AppExtensionHelper.js in Resources */,
+				374167B82003CC5200B3DEBF /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1578,6 +1581,7 @@
 				373026021F46136E007014EF /* AppExtensionHelper.js in Resources */,
 				3783387A1F461F51006C0A01 /* Delete-Button.png in Resources */,
 				3783387B1F461F51006C0A01 /* Delete-Button@2x.png in Resources */,
+				374167B92003CC5300B3DEBF /* Localizable.strings in Resources */,
 				378338741F461F40006C0A01 /* roundbutton-checkmark.png in Resources */,
 				378338751F461F40006C0A01 /* roundbutton-checkmark@2x.png in Resources */,
 				378338761F461F40006C0A01 /* roundbutton-private.png in Resources */,
