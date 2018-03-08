@@ -249,11 +249,12 @@ static NSInteger PPBookmarkEditMaximum = 25;
         self.searchController = [[UISearchController alloc] initWithSearchResultsController:self.searchResultsController];
         self.searchController.delegate = self;
         self.searchController.searchResultsUpdater = self;
-        
+        self.searchController.dimsBackgroundDuringPresentation = NO;
         [self.searchController.searchBar sizeToFit];
+
         self.searchController.searchBar.delegate = self;
+        self.searchController.searchBar.tintColor = [UIColor whiteColor];
         self.searchController.searchBar.keyboardType = UIKeyboardTypeASCIICapable;
-        self.searchController.searchBar.searchBarStyle = UISearchBarStyleProminent;
         self.searchController.searchBar.isAccessibilityElement = YES;
         self.searchController.searchBar.accessibilityLabel = NSLocalizedString(@"Search Bar", nil);
 
@@ -262,6 +263,17 @@ static NSInteger PPBookmarkEditMaximum = 25;
         self.searchPostDataSource = [self.postDataSource searchDataSource];
         if ([self.searchPostDataSource respondsToSelector:@selector(searchPlaceholder)]) {
             self.searchController.searchBar.placeholder = [self.searchPostDataSource searchPlaceholder];
+        }
+
+        // From https://developer.apple.com/library/content/samplecode/TableSearch_UISearchController/Listings/Objective_C_TableSearch_APLMainTableViewController_m.html#//apple_ref/doc/uid/TP40014683-Objective_C_TableSearch_APLMainTableViewController_m-DontLinkElementID_11
+        if (@available(iOS 11.0, *)) {
+            // For iOS 11 and later, we place the search bar in the navigation bar.
+            self.navigationItem.searchController = self.searchController;
+            
+            // We want the search bar visible all the time.
+            self.navigationItem.hidesSearchBarWhenScrolling = YES;
+        } else {
+            self.tableView.tableHeaderView = self.searchController.searchBar;
         }
     }
     
@@ -730,9 +742,14 @@ static NSInteger PPBookmarkEditMaximum = 25;
                     }
                 });
             } cancel:^BOOL{
-                BOOL isHidden = !self.isViewLoaded || self.view.window == nil;
-                if (isHidden && !self.viewIsAppearing) {
-                    return YES;
+#warning XXX
+                if ([NSThread isMainThread]) {
+                    BOOL isHidden = !self.isViewLoaded || self.view.window == nil;
+                    if (isHidden && !self.viewIsAppearing) {
+                        return YES;
+                    } else {
+                        return [self.latestSearchTime compare:time] != NSOrderedSame;
+                    }
                 } else {
                     return [self.latestSearchTime compare:time] != NSOrderedSame;
                 }
@@ -756,11 +773,6 @@ static NSInteger PPBookmarkEditMaximum = 25;
                     if (firstLoad) {
                         [activityIndicator removeFromSuperview];
                         [self.tableView reloadData];
-                        
-                        if (self.searchController) {
-                            self.tableView.tableHeaderView = self.searchController.searchBar;
-                            [self.tableView setContentOffset:CGPointMake(0, CGRectGetHeight(self.searchController.searchBar.frame)) animated:NO];
-                        }
                     } else {
                         [self.tableView reloadData];
                     }
@@ -860,7 +872,6 @@ static NSInteger PPBookmarkEditMaximum = 25;
         [self updateMultipleEditUI];
         
         [UIView animateWithDuration:0.25 animations:^{
-            
             UITextField *searchTextField = [self.searchController.searchBar valueForKey:@"_searchField"];
             searchTextField.enabled = NO;
 
