@@ -47,8 +47,20 @@ extension UIImage {
 }
 
 final class PPTipJarButton: UIButton {
+    let disabledColor = UIColor.gray
+
     static var blue: UIColor {
         return UIColor(red: 0, green: 122/255, blue: 1, alpha: 1)
+    }
+
+    override var isEnabled: Bool {
+        didSet {
+            if isEnabled {
+                layer.borderColor = PPTipJarButton.blue.cgColor
+            } else {
+                layer.borderColor = disabledColor.cgColor
+            }
+        }
     }
 
     init() {
@@ -92,6 +104,10 @@ final class PPTipJarButton: UIButton {
         let highlightedString = NSMutableAttributedString(attributedString: string)
         highlightedString.addAttribute(.foregroundColor, value: UIColor.white)
         setAttributedTitle(highlightedString, for: .highlighted)
+
+        let disabledString = NSMutableAttributedString(attributedString: string)
+        disabledString.addAttribute(.foregroundColor, value: disabledColor)
+        setAttributedTitle(disabledString, for: .disabled)
     }
 
     required init?(coder aDecoder: NSCoder) {

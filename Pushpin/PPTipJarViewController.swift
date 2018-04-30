@@ -31,6 +31,7 @@ extension IAPRow where Self: RawRepresentable, Self.RawValue == Int {
 }
 
 final class PPTipJarViewController: BaseTableViewController {
+    var loading = true
     var purchased = false
     var products: [String: SKProduct]?
     var sectionContainer: Section.Container {
@@ -210,6 +211,10 @@ final class PPTipJarViewController: BaseTableViewController {
     }
 
     func addPaymentForIAP(row: IAPRow) {
+        loading = true
+        print(Date())
+        tableView.reloadData()
+
         guard let products = self.products,
             let product = products[row.productIdentifier] else {
                 return
@@ -233,6 +238,7 @@ extension PPTipJarViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
+        var iapRow: IAPRow?
         switch Section(at: indexPath, container: sectionContainer) {
         case .legal:
             let legalRow = LegalRow(at: indexPath)
@@ -242,7 +248,26 @@ extension PPTipJarViewController: UITableViewDelegate {
             let url = URL(string: "https://buy.itunes.apple.com/WebObjects/MZFinance.woa/wa/manageSubscriptions")!
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
 
+        case .subscription:
+            iapRow = SubscriptionRow(at: indexPath)
+            
+        case .oneTime:
+            iapRow = OneTimeRow(at: indexPath)
+
         default: break
+        }
+
+        if let iapRow = iapRow {
+            switch iapRow {
+            case SubscriptionRow.monthly: monthlyTipButtonDidTouchUpInside()
+            case SubscriptionRow.yearly: yearlyTipButtonDidTouchUpInside()
+            case OneTimeRow.small: smallTipButtonDidTouchUpInside()
+            case OneTimeRow.medium: mediumTipButtonDidTouchUpInside()
+            case OneTimeRow.large: largeTipButtonDidTouchUpInside()
+            case OneTimeRow.huge: hugeTipButtonDidTouchUpInside()
+            case OneTimeRow.massive: massiveTipButtonDidTouchUpInside()
+            default: break
+            }
         }
     }
 }
@@ -363,7 +388,15 @@ If you've been enjoying Pushpin for a while, and would like to show your support
             case OneTimeRow.massive: selector = #selector(massiveTipButtonDidTouchUpInside)
             default: return cell
             }
-            cell.tipJarButton.addTarget(self, action: selector, for: .touchUpInside)
+
+            if loading {
+                cell.tipJarButton.removeTarget(nil, action: nil, for: .allEvents)
+                cell.tipJarButton.isEnabled = false
+            } else {
+                cell.tipJarButton.addTarget(self, action: selector, for: .touchUpInside)
+                cell.tipJarButton.isEnabled = true
+            }
+
             cell.textLabel?.text = product.localizedTitle
             cell.detailTextLabel?.text = product.localizedDescription
 
@@ -383,6 +416,7 @@ If you've been enjoying Pushpin for a while, and would like to show your support
     }
 }
 
+// MARK: - SKProductsRequestDelegate
 extension PPTipJarViewController: SKProductsRequestDelegate {
     func request(_ request: SKRequest, didFailWithError error: Error) {
         print(error.localizedDescription)
@@ -394,6 +428,7 @@ extension PPTipJarViewController: SKProductsRequestDelegate {
             products?[product.productIdentifier] = product
         }
 
+        loading = false
         tableView.reloadData()
     }
 }
@@ -401,6 +436,10 @@ extension PPTipJarViewController: SKProductsRequestDelegate {
 // MARK: - SKPaymentTransactionObserver
 extension PPTipJarViewController: SKPaymentTransactionObserver {
     func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
+        loading = false
+        print(Date())
+        tableView.reloadData()
+
         for transaction in transactions {
             switch transaction.transactionState {
             case .purchased, .restored:
