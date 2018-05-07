@@ -369,7 +369,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                     break;
 
                 case PPOtherTipJar: {
-                    PPTipJarViewController *controller = [[PPTipJarViewController alloc] initWithStyle:UITableViewStyleGrouped];
+                    UIViewController *controller = [PPTipJarViewControllerFactory controller];
                     [self.navigationController pushViewController:controller animated:YES];
                     break;
                 }

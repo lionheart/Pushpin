@@ -12,11 +12,9 @@
 @import MWFeedParser;
 @import FMDB;
 @import LHSCategoryCollection;
-
-#ifdef APP_EXTENSION_SAFE
-@import Mixpanel_AppExtension;
-#else
 @import Mixpanel;
+
+#ifndef APP_EXTENSION_SAFE
 #import "PPGenericPostViewController.h"
 #import "PPNotification.h"
 #endif

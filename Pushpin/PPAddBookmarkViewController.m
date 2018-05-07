@@ -13,6 +13,7 @@
 @import LHSTableViewCells;
 @import LHSCategoryCollection;
 @import FMDB;
+@import Mixpanel;
 
 #import "Pushpin-Swift.h"
 #import "PPAddBookmarkViewController.h"
@@ -29,11 +30,8 @@
 #import "PPConstants.h"
 #import "PPSettings.h"
 
-#ifdef APP_EXTENSION_SAFE
-@import Mixpanel_AppExtension;
-#else
+#ifndef APP_EXTENSION_SAFE
 #import "PPAppDelegate.h"
-@import Mixpanel;
 #endif
 
 #import "NSString+URLEncoding2.h"
