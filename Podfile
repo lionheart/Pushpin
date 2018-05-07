@@ -25,20 +25,19 @@ pod 'ASPinboard', '~> 1.0'
 pod 'QuickTableView'
 pod 'SuperLayout'
 pod 'LionheartExtensions'
+pod 'Mixpanel'
 
 target 'Pushpin' do
-  pod 'Mixpanel'
   pod 'ChimpKit'
   pod 'OpenInChrome', '~> 0.0'
   pod '1PasswordExtension', '~> 1.8'
   pod 'LionheartExtensions'
   pod 'QuickTableView'
+  pod 'TipJarViewController'
 end
 
 target 'Bookmark Extension' do
-  pod 'Mixpanel-AppExtension'
 end
 
 target 'Read Later Extension' do
-  pod 'Mixpanel-AppExtension'
 end
