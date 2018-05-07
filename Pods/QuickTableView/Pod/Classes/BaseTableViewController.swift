@@ -25,12 +25,11 @@ import UIKit
  - copyright: ©2016 Lionheart Software LLC
  - date: April 12, 2016
  */
-open class BaseTableViewController: UIViewController, KeyboardAdjuster, HasTableView {
+open class BaseTableViewController: UIViewController, HasTableView {
     open var tableViewTopConstraint: NSLayoutConstraint!
     open var tableViewLeftConstraint: NSLayoutConstraint!
     open var tableViewRightConstraint: NSLayoutConstraint!
 
-    open var keyboardAdjustmentHelper = KeyboardAdjustmentHelper()
     open var tableView: UITableView!
 
     public init(style: UITableViewStyle = .grouped) {
@@ -59,16 +58,6 @@ open class BaseTableViewController: UIViewController, KeyboardAdjuster, HasTable
         super.init(coder: aDecoder)
     }
 
-    override open func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        activateKeyboardAdjuster()
-    }
-
-    override open func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        deactivateKeyboardAdjuster()
-    }
-
     override open func viewDidLoad() {
         super.viewDidLoad()
 
@@ -81,7 +70,8 @@ open class BaseTableViewController: UIViewController, KeyboardAdjuster, HasTable
         tableViewLeftConstraint.isActive = true
         tableViewTopConstraint.isActive = true
         tableViewRightConstraint.isActive = true
-        keyboardAdjustmentHelper.constraint = view.bottomAnchor.constraint(equalTo: tableView.bottomAnchor)
+        tableView.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor).isActive = true
+        tableView.bottomAnchor.constraint(greaterThanOrEqualTo: keyboardLayoutGuide.topAnchor).isActive = true
     }
 
     // MARK: -

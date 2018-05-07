@@ -17,6 +17,7 @@
 
 import Foundation
 
+
 /// Helper methods for `UIViewController`.
 public extension UIViewController {
     /**
@@ -43,7 +44,7 @@ public extension UIViewController {
             return navigationController.visibleViewController?.topViewController
 
         case let splitViewController as UISplitViewController:
-            return splitViewController.viewControllers[0].topViewController
+            return splitViewController.viewControllers.first?.topViewController
 
         case let controller where controller == presentedViewController:
             if controller is UIAlertController {

@@ -8,6 +8,7 @@
 
 #import "Mixpanel.h"
 #import "MPNetwork.h"
+#import "SessionMetadata.h"
 
 #if TARGET_OS_IOS
 #import <UIKit/UIKit.h>
@@ -98,6 +99,7 @@
 @property (nonatomic) dispatch_queue_t serialQueue;
 @property (nonatomic) dispatch_queue_t networkQueue;
 @property (nonatomic, strong) NSMutableDictionary *timedEvents;
+@property (nonatomic, strong) SessionMetadata *sessionMetadata;
 
 @property (nonatomic) BOOL decideResponseCached;
 @property (nonatomic) BOOL hasAddedObserver;
@@ -108,6 +110,8 @@
 
 @property (nonatomic, strong) NSSet *variants;
 @property (nonatomic, strong) NSSet *eventBindings;
+
+@property (nonatomic, assign) BOOL optOutStatus;
 
 @property (nonatomic, strong) NSString *savedUrbanAirshipChannelID;
 
@@ -129,6 +133,7 @@
 - (NSString *)eventsFilePath;
 - (NSString *)peopleFilePath;
 - (NSString *)propertiesFilePath;
+- (NSString *)optOutFilePath;
 
 #if !MIXPANEL_NO_NOTIFICATION_AB_TEST_SUPPORT
 - (void)trackPushNotification:(NSDictionary *)userInfo;
