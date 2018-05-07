@@ -1,0 +1,1 @@
+pushpin,pinboard,pinswift,pinner,pinboard.in,bookmarks,bookmarking,bookmark,offline
