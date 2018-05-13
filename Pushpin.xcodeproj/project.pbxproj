@@ -154,7 +154,7 @@
 		37AB960918C437090008CDD5 /* browse-recent.png in Resources */ = {isa = PBXBuildFile; fileRef = 37AB960518C437090008CDD5 /* browse-recent.png */; };
 		37AB960A18C437090008CDD5 /* browse-recent@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37AB960618C437090008CDD5 /* browse-recent@2x.png */; };
 		37AD159518A13365005813CC /* About-Delicious.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37AD159418A13365005813CC /* About-Delicious.plist */; };
-		37B4F80A1F4C651500E89790 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 37B4F8091F4C651500E89790 /* Launch Screen.storyboard */; };
+		37B4F80A1F4C651500E89790 /* Pushpin Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 37B4F8091F4C651500E89790 /* Pushpin Launch Screen.storyboard */; };
 		37B5F4E51773864C005687DA /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37B5F4E41773864C005687DA /* Twitter.framework */; };
 		37B620061F45206D005DE789 /* NSString+LHSAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B4FFDF1922B6EF002F8558 /* NSString+LHSAdditions.m */; };
 		37B620071F4520AB005DE789 /* PPTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 371EE5C7185B49FE005DB908 /* PPTheme.m */; };
@@ -531,7 +531,7 @@
 		37B348CA175FF9D400929E2E /* PPChangelogViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPChangelogViewController.h; sourceTree = "<group>"; };
 		37B348CB175FF9D500929E2E /* PPChangelogViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPChangelogViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37B348CD175FFDCD00929E2E /* Changelog.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Changelog.plist; path = Assets/Changelog.plist; sourceTree = SOURCE_ROOT; };
-		37B4F8091F4C651500E89790 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		37B4F8091F4C651500E89790 /* Pushpin Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Pushpin Launch Screen.storyboard"; sourceTree = "<group>"; };
 		37B4FFDE1922B6EF002F8558 /* NSString+LHSAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+LHSAdditions.h"; sourceTree = "<group>"; };
 		37B4FFDF1922B6EF002F8558 /* NSString+LHSAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = "NSString+LHSAdditions.m"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37B4FFE11923AD18002F8558 /* PPUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPUtilities.h; sourceTree = "<group>"; };
@@ -1192,7 +1192,7 @@
 			isa = PBXGroup;
 			children = (
 				37FEEB9A15745488003F2B77 /* Info.plist */,
-				37B4F8091F4C651500E89790 /* Launch Screen.storyboard */,
+				37B4F8091F4C651500E89790 /* Pushpin Launch Screen.storyboard */,
 				37FEEB9E15745488003F2B77 /* main.m */,
 				371EE5C6185B49FE005DB908 /* PPTheme.h */,
 				371EE5C7185B49FE005DB908 /* PPTheme.m */,
@@ -1625,7 +1625,7 @@
 				3747C71619CCDB1F00FAD488 /* Images.xcassets in Resources */,
 				3747C71719CCDB1F00FAD488 /* InfoPlist.strings in Resources */,
 				3747C71819CCDB1F00FAD488 /* JSDOMParser.js in Resources */,
-				37B4F80A1F4C651500E89790 /* Launch Screen.storyboard in Resources */,
+				37B4F80A1F4C651500E89790 /* Pushpin Launch Screen.storyboard in Resources */,
 				3747C71919CCDB1F00FAD488 /* LICENSE in Resources */,
 				3747C71A19CCDB1F00FAD488 /* Localizable.strings in Resources */,
 				3747C71B19CCDB1F00FAD488 /* LyonTextApp-Regular.ttf in Resources */,
@@ -2414,7 +2414,7 @@
 			baseConfigurationReference = 98ADD49C1B7F2A16A9106FAF /* Pods-Pushpin.release debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = PinboardDev;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_MODULES_AUTOLINK = NO;
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
@@ -2779,7 +2779,7 @@
 			baseConfigurationReference = B2F39EB397FE3ADFF1B274A0 /* Pods-Pushpin.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = PinboardDev;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_MODULES_AUTOLINK = NO;
 				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
