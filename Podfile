@@ -23,7 +23,7 @@ pod 'LHSTableViewCells'
 pod 'FMDB'
 pod 'ASPinboard', '~> 1.0'
 pod 'QuickTableView'
-pod 'SuperLayout'
+pod 'SuperLayout', '~> 2.0'
 pod 'LionheartExtensions'
 pod 'Mixpanel'
 
