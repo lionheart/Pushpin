@@ -19,22 +19,22 @@ PODS:
     - hpple (~> 0.2.0)
   - BRYHTMLParser (2.1.3)
   - ChimpKit (3.1.1)
-  - FMDB (2.7.2):
-    - FMDB/standard (= 2.7.2)
-  - FMDB/standard (2.7.2)
+  - FMDB (2.7.5):
+    - FMDB/standard (= 2.7.5)
+  - FMDB/standard (2.7.5)
   - hpple (0.2.0)
   - HTMLParser (0.1.2)
-  - KeyboardAdjuster (3.0.2)
+  - KeyboardAdjuster (4.0.0)
   - KeychainItemWrapper (1.2)
   - LHSCategoryCollection (0.0.22)
   - LHSFMDatabaseAdditions (0.0.3):
     - FMDB
   - LHSKeyboardAdjusting (2.0.1)
   - LHSTableViewCells (0.0.1)
-  - LionheartExtensions (3.12.1):
-    - LionheartExtensions/Core (= 3.12.1)
-  - LionheartExtensions/Core (3.12.1)
-  - Mixpanel (3.3.1)
+  - LionheartExtensions (4.0.0):
+    - LionheartExtensions/Core (= 4.0.0)
+  - LionheartExtensions/Core (4.0.0)
+  - Mixpanel (3.3.3)
   - MWFeedParser (1.0.1):
     - MWFeedParser/FeedParser (= 1.0.1)
     - "MWFeedParser/NSDate+InternetDateTime (= 1.0.1)"
@@ -45,16 +45,16 @@ PODS:
   - "MWFeedParser/NSDate+InternetDateTime (1.0.1)"
   - "MWFeedParser/NSString+HTML (1.0.1)"
   - OpenInChrome (0.0.1)
-  - QuickTableView (2.6.2):
-    - KeyboardAdjuster (~> 3)
-  - RNCryptor-objc (3.0.5)
-  - SuperLayout (1.0.1):
-    - SuperLayout/Core (= 1.0.1)
-  - SuperLayout/Core (1.0.1)
-  - TipJarViewController (0.1.1):
-    - LionheartExtensions (~> 3.0)
-    - QuickTableView (~> 2.0)
-    - SuperLayout (~> 1.0)
+  - QuickTableView (3.0.0):
+    - KeyboardAdjuster (~> 4)
+  - RNCryptor-objc (3.0.6)
+  - SuperLayout (2.0.0):
+    - SuperLayout/Core (= 2.0.0)
+  - SuperLayout/Core (2.0.0)
+  - TipJarViewController (1.0.0):
+    - LionheartExtensions (~> 4)
+    - QuickTableView (~> 3)
+    - SuperLayout (~> 2)
   - TMReachability (3.2)
   - TTTAttributedLabel (1.13.4)
 
@@ -77,13 +77,13 @@ DEPENDENCIES:
   - OpenInChrome (~> 0.0)
   - QuickTableView
   - RNCryptor-objc (~> 3)
-  - SuperLayout
+  - SuperLayout (~> 2.0)
   - TipJarViewController
   - TMReachability (from `https://github.com/lionheart/Reachability`, commit `e34782b386307e386348b481c02c176d58ba45e6`)
   - TTTAttributedLabel (~> 1.13)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/cocoapods/specs.git:
     - 1PasswordExtension
     - AFNetworking
     - ASPinboard
@@ -126,26 +126,26 @@ SPEC CHECKSUMS:
   ASPinboard: 04dbe1357a1ebc6a8ec63bc8e9a06a06308ee8d1
   BRYHTMLParser: c84b3e5aa4fd6706271c48ed480af13ab0d71afb
   ChimpKit: d020126089544daa349397a91f1489a3f271b791
-  FMDB: 6198a90e7b6900cfc046e6bc0ef6ebb7be9236aa
+  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   hpple: 3b765f96fc2cd56ad1a49aef6f7be5cb2aa64b57
   HTMLParser: 0aff2823b285cfe41996d55d1ae742a27ff89305
-  KeyboardAdjuster: 8391eadd333fefaacaf110c9dfcbb07a2f6b3404
+  KeyboardAdjuster: 50eec4e8d52fd5d7f5df74fc07193cdadcc88abb
   KeychainItemWrapper: 67a240172ed669842bc6bc13ed554dcd50469fa2
   LHSCategoryCollection: 88f50018939b824d262513226c5187bf6ec6afd9
   LHSFMDatabaseAdditions: aba229cb0db6aea013a64c3be1542cd13b0a069e
   LHSKeyboardAdjusting: 58ad9535a700f70e76044f17d97d46318c3bb272
   LHSTableViewCells: 47b4d33382cb4a09960371267e2142970afdfdd6
-  LionheartExtensions: 940dfc87cc527b1d5c39f8ef3ecef7190e0e4dff
-  Mixpanel: 107b42a4043b2a7c9c6951e0c7d6b7946b66b5f4
+  LionheartExtensions: c6cfe32aa09e0282480185545d414d76eaf5e1d1
+  Mixpanel: 3c3925c27f7a321d5978319a72f53f8f0885afc5
   MWFeedParser: 2cf646014c1baf6ad1b08c480b40a08180079247
   OpenInChrome: f1f3f9dec682216fe78a0d7fe0b5b263d6312c32
-  QuickTableView: 6c7689b1b392e8d4d01c26161ca0c3b7a2079435
-  RNCryptor-objc: a65b15493de05dda4af0f392c70372b7a5625aab
-  SuperLayout: 8d8a8399366e130f244963d97bd04a66fd08d368
-  TipJarViewController: 7b8529fe96a010bb22ccdea37377593d6a857642
+  QuickTableView: 296b258f41ac91521ae517404646da4beab73fa3
+  RNCryptor-objc: d1b228f9c02e2173df063f0617684c134aed890e
+  SuperLayout: 0208ad821522fb50b62d9b8b808690d190a871ea
+  TipJarViewController: 6c0b6ef2920d0bfffe7ec7d9f85939f122ee7e89
   TMReachability: 48c99d728a8b0ad4493800592484b8cbb65c896c
   TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
 
-PODFILE CHECKSUM: 3a377d83d90a7712efb6856a59e203deb7599542
+PODFILE CHECKSUM: 979e0d05aa81f4bc7a67b2bd930e47aa39a4b428
 
-COCOAPODS: 1.5.0
+COCOAPODS: 1.5.3
