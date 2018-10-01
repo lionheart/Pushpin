@@ -2414,7 +2414,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 98ADD49C1B7F2A16A9106FAF /* Pods-Pushpin.release debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_MODULES_AUTOLINK = NO;
@@ -2551,7 +2550,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3B2662CC1A6192CE69980A86 /* Pods-Pushpin.beta.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_MODULES_AUTOLINK = NO;
@@ -2781,7 +2779,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B2F39EB397FE3ADFF1B274A0 /* Pods-Pushpin.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_MODULES_AUTOLINK = NO;
@@ -2826,7 +2823,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E0DB3F4CDFFC0E78B6405BC1 /* Pods-Pushpin.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_MODULES_AUTOLINK = NO;
