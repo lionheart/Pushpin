@@ -31,10 +31,10 @@ PODS:
     - FMDB
   - LHSKeyboardAdjusting (2.0.1)
   - LHSTableViewCells (0.0.1)
-  - LionheartExtensions (4.0.0):
-    - LionheartExtensions/Core (= 4.0.0)
-  - LionheartExtensions/Core (4.0.0)
-  - Mixpanel (3.3.3)
+  - LionheartExtensions (5.0.2):
+    - LionheartExtensions/Core (= 5.0.2)
+  - LionheartExtensions/Core (5.0.2)
+  - Mixpanel (3.4.7)
   - MWFeedParser (1.0.1):
     - MWFeedParser/FeedParser (= 1.0.1)
     - "MWFeedParser/NSDate+InternetDateTime (= 1.0.1)"
@@ -51,8 +51,8 @@ PODS:
   - SuperLayout (2.0.0):
     - SuperLayout/Core (= 2.0.0)
   - SuperLayout/Core (2.0.0)
-  - TipJarViewController (1.0.0):
-    - LionheartExtensions (~> 4)
+  - TipJarViewController (1.0.2):
+    - LionheartExtensions (~> 5)
     - QuickTableView (~> 3)
     - SuperLayout (~> 2)
   - TMReachability (3.2)
@@ -67,9 +67,9 @@ DEPENDENCIES:
   - FMDB
   - HTMLParser
   - KeychainItemWrapper (~> 1.2)
-  - LHSCategoryCollection (from `../LHSCategoryCollection`)
+  - LHSCategoryCollection (from `/Users/dan/Projects/30-39 Open Source/31 Lionheart/LHSCategoryCollection`)
   - LHSFMDatabaseAdditions (~> 0.0)
-  - LHSKeyboardAdjusting (from `../LHSKeyboardAdjusting`)
+  - LHSKeyboardAdjusting (from `/Users/dan/Projects/30-39 Open Source/31 Lionheart/LHSKeyboardAdjusting`)
   - LHSTableViewCells
   - LionheartExtensions
   - Mixpanel
@@ -108,9 +108,9 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   LHSCategoryCollection:
-    :path: "../LHSCategoryCollection"
+    :path: "/Users/dan/Projects/30-39 Open Source/31 Lionheart/LHSCategoryCollection"
   LHSKeyboardAdjusting:
-    :path: "../LHSKeyboardAdjusting"
+    :path: "/Users/dan/Projects/30-39 Open Source/31 Lionheart/LHSKeyboardAdjusting"
   TMReachability:
     :commit: e34782b386307e386348b481c02c176d58ba45e6
     :git: https://github.com/lionheart/Reachability
@@ -131,21 +131,21 @@ SPEC CHECKSUMS:
   HTMLParser: 0aff2823b285cfe41996d55d1ae742a27ff89305
   KeyboardAdjuster: 50eec4e8d52fd5d7f5df74fc07193cdadcc88abb
   KeychainItemWrapper: 67a240172ed669842bc6bc13ed554dcd50469fa2
-  LHSCategoryCollection: 88f50018939b824d262513226c5187bf6ec6afd9
+  LHSCategoryCollection: 738329e3b0f67a5f981c6e3eb102ce841c6e5ab6
   LHSFMDatabaseAdditions: aba229cb0db6aea013a64c3be1542cd13b0a069e
-  LHSKeyboardAdjusting: 58ad9535a700f70e76044f17d97d46318c3bb272
+  LHSKeyboardAdjusting: 8f9b8d6e80315e653bf3188ae62963874d342d68
   LHSTableViewCells: 47b4d33382cb4a09960371267e2142970afdfdd6
-  LionheartExtensions: c6cfe32aa09e0282480185545d414d76eaf5e1d1
-  Mixpanel: 3c3925c27f7a321d5978319a72f53f8f0885afc5
+  LionheartExtensions: 09fa816d98176012c8f9adf7f21774f528dbc90e
+  Mixpanel: 696e0a1c7f2685aa06bb23829b7a58ab7203d6c7
   MWFeedParser: 2cf646014c1baf6ad1b08c480b40a08180079247
   OpenInChrome: f1f3f9dec682216fe78a0d7fe0b5b263d6312c32
   QuickTableView: 296b258f41ac91521ae517404646da4beab73fa3
   RNCryptor-objc: d1b228f9c02e2173df063f0617684c134aed890e
   SuperLayout: 0208ad821522fb50b62d9b8b808690d190a871ea
-  TipJarViewController: 6c0b6ef2920d0bfffe7ec7d9f85939f122ee7e89
+  TipJarViewController: d4a6d1c3a806627db478defd2fc843ccbead2eff
   TMReachability: 48c99d728a8b0ad4493800592484b8cbb65c896c
   TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
 
-PODFILE CHECKSUM: 979e0d05aa81f4bc7a67b2bd930e47aa39a4b428
+PODFILE CHECKSUM: 80e1ff73e0262527c0283409cc593bfc88fb5276
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.7.1
