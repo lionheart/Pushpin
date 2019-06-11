@@ -1753,7 +1753,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Pushpin/Pods-Pushpin-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/1PasswordExtension/OnePasswordExtension.framework",
 				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
 				"${BUILT_PRODUCTS_DIR}/ASPinboard/ASPinboard.framework",
@@ -1808,7 +1808,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Pushpin/Pods-Pushpin-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		CD7B6786A78E145739470786 /* [CP] Check Pods Manifest.lock */ = {
