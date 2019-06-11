@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1000"
+   LastUpgradeVersion = "1020"
    wasCreatedForAppExtension = "YES"
    version = "2.0">
    <BuildAction
@@ -68,10 +68,11 @@
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES"
       launchAutomaticallySubstyle = "2">
-      <PathRunnable
+      <RemoteRunnable
          runnableDebuggingMode = "0"
-         FilePath = "/&lt;placeholder&gt;">
-      </PathRunnable>
+         BundleIdentifier = "com.google.chrome.ios"
+         RemotePath = "/var/containers/Bundle/Application/86A0E16F-6AD2-4ECA-A824-938FD00C11F2/stable.app">
+      </RemoteRunnable>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"

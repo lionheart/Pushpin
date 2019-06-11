@@ -1496,10 +1496,9 @@
 			};
 			buildConfigurationList = 37FEEB8815745488003F2B77 /* Build configuration list for PBXProject "Pushpin" */;
 			compatibilityVersion = "Xcode 6.3";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
 				de,
 				fr,
