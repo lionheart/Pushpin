@@ -11,6 +11,8 @@
 #endif
 
 #import "Mixpanel.h"
+#import "MixpanelType.h"
+#import "MixpanelGroup.h"
 #import "MixpanelPeople.h"
 #import "MPTweak.h"
 #import "MPTweakInline.h"
