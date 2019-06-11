@@ -11,13 +11,14 @@
 #import "MixpanelPrivate.h"
 #import "MPLogger.h"
 #include <libkern/OSAtomic.h>
-#include <execinfo.h>
+#include <stdatomic.h>
+
 
 static NSString * const UncaughtExceptionHandlerSignalExceptionName = @"UncaughtExceptionHandlerSignalExceptionName";
 static NSString * const UncaughtExceptionHandlerSignalKey = @"UncaughtExceptionHandlerSignalKey";
 
-static volatile int32_t UncaughtExceptionCount = 0;
-static const int32_t UncaughtExceptionMaximum = 10;
+static volatile atomic_int_fast32_t UncaughtExceptionCount = 0;
+static const atomic_int_fast32_t UncaughtExceptionMaximum = 10;
 
 @interface MixpanelExceptionHandler ()
 
@@ -43,7 +44,6 @@ static const int32_t UncaughtExceptionMaximum = 10;
     if (self) {
         // Create a hash table of weak pointers to mixpanel instances
         _mixpanelInstances = [NSHashTable weakObjectsHashTable];
-        
         _prev_signal_handlers = calloc(NSIG, sizeof(struct sigaction));
 
         // Install our handler
@@ -64,16 +64,19 @@ static const int32_t UncaughtExceptionMaximum = 10;
     sigemptyset(&action.sa_mask);
     action.sa_flags = SA_SIGINFO;
     action.sa_sigaction = &MPSignalHandler;
-    int signals[] = {SIGABRT, SIGILL, SIGSEGV, SIGFPE, SIGBUS, SIGPIPE};
+    int signals[] = {SIGABRT, SIGILL, SIGSEGV, SIGFPE, SIGBUS};
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wsign-compare"
     for (int i = 0; i < sizeof(signals) / sizeof(int); i++) {
         struct sigaction prev_action;
         int err = sigaction(signals[i], &action, &prev_action);
         if (err == 0) {
             memcpy(_prev_signal_handlers + signals[i], &prev_action, sizeof(prev_action));
         } else {
-            NSLog(@"Errored while trying to set up sigaction for signal %d", signals[i]);
+            MPLogWarning(@"Errored while trying to set up sigaction for signal %d", signals[i]);
         }
     }
+#pragma clang diagnostic pop
 }
 
 - (void)addMixpanelInstance:(Mixpanel *)instance {
@@ -82,33 +85,40 @@ static const int32_t UncaughtExceptionMaximum = 10;
     [self.mixpanelInstances addObject:instance];
 }
 
-void MPSignalHandler(int signal, struct __siginfo *info, void *context) {
+void MPSignalHandler(int signalNumber, struct __siginfo *info, void *context) {
     MixpanelExceptionHandler *handler = [MixpanelExceptionHandler sharedHandler];
 
-    int32_t exceptionCount = OSAtomicIncrement32(&UncaughtExceptionCount);
+    atomic_int_fast32_t exceptionCount = atomic_fetch_add_explicit(&UncaughtExceptionCount, 1, memory_order_relaxed);
+    
     if (exceptionCount <= UncaughtExceptionMaximum) {
-        NSDictionary *userInfo = @{UncaughtExceptionHandlerSignalKey: @(signal)};
+        NSDictionary *userInfo = @{UncaughtExceptionHandlerSignalKey: @(signalNumber)};
         NSException *exception = [NSException exceptionWithName:UncaughtExceptionHandlerSignalExceptionName
-                                                         reason:[NSString stringWithFormat:@"Signal %d was raised.", signal]
+                                                         reason:[NSString stringWithFormat:@"Signal %d was raised.", signalNumber]
                                                        userInfo:userInfo];
 
         [handler mp_handleUncaughtException:exception];
     }
 
-    struct sigaction prev_action = handler.prev_signal_handlers[signal];
+    struct sigaction prev_action = handler.prev_signal_handlers[signalNumber];
+    // Since there is no way to pass through to the default handler, re-raise the signal as our best efforts
+    if (prev_action.sa_handler == SIG_DFL) {
+        signal(signalNumber, SIG_DFL);
+        raise(signalNumber);
+        return;
+    }
     if (prev_action.sa_flags & SA_SIGINFO) {
         if (prev_action.sa_sigaction) {
-            prev_action.sa_sigaction(signal, info, context);
+            prev_action.sa_sigaction(signalNumber, info, context);
         }
     } else if (prev_action.sa_handler) {
-        prev_action.sa_handler(signal);
+        prev_action.sa_handler(signalNumber);
     }
 }
 
 void MPHandleException(NSException *exception) {
     MixpanelExceptionHandler *handler = [MixpanelExceptionHandler sharedHandler];
 
-    int32_t exceptionCount = OSAtomicIncrement32(&UncaughtExceptionCount);
+    atomic_int_fast32_t exceptionCount = atomic_fetch_add_explicit(&UncaughtExceptionCount, 1, memory_order_relaxed);
     if (exceptionCount <= UncaughtExceptionMaximum) {
         [handler mp_handleUncaughtException:exception];
     }
@@ -124,11 +134,8 @@ void MPHandleException(NSException *exception) {
         NSMutableDictionary *properties = [[NSMutableDictionary alloc] init];
         [properties setValue:[exception reason] forKey:@"$ae_crashed_reason"];
         [instance track:@"$ae_crashed" properties:properties];
-        dispatch_sync(instance.serialQueue, ^{
-            [instance archive];
-        });
     }
-    NSLog(@"Encountered an uncaught exception. All Mixpanel instances were archived.");
+    MPLogWarning(@"Encountered an uncaught exception. All Mixpanel instances were archived.");
 }
 
 

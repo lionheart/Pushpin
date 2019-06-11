@@ -65,7 +65,7 @@ static const NSUInteger kBatchSize = 50;
 
 - (NSMutableArray *)orderAutomaticEvents:(NSMutableArray *)events
 {
-    if (!self.mixpanel.automaticEventsEnabled || !self.mixpanel.automaticEventsEnabled.boolValue) {
+    if (self.mixpanel.automaticEventsEnabled == nil || !self.mixpanel.automaticEventsEnabled.boolValue) {
         NSMutableArray *discardedItems = [NSMutableArray array];
         for (NSDictionary *e in events) {
             if ([e[@"event"] hasPrefix:@"$ae_"]) {
@@ -73,7 +73,7 @@ static const NSUInteger kBatchSize = 50;
             }
         }
         [events removeObjectsInArray:discardedItems];
-        if (!self.mixpanel.automaticEventsEnabled) {
+        if (self.mixpanel.automaticEventsEnabled == nil) {
             return discardedItems;
         }
     }
@@ -83,6 +83,11 @@ static const NSUInteger kBatchSize = 50;
 - (void)flushPeopleQueue:(NSMutableArray *)people
 {
     [self flushQueue:people endpoint:MPNetworkEndpointEngage];
+}
+
+- (void)flushGroupsQueue:(NSMutableArray *)groups
+{
+    [self flushQueue:groups endpoint:MPNetworkEndpointGroups];
 }
 
 - (void)flushQueue:(NSMutableArray *)queue endpoint:(MPNetworkEndpoint)endpoint
@@ -116,7 +121,6 @@ static const NSUInteger kBatchSize = 50;
                                                                   NSURLResponse *urlResponse,
                                                                   NSError *error) {
             [self updateNetworkActivityIndicator:NO];
-            
             BOOL success = [self handleNetworkResponse:(NSHTTPURLResponse *)urlResponse withError:error];
             if (error || !success) {
                 MPLogError(@"%@ network failure: %@", self, error);
@@ -211,7 +215,9 @@ static const NSUInteger kBatchSize = 50;
     dispatch_once(&onceToken, ^{
         endPointToPath = @{ @(MPNetworkEndpointTrack): @"/track/",
                             @(MPNetworkEndpointEngage): @"/engage/",
-                            @(MPNetworkEndpointDecide): @"/decide" };
+                            @(MPNetworkEndpointDecide): @"/decide",
+                            @(MPNetworkEndpointGroups): @"/groups/"
+                            };
     });
     NSNumber *key = @(endpoint);
     return endPointToPath[key];

@@ -9,6 +9,7 @@
 #import "Mixpanel.h"
 #import "MPNetwork.h"
 #import "SessionMetadata.h"
+#import "MixpanelType.h"
 
 #if TARGET_OS_IOS
 #import <UIKit/UIKit.h>
@@ -42,17 +43,23 @@
 #import "MPTweakStore.h"
 #import "MPVariant.h"
 #import "MPWebSocket.h"
+#import "MPNotification.h"
 #endif
 
 #if !MIXPANEL_NO_CONNECT_INTEGRATION_SUPPORT
 #import "MPConnectIntegrations.h"
 #endif
 
-#if !MIXPANEL_NO_NOTIFICATION_AB_TEST_SUPPORT
-@interface Mixpanel () <MPNotificationViewControllerDelegate, TrackDelegate>
-#else
+#if defined(MIXPANEL_NO_NOTIFICATION_AB_TEST_SUPPORT) && defined(MIXPANEL_NO_AUTOMATIC_EVENTS_SUPPORT)
 @interface Mixpanel ()
+#elif defined(MIXPANEL_NO_NOTIFICATION_AB_TEST_SUPPORT)
+@interface Mixpanel () <TrackDelegate>
+#elif defined(MIXPANEL_NO_AUTOMATIC_EVENTS_SUPPORT)
+@interface Mixpanel () <MPNotificationViewControllerDelegate>
+#else
+@interface Mixpanel () <MPNotificationViewControllerDelegate, TrackDelegate>
 #endif
+
 {
     NSUInteger _flushInterval;
     BOOL _enableVisualABTestAndCodeless;
@@ -86,9 +93,12 @@
 
 // re-declare internally as readwrite
 @property (atomic, strong) MixpanelPeople *people;
+@property (atomic, strong) NSMutableDictionary<NSString*, MixpanelGroup*> * cachedGroups;
 @property (atomic, strong) MPNetwork *network;
 @property (atomic, copy) NSString *distinctId;
 @property (atomic, copy) NSString *alias;
+@property (atomic, copy) NSString *anonymousId;
+@property (atomic, copy) NSString *userId;
 
 @property (nonatomic, copy) NSString *apiToken;
 @property (atomic, strong) NSDictionary *superProperties;
@@ -96,6 +106,7 @@
 @property (nonatomic, strong) NSTimer *timer;
 @property (nonatomic, strong) NSMutableArray *eventsQueue;
 @property (nonatomic, strong) NSMutableArray *peopleQueue;
+@property (nonatomic, strong) NSMutableArray *groupsQueue;
 @property (nonatomic) dispatch_queue_t serialQueue;
 @property (nonatomic) dispatch_queue_t networkQueue;
 @property (nonatomic, strong) NSMutableDictionary *timedEvents;
@@ -104,7 +115,8 @@
 @property (nonatomic) BOOL decideResponseCached;
 @property (nonatomic) BOOL hasAddedObserver;
 @property (nonatomic, strong) NSNumber *automaticEventsEnabled;
-@property (nonatomic, strong) NSArray *notifications;
+@property (nonatomic, copy) NSArray *notifications;
+@property (nonatomic, copy) NSArray *triggeredNotifications;
 @property (nonatomic, strong) id currentlyShowingNotification;
 @property (nonatomic, strong) NSMutableSet *shownNotifications;
 
@@ -112,6 +124,7 @@
 @property (nonatomic, strong) NSSet *eventBindings;
 
 @property (nonatomic, assign) BOOL optOutStatus;
+@property (nonatomic, assign) BOOL optOutStatusNotSet;
 
 @property (nonatomic, strong) NSString *savedUrbanAirshipChannelID;
 
@@ -132,9 +145,12 @@
 - (void)archive;
 - (NSString *)eventsFilePath;
 - (NSString *)peopleFilePath;
+- (NSString *)groupsFilePath;
 - (NSString *)propertiesFilePath;
 - (NSString *)optOutFilePath;
 
+// for group caching
+- (NSString *)keyForGroup:(NSString *)groupKey groupID:(id<MixpanelType>)groupID;
 #if !MIXPANEL_NO_NOTIFICATION_AB_TEST_SUPPORT
 - (void)trackPushNotification:(NSDictionary *)userInfo;
 - (void)showNotificationWithObject:(MPNotification *)notification;
@@ -144,4 +160,3 @@
 #endif
 
 @end
-
