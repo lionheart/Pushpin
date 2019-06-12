@@ -34,6 +34,7 @@ target 'Pushpin' do
   pod 'LionheartExtensions'
   pod 'QuickTableView'
   pod 'TipJarViewController'
+  pod 'Beacon'
 end
 
 target 'Bookmark Extension' do
