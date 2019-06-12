@@ -41,6 +41,8 @@
 #define kInstapaperKey @"9ljBz2ifxks9cBLK64T49TUeEckQRkWQmgSC2Pa5PYTeCah227"
 #define kInstapaperSecret @"Azj6HrRswIpZvpU9Lhyl70j02UHVSOj3j1434CrJRuBGVa5uxA"
 
+#define kHelpScoutBeaconId @"de790e4a-5443-42ac-bfe0-b272f944e96c"
+
 static float kLargeFontSize __attribute__((unused)) = 16.0f;
 static float kSmallFontSize __attribute__((unused)) = 13.0f;
 static NSString *kSavedFeedsKey = @"SavedFeeds";

@@ -8,6 +8,7 @@
 
 @import UIKit;
 @import LHSKeyboardAdjusting;
+@import Beacon;
 
 #warning Rename these typedefs! Best to use Xcode's refactor / rename tool.
 
@@ -16,6 +17,6 @@ typedef NS_ENUM(NSInteger, PPLoginServiceRowType) {
     PPLoginPushpinRow
 };
 
-@interface PPLoginViewController : UIViewController <LHSKeyboardAdjusting, UITableViewDataSource, UITableViewDelegate, MFMailComposeViewControllerDelegate>
+@interface PPLoginViewController : UIViewController <LHSKeyboardAdjusting, UITableViewDataSource, UITableViewDelegate, MFMailComposeViewControllerDelegate, HSBeaconDelegate>
 
 @end

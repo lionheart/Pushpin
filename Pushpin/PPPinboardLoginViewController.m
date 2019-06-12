@@ -12,6 +12,7 @@
 @import ASPinboard;
 @import OnePasswordExtension;
 @import MessageUI;
+@import Beacon;
 
 #import "PPPinboardLoginViewController.h"
 #import "PPAppDelegate.h"
@@ -733,19 +734,15 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 #pragma mark - Utils
 
 - (void)showContactForm {
-    if ([MFMailComposeViewController canSendMail]) {
-        MFMailComposeViewController *controller = [[MFMailComposeViewController alloc] init];
-        controller.mailComposeDelegate = self;
-        [controller setSubject:@"Pushpin Support Inquiry"];
-        [controller setToRecipients:@[@"Lionheart Support <support@lionheartsw.com>"]];
-        [self presentViewController:controller animated:YES completion:nil];
-    }
+    HSBeaconSettings *settings = [[HSBeaconSettings alloc] initWithBeaconId:kHelpScoutBeaconId];
+    settings.delegate = self;
+    [HSBeacon openBeacon:settings];
 }
 
-#pragma mark - MFMailComposeViewControllerDelegate
+#pragma mark - HSBeaconDelegate
 
-- (void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
-    [controller dismissViewControllerAnimated:YES completion:nil];
+- (void)prefill:(HSBeaconContactForm *)form {
+    form.subject = @"Pushpin Support Inquiry";
 }
 
 @end

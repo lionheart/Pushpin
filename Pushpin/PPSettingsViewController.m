@@ -14,6 +14,7 @@
 @import KeychainItemWrapper;
 @import LHSTableViewCells;
 @import OnePasswordExtension;
+@import Beacon;
 
 #import "Pushpin-Swift.h"
 #import "PPAppDelegate.h"
@@ -353,13 +354,9 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                 }
 
                 case PPOtherFeedback: {
-                    if ([MFMailComposeViewController canSendMail]) {
-                        MFMailComposeViewController *controller = [[MFMailComposeViewController alloc] init];
-                        controller.mailComposeDelegate = self;
-                        [controller setSubject:@"Pushpin Support Inquiry"];
-                        [controller setToRecipients:@[@"Lionheart Support <support@lionheartsw.com>"]];
-                        [self presentViewController:controller animated:YES completion:nil];
-                    }
+                    HSBeaconSettings *settings = [[HSBeaconSettings alloc] initWithBeaconId:kHelpScoutBeaconId];
+                    settings.delegate = self;
+                    [HSBeacon openBeacon:settings];
                     break;
                 }
                     
@@ -430,6 +427,12 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     [self.tableView reloadData];
+}
+
+#pragma mark - HSBeaconDelegate
+
+- (void)prefill:(HSBeaconContactForm *)form {
+    form.subject = @"Pushpin Support Inquiry";
 }
 
 @end

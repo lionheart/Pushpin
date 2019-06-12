@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		18391111681C6C0692A2DA78 /* PPBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1839145086F97F8D938EEE8D /* PPBadgeView.m */; };
+		18391DAC09BE4867AE50EC3F /* PPBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1839145086F97F8D938EEE8D /* PPBadgeView.m */; };
 		370921FA1FD05339006DAC36 /* ShareViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370921F91FD05339006DAC36 /* ShareViewController2.swift */; };
 		370B75DB1F45FE5200391769 /* NSString+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 3762CACE1A59D04700301C97 /* NSString+Additions.m */; };
 		370B760E1F4603A400391769 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 370B760D1F4603A400391769 /* ShareViewController.m */; };
@@ -34,7 +36,6 @@
 		3730260C1F461BCA007014EF /* PPPinboardMetadataCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 3743B7371875DAA800B97E6D /* PPPinboardMetadataCache.m */; };
 		3730260F1F461C31007014EF /* PPShortcutEnabledDescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 373D6F561965E85A006833D2 /* PPShortcutEnabledDescriptionViewController.m */; };
 		373026101F461C38007014EF /* PPEditDescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3728CF3F1872880A00155791 /* PPEditDescriptionViewController.m */; };
-		373026111F461C3D007014EF /* PPBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = E89001F8183EA5B500C1F969 /* PPBadgeView.m */; };
 		373026121F461C42007014EF /* PPNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 374698BF174B33CF00407345 /* PPNotification.m */; };
 		373FC3441F83DCE60031B282 /* PPLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373FC3431F83DCE60031B282 /* PPLoginViewController.swift */; };
 		374167B82003CC5200B3DEBF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23916863CF000F95D82 /* Localizable.strings */; };
@@ -177,7 +178,6 @@
 		37B620181F452101005DE789 /* PPReaderSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A2B4A9199EA8CA005B7671 /* PPReaderSettings.m */; };
 		37B620191F452105005DE789 /* PPBadgeWrapperView.m in Sources */ = {isa = PBXBuildFile; fileRef = E89001F5183EA43E00C1F969 /* PPBadgeWrapperView.m */; };
 		37B6201A1F452109005DE789 /* PPShortcutEnabledDescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 373D6F561965E85A006833D2 /* PPShortcutEnabledDescriptionViewController.m */; };
-		37B6201B1F452114005DE789 /* PPBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = E89001F8183EA5B500C1F969 /* PPBadgeView.m */; };
 		37B6201C1F452119005DE789 /* PPShrinkBackAnimator.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F7825D198C354D00C99139 /* PPShrinkBackAnimator.m */; };
 		37B6201D1F45211D005DE789 /* PPEditDescriptionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3728CF3F1872880A00155791 /* PPEditDescriptionViewController.m */; };
 		37C4D51A1F9BD4FE000F50CB /* ActivityIndicatorTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C4D5191F9BD4FE000F50CB /* ActivityIndicatorTableViewCell.swift */; };
@@ -347,6 +347,8 @@
 /* Begin PBXFileReference section */
 		00908A4E19CFC0F653AF2790 /* Pods-Bookmark Extension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bookmark Extension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Bookmark Extension/Pods-Bookmark Extension.debug.xcconfig"; sourceTree = "<group>"; };
 		137631C934D7DFBB902C8472 /* Pods-Read Later Extension.release debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Read Later Extension.release debug.xcconfig"; path = "Pods/Target Support Files/Pods-Read Later Extension/Pods-Read Later Extension.release debug.xcconfig"; sourceTree = "<group>"; };
+		18391432BB102434456721BB /* PPBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBadgeView.h; sourceTree = "<group>"; };
+		1839145086F97F8D938EEE8D /* PPBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPBadgeView.m; sourceTree = "<group>"; };
 		35C8BFA8EEDDF111C09E7404 /* Pods_Pushpin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Pushpin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		37018CE3180E3C0B00226408 /* PPBrowserActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBrowserActivity.h; sourceTree = "<group>"; };
 		37018CE4180E3C0B00226408 /* PPBrowserActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPBrowserActivity.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -662,8 +664,6 @@
 		E873423A180DAC8800CF9E5F /* activity-browser-chrome@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "activity-browser-chrome@2x.png"; path = "Assets/activity-browser-chrome@2x.png"; sourceTree = "<group>"; };
 		E89001F4183EA43E00C1F969 /* PPBadgeWrapperView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBadgeWrapperView.h; sourceTree = "<group>"; };
 		E89001F5183EA43E00C1F969 /* PPBadgeWrapperView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPBadgeWrapperView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		E89001F7183EA5B500C1F969 /* PPBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBadgeView.h; sourceTree = "<group>"; };
-		E89001F8183EA5B500C1F969 /* PPBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPBadgeView.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		E89001FA183EB90100C1F969 /* bookmark-favorite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bookmark-favorite.png"; path = "Assets/bookmark-favorite.png"; sourceTree = "<group>"; };
 		E89001FB183EB90100C1F969 /* bookmark-favorite@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bookmark-favorite@2x.png"; path = "Assets/bookmark-favorite@2x.png"; sourceTree = "<group>"; };
 		E89001FC183EB90100C1F969 /* bookmark-private.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bookmark-private.png"; path = "Assets/bookmark-private.png"; sourceTree = "<group>"; };
@@ -1061,6 +1061,8 @@
 				37F7825D198C354D00C99139 /* PPShrinkBackAnimator.m */,
 				37F78259198C354200C99139 /* PPShrinkBackTransition.h */,
 				37F7825A198C354200C99139 /* PPShrinkBackTransition.m */,
+				1839145086F97F8D938EEE8D /* PPBadgeView.m */,
+				18391432BB102434456721BB /* PPBadgeView.h */,
 			);
 			name = "Transitions / Animators";
 			sourceTree = "<group>";
@@ -1145,8 +1147,6 @@
 				37B348CD175FFDCD00929E2E /* Changelog.plist */,
 				37FEEBA115745488003F2B77 /* PPAppDelegate.h */,
 				37FEEBA215745488003F2B77 /* PPAppDelegate.m */,
-				E89001F7183EA5B500C1F969 /* PPBadgeView.h */,
-				E89001F8183EA5B500C1F969 /* PPBadgeView.m */,
 				E89001F4183EA43E00C1F969 /* PPBadgeWrapperView.h */,
 				E89001F5183EA43E00C1F969 /* PPBadgeWrapperView.m */,
 				3769A5771879C50D00AC8C44 /* PPConstants.h */,
@@ -1442,6 +1442,7 @@
 				3790420B19CBCFF700409D34 /* Embed App Extensions */,
 				37F9D0D61D330426002A168D /* Embed Frameworks */,
 				C4755AE5A641FAE3FF9315DC /* [CP] Embed Pods Frameworks */,
+				462CACDECB1AC30ED85F5D07 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1747,6 +1748,24 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		462CACDECB1AC30ED85F5D07 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Pushpin/Pods-Pushpin-resources.sh",
+				"${PODS_ROOT}/Beacon/Beacon.framework/Beacon.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Beacon.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Pushpin/Pods-Pushpin-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		C4755AE5A641FAE3FF9315DC /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1760,6 +1779,7 @@
 				"${BUILT_PRODUCTS_DIR}/BRYHTMLParser/BRYHTMLParser.framework",
 				"${BUILT_PRODUCTS_DIR}/ChimpKit/ChimpKit.framework",
 				"${BUILT_PRODUCTS_DIR}/FMDB/FMDB.framework",
+				"${BUILT_PRODUCTS_DIR}/HSAttachmentPicker/HSAttachmentPicker.framework",
 				"${BUILT_PRODUCTS_DIR}/HTMLParser/HTMLParser.framework",
 				"${BUILT_PRODUCTS_DIR}/KeyboardAdjuster/KeyboardAdjuster.framework",
 				"${BUILT_PRODUCTS_DIR}/KeychainItemWrapper/KeychainItemWrapper.framework",
@@ -1787,6 +1807,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BRYHTMLParser.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ChimpKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FMDB.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/HSAttachmentPicker.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/HTMLParser.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeyboardAdjuster.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainItemWrapper.framework",
@@ -1867,7 +1888,6 @@
 			files = (
 				373026061F461AF7007014EF /* PostMetadata.m in Sources */,
 				37D620581F9AB4BA0020B52A /* PPAddBookmarkViewController.m in Sources */,
-				373026111F461C3D007014EF /* PPBadgeView.m in Sources */,
 				3730260A1F461BBB007014EF /* PPBadgeWrapperView.m in Sources */,
 				373026101F461C38007014EF /* PPEditDescriptionViewController.m in Sources */,
 				3730260B1F461BC1007014EF /* PPNavigationBar.m in Sources */,
@@ -1884,6 +1904,7 @@
 				373025FC1F4610D6007014EF /* PPUtilities.m in Sources */,
 				370B76231F4603AA00391769 /* ShareViewController.m in Sources */,
 				370921FA1FD05339006DAC36 /* ShareViewController2.swift in Sources */,
+				18391DAC09BE4867AE50EC3F /* PPBadgeView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1904,7 +1925,6 @@
 				37F9D0B81D330082002A168D /* PPAddBookmarkViewController.m in Sources */,
 				37F9D0B91D330087002A168D /* PPAddSavedFeedViewController.m in Sources */,
 				37F9D0D81D330440002A168D /* PPAppDelegate.m in Sources */,
-				37B6201B1F452114005DE789 /* PPBadgeView.m in Sources */,
 				37B620191F452105005DE789 /* PPBadgeWrapperView.m in Sources */,
 				37F9D0DA1D33049F002A168D /* PPBookmarkCell.m in Sources */,
 				37F9D0C11D330246002A168D /* PPBrowserActivity.m in Sources */,
@@ -1958,6 +1978,7 @@
 				37B620091F4520B4005DE789 /* PPUtilities.m in Sources */,
 				37F9D09A1D32FE00002A168D /* PPWebViewController.m in Sources */,
 				37D620561F9A9D060020B52A /* StoreReviewPointsManager.swift in Sources */,
+				18391111681C6C0692A2DA78 /* PPBadgeView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

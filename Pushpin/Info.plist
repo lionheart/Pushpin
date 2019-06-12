@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Pushpin requires access to the photo library to send screenshots to our support team.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Pushpin requires access to the camera to send photos to our support team.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -77,8 +81,6 @@
 			</dict>
 		</dict>
 	</dict>
-	<key>NSCameraUsageDescription</key>
-	<string>Pushpin requires access to the camera due to UserVoice.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Brando Regular.otf</string>
