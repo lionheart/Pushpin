@@ -1,0 +1,5 @@
+framework module Beacon {
+    umbrella header "Beacon.h"
+    export *
+    module * { export * }
+}
