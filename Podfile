@@ -16,8 +16,8 @@ pod 'MWFeedParser', '1.0.1'
 pod 'HTMLParser'
 pod 'AFNetworking', '~> 3.0'
 pod 'RNCryptor-objc', '~> 3'
-pod 'LHSCategoryCollection', :path => '/Users/dan/Projects/30-39 Open Source/31 Lionheart/LHSCategoryCollection'
-pod 'LHSKeyboardAdjusting', :path => '/Users/dan/Projects/30-39 Open Source/31 Lionheart/LHSKeyboardAdjusting'
+pod 'LHSCategoryCollection', :path => '/Users/dan/Projects/LHSCategoryCollection'
+pod 'LHSKeyboardAdjusting', :path => '/Users/dan/Projects/LHSKeyboardAdjusting'
 pod 'LHSFMDatabaseAdditions', '~> 0.0'
 pod 'LHSTableViewCells'
 pod 'FMDB'
@@ -35,6 +35,7 @@ target 'Pushpin' do
   pod 'QuickTableView'
   pod 'TipJarViewController'
   pod 'Beacon'
+  pod 'Firebase/Core'
 end
 
 target 'Bookmark Extension' do
