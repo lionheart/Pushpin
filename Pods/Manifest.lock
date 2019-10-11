@@ -21,9 +21,67 @@ PODS:
     - HSAttachmentPicker (~> 1.0)
   - BRYHTMLParser (2.1.3)
   - ChimpKit (3.1.1)
+  - Firebase/Core (6.10.0):
+    - Firebase/CoreOnly
+    - FirebaseAnalytics (= 6.1.3)
+  - Firebase/CoreOnly (6.10.0):
+    - FirebaseCore (= 6.3.1)
+  - FirebaseAnalytics (6.1.3):
+    - FirebaseCore (~> 6.3)
+    - FirebaseInstanceID (~> 4.2)
+    - GoogleAppMeasurement (= 6.1.3)
+    - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
+    - GoogleUtilities/MethodSwizzler (~> 6.0)
+    - GoogleUtilities/Network (~> 6.0)
+    - "GoogleUtilities/NSData+zlib (~> 6.0)"
+    - nanopb (~> 0.3.901)
+  - FirebaseCore (6.3.1):
+    - FirebaseCoreDiagnostics (~> 1.0)
+    - FirebaseCoreDiagnosticsInterop (~> 1.0)
+    - GoogleUtilities/Environment (~> 6.2)
+    - GoogleUtilities/Logger (~> 6.2)
+  - FirebaseCoreDiagnostics (1.1.1):
+    - FirebaseCoreDiagnosticsInterop (~> 1.0)
+    - GoogleDataTransportCCTSupport (~> 1.0)
+    - GoogleUtilities/Environment (~> 6.2)
+    - GoogleUtilities/Logger (~> 6.2)
+    - nanopb (~> 0.3.901)
+  - FirebaseCoreDiagnosticsInterop (1.0.0)
+  - FirebaseInstanceID (4.2.5):
+    - FirebaseCore (~> 6.0)
+    - GoogleUtilities/Environment (~> 6.0)
+    - GoogleUtilities/UserDefaults (~> 6.0)
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
+  - GoogleAppMeasurement (6.1.3):
+    - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
+    - GoogleUtilities/MethodSwizzler (~> 6.0)
+    - GoogleUtilities/Network (~> 6.0)
+    - "GoogleUtilities/NSData+zlib (~> 6.0)"
+    - nanopb (~> 0.3.901)
+  - GoogleDataTransport (3.0.0)
+  - GoogleDataTransportCCTSupport (1.2.0):
+    - GoogleDataTransport (~> 3.0)
+    - nanopb (~> 0.3.901)
+  - GoogleUtilities/AppDelegateSwizzler (6.3.1):
+    - GoogleUtilities/Environment
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Network
+  - GoogleUtilities/Environment (6.3.1)
+  - GoogleUtilities/Logger (6.3.1):
+    - GoogleUtilities/Environment
+  - GoogleUtilities/MethodSwizzler (6.3.1):
+    - GoogleUtilities/Logger
+  - GoogleUtilities/Network (6.3.1):
+    - GoogleUtilities/Logger
+    - "GoogleUtilities/NSData+zlib"
+    - GoogleUtilities/Reachability
+  - "GoogleUtilities/NSData+zlib (6.3.1)"
+  - GoogleUtilities/Reachability (6.3.1):
+    - GoogleUtilities/Logger
+  - GoogleUtilities/UserDefaults (6.3.1):
+    - GoogleUtilities/Logger
   - hpple (0.2.0)
   - HSAttachmentPicker (1.0.8)
   - HTMLParser (0.1.2)
@@ -37,7 +95,7 @@ PODS:
   - LionheartExtensions (5.0.2):
     - LionheartExtensions/Core (= 5.0.2)
   - LionheartExtensions/Core (5.0.2)
-  - Mixpanel (3.4.7)
+  - Mixpanel (3.5.0)
   - MWFeedParser (1.0.1):
     - MWFeedParser/FeedParser (= 1.0.1)
     - "MWFeedParser/NSDate+InternetDateTime (= 1.0.1)"
@@ -47,6 +105,11 @@ PODS:
     - "MWFeedParser/NSString+HTML"
   - "MWFeedParser/NSDate+InternetDateTime (1.0.1)"
   - "MWFeedParser/NSString+HTML (1.0.1)"
+  - nanopb (0.3.901):
+    - nanopb/decode (= 0.3.901)
+    - nanopb/encode (= 0.3.901)
+  - nanopb/decode (0.3.901)
+  - nanopb/encode (0.3.901)
   - OpenInChrome (0.0.1)
   - QuickTableView (3.0.0):
     - KeyboardAdjuster (~> 4)
@@ -54,7 +117,7 @@ PODS:
   - SuperLayout (2.0.0):
     - SuperLayout/Core (= 2.0.0)
   - SuperLayout/Core (2.0.0)
-  - TipJarViewController (1.0.3):
+  - TipJarViewController (1.1.0):
     - LionheartExtensions (~> 5)
     - QuickTableView (~> 3)
     - SuperLayout (~> 2)
@@ -68,12 +131,13 @@ DEPENDENCIES:
   - Beacon
   - BRYHTMLParser
   - ChimpKit
+  - Firebase/Core
   - FMDB
   - HTMLParser
   - KeychainItemWrapper (~> 1.2)
-  - LHSCategoryCollection (from `/Users/dan/Projects/30-39 Open Source/31 Lionheart/LHSCategoryCollection`)
+  - LHSCategoryCollection (from `/Users/dan/Projects/LHSCategoryCollection`)
   - LHSFMDatabaseAdditions (~> 0.0)
-  - LHSKeyboardAdjusting (from `/Users/dan/Projects/30-39 Open Source/31 Lionheart/LHSKeyboardAdjusting`)
+  - LHSKeyboardAdjusting (from `/Users/dan/Projects/LHSKeyboardAdjusting`)
   - LHSTableViewCells
   - LionheartExtensions
   - Mixpanel
@@ -94,7 +158,17 @@ SPEC REPOS:
     - Beacon
     - BRYHTMLParser
     - ChimpKit
+    - Firebase
+    - FirebaseAnalytics
+    - FirebaseCore
+    - FirebaseCoreDiagnostics
+    - FirebaseCoreDiagnosticsInterop
+    - FirebaseInstanceID
     - FMDB
+    - GoogleAppMeasurement
+    - GoogleDataTransport
+    - GoogleDataTransportCCTSupport
+    - GoogleUtilities
     - hpple
     - HSAttachmentPicker
     - HTMLParser
@@ -105,6 +179,7 @@ SPEC REPOS:
     - LionheartExtensions
     - Mixpanel
     - MWFeedParser
+    - nanopb
     - OpenInChrome
     - QuickTableView
     - RNCryptor-objc
@@ -114,9 +189,9 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   LHSCategoryCollection:
-    :path: "/Users/dan/Projects/30-39 Open Source/31 Lionheart/LHSCategoryCollection"
+    :path: "/Users/dan/Projects/LHSCategoryCollection"
   LHSKeyboardAdjusting:
-    :path: "/Users/dan/Projects/30-39 Open Source/31 Lionheart/LHSKeyboardAdjusting"
+    :path: "/Users/dan/Projects/LHSKeyboardAdjusting"
   TMReachability:
     :commit: e34782b386307e386348b481c02c176d58ba45e6
     :git: https://github.com/lionheart/Reachability
@@ -133,7 +208,17 @@ SPEC CHECKSUMS:
   Beacon: 88dc489af14fa2c47ef421cf10ae6303d7656cdd
   BRYHTMLParser: c84b3e5aa4fd6706271c48ed480af13ab0d71afb
   ChimpKit: d020126089544daa349397a91f1489a3f271b791
+  Firebase: 5e6b7b12bf9adb90986688edc06b156c37e109cd
+  FirebaseAnalytics: 0e3ecff2c5d86070f7d4325e21f1edabfbd558dc
+  FirebaseCore: 064c2dd92a8ca5974bbdcb080df9921e46bd34cd
+  FirebaseCoreDiagnostics: af29e43048607588c050889d19204f4d7b758c9f
+  FirebaseCoreDiagnosticsInterop: 6829da2b8d1fc795ff1bd99df751d3788035d2cb
+  FirebaseInstanceID: 550df9be1f99f751d8fcde3ac342a1e21a0e6c42
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  GoogleAppMeasurement: 434cc7be25e71dc04b8d0e3079125127b330e84a
+  GoogleDataTransport: f6fe28f43e3a300736854260961ad485b473edc5
+  GoogleDataTransportCCTSupport: 862418a8cdda520c4dd4af83a756d04efe4a6990
+  GoogleUtilities: f895fde57977df4e0233edda0dbeac490e3703b6
   hpple: 3b765f96fc2cd56ad1a49aef6f7be5cb2aa64b57
   HSAttachmentPicker: ed3d5a670cdd805ba8268f0d00a4d102d65cbd1d
   HTMLParser: 0aff2823b285cfe41996d55d1ae742a27ff89305
@@ -144,16 +229,17 @@ SPEC CHECKSUMS:
   LHSKeyboardAdjusting: 8f9b8d6e80315e653bf3188ae62963874d342d68
   LHSTableViewCells: 47b4d33382cb4a09960371267e2142970afdfdd6
   LionheartExtensions: 09fa816d98176012c8f9adf7f21774f528dbc90e
-  Mixpanel: 696e0a1c7f2685aa06bb23829b7a58ab7203d6c7
+  Mixpanel: 399997670f5452de026449f9e9ecd52eccbb9ff7
   MWFeedParser: 2cf646014c1baf6ad1b08c480b40a08180079247
+  nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   OpenInChrome: f1f3f9dec682216fe78a0d7fe0b5b263d6312c32
   QuickTableView: 296b258f41ac91521ae517404646da4beab73fa3
   RNCryptor-objc: d1b228f9c02e2173df063f0617684c134aed890e
   SuperLayout: 0208ad821522fb50b62d9b8b808690d190a871ea
-  TipJarViewController: 78c57b78815ee53392838e4f7a7d4b2151361146
+  TipJarViewController: 96ca084840cec265f2aea1d9d66800f9df71b72a
   TMReachability: 48c99d728a8b0ad4493800592484b8cbb65c896c
   TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
 
-PODFILE CHECKSUM: 0ceb61f49c925469958b729295a7862f91fe70c8
+PODFILE CHECKSUM: ffd0b72352fcf1b393e87b03e69cecc6c995420b
 
 COCOAPODS: 1.7.1
