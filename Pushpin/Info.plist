@@ -2,12 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>GooglePlistName</key>
-	<string>$(GOOGLE_PLIST_NAME)</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Pushpin requires access to the photo library to send screenshots to our support team.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Pushpin requires access to the camera to send photos to our support team.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -23,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>4.1.18</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -51,6 +45,8 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>619</string>
+	<key>GooglePlistName</key>
+	<string>$(GOOGLE_PLIST_NAME)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>
@@ -83,6 +79,10 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Pushpin requires access to the camera to send photos to our support team.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Pushpin requires access to the photo library to send screenshots to our support team.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Brando Regular.otf</string>
