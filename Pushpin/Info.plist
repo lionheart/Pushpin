@@ -44,7 +44,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>620</string>
+	<string>621</string>
 	<key>GooglePlistName</key>
 	<string>$(GOOGLE_PLIST_NAME)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
