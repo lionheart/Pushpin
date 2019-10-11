@@ -31,7 +31,7 @@
 #error The Mixpanel library must be compiled with ARC enabled
 #endif
 
-#define VERSION @"3.4.7"
+#define VERSION @"3.5.0"
 
 NSString *const MPNotificationTypeMini = @"mini";
 NSString *const MPNotificationTypeTakeover = @"takeover";
@@ -1184,7 +1184,11 @@ typedef NSDictionary*(^PropertyUpdate)(NSDictionary*);
 {
     NSString *filePath = [self eventsFilePath];
     MPLogInfo(@"%@ archiving events data to %@: %@", self, filePath, self.eventsQueue);
-    if (![self archiveObject:[self.eventsQueue copy] withFilePath:filePath]) {
+    NSArray *shadowEventsQueue = [NSArray new];
+    @synchronized (self) {
+        shadowEventsQueue = [self.eventsQueue copy];
+    }
+    if (![self archiveObject:shadowEventsQueue withFilePath:filePath]) {
         MPLogError(@"%@ unable to archive event data", self);
     }
 }
@@ -1193,7 +1197,11 @@ typedef NSDictionary*(^PropertyUpdate)(NSDictionary*);
 {
     NSString *filePath = [self peopleFilePath];
     MPLogInfo(@"%@ archiving people data to %@: %@", self, filePath, self.peopleQueue);
-    if (![self archiveObject:[self.peopleQueue copy] withFilePath:filePath]) {
+    NSArray *shadowPeopleQueue = [NSArray new];
+    @synchronized (self) {
+        shadowPeopleQueue = [self.peopleQueue copy];
+    }
+    if (![self archiveObject:shadowPeopleQueue withFilePath:filePath]) {
         MPLogError(@"%@ unable to archive people data", self);
     }
 }
@@ -1202,7 +1210,11 @@ typedef NSDictionary*(^PropertyUpdate)(NSDictionary*);
 {
     NSString *filePath = [self groupsFilePath];
     MPLogInfo(@"%@ archiving groups data to %@: %@", self, filePath, self.groupsQueue);
-    if (![self archiveObject:[self.groupsQueue copy] withFilePath:filePath]) {
+    NSArray *shadowGroupQueue = [NSArray new];
+    @synchronized (self) {
+        shadowGroupQueue = [self.groupsQueue copy];
+    }
+    if (![self archiveObject:shadowGroupQueue withFilePath:filePath]) {
         MPLogError(@"%@ unable to archive groups data", self);
     }
 }
@@ -1211,6 +1223,17 @@ typedef NSDictionary*(^PropertyUpdate)(NSDictionary*);
 {
     NSString *filePath = [self propertiesFilePath];
     NSMutableDictionary *p = [NSMutableDictionary dictionary];
+    
+    NSArray *shadowUnidentifiedQueue = [NSArray new];
+    NSArray *shadowShownNotifications = [NSArray new];
+    NSArray *shadowTimeEvents = [NSArray new];
+    
+    @synchronized (self) {
+        shadowUnidentifiedQueue = [self.people.unidentifiedQueue copy];
+        shadowShownNotifications = [self.shownNotifications copy];
+        shadowTimeEvents = [self.timedEvents copy];
+    }
+    
     [p setValue:self.anonymousId forKey:@"anonymousId"];
     [p setValue:self.distinctId forKey:@"distinctId"];
     [p setValue:self.userId forKey:@"userId"];
@@ -1218,9 +1241,9 @@ typedef NSDictionary*(^PropertyUpdate)(NSDictionary*);
     [p setValue:[NSNumber numberWithBool:self.hadPersistedDistinctId] forKey:@"hadPersistedDistinctId"];
     [p setValue:self.superProperties forKey:@"superProperties"];
     [p setValue:self.people.distinctId forKey:@"peopleDistinctId"];
-    [p setValue:[self.people.unidentifiedQueue copy] forKey:@"peopleUnidentifiedQueue"];
-    [p setValue:[self.shownNotifications copy] forKey:@"shownNotifications"];
-    [p setValue:[self.timedEvents copy] forKey:@"timedEvents"];
+    [p setValue:shadowUnidentifiedQueue forKey:@"peopleUnidentifiedQueue"];
+    [p setValue:shadowShownNotifications forKey:@"shownNotifications"];
+    [p setValue:shadowTimeEvents forKey:@"timedEvents"];
     [p setValue:self.automaticEventsEnabled forKey:@"automaticEvents"];
     MPLogInfo(@"%@ archiving properties data to %@: %@", self, filePath, p);
     if (![self archiveObject:p withFilePath:filePath]) {
@@ -2057,6 +2080,10 @@ static void MixpanelReachabilityCallback(SCNetworkReachabilityRef target, SCNetw
             }
         } else {
             NSArray *unseenNotifications = [self.notifications objectsAtIndexes:[self.notifications indexesOfObjectsPassingTest:^BOOL(MPNotification *obj, NSUInteger idx, BOOL *stop) {
+                return [self.shownNotifications member:@(obj.ID)] == nil;
+            }]];
+            
+            self.triggeredNotifications = [self.triggeredNotifications objectsAtIndexes:[self.triggeredNotifications indexesOfObjectsPassingTest:^BOOL(MPNotification *obj, NSUInteger idx, BOOL *stop) {
                 return [self.shownNotifications member:@(obj.ID)] == nil;
             }]];
 
