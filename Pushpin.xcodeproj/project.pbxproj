@@ -15,6 +15,8 @@
 		370B76151F4603A400391769 /* Read Later Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 370B760A1F4603A400391769 /* Read Later Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		370B76231F4603AA00391769 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 370B76221F4603AA00391769 /* ShareViewController.m */; };
 		370B762A1F4603AA00391769 /* Bookmark Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 370B761F1F4603AA00391769 /* Bookmark Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		37124DE222B08EB500D24A8F /* GoogleService-Info-Dev.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37124DE122B08EB500D24A8F /* GoogleService-Info-Dev.plist */; };
+		37124DE422B0920600D24A8F /* GoogleService-Info-Release.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37124DE322B0920600D24A8F /* GoogleService-Info-Release.plist */; };
 		371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371BCB0115772C0E00BDA996 /* CoreText.framework */; };
 		372F891416755BF00073D0B6 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 372F891216755B950073D0B6 /* CoreTelephony.framework */; };
 		373025FB1F4610D5007014EF /* PPUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B4FFE21923AD18002F8558 /* PPUtilities.m */; };
@@ -369,6 +371,8 @@
 		370EE75115ED108300B262E2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		370F92ED17500722005F0AD7 /* PPToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPToolbar.h; sourceTree = "<group>"; };
 		370F92EE17500722005F0AD7 /* PPToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPToolbar.m; sourceTree = "<group>"; };
+		37124DE122B08EB500D24A8F /* GoogleService-Info-Dev.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Dev.plist"; sourceTree = "<group>"; };
+		37124DE322B0920600D24A8F /* GoogleService-Info-Release.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Release.plist"; sourceTree = "<group>"; };
 		3714DB7317556FC500B23F4F /* PPPinboardNotesDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPPinboardNotesDataSource.h; sourceTree = "<group>"; };
 		3714DB7417556FC600B23F4F /* PPPinboardNotesDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPPinboardNotesDataSource.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3714DB7617558A2000B23F4F /* PPSavedFeedsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSavedFeedsViewController.h; sourceTree = "<group>"; };
@@ -822,6 +826,15 @@
 			path = "Bookmark Extension";
 			sourceTree = "<group>";
 		};
+		37124DE022B08DF400D24A8F /* Firebase */ = {
+			isa = PBXGroup;
+			children = (
+				37124DE322B0920600D24A8F /* GoogleService-Info-Release.plist */,
+				37124DE122B08EB500D24A8F /* GoogleService-Info-Dev.plist */,
+			);
+			path = Firebase;
+			sourceTree = "<group>";
+		};
 		3715EEC415787CA100FD21EE /* Stylesheets */ = {
 			isa = PBXGroup;
 			children = (
@@ -1070,6 +1083,7 @@
 		37FEEB8315745488003F2B77 = {
 			isa = PBXGroup;
 			children = (
+				37124DE022B08DF400D24A8F /* Firebase */,
 				37FEEBDC15748BA7003F2B77 /* Assets */,
 				370B76201F4603AA00391769 /* Bookmark Extension */,
 				37FEEB9115745488003F2B77 /* Frameworks */,
@@ -1474,12 +1488,12 @@
 					370B761E1F4603AA00391769 = {
 						CreatedOnToolsVersion = 8.3.3;
 						DevelopmentTeam = 63553QQ62F;
-						LastSwiftMigration = 0910;
+						LastSwiftMigration = 1100;
 						ProvisioningStyle = Automatic;
 					};
 					37FEEB8D15745488003F2B77 = {
 						DevelopmentTeam = 63553QQ62F;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1100;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -1676,6 +1690,7 @@
 				E8F987D3183E795B00EF976D /* navigation-tags.png in Resources */,
 				E8F987CE183E765D00EF976D /* navigation-tags@2x.png in Resources */,
 				E89002241840173600C1F969 /* navigation-unread.png in Resources */,
+				37124DE422B0920600D24A8F /* GoogleService-Info-Release.plist in Resources */,
 				E89002251840173600C1F969 /* navigation-unread@2x.png in Resources */,
 				E890022A1840173600C1F969 /* navigation-untagged.png in Resources */,
 				E890022B1840173600C1F969 /* navigation-untagged@2x.png in Resources */,
@@ -1715,6 +1730,7 @@
 				3747C74419CCDB1F00FAD488 /* toolbar-checkmark@2x.png in Resources */,
 				3747C74519CCDB1F00FAD488 /* toolbar-description.png in Resources */,
 				3747C74619CCDB1F00FAD488 /* toolbar-description@2x.png in Resources */,
+				37124DE222B08EB500D24A8F /* GoogleService-Info-Dev.plist in Resources */,
 				3747C74719CCDB1F00FAD488 /* toolbar-edit-tags.png in Resources */,
 				3747C74819CCDB1F00FAD488 /* toolbar-edit-tags@2x.png in Resources */,
 				3747C74919CCDB1F00FAD488 /* toolbar-private.png in Resources */,
@@ -1779,6 +1795,7 @@
 				"${BUILT_PRODUCTS_DIR}/BRYHTMLParser/BRYHTMLParser.framework",
 				"${BUILT_PRODUCTS_DIR}/ChimpKit/ChimpKit.framework",
 				"${BUILT_PRODUCTS_DIR}/FMDB/FMDB.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/HSAttachmentPicker/HSAttachmentPicker.framework",
 				"${BUILT_PRODUCTS_DIR}/HTMLParser/HTMLParser.framework",
 				"${BUILT_PRODUCTS_DIR}/KeyboardAdjuster/KeyboardAdjuster.framework",
@@ -1798,6 +1815,7 @@
 				"${BUILT_PRODUCTS_DIR}/TTTAttributedLabel/TTTAttributedLabel.framework",
 				"${BUILT_PRODUCTS_DIR}/TipJarViewController/TipJarViewController.framework",
 				"${BUILT_PRODUCTS_DIR}/hpple/hpple.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -1807,6 +1825,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BRYHTMLParser.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ChimpKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FMDB.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/HSAttachmentPicker.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/HTMLParser.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeyboardAdjuster.framework",
@@ -1826,6 +1845,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TTTAttributedLabel.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TipJarViewController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hpple.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2211,7 +2231,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "Bookmark Extension/Bookmark Extension-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Pushpin-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -2252,7 +2272,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Bookmark Extension/Bookmark Extension-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Pushpin-Swift.h";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -2294,7 +2314,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "Bookmark Extension/Bookmark Extension-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Pushpin-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = "Release Debug";
 		};
@@ -2335,7 +2355,7 @@
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Bookmark Extension/Bookmark Extension-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Pushpin-Swift.h";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Beta;
 		};
@@ -2459,6 +2479,7 @@
 					MIXPANEL_APP_EXTENSION,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GOOGLE_PLIST_NAME = "GoogleService-Info-Dev";
 				INFOPLIST_FILE = Pushpin/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) \"@executable_path/Frameworks\" @loader_path/Frameworks";
 				PRODUCT_NAME = Pushpin;
@@ -2470,7 +2491,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "Pushpin/Pushpin-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Pushpin-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -2594,6 +2615,7 @@
 					"$(inherited)",
 					MIXPANEL_APP_EXTENSION,
 				);
+				GOOGLE_PLIST_NAME = "GoogleService-Info-Dev";
 				INFOPLIST_FILE = Pushpin/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) \"@executable_path/Frameworks\" @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2605,7 +2627,7 @@
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OBJC_BRIDGING_HEADER = "Pushpin/Pushpin-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Pushpin-Swift.h";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -2823,6 +2845,7 @@
 					"$(inherited)",
 					MIXPANEL_APP_EXTENSION,
 				);
+				GOOGLE_PLIST_NAME = "GoogleService-Info-Dev";
 				INFOPLIST_FILE = Pushpin/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) \"@executable_path/Frameworks\" @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2834,7 +2857,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "Pushpin/Pushpin-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Pushpin-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -2867,6 +2890,7 @@
 					"$(inherited)",
 					MIXPANEL_APP_EXTENSION,
 				);
+				GOOGLE_PLIST_NAME = "GoogleService-Info-Release";
 				INFOPLIST_FILE = Pushpin/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) \"@executable_path/Frameworks\" @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2878,7 +2902,7 @@
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OBJC_BRIDGING_HEADER = "Pushpin/Pushpin-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Pushpin-Swift.h";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};

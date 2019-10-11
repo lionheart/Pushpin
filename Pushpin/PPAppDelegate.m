@@ -17,6 +17,7 @@
 @import KeychainItemWrapper;
 @import FMDB;
 @import StoreKit;
+@import Firebase;
 
 #import "Pushpin-Swift.h"
 #import "PPAppDelegate.h"
@@ -63,6 +64,15 @@
     PPSettings *settings = [PPSettings sharedSettings];
 
     [[ChimpKit sharedKit] setApiKey:@"f3bfc69f8d267252c14d76664432f968-us7"];
+    
+    NSString *googlePlistName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GooglePlistName"];
+    NSString *path = [[NSBundle mainBundle] pathForResource:googlePlistName ofType:@"plist"];
+    if (path.length > 0) {
+        FIROptions *options = [[FIROptions alloc] initWithContentsOfFile:path];
+        [FIRApp configureWithOptions:options];
+    } else {
+        //[FIRApp configure];
+    }
 
     [self becomeFirstResponder];
     self.bookmarksUpdated = NO;
@@ -181,7 +191,6 @@
     }];
 
     if (settings.isAuthenticated) {
-
         pinboard.token = settings.token;
 
         [mixpanel identify:settings.username];
