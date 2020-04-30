@@ -1068,7 +1068,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         }
 #endif
         
-        if ([self.urlTextField.text isEqualToString:@""] || [self.titleTextField.text isEqualToString:@""]) {
+        if ([self.urlTextField.text isEqualToString:@""] && [self.titleTextField.text isEqualToString:@""]) {
             UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Uh oh.", nil)
                                                                            message:NSLocalizedString(@"You can't add a bookmark without a URL or title.", nil)];
             
@@ -1345,7 +1345,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
         if (self.presentedFromShareSheet) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                if ([self.urlTextField.text isEqualToString:@""] || [self.titleTextField.text isEqualToString:@""]) {
+                if ([self.urlTextField.text isEqualToString:@""] && [self.titleTextField.text isEqualToString:@""]) {
                     UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Uh oh.", nil)
                                                                                  message:NSLocalizedString(@"You can't add a bookmark without a URL or title.", nil)];
                     [alert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];

@@ -49,7 +49,6 @@
       debugDocumentVersioning = "YES"
       debugXPCServices = "NO"
       enableOpenGLPerformanceAnalysisMode = "1"
-      stopOnEveryMainThreadCheckerIssue = "YES"
       migratedStopOnEveryIssue = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "NO"

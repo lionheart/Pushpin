@@ -135,9 +135,9 @@ DEPENDENCIES:
   - FMDB
   - HTMLParser
   - KeychainItemWrapper (~> 1.2)
-  - LHSCategoryCollection (from `/Users/dan/Projects/LHSCategoryCollection`)
+  - LHSCategoryCollection
   - LHSFMDatabaseAdditions (~> 0.0)
-  - LHSKeyboardAdjusting (from `/Users/dan/Projects/LHSKeyboardAdjusting`)
+  - LHSKeyboardAdjusting (~> 2.0)
   - LHSTableViewCells
   - LionheartExtensions
   - Mixpanel
@@ -151,7 +151,7 @@ DEPENDENCIES:
   - TTTAttributedLabel (~> 1.13)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - 1PasswordExtension
     - AFNetworking
     - ASPinboard
@@ -174,7 +174,9 @@ SPEC REPOS:
     - HTMLParser
     - KeyboardAdjuster
     - KeychainItemWrapper
+    - LHSCategoryCollection
     - LHSFMDatabaseAdditions
+    - LHSKeyboardAdjusting
     - LHSTableViewCells
     - LionheartExtensions
     - Mixpanel
@@ -188,10 +190,6 @@ SPEC REPOS:
     - TTTAttributedLabel
 
 EXTERNAL SOURCES:
-  LHSCategoryCollection:
-    :path: "/Users/dan/Projects/LHSCategoryCollection"
-  LHSKeyboardAdjusting:
-    :path: "/Users/dan/Projects/LHSKeyboardAdjusting"
   TMReachability:
     :commit: e34782b386307e386348b481c02c176d58ba45e6
     :git: https://github.com/lionheart/Reachability
@@ -240,6 +238,6 @@ SPEC CHECKSUMS:
   TMReachability: 48c99d728a8b0ad4493800592484b8cbb65c896c
   TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
 
-PODFILE CHECKSUM: ffd0b72352fcf1b393e87b03e69cecc6c995420b
+PODFILE CHECKSUM: f588e814bd4ab734c95e3e10ff7df4757ceac189
 
-COCOAPODS: 1.7.1
+COCOAPODS: 1.9.1
