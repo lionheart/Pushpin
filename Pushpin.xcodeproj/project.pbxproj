@@ -762,6 +762,7 @@
 				37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */,
 				378DA45F1633B4B800831134 /* MessageUI.framework in Frameworks */,
 				37F9D0DD1D3304C7002A168D /* MobileCoreServices.framework in Frameworks */,
+				4B85EEA5C193FBDBABC93590 /* Pods_Pushpin.framework in Frameworks */,
 				37919F2016092198007708EF /* QuartzCore.framework in Frameworks */,
 				E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */,
 				377E46DB174C3A7500CE3813 /* Social.framework in Frameworks */,
@@ -769,7 +770,6 @@
 				37800E9A162D5264009FCB17 /* SystemConfiguration.framework in Frameworks */,
 				37B5F4E51773864C005687DA /* Twitter.framework in Frameworks */,
 				379A59E01D32E33100AB4A26 /* UIKit.framework in Frameworks */,
-				4B85EEA5C193FBDBABC93590 /* Pods_Pushpin.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -829,8 +829,8 @@
 		37124DE022B08DF400D24A8F /* Firebase */ = {
 			isa = PBXGroup;
 			children = (
-				37124DE322B0920600D24A8F /* GoogleService-Info-Release.plist */,
 				37124DE122B08EB500D24A8F /* GoogleService-Info-Dev.plist */,
+				37124DE322B0920600D24A8F /* GoogleService-Info-Release.plist */,
 			);
 			path = Firebase;
 			sourceTree = "<group>";
@@ -922,9 +922,9 @@
 				3728CF3C18726EC900155791 /* PPTagEditViewController.m */,
 				3727558A161A66A2001A857B /* PPTagViewController.h */,
 				3727558B161A66A2001A857B /* PPTagViewController.m */,
+				375AD4DD209FA4A200199CCE /* PPTipJarViewController.swift */,
 				377E46E0174C85C500CE3813 /* PPWebViewController.h */,
 				377E46E1174C85C500CE3813 /* PPWebViewController.m */,
-				375AD4DD209FA4A200199CCE /* PPTipJarViewController.swift */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -1066,6 +1066,8 @@
 		37F78255198C34FE00C99139 /* Transitions / Animators */ = {
 			isa = PBXGroup;
 			children = (
+				18391432BB102434456721BB /* PPBadgeView.h */,
+				1839145086F97F8D938EEE8D /* PPBadgeView.m */,
 				3780219C199130E000CE269A /* PPFadeAnimator.h */,
 				3780219D199130E000CE269A /* PPFadeAnimator.m */,
 				3780219F199130EC00CE269A /* PPFadeTransition.h */,
@@ -1074,8 +1076,6 @@
 				37F7825D198C354D00C99139 /* PPShrinkBackAnimator.m */,
 				37F78259198C354200C99139 /* PPShrinkBackTransition.h */,
 				37F7825A198C354200C99139 /* PPShrinkBackTransition.m */,
-				1839145086F97F8D938EEE8D /* PPBadgeView.m */,
-				18391432BB102434456721BB /* PPBadgeView.h */,
 			);
 			name = "Transitions / Animators";
 			sourceTree = "<group>";
@@ -1083,11 +1083,12 @@
 		37FEEB8315745488003F2B77 = {
 			isa = PBXGroup;
 			children = (
-				37124DE022B08DF400D24A8F /* Firebase */,
 				37FEEBDC15748BA7003F2B77 /* Assets */,
 				370B76201F4603AA00391769 /* Bookmark Extension */,
+				37124DE022B08DF400D24A8F /* Firebase */,
 				37FEEB9115745488003F2B77 /* Frameworks */,
 				3740A23616863CF000F95D82 /* Localizations */,
+				A0AE651B9A75877E9CF0142A /* Pods */,
 				37FEEB8F15745488003F2B77 /* Products */,
 				37FEEB9815745488003F2B77 /* Pushpin */,
 				370B760B1F4603A400391769 /* Read Later Extension */,
@@ -1098,7 +1099,6 @@
 				374D91E019CE26A700995DF1 /* Share-AppStore.entitlements */,
 				374D91DB19CE26A700995DF1 /* Share-Beta.entitlements */,
 				374D91DC19CE26A700995DF1 /* Share-Dev.entitlements */,
-				A0AE651B9A75877E9CF0142A /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1129,6 +1129,9 @@
 				37E9965B1D32EC3500659E82 /* libsqlite3.tbd */,
 				378DA45E1633B4B700831134 /* MessageUI.framework */,
 				37F9D0DC1D3304C7002A168D /* MobileCoreServices.framework */,
+				CA07520FEF8AFD161AB6F5E5 /* Pods_Bookmark_Extension.framework */,
+				6BC3297590733AA9C728F6DC /* Pods_Pushpin.framework */,
+				4343ED36852CECB0B7F59F53 /* Pods_Read_Later_Extension.framework */,
 				37919F1F16092198007708EF /* QuartzCore.framework */,
 				E804950F18103DC700C5CA8B /* SafariServices.framework */,
 				377E46DA174C3A7500CE3813 /* Social.framework */,
@@ -1136,9 +1139,6 @@
 				37800E99162D5264009FCB17 /* SystemConfiguration.framework */,
 				37B5F4E41773864C005687DA /* Twitter.framework */,
 				37FEEB9215745488003F2B77 /* UIKit.framework */,
-				CA07520FEF8AFD161AB6F5E5 /* Pods_Bookmark_Extension.framework */,
-				6BC3297590733AA9C728F6DC /* Pods_Pushpin.framework */,
-				4343ED36852CECB0B7F59F53 /* Pods_Read_Later_Extension.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1206,11 +1206,11 @@
 			isa = PBXGroup;
 			children = (
 				37FEEB9A15745488003F2B77 /* Info.plist */,
-				37B4F8091F4C651500E89790 /* Pushpin Launch Screen.storyboard */,
 				37FEEB9E15745488003F2B77 /* main.m */,
 				371EE5C6185B49FE005DB908 /* PPTheme.h */,
 				371EE5C7185B49FE005DB908 /* PPTheme.m */,
 				37FEEBA015745488003F2B77 /* Pushpin for Pinboard-Prefix.pch */,
+				37B4F8091F4C651500E89790 /* Pushpin Launch Screen.storyboard */,
 				373FC3421F83DCE50031B282 /* Pushpin-Bridging-Header.h */,
 			);
 			name = "Supporting Files";
@@ -1266,18 +1266,18 @@
 		A0AE651B9A75877E9CF0142A /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				455A7E6EC4D1CF6636BA7D1C /* Pods-Bookmark Extension.debug.xcconfig */,
-				C5B6936494D6AFE02365B287 /* Pods-Bookmark Extension.release.xcconfig */,
-				23F7F852723D190A826A8FD6 /* Pods-Bookmark Extension.release debug.xcconfig */,
 				12AC70C9F98EDE1696D40248 /* Pods-Bookmark Extension.beta.xcconfig */,
-				EC61D19F43663F34F8309062 /* Pods-Pushpin.debug.xcconfig */,
-				C50A73AD7E053AF382CF2744 /* Pods-Pushpin.release.xcconfig */,
-				6D64D72A2E78F167A40485BF /* Pods-Pushpin.release debug.xcconfig */,
+				455A7E6EC4D1CF6636BA7D1C /* Pods-Bookmark Extension.debug.xcconfig */,
+				23F7F852723D190A826A8FD6 /* Pods-Bookmark Extension.release debug.xcconfig */,
+				C5B6936494D6AFE02365B287 /* Pods-Bookmark Extension.release.xcconfig */,
 				6FCFE1E824D49F266B5FA0AF /* Pods-Pushpin.beta.xcconfig */,
-				7A59B7A0CBA3C3C7016264B4 /* Pods-Read Later Extension.debug.xcconfig */,
-				DE5C1C7E600A6B126934879A /* Pods-Read Later Extension.release.xcconfig */,
-				CCC414B5B17AFD055DA4C6F1 /* Pods-Read Later Extension.release debug.xcconfig */,
+				EC61D19F43663F34F8309062 /* Pods-Pushpin.debug.xcconfig */,
+				6D64D72A2E78F167A40485BF /* Pods-Pushpin.release debug.xcconfig */,
+				C50A73AD7E053AF382CF2744 /* Pods-Pushpin.release.xcconfig */,
 				8DBEB3BD31F8B1C9E14F9CD9 /* Pods-Read Later Extension.beta.xcconfig */,
+				7A59B7A0CBA3C3C7016264B4 /* Pods-Read Later Extension.debug.xcconfig */,
+				CCC414B5B17AFD055DA4C6F1 /* Pods-Read Later Extension.release debug.xcconfig */,
+				DE5C1C7E600A6B126934879A /* Pods-Read Later Extension.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -1637,10 +1637,11 @@
 				3747C70F19CCDB1F00FAD488 /* edit.png in Resources */,
 				3747C71019CCDB1F00FAD488 /* edit@2x.png in Resources */,
 				3747C71119CCDB1F00FAD488 /* Flex Regular.otf in Resources */,
+				37124DE222B08EB500D24A8F /* GoogleService-Info-Dev.plist in Resources */,
+				37124DE422B0920600D24A8F /* GoogleService-Info-Release.plist in Resources */,
 				3747C71619CCDB1F00FAD488 /* Images.xcassets in Resources */,
 				3747C71719CCDB1F00FAD488 /* InfoPlist.strings in Resources */,
 				3747C71819CCDB1F00FAD488 /* JSDOMParser.js in Resources */,
-				37B4F80A1F4C651500E89790 /* Pushpin Launch Screen.storyboard in Resources */,
 				3747C71919CCDB1F00FAD488 /* LICENSE in Resources */,
 				3747C71A19CCDB1F00FAD488 /* Localizable.strings in Resources */,
 				3747C71B19CCDB1F00FAD488 /* LyonTextApp-Regular.ttf in Resources */,
@@ -1690,7 +1691,6 @@
 				E8F987D3183E795B00EF976D /* navigation-tags.png in Resources */,
 				E8F987CE183E765D00EF976D /* navigation-tags@2x.png in Resources */,
 				E89002241840173600C1F969 /* navigation-unread.png in Resources */,
-				37124DE422B0920600D24A8F /* GoogleService-Info-Release.plist in Resources */,
 				E89002251840173600C1F969 /* navigation-unread@2x.png in Resources */,
 				E890022A1840173600C1F969 /* navigation-untagged.png in Resources */,
 				E890022B1840173600C1F969 /* navigation-untagged@2x.png in Resources */,
@@ -1702,6 +1702,7 @@
 				3747C72A19CCDB1F00FAD488 /* NotificationX@2x.png in Resources */,
 				B6E3041C1B3DC95500135CF1 /* pinboard-logo@2x.png in Resources */,
 				B6E3041D1B3DC95500135CF1 /* pinboard.jpeg in Resources */,
+				37B4F80A1F4C651500E89790 /* Pushpin Launch Screen.storyboard in Resources */,
 				B6E3041E1B3DC95500135CF1 /* pushpin-cloud-logo.png in Resources */,
 				B6E3041F1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png in Resources */,
 				3747C72B19CCDB1F00FAD488 /* readability.css in Resources */,
@@ -1730,7 +1731,6 @@
 				3747C74419CCDB1F00FAD488 /* toolbar-checkmark@2x.png in Resources */,
 				3747C74519CCDB1F00FAD488 /* toolbar-description.png in Resources */,
 				3747C74619CCDB1F00FAD488 /* toolbar-description@2x.png in Resources */,
-				37124DE222B08EB500D24A8F /* GoogleService-Info-Dev.plist in Resources */,
 				3747C74719CCDB1F00FAD488 /* toolbar-edit-tags.png in Resources */,
 				3747C74819CCDB1F00FAD488 /* toolbar-edit-tags@2x.png in Resources */,
 				3747C74919CCDB1F00FAD488 /* toolbar-private.png in Resources */,
@@ -1920,6 +1920,7 @@
 			files = (
 				373026061F461AF7007014EF /* PostMetadata.m in Sources */,
 				37D620581F9AB4BA0020B52A /* PPAddBookmarkViewController.m in Sources */,
+				18391DAC09BE4867AE50EC3F /* PPBadgeView.m in Sources */,
 				3730260A1F461BBB007014EF /* PPBadgeWrapperView.m in Sources */,
 				373026101F461C38007014EF /* PPEditDescriptionViewController.m in Sources */,
 				3730260B1F461BC1007014EF /* PPNavigationBar.m in Sources */,
@@ -1936,7 +1937,6 @@
 				373025FC1F4610D6007014EF /* PPUtilities.m in Sources */,
 				370B76231F4603AA00391769 /* ShareViewController.m in Sources */,
 				370921FA1FD05339006DAC36 /* ShareViewController2.swift in Sources */,
-				18391DAC09BE4867AE50EC3F /* PPBadgeView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1957,6 +1957,7 @@
 				37F9D0B81D330082002A168D /* PPAddBookmarkViewController.m in Sources */,
 				37F9D0B91D330087002A168D /* PPAddSavedFeedViewController.m in Sources */,
 				37F9D0D81D330440002A168D /* PPAppDelegate.m in Sources */,
+				18391111681C6C0692A2DA78 /* PPBadgeView.m in Sources */,
 				37B620191F452105005DE789 /* PPBadgeWrapperView.m in Sources */,
 				37F9D0DA1D33049F002A168D /* PPBookmarkCell.m in Sources */,
 				37F9D0C11D330246002A168D /* PPBrowserActivity.m in Sources */,
@@ -1967,7 +1968,6 @@
 				37F9D0A61D32FE55002A168D /* PPDisplaySettingsViewController.m in Sources */,
 				37B6201D1F45211D005DE789 /* PPEditDescriptionViewController.m in Sources */,
 				37F9D0A51D32FE50002A168D /* PPFeedListViewController.m in Sources */,
-				375AD4DE209FA4A200199CCE /* PPTipJarViewController.swift in Sources */,
 				37F9D0BC1D330115002A168D /* PPGenericPostViewController.m in Sources */,
 				37B620151F4520F3005DE789 /* PPLoadingView.m in Sources */,
 				37F9D0BB1D330113002A168D /* PPLoginViewController.m in Sources */,
@@ -2004,13 +2004,13 @@
 				37F9D09F1D32FE11002A168D /* PPTagEditViewController.m in Sources */,
 				37F9D0A41D32FE34002A168D /* PPTagViewController.m in Sources */,
 				37B620071F4520AB005DE789 /* PPTheme.m in Sources */,
+				375AD4DE209FA4A200199CCE /* PPTipJarViewController.swift in Sources */,
 				37B620081F4520B1005DE789 /* PPTitleButton.m in Sources */,
 				37B620161F4520F7005DE789 /* PPToolbar.m in Sources */,
 				37B620111F4520DC005DE789 /* PPURLCache.m in Sources */,
 				37B620091F4520B4005DE789 /* PPUtilities.m in Sources */,
 				37F9D09A1D32FE00002A168D /* PPWebViewController.m in Sources */,
 				37D620561F9A9D060020B52A /* StoreReviewPointsManager.swift in Sources */,
-				18391111681C6C0692A2DA78 /* PPBadgeView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

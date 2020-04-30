@@ -38,7 +38,6 @@
             NSString *token = [sharedDefaults objectForKey:@"token"];
             if (token.length > 0) {
                 [[ASPinboard sharedInstance] setToken:token];
-
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     dispatch_group_t group = dispatch_group_create();
                     __block NSString *urlString;
