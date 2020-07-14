@@ -696,7 +696,7 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)updateExampleWebView {
     NSDictionary *article = @{@"content": @"<p>Versailles, June 28, (Associated Press.)--Germany and the allied and associated powers signed the peace terms here today in the same imperial hall where the Germans humbled the French so ignominiously forty-eight years ago.</p>"
-                              "<p>This formally ended the world war, which lasted just thirty-seven days less than five years. Today, the day of peace, was the fifth anniversary of the murder of Archduke Francis Ferdinand by a Serbian student at Serajevo.</p>"
+                              "<p>This formally ended the world war, which lasted just thirty-seven days less than five years. Today, the day of peace, was the fifth anniversary of the murder of Archduke Francis Ferdinand by a Serbian student at Sarajevo.</p>"
                               "<p>The peace was signed under circumstances which somewhat dimmed the expectations of those who had worked and fought during long years of war and months of negotiations for its achievement.</p>"
                               };
 

@@ -210,6 +210,8 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     [self.toolbar addSubview:toolbarBorderView];
     [self.view addSubview:self.toolbar];
     
+    
+    
     self.titleLabel = [[UILabel alloc] init];
     self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     self.titleLabel.adjustsFontSizeToFitWidth = YES;
@@ -283,10 +285,21 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     [self.view lhs_addConstraints:@"V:[toolbar(>=height)]" metrics:metrics views:views];
 
     self.toolbarConstraint = [self.bottomLayoutGuide.bottomAnchor constraintEqualToAnchor:self.toolbar.topAnchor constant:kToolbarHeight];
-    self.toolbarConstraint.active = YES;
+    //self.toolbarConstraint.active = YES;
 
     [self.bottomLayoutGuide.bottomAnchor constraintLessThanOrEqualToAnchor:self.toolbar.bottomAnchor];
     self.topLayoutConstraint = [self.statusBarBackgroundView lhs_setHeight:0];
+    
+    UIView *myView = [[UIView alloc] init];
+    [self.view addSubview:myView];
+    myView.backgroundColor = self.toolbar.backgroundColor;
+    myView.translatesAutoresizingMaskIntoConstraints = NO;
+    UILayoutGuide * guide = self.view.safeAreaLayoutGuide;
+    [myView.leadingAnchor constraintEqualToAnchor:guide.leadingAnchor].active = YES;
+    [myView.trailingAnchor constraintEqualToAnchor:guide.trailingAnchor].active = YES;
+    [myView.topAnchor constraintEqualToAnchor:guide.bottomAnchor].active = YES;
+    [myView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor].active = YES;
+    [self.toolbar.bottomAnchor constraintEqualToAnchor:guide.bottomAnchor].active = YES;
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {

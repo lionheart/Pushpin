@@ -41,6 +41,9 @@
 #import "NSAttributedString+Attributes.h"
 #import "NSString+URLEncoding2.h"
 
+#define IDIOM    UI_USER_INTERFACE_IDIOM()
+#define IPAD     UIUserInterfaceIdiomPad
+
 static NSString *BookmarkCellIdentifier = @"BookmarkCellIdentifier";
 static NSInteger PPBookmarkEditMaximum = 25;
 
@@ -160,6 +163,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
     self.definesPresentationContext = YES;
     self.extendedLayoutIncludesOpaqueBars = NO;
     self.view.backgroundColor = [UIColor whiteColor];
+    self.navigationController.navigationBar.translucent = false;
 #pragma mark - XXX
     // self.prefersStatusBarHidden = NO;
     self.latestSearchTime = [NSDate date];
@@ -271,7 +275,8 @@ static NSInteger PPBookmarkEditMaximum = 25;
             self.navigationItem.searchController = self.searchController;
             
             // We want the search bar visible all the time.
-            self.navigationItem.hidesSearchBarWhenScrolling = YES;
+            self.navigationItem.hidesSearchBarWhenScrolling = NO;
+            self.searchController.hidesNavigationBarDuringPresentation = false;
         } else {
             self.tableView.tableHeaderView = self.searchController.searchBar;
         }
@@ -453,6 +458,9 @@ static NSInteger PPBookmarkEditMaximum = 25;
             }
         }];
     }
+    else {
+        self.searchController.active = false;
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -587,7 +595,8 @@ static NSInteger PPBookmarkEditMaximum = 25;
                     self.webViewController = [PPWebViewController webViewControllerWithURL:urlString];
                     self.webViewController.shouldMobilize = settings.openLinksWithMobilizer;
                     self.webViewController.transitioningDelegate = [PPShrinkBackTransition sharedInstance];
-
+                    self.webViewController.modalPresentationStyle = UIModalPresentationFullScreen;
+                    
                     if (self.searchController.isActive) {
                         [self.searchController presentViewController:self.webViewController animated:YES completion:nil];
                     } else {
@@ -843,9 +852,13 @@ static NSInteger PPBookmarkEditMaximum = 25;
         }
         
         [UIView animateWithDuration:0.25 animations:^{
-            UITextField *searchTextField = [self.searchController.searchBar valueForKey:@"_searchField"];
-            searchTextField.enabled = YES;
-            searchTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+            if (@available(iOS 13.0, *)) {
+                UITextField *searchTextField = self.searchController.searchBar.searchTextField;
+                searchTextField.enabled = YES;
+                searchTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+            } else {
+                // Fallback on earlier versions
+            }
             
             self.tableView.contentInset = UIEdgeInsetsZero;
 
@@ -872,8 +885,13 @@ static NSInteger PPBookmarkEditMaximum = 25;
         [self updateMultipleEditUI];
         
         [UIView animateWithDuration:0.25 animations:^{
-            UITextField *searchTextField = [self.searchController.searchBar valueForKey:@"_searchField"];
-            searchTextField.enabled = NO;
+            if (@available(iOS 13.0, *)) {
+                UITextField *searchTextField = self.searchController.searchBar.searchTextField;
+                searchTextField.enabled = YES;
+                searchTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+            } else {
+                // Fallback on earlier versions
+            }
 
             self.multipleEditToolbarHiddenConstraint.active = NO;
             [NSLayoutConstraint activateConstraints:self.multipleEditToolbarVisibleConstraints];
@@ -891,8 +909,13 @@ static NSInteger PPBookmarkEditMaximum = 25;
 
             [self updateFromLocalDatabaseWithCallback:^{
                 [UIView animateWithDuration:0.25 animations:^{
-                    UITextField *searchTextField = [self.searchController.searchBar valueForKey:@"_searchField"];
-                    searchTextField.enabled = YES;
+                    if (@available(iOS 13.0, *)) {
+                        UITextField *searchTextField = self.searchController.searchBar.searchTextField;
+                        searchTextField.enabled = YES;
+                        searchTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+                    } else {
+                        // Fallback on earlier versions
+                    }
                 } completion:^(BOOL finished) {
                     self.indexPathsToDelete = @[];
                 }];
@@ -917,8 +940,13 @@ static NSInteger PPBookmarkEditMaximum = 25;
             
             [self updateFromLocalDatabaseWithCallback:^{
                 [UIView animateWithDuration:0.25 animations:^{
-                    UITextField *searchTextField = [self.searchController.searchBar valueForKey:@"_searchField"];
-                    searchTextField.enabled = YES;
+                    if (@available(iOS 13.0, *)) {
+                        UITextField *searchTextField = self.searchController.searchBar.searchTextField;
+                        searchTextField.enabled = YES;
+                        searchTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+                    } else {
+                        // Fallback on earlier versions
+                    }
                 } completion:^(BOOL finished) {
                     self.selectedPost = nil;
                 }];
@@ -1082,6 +1110,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                                                           self.tableView.scrollEnabled = YES;
                                                           
                                                           UIViewController *vc = [self editViewControllerForPostAtIndex:self.selectedIndexPath.row dataSource:dataSource];
+                                        vc.modalPresentationStyle = UIModalPresentationFullScreen;
                                                           [self presentViewControllerInFormSheetIfApplicable:vc];
                                                       }];
         }
@@ -1899,7 +1928,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
         } else {
             presentingViewController = self.navigationController;
         }
-
+        vc.modalPresentationStyle = UIModalPresentationFullScreen;
         [presentingViewController presentViewController:vc animated:YES completion:nil];
     }
 }
@@ -1962,7 +1991,17 @@ static NSInteger PPBookmarkEditMaximum = 25;
 }
 
 - (void)didPresentSearchController:(UISearchController *)searchController {
-    searchController.view.frame = (CGRect){{0, 0}, {CGRectGetWidth(self.view.frame), self.view.frame.origin.y + CGRectGetHeight(self.view.frame)}};
+    if (@available(iOS 13.0, *)) {
+        if (IDIOM == IPAD) {
+            searchController.view.frame = (CGRect){{0, 160}, {CGRectGetWidth(self.view.frame), self.view.frame.origin.y + CGRectGetHeight(self.view.frame)}};
+        }
+        else {
+            searchController.view.frame = (CGRect){{0, 150}, {CGRectGetWidth(self.view.frame), self.view.frame.origin.y + CGRectGetHeight(self.view.frame)}};
+        }
+    }
+    else {
+        searchController.view.frame = (CGRect){{0, 44}, {CGRectGetWidth(self.view.frame), self.view.frame.origin.y + CGRectGetHeight(self.view.frame)}};
+    }
 }
 
 - (void)didDismissSearchController:(UISearchController *)searchController {

@@ -28,7 +28,7 @@ enum : NSInteger {
 @property (nonatomic, strong) UITextField *tagsToAddTextField;
 
 @property (nonatomic, strong) NSArray *bookmarks;
-@property (nonatomic, strong) NSMutableOrderedSet *existingTags;
+@property (nonatomic, strong) NSMutableArray *existingTags;
 @property (nonatomic, strong) NSMutableOrderedSet *tagsToRemove;
 @property (nonatomic, strong) NSMutableArray *tagsToAdd;
 

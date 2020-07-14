@@ -97,6 +97,17 @@ static NSString *CellIdentifier = @"Cell";
                 [self.existingTags addObject:tag];
             }
         }
+        NSLog(@"%@", self.existingTags);
+        //This is because '&' was shown as '&amp;' int existingTags
+        NSMutableArray *newArray = [NSMutableArray array];
+        for (NSString *input in self.existingTags)
+        {
+            NSString *replacement = [input stringByReplacingOccurrencesOfString:@"amp;" withString:@""];
+            [newArray addObject:replacement];
+        }
+        self.existingTags = newArray;
+        
+        NSLog(@"%@", self.existingTags);
     }
 
     [self.existingTags sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
@@ -436,6 +447,13 @@ static NSString *CellIdentifier = @"Cell";
     for (NSDictionary *bookmark in self.bookmarks) {
         NSString *tags = [PPUtilities stringByTrimmingWhitespace:bookmark[@"tags"]];
         NSMutableArray *tagList = [[tags componentsSeparatedByString:@" "] mutableCopy];
+        NSMutableArray *newArray = [NSMutableArray array];
+        for (NSString *input in tagList)
+        {
+            NSString *replacement = [input stringByReplacingOccurrencesOfString:@"amp;" withString:@""];
+            [newArray addObject:replacement];
+        }
+        tagList = newArray;
         for (NSString *tag in self.tagsToRemove) {
             [tagList removeObject:tag];
         }
