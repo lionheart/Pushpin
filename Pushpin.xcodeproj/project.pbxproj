@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		075B2AAE78E1F493A6475647 /* Pods_Pushpin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8A9D7649937ED1FAF44A3D7 /* Pods_Pushpin.framework */; };
 		18391111681C6C0692A2DA78 /* PPBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1839145086F97F8D938EEE8D /* PPBadgeView.m */; };
 		18391DAC09BE4867AE50EC3F /* PPBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1839145086F97F8D938EEE8D /* PPBadgeView.m */; };
 		370921FA1FD05339006DAC36 /* ShareViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370921F91FD05339006DAC36 /* ShareViewController2.swift */; };
@@ -236,13 +237,12 @@
 		37F9D0DD1D3304C7002A168D /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37F9D0DC1D3304C7002A168D /* MobileCoreServices.framework */; };
 		37FB4F981D32ED60004D5C12 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEB9E15745488003F2B77 /* main.m */; };
 		37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9415745488003F2B77 /* Foundation.framework */; };
-		A60CC4C1337829234E639874 /* Pods_Read_Later_Extension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AA41FABB0F91EB40833295C /* Pods_Read_Later_Extension.framework */; };
-		AD5373E24483418CD1834B25 /* Pods_Bookmark_Extension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4B8493FD40A41A5BD15200D /* Pods_Bookmark_Extension.framework */; };
 		B6E3041C1B3DC95500135CF1 /* pinboard-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E304181B3DC95500135CF1 /* pinboard-logo@2x.png */; };
 		B6E3041D1B3DC95500135CF1 /* pinboard.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = B6E304191B3DC95500135CF1 /* pinboard.jpeg */; };
 		B6E3041E1B3DC95500135CF1 /* pushpin-cloud-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E3041A1B3DC95500135CF1 /* pushpin-cloud-logo.png */; };
 		B6E3041F1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E3041B1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png */; };
-		DE6266BB23F43F39CCB339BA /* Pods_Pushpin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35C8BFA8EEDDF111C09E7404 /* Pods_Pushpin.framework */; };
+		B7A8D3A9DA1CD7084ABD82F9 /* Pods_Bookmark_Extension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59457ADBB987DBE9B7B1E1F3 /* Pods_Bookmark_Extension.framework */; };
+		B7B37F669E6D2D7B0DCDC429 /* Pods_Read_Later_Extension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD2D63F044FA2CBBCA8062B5 /* Pods_Read_Later_Extension.framework */; };
 		E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E804950F18103DC700C5CA8B /* SafariServices.framework */; };
 		E873423B180DAC8800CF9E5F /* activity-browser-chrome.png in Resources */ = {isa = PBXBuildFile; fileRef = E8734239180DAC8800CF9E5F /* activity-browser-chrome.png */; };
 		E873423C180DAC8800CF9E5F /* activity-browser-chrome@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E873423A180DAC8800CF9E5F /* activity-browser-chrome@2x.png */; };
@@ -347,11 +347,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		00908A4E19CFC0F653AF2790 /* Pods-Bookmark Extension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bookmark Extension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Bookmark Extension/Pods-Bookmark Extension.debug.xcconfig"; sourceTree = "<group>"; };
-		137631C934D7DFBB902C8472 /* Pods-Read Later Extension.release debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Read Later Extension.release debug.xcconfig"; path = "Pods/Target Support Files/Pods-Read Later Extension/Pods-Read Later Extension.release debug.xcconfig"; sourceTree = "<group>"; };
+		0FC030AF8E7A025A9FBA8DF9 /* Pods-Read Later Extension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Read Later Extension.release.xcconfig"; path = "Target Support Files/Pods-Read Later Extension/Pods-Read Later Extension.release.xcconfig"; sourceTree = "<group>"; };
+		11BE8DE12262D11953835A37 /* Pods-Read Later Extension.release debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Read Later Extension.release debug.xcconfig"; path = "Target Support Files/Pods-Read Later Extension/Pods-Read Later Extension.release debug.xcconfig"; sourceTree = "<group>"; };
 		18391432BB102434456721BB /* PPBadgeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBadgeView.h; sourceTree = "<group>"; };
 		1839145086F97F8D938EEE8D /* PPBadgeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPBadgeView.m; sourceTree = "<group>"; };
-		35C8BFA8EEDDF111C09E7404 /* Pods_Pushpin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Pushpin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2547D6B445C21205C74F1900 /* Pods-Bookmark Extension.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bookmark Extension.beta.xcconfig"; path = "Target Support Files/Pods-Bookmark Extension/Pods-Bookmark Extension.beta.xcconfig"; sourceTree = "<group>"; };
 		37018CE3180E3C0B00226408 /* PPBrowserActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBrowserActivity.h; sourceTree = "<group>"; };
 		37018CE4180E3C0B00226408 /* PPBrowserActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPBrowserActivity.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		370859F817F329D400270A9D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Pushpin/Images.xcassets; sourceTree = SOURCE_ROOT; };
@@ -618,15 +618,13 @@
 		37FEEBA215745488003F2B77 /* PPAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPAppDelegate.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37FF412F187D95CF00F2D481 /* PPSplitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSplitViewController.h; sourceTree = "<group>"; };
 		37FF4130187D95CF00F2D481 /* PPSplitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPSplitViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		3B2662CC1A6192CE69980A86 /* Pods-Pushpin.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin.beta.xcconfig"; sourceTree = "<group>"; };
-		5AA41FABB0F91EB40833295C /* Pods_Read_Later_Extension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Read_Later_Extension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		5C020CE12D3226074406594F /* Pods-Read Later Extension.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Read Later Extension.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Read Later Extension/Pods-Read Later Extension.beta.xcconfig"; sourceTree = "<group>"; };
-		61167695C444B8B1139F4A0E /* Pods-Bookmark Extension.release debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bookmark Extension.release debug.xcconfig"; path = "Pods/Target Support Files/Pods-Bookmark Extension/Pods-Bookmark Extension.release debug.xcconfig"; sourceTree = "<group>"; };
-		6911442324B2A84E6E5862EA /* Pods-Bookmark Extension.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bookmark Extension.beta.xcconfig"; path = "Pods/Target Support Files/Pods-Bookmark Extension/Pods-Bookmark Extension.beta.xcconfig"; sourceTree = "<group>"; };
-		71A8130C4E68325210586FF5 /* Pods-Read Later Extension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Read Later Extension.release.xcconfig"; path = "Pods/Target Support Files/Pods-Read Later Extension/Pods-Read Later Extension.release.xcconfig"; sourceTree = "<group>"; };
-		8F10663FD508962BD0763232 /* Pods-Bookmark Extension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bookmark Extension.release.xcconfig"; path = "Pods/Target Support Files/Pods-Bookmark Extension/Pods-Bookmark Extension.release.xcconfig"; sourceTree = "<group>"; };
-		98ADD49C1B7F2A16A9106FAF /* Pods-Pushpin.release debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.release debug.xcconfig"; path = "Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin.release debug.xcconfig"; sourceTree = "<group>"; };
-		B2F39EB397FE3ADFF1B274A0 /* Pods-Pushpin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin.debug.xcconfig"; sourceTree = "<group>"; };
+		4C5C9B3D86301DEF2B3292D2 /* Pods-Pushpin.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.debug.xcconfig"; path = "Target Support Files/Pods-Pushpin/Pods-Pushpin.debug.xcconfig"; sourceTree = "<group>"; };
+		59457ADBB987DBE9B7B1E1F3 /* Pods_Bookmark_Extension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Bookmark_Extension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		637C9328580D05304BB66AEB /* Pods-Bookmark Extension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bookmark Extension.debug.xcconfig"; path = "Target Support Files/Pods-Bookmark Extension/Pods-Bookmark Extension.debug.xcconfig"; sourceTree = "<group>"; };
+		89F83F307A9C171A4BBD55E9 /* Pods-Pushpin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.release.xcconfig"; path = "Target Support Files/Pods-Pushpin/Pods-Pushpin.release.xcconfig"; sourceTree = "<group>"; };
+		99B6E377218FF41F88723078 /* Pods-Pushpin.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.beta.xcconfig"; path = "Target Support Files/Pods-Pushpin/Pods-Pushpin.beta.xcconfig"; sourceTree = "<group>"; };
+		A8A8D1EA29BDB80CD0D3188A /* Pods-Bookmark Extension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bookmark Extension.release.xcconfig"; path = "Target Support Files/Pods-Bookmark Extension/Pods-Bookmark Extension.release.xcconfig"; sourceTree = "<group>"; };
+		A8A9D7649937ED1FAF44A3D7 /* Pods_Pushpin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Pushpin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6E304101B3C778A00135CF1 /* PPMailChimp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPMailChimp.h; sourceTree = "<group>"; };
 		B6E304111B3C778A00135CF1 /* PPMailChimp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPMailChimp.m; sourceTree = "<group>"; };
 		B6E304141B3DAAF700135CF1 /* PPLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPLoginViewController.h; sourceTree = "<group>"; };
@@ -635,9 +633,9 @@
 		B6E304191B3DC95500135CF1 /* pinboard.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = pinboard.jpeg; sourceTree = "<group>"; };
 		B6E3041A1B3DC95500135CF1 /* pushpin-cloud-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pushpin-cloud-logo.png"; sourceTree = "<group>"; };
 		B6E3041B1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pushpin-cloud-logo@2x.png"; sourceTree = "<group>"; };
-		C4B8493FD40A41A5BD15200D /* Pods_Bookmark_Extension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Bookmark_Extension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E0DB3F4CDFFC0E78B6405BC1 /* Pods-Pushpin.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.release.xcconfig"; path = "Pods/Target Support Files/Pods-Pushpin/Pods-Pushpin.release.xcconfig"; sourceTree = "<group>"; };
-		E2817BD908E7C748ECB61A32 /* Pods-Read Later Extension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Read Later Extension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Read Later Extension/Pods-Read Later Extension.debug.xcconfig"; sourceTree = "<group>"; };
+		CFD97D71A9BD7EA58E576650 /* Pods-Pushpin.release debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.release debug.xcconfig"; path = "Target Support Files/Pods-Pushpin/Pods-Pushpin.release debug.xcconfig"; sourceTree = "<group>"; };
+		D8C2045E6A8DF8E6773D9D00 /* Pods-Read Later Extension.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Read Later Extension.beta.xcconfig"; path = "Target Support Files/Pods-Read Later Extension/Pods-Read Later Extension.beta.xcconfig"; sourceTree = "<group>"; };
+		E18CEEC4FA4012AB85B8020B /* Pods-Bookmark Extension.release debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bookmark Extension.release debug.xcconfig"; path = "Target Support Files/Pods-Bookmark Extension/Pods-Bookmark Extension.release debug.xcconfig"; sourceTree = "<group>"; };
 		E804950C180EF20800C5CA8B /* webview-helpers.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "webview-helpers.js"; path = "Assets/webview-helpers.js"; sourceTree = "<group>"; };
 		E804950F18103DC700C5CA8B /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
 		E80495191810597A00C5CA8B /* PPDefaultFeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PPDefaultFeedViewController.h; path = ../PPDefaultFeedViewController.h; sourceTree = "<group>"; };
@@ -730,6 +728,8 @@
 		E8F987DD183E796900EF976D /* browse-unread.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-unread.png"; path = "Assets/browse-unread.png"; sourceTree = "<group>"; };
 		E8F987DE183E796900EF976D /* browse-untagged.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-untagged.png"; path = "Assets/browse-untagged.png"; sourceTree = "<group>"; };
 		E8F987DF183E796900EF976D /* browse-wikipedia.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-wikipedia.png"; path = "Assets/browse-wikipedia.png"; sourceTree = "<group>"; };
+		E9EB962B0DDCCCAF24323BA3 /* Pods-Read Later Extension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Read Later Extension.debug.xcconfig"; path = "Target Support Files/Pods-Read Later Extension/Pods-Read Later Extension.debug.xcconfig"; sourceTree = "<group>"; };
+		FD2D63F044FA2CBBCA8062B5 /* Pods_Read_Later_Extension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Read_Later_Extension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -737,7 +737,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A60CC4C1337829234E639874 /* Pods_Read_Later_Extension.framework in Frameworks */,
+				B7B37F669E6D2D7B0DCDC429 /* Pods_Read_Later_Extension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -745,7 +745,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD5373E24483418CD1834B25 /* Pods_Bookmark_Extension.framework in Frameworks */,
+				B7A8D3A9DA1CD7084ABD82F9 /* Pods_Bookmark_Extension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -769,7 +769,7 @@
 				37800E9A162D5264009FCB17 /* SystemConfiguration.framework in Frameworks */,
 				37B5F4E51773864C005687DA /* Twitter.framework in Frameworks */,
 				379A59E01D32E33100AB4A26 /* UIKit.framework in Frameworks */,
-				DE6266BB23F43F39CCB339BA /* Pods_Pushpin.framework in Frameworks */,
+				075B2AAE78E1F493A6475647 /* Pods_Pushpin.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -829,8 +829,8 @@
 		37124DE022B08DF400D24A8F /* Firebase */ = {
 			isa = PBXGroup;
 			children = (
-				37124DE322B0920600D24A8F /* GoogleService-Info-Release.plist */,
 				37124DE122B08EB500D24A8F /* GoogleService-Info-Dev.plist */,
+				37124DE322B0920600D24A8F /* GoogleService-Info-Release.plist */,
 			);
 			path = Firebase;
 			sourceTree = "<group>";
@@ -922,9 +922,9 @@
 				3728CF3C18726EC900155791 /* PPTagEditViewController.m */,
 				3727558A161A66A2001A857B /* PPTagViewController.h */,
 				3727558B161A66A2001A857B /* PPTagViewController.m */,
+				375AD4DD209FA4A200199CCE /* PPTipJarViewController.swift */,
 				377E46E0174C85C500CE3813 /* PPWebViewController.h */,
 				377E46E1174C85C500CE3813 /* PPWebViewController.m */,
-				375AD4DD209FA4A200199CCE /* PPTipJarViewController.swift */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -1066,6 +1066,8 @@
 		37F78255198C34FE00C99139 /* Transitions / Animators */ = {
 			isa = PBXGroup;
 			children = (
+				18391432BB102434456721BB /* PPBadgeView.h */,
+				1839145086F97F8D938EEE8D /* PPBadgeView.m */,
 				3780219C199130E000CE269A /* PPFadeAnimator.h */,
 				3780219D199130E000CE269A /* PPFadeAnimator.m */,
 				3780219F199130EC00CE269A /* PPFadeTransition.h */,
@@ -1074,8 +1076,6 @@
 				37F7825D198C354D00C99139 /* PPShrinkBackAnimator.m */,
 				37F78259198C354200C99139 /* PPShrinkBackTransition.h */,
 				37F7825A198C354200C99139 /* PPShrinkBackTransition.m */,
-				1839145086F97F8D938EEE8D /* PPBadgeView.m */,
-				18391432BB102434456721BB /* PPBadgeView.h */,
 			);
 			name = "Transitions / Animators";
 			sourceTree = "<group>";
@@ -1083,11 +1083,12 @@
 		37FEEB8315745488003F2B77 = {
 			isa = PBXGroup;
 			children = (
-				37124DE022B08DF400D24A8F /* Firebase */,
 				37FEEBDC15748BA7003F2B77 /* Assets */,
 				370B76201F4603AA00391769 /* Bookmark Extension */,
+				37124DE022B08DF400D24A8F /* Firebase */,
 				37FEEB9115745488003F2B77 /* Frameworks */,
 				3740A23616863CF000F95D82 /* Localizations */,
+				A0AE651B9A75877E9CF0142A /* Pods */,
 				37FEEB8F15745488003F2B77 /* Products */,
 				37FEEB9815745488003F2B77 /* Pushpin */,
 				370B760B1F4603A400391769 /* Read Later Extension */,
@@ -1098,7 +1099,6 @@
 				374D91E019CE26A700995DF1 /* Share-AppStore.entitlements */,
 				374D91DB19CE26A700995DF1 /* Share-Beta.entitlements */,
 				374D91DC19CE26A700995DF1 /* Share-Dev.entitlements */,
-				4FFF1B4630EC849FD3A5400D /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1136,9 +1136,9 @@
 				37800E99162D5264009FCB17 /* SystemConfiguration.framework */,
 				37B5F4E41773864C005687DA /* Twitter.framework */,
 				37FEEB9215745488003F2B77 /* UIKit.framework */,
-				C4B8493FD40A41A5BD15200D /* Pods_Bookmark_Extension.framework */,
-				35C8BFA8EEDDF111C09E7404 /* Pods_Pushpin.framework */,
-				5AA41FABB0F91EB40833295C /* Pods_Read_Later_Extension.framework */,
+				59457ADBB987DBE9B7B1E1F3 /* Pods_Bookmark_Extension.framework */,
+				A8A9D7649937ED1FAF44A3D7 /* Pods_Pushpin.framework */,
+				FD2D63F044FA2CBBCA8062B5 /* Pods_Read_Later_Extension.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1206,11 +1206,11 @@
 			isa = PBXGroup;
 			children = (
 				37FEEB9A15745488003F2B77 /* Info.plist */,
-				37B4F8091F4C651500E89790 /* Pushpin Launch Screen.storyboard */,
 				37FEEB9E15745488003F2B77 /* main.m */,
 				371EE5C6185B49FE005DB908 /* PPTheme.h */,
 				371EE5C7185B49FE005DB908 /* PPTheme.m */,
 				37FEEBA015745488003F2B77 /* Pushpin for Pinboard-Prefix.pch */,
+				37B4F8091F4C651500E89790 /* Pushpin Launch Screen.storyboard */,
 				373FC3421F83DCE50031B282 /* Pushpin-Bridging-Header.h */,
 			);
 			name = "Supporting Files";
@@ -1263,23 +1263,23 @@
 			name = Assets;
 			sourceTree = "<group>";
 		};
-		4FFF1B4630EC849FD3A5400D /* Pods */ = {
+		A0AE651B9A75877E9CF0142A /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				00908A4E19CFC0F653AF2790 /* Pods-Bookmark Extension.debug.xcconfig */,
-				8F10663FD508962BD0763232 /* Pods-Bookmark Extension.release.xcconfig */,
-				61167695C444B8B1139F4A0E /* Pods-Bookmark Extension.release debug.xcconfig */,
-				6911442324B2A84E6E5862EA /* Pods-Bookmark Extension.beta.xcconfig */,
-				B2F39EB397FE3ADFF1B274A0 /* Pods-Pushpin.debug.xcconfig */,
-				E0DB3F4CDFFC0E78B6405BC1 /* Pods-Pushpin.release.xcconfig */,
-				98ADD49C1B7F2A16A9106FAF /* Pods-Pushpin.release debug.xcconfig */,
-				3B2662CC1A6192CE69980A86 /* Pods-Pushpin.beta.xcconfig */,
-				E2817BD908E7C748ECB61A32 /* Pods-Read Later Extension.debug.xcconfig */,
-				71A8130C4E68325210586FF5 /* Pods-Read Later Extension.release.xcconfig */,
-				137631C934D7DFBB902C8472 /* Pods-Read Later Extension.release debug.xcconfig */,
-				5C020CE12D3226074406594F /* Pods-Read Later Extension.beta.xcconfig */,
+				637C9328580D05304BB66AEB /* Pods-Bookmark Extension.debug.xcconfig */,
+				A8A8D1EA29BDB80CD0D3188A /* Pods-Bookmark Extension.release.xcconfig */,
+				E18CEEC4FA4012AB85B8020B /* Pods-Bookmark Extension.release debug.xcconfig */,
+				2547D6B445C21205C74F1900 /* Pods-Bookmark Extension.beta.xcconfig */,
+				4C5C9B3D86301DEF2B3292D2 /* Pods-Pushpin.debug.xcconfig */,
+				89F83F307A9C171A4BBD55E9 /* Pods-Pushpin.release.xcconfig */,
+				CFD97D71A9BD7EA58E576650 /* Pods-Pushpin.release debug.xcconfig */,
+				99B6E377218FF41F88723078 /* Pods-Pushpin.beta.xcconfig */,
+				E9EB962B0DDCCCAF24323BA3 /* Pods-Read Later Extension.debug.xcconfig */,
+				0FC030AF8E7A025A9FBA8DF9 /* Pods-Read Later Extension.release.xcconfig */,
+				11BE8DE12262D11953835A37 /* Pods-Read Later Extension.release debug.xcconfig */,
+				D8C2045E6A8DF8E6773D9D00 /* Pods-Read Later Extension.beta.xcconfig */,
 			);
-			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 		E8734228180DAA4B00CF9E5F /* Activities */ = {
@@ -1413,7 +1413,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 370B76161F4603A400391769 /* Build configuration list for PBXNativeTarget "Read Later Extension" */;
 			buildPhases = (
-				CD7B6786A78E145739470786 /* [CP] Check Pods Manifest.lock */,
+				D7BB8F810D3FE962CF147DFA /* [CP] Check Pods Manifest.lock */,
 				370B76061F4603A400391769 /* Sources */,
 				370B76071F4603A400391769 /* Frameworks */,
 				370B76081F4603A400391769 /* Resources */,
@@ -1431,7 +1431,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 370B762B1F4603AA00391769 /* Build configuration list for PBXNativeTarget "Bookmark Extension" */;
 			buildPhases = (
-				DA78F212210AE5CA56DA27B3 /* [CP] Check Pods Manifest.lock */,
+				A7AF3C2A00788BF3D44FAC47 /* [CP] Check Pods Manifest.lock */,
 				370B761B1F4603AA00391769 /* Sources */,
 				370B761C1F4603AA00391769 /* Frameworks */,
 				370B761D1F4603AA00391769 /* Resources */,
@@ -1449,14 +1449,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 37FEEBA615745488003F2B77 /* Build configuration list for PBXNativeTarget "Pushpin" */;
 			buildPhases = (
-				0C8FFC8DA4E947EE2F992E8B /* [CP] Check Pods Manifest.lock */,
+				0AEA31F5F712744BFF4FA0D4 /* [CP] Check Pods Manifest.lock */,
 				37F95BFB1D32BDE300422DD6 /* Sources */,
 				37FEEB8B15745488003F2B77 /* Frameworks */,
 				37FEEB8C15745488003F2B77 /* Resources */,
 				3790420B19CBCFF700409D34 /* Embed App Extensions */,
 				37F9D0D61D330426002A168D /* Embed Frameworks */,
-				C4755AE5A641FAE3FF9315DC /* [CP] Embed Pods Frameworks */,
-				462CACDECB1AC30ED85F5D07 /* [CP] Copy Pods Resources */,
+				77B4D37FFC616B97E5E43E66 /* [CP] Embed Pods Frameworks */,
+				6387E15A4C20D23BCC245C83 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1637,10 +1637,11 @@
 				3747C70F19CCDB1F00FAD488 /* edit.png in Resources */,
 				3747C71019CCDB1F00FAD488 /* edit@2x.png in Resources */,
 				3747C71119CCDB1F00FAD488 /* Flex Regular.otf in Resources */,
+				37124DE222B08EB500D24A8F /* GoogleService-Info-Dev.plist in Resources */,
+				37124DE422B0920600D24A8F /* GoogleService-Info-Release.plist in Resources */,
 				3747C71619CCDB1F00FAD488 /* Images.xcassets in Resources */,
 				3747C71719CCDB1F00FAD488 /* InfoPlist.strings in Resources */,
 				3747C71819CCDB1F00FAD488 /* JSDOMParser.js in Resources */,
-				37B4F80A1F4C651500E89790 /* Pushpin Launch Screen.storyboard in Resources */,
 				3747C71919CCDB1F00FAD488 /* LICENSE in Resources */,
 				3747C71A19CCDB1F00FAD488 /* Localizable.strings in Resources */,
 				3747C71B19CCDB1F00FAD488 /* LyonTextApp-Regular.ttf in Resources */,
@@ -1690,7 +1691,6 @@
 				E8F987D3183E795B00EF976D /* navigation-tags.png in Resources */,
 				E8F987CE183E765D00EF976D /* navigation-tags@2x.png in Resources */,
 				E89002241840173600C1F969 /* navigation-unread.png in Resources */,
-				37124DE422B0920600D24A8F /* GoogleService-Info-Release.plist in Resources */,
 				E89002251840173600C1F969 /* navigation-unread@2x.png in Resources */,
 				E890022A1840173600C1F969 /* navigation-untagged.png in Resources */,
 				E890022B1840173600C1F969 /* navigation-untagged@2x.png in Resources */,
@@ -1702,6 +1702,7 @@
 				3747C72A19CCDB1F00FAD488 /* NotificationX@2x.png in Resources */,
 				B6E3041C1B3DC95500135CF1 /* pinboard-logo@2x.png in Resources */,
 				B6E3041D1B3DC95500135CF1 /* pinboard.jpeg in Resources */,
+				37B4F80A1F4C651500E89790 /* Pushpin Launch Screen.storyboard in Resources */,
 				B6E3041E1B3DC95500135CF1 /* pushpin-cloud-logo.png in Resources */,
 				B6E3041F1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png in Resources */,
 				3747C72B19CCDB1F00FAD488 /* readability.css in Resources */,
@@ -1730,7 +1731,6 @@
 				3747C74419CCDB1F00FAD488 /* toolbar-checkmark@2x.png in Resources */,
 				3747C74519CCDB1F00FAD488 /* toolbar-description.png in Resources */,
 				3747C74619CCDB1F00FAD488 /* toolbar-description@2x.png in Resources */,
-				37124DE222B08EB500D24A8F /* GoogleService-Info-Dev.plist in Resources */,
 				3747C74719CCDB1F00FAD488 /* toolbar-edit-tags.png in Resources */,
 				3747C74819CCDB1F00FAD488 /* toolbar-edit-tags@2x.png in Resources */,
 				3747C74919CCDB1F00FAD488 /* toolbar-private.png in Resources */,
@@ -1746,16 +1746,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		0C8FFC8DA4E947EE2F992E8B /* [CP] Check Pods Manifest.lock */ = {
+		0AEA31F5F712744BFF4FA0D4 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			inputFileListPaths = (
 			);
 			inputPaths = (
 				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
 				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-Pushpin-checkManifestLockResult.txt",
 			);
@@ -1764,7 +1768,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		462CACDECB1AC30ED85F5D07 /* [CP] Copy Pods Resources */ = {
+		6387E15A4C20D23BCC245C83 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1782,21 +1786,17 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Pushpin/Pods-Pushpin-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		C4755AE5A641FAE3FF9315DC /* [CP] Embed Pods Frameworks */ = {
+		77B4D37FFC616B97E5E43E66 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Pushpin/Pods-Pushpin-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/1PasswordExtension/OnePasswordExtension.framework",
 				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
 				"${BUILT_PRODUCTS_DIR}/ASPinboard/ASPinboard.framework",
 				"${BUILT_PRODUCTS_DIR}/BRYHTMLParser/BRYHTMLParser.framework",
-				"${BUILT_PRODUCTS_DIR}/ChimpKit/ChimpKit.framework",
 				"${BUILT_PRODUCTS_DIR}/FMDB/FMDB.framework",
-				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
-				"${BUILT_PRODUCTS_DIR}/HSAttachmentPicker/HSAttachmentPicker.framework",
 				"${BUILT_PRODUCTS_DIR}/HTMLParser/HTMLParser.framework",
 				"${BUILT_PRODUCTS_DIR}/KeyboardAdjuster/KeyboardAdjuster.framework",
 				"${BUILT_PRODUCTS_DIR}/KeychainItemWrapper/KeychainItemWrapper.framework",
@@ -1807,26 +1807,26 @@
 				"${BUILT_PRODUCTS_DIR}/LionheartExtensions/LionheartExtensions.framework",
 				"${BUILT_PRODUCTS_DIR}/MWFeedParser/MWFeedParser.framework",
 				"${BUILT_PRODUCTS_DIR}/Mixpanel/Mixpanel.framework",
-				"${BUILT_PRODUCTS_DIR}/OpenInChrome/OpenInChrome.framework",
 				"${BUILT_PRODUCTS_DIR}/QuickTableView/QuickTableView.framework",
 				"${BUILT_PRODUCTS_DIR}/RNCryptor-objc/RNCryptor_objc.framework",
 				"${BUILT_PRODUCTS_DIR}/SuperLayout/SuperLayout.framework",
 				"${BUILT_PRODUCTS_DIR}/TMReachability/TMReachability.framework",
 				"${BUILT_PRODUCTS_DIR}/TTTAttributedLabel/TTTAttributedLabel.framework",
-				"${BUILT_PRODUCTS_DIR}/TipJarViewController/TipJarViewController.framework",
 				"${BUILT_PRODUCTS_DIR}/hpple/hpple.framework",
+				"${BUILT_PRODUCTS_DIR}/1PasswordExtension/OnePasswordExtension.framework",
+				"${BUILT_PRODUCTS_DIR}/ChimpKit/ChimpKit.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
+				"${BUILT_PRODUCTS_DIR}/HSAttachmentPicker/HSAttachmentPicker.framework",
+				"${BUILT_PRODUCTS_DIR}/OpenInChrome/OpenInChrome.framework",
+				"${BUILT_PRODUCTS_DIR}/TipJarViewController/TipJarViewController.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OnePasswordExtension.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ASPinboard.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BRYHTMLParser.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ChimpKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FMDB.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/HSAttachmentPicker.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/HTMLParser.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeyboardAdjuster.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainItemWrapper.framework",
@@ -1837,14 +1837,18 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/LionheartExtensions.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MWFeedParser.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mixpanel.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OpenInChrome.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/QuickTableView.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RNCryptor_objc.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SuperLayout.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TMReachability.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TTTAttributedLabel.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TipJarViewController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/hpple.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OnePasswordExtension.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ChimpKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/HSAttachmentPicker.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OpenInChrome.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TipJarViewController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1852,36 +1856,44 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Pushpin/Pods-Pushpin-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		CD7B6786A78E145739470786 /* [CP] Check Pods Manifest.lock */ = {
+		A7AF3C2A00788BF3D44FAC47 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			inputFileListPaths = (
 			);
 			inputPaths = (
 				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
 				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Read Later Extension-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Bookmark Extension-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		DA78F212210AE5CA56DA27B3 /* [CP] Check Pods Manifest.lock */ = {
+		D7BB8F810D3FE962CF147DFA /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			inputFileListPaths = (
 			);
 			inputPaths = (
 				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
 				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Bookmark Extension-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Read Later Extension-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1908,6 +1920,7 @@
 			files = (
 				373026061F461AF7007014EF /* PostMetadata.m in Sources */,
 				37D620581F9AB4BA0020B52A /* PPAddBookmarkViewController.m in Sources */,
+				18391DAC09BE4867AE50EC3F /* PPBadgeView.m in Sources */,
 				3730260A1F461BBB007014EF /* PPBadgeWrapperView.m in Sources */,
 				373026101F461C38007014EF /* PPEditDescriptionViewController.m in Sources */,
 				3730260B1F461BC1007014EF /* PPNavigationBar.m in Sources */,
@@ -1924,7 +1937,6 @@
 				373025FC1F4610D6007014EF /* PPUtilities.m in Sources */,
 				370B76231F4603AA00391769 /* ShareViewController.m in Sources */,
 				370921FA1FD05339006DAC36 /* ShareViewController2.swift in Sources */,
-				18391DAC09BE4867AE50EC3F /* PPBadgeView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1945,6 +1957,7 @@
 				37F9D0B81D330082002A168D /* PPAddBookmarkViewController.m in Sources */,
 				37F9D0B91D330087002A168D /* PPAddSavedFeedViewController.m in Sources */,
 				37F9D0D81D330440002A168D /* PPAppDelegate.m in Sources */,
+				18391111681C6C0692A2DA78 /* PPBadgeView.m in Sources */,
 				37B620191F452105005DE789 /* PPBadgeWrapperView.m in Sources */,
 				37F9D0DA1D33049F002A168D /* PPBookmarkCell.m in Sources */,
 				37F9D0C11D330246002A168D /* PPBrowserActivity.m in Sources */,
@@ -1955,7 +1968,6 @@
 				37F9D0A61D32FE55002A168D /* PPDisplaySettingsViewController.m in Sources */,
 				37B6201D1F45211D005DE789 /* PPEditDescriptionViewController.m in Sources */,
 				37F9D0A51D32FE50002A168D /* PPFeedListViewController.m in Sources */,
-				375AD4DE209FA4A200199CCE /* PPTipJarViewController.swift in Sources */,
 				37F9D0BC1D330115002A168D /* PPGenericPostViewController.m in Sources */,
 				37B620151F4520F3005DE789 /* PPLoadingView.m in Sources */,
 				37F9D0BB1D330113002A168D /* PPLoginViewController.m in Sources */,
@@ -1992,13 +2004,13 @@
 				37F9D09F1D32FE11002A168D /* PPTagEditViewController.m in Sources */,
 				37F9D0A41D32FE34002A168D /* PPTagViewController.m in Sources */,
 				37B620071F4520AB005DE789 /* PPTheme.m in Sources */,
+				375AD4DE209FA4A200199CCE /* PPTipJarViewController.swift in Sources */,
 				37B620081F4520B1005DE789 /* PPTitleButton.m in Sources */,
 				37B620161F4520F7005DE789 /* PPToolbar.m in Sources */,
 				37B620111F4520DC005DE789 /* PPURLCache.m in Sources */,
 				37B620091F4520B4005DE789 /* PPUtilities.m in Sources */,
 				37F9D09A1D32FE00002A168D /* PPWebViewController.m in Sources */,
 				37D620561F9A9D060020B52A /* StoreReviewPointsManager.swift in Sources */,
-				18391111681C6C0692A2DA78 /* PPBadgeView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2047,7 +2059,7 @@
 /* Begin XCBuildConfiguration section */
 		370B76171F4603A400391769 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E2817BD908E7C748ECB61A32 /* Pods-Read Later Extension.debug.xcconfig */;
+			baseConfigurationReference = E9EB962B0DDCCCAF24323BA3 /* Pods-Read Later Extension.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -2083,7 +2095,7 @@
 		};
 		370B76181F4603A400391769 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 71A8130C4E68325210586FF5 /* Pods-Read Later Extension.release.xcconfig */;
+			baseConfigurationReference = 0FC030AF8E7A025A9FBA8DF9 /* Pods-Read Later Extension.release.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -2121,7 +2133,7 @@
 		};
 		370B76191F4603A400391769 /* Release Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 137631C934D7DFBB902C8472 /* Pods-Read Later Extension.release debug.xcconfig */;
+			baseConfigurationReference = 11BE8DE12262D11953835A37 /* Pods-Read Later Extension.release debug.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -2159,7 +2171,7 @@
 		};
 		370B761A1F4603A400391769 /* Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5C020CE12D3226074406594F /* Pods-Read Later Extension.beta.xcconfig */;
+			baseConfigurationReference = D8C2045E6A8DF8E6773D9D00 /* Pods-Read Later Extension.beta.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -2197,7 +2209,7 @@
 		};
 		370B762C1F4603AA00391769 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 00908A4E19CFC0F653AF2790 /* Pods-Bookmark Extension.debug.xcconfig */;
+			baseConfigurationReference = 637C9328580D05304BB66AEB /* Pods-Bookmark Extension.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -2237,7 +2249,7 @@
 		};
 		370B762D1F4603AA00391769 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8F10663FD508962BD0763232 /* Pods-Bookmark Extension.release.xcconfig */;
+			baseConfigurationReference = A8A8D1EA29BDB80CD0D3188A /* Pods-Bookmark Extension.release.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -2278,7 +2290,7 @@
 		};
 		370B762E1F4603AA00391769 /* Release Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 61167695C444B8B1139F4A0E /* Pods-Bookmark Extension.release debug.xcconfig */;
+			baseConfigurationReference = E18CEEC4FA4012AB85B8020B /* Pods-Bookmark Extension.release debug.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -2320,7 +2332,7 @@
 		};
 		370B762F1F4603AA00391769 /* Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6911442324B2A84E6E5862EA /* Pods-Bookmark Extension.beta.xcconfig */;
+			baseConfigurationReference = 2547D6B445C21205C74F1900 /* Pods-Bookmark Extension.beta.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -2453,8 +2465,9 @@
 		};
 		37374CB719A259F000C4DC9A /* Release Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 98ADD49C1B7F2A16A9106FAF /* Pods-Pushpin.release debug.xcconfig */;
+			baseConfigurationReference = CFD97D71A9BD7EA58E576650 /* Pods-Pushpin.release debug.xcconfig */;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_MODULES_AUTOLINK = NO;
@@ -2482,7 +2495,7 @@
 				GOOGLE_PLIST_NAME = "GoogleService-Info-Dev";
 				INFOPLIST_FILE = Pushpin/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) \"@executable_path/Frameworks\" @loader_path/Frameworks";
-				MARKETING_VERSION = 4.1.19;
+				MARKETING_VERSION = 4.1.21;
 				PRODUCT_NAME = Pushpin;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2591,8 +2604,9 @@
 		};
 		37800E9C162D576E009FCB17 /* Beta */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3B2662CC1A6192CE69980A86 /* Pods-Pushpin.beta.xcconfig */;
+			baseConfigurationReference = 99B6E377218FF41F88723078 /* Pods-Pushpin.beta.xcconfig */;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_MODULES_AUTOLINK = NO;
@@ -2619,7 +2633,7 @@
 				GOOGLE_PLIST_NAME = "GoogleService-Info-Dev";
 				INFOPLIST_FILE = Pushpin/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) \"@executable_path/Frameworks\" @loader_path/Frameworks";
-				MARKETING_VERSION = 4.1.19;
+				MARKETING_VERSION = 4.1.21;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2822,8 +2836,9 @@
 		};
 		37FEEBA715745488003F2B77 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B2F39EB397FE3ADFF1B274A0 /* Pods-Pushpin.debug.xcconfig */;
+			baseConfigurationReference = 4C5C9B3D86301DEF2B3292D2 /* Pods-Pushpin.debug.xcconfig */;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_MODULES_AUTOLINK = NO;
@@ -2850,7 +2865,7 @@
 				GOOGLE_PLIST_NAME = "GoogleService-Info-Dev";
 				INFOPLIST_FILE = Pushpin/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) \"@executable_path/Frameworks\" @loader_path/Frameworks";
-				MARKETING_VERSION = 4.1.19;
+				MARKETING_VERSION = 4.1.21;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2868,8 +2883,9 @@
 		};
 		37FEEBA815745488003F2B77 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E0DB3F4CDFFC0E78B6405BC1 /* Pods-Pushpin.release.xcconfig */;
+			baseConfigurationReference = 89F83F307A9C171A4BBD55E9 /* Pods-Pushpin.release.xcconfig */;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_MODULES_AUTOLINK = NO;
@@ -2896,7 +2912,7 @@
 				GOOGLE_PLIST_NAME = "GoogleService-Info-Release";
 				INFOPLIST_FILE = Pushpin/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) \"@executable_path/Frameworks\" @loader_path/Frameworks";
-				MARKETING_VERSION = 4.1.19;
+				MARKETING_VERSION = 4.1.21;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";

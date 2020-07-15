@@ -433,6 +433,8 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
 - (void)prefill:(HSBeaconContactForm *)form {
     form.subject = @"Pushpin Support Inquiry";
+    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+    form.text = [NSString stringWithFormat:@"\n\n\n\nApp version: %@", version];
 }
 
 @end

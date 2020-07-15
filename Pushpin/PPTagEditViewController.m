@@ -209,6 +209,15 @@ static NSString *CellIdentifier = @"CellIdentifier";
             }
         }
     } else {
+        //This is because '&' was shown as '&amp;' int existingTags
+        NSMutableArray *newArray = [NSMutableArray array];
+        for (NSString *input in self.existingTags)
+        {
+            NSString *replacement = [input stringByReplacingOccurrencesOfString:@"amp;" withString:@""];
+                [newArray addObject:replacement];
+        }
+        self.existingTags = newArray;
+        
         NSString *tag = self.existingTags[self.existingTags.count - indexPath.row - 1];
         cell.textLabel.text = tag;
         
@@ -652,6 +661,14 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     [self.recommendedTags removeAllObjects];
                     
                     self.tagCompletions = newTagCompletions;
+                    //This is because '&' was shown as '&amp;' int tagCompletions
+                    NSMutableArray *newArray = [NSMutableArray array];
+                    for (NSString *input in self.tagCompletions)
+                    {
+                        NSString *replacement = [input stringByReplacingOccurrencesOfString:@"amp;" withString:@""];
+                            [newArray addObject:replacement];
+                    }
+                    self.tagCompletions = newArray;
                     
                     @try {
                         [self.tableView beginUpdates];

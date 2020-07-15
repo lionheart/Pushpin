@@ -516,6 +516,15 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 }
             }
         } else {
+            //This is because '&' was shown as '&amp;' int existingTags
+            NSMutableArray *newArray = [NSMutableArray array];
+            for (NSString *input in self.existingTags)
+            {
+                NSString *replacement = [input stringByReplacingOccurrencesOfString:@"amp;" withString:@""];
+                    [newArray addObject:replacement];
+            }
+            self.existingTags = newArray;
+            
             NSString *tag = self.existingTags[self.existingTags.count - indexPath.row - 1];
             cell.textLabel.text = tag;
             
@@ -743,6 +752,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
+    //doesnt matter if they are already added, tags with '&' are shown when searching, so the loop below will avoid adding them again into 'existing tags' when they are tapped
+    for(id object in self.existingTags) {
+        if ([object caseInsensitiveCompare:[tableView cellForRowAtIndexPath:indexPath].textLabel.text] == NSOrderedSame) {
+            return;
+        }
+    }
+    
     if (self.isEditingTags) {
         NSInteger row = indexPath.row;
         
@@ -1068,7 +1084,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         }
 #endif
         
-        if ([self.urlTextField.text isEqualToString:@""] || [self.titleTextField.text isEqualToString:@""]) {
+        if ([self.urlTextField.text isEqualToString:@""] && [self.titleTextField.text isEqualToString:@""]) {
             UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Uh oh.", nil)
                                                                            message:NSLocalizedString(@"You can't add a bookmark without a URL or title.", nil)];
             
@@ -1342,10 +1358,19 @@ static NSString *CellIdentifier = @"CellIdentifier";
         activityIndicator.hidesWhenStopped = YES;
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:activityIndicator];
         [activityIndicator startAnimating];
-
+        NSLog(@"%@", _existingTags);
+        //This is because '&' was shown as '&amp;' int existingTags
+        NSMutableArray *newArray = [NSMutableArray array];
+        for (NSString *input in self.existingTags)
+        {
+            NSString *replacement = [input stringByReplacingOccurrencesOfString:@"amp;" withString:@""];
+                [newArray addObject:replacement];
+        }
+        self.existingTags = newArray;
+        NSLog(@"%@", _existingTags);
         if (self.presentedFromShareSheet) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                if ([self.urlTextField.text isEqualToString:@""] || [self.titleTextField.text isEqualToString:@""]) {
+                if ([self.urlTextField.text isEqualToString:@""] && [self.titleTextField.text isEqualToString:@""]) {
                     UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Uh oh.", nil)
                                                                                  message:NSLocalizedString(@"You can't add a bookmark without a URL or title.", nil)];
                     [alert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
@@ -1671,6 +1696,15 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     [self.recommendedTags removeAllObjects];
                     
                     self.tagCompletions = newTagCompletions;
+                    //This is because '&' was shown as '&amp;' int tagCompletions
+                    NSMutableArray *newArray = [NSMutableArray array];
+                    for (NSString *input in self.tagCompletions)
+                    {
+                        NSString *replacement = [input stringByReplacingOccurrencesOfString:@"amp;" withString:@""];
+                            [newArray addObject:replacement];
+                    }
+                    self.tagCompletions = newArray;
+                    
                     
                     @try {
                         [self.tableView beginUpdates];
