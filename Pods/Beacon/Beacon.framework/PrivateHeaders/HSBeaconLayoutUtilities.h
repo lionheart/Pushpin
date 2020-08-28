@@ -1,4 +1,4 @@
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 typedef NS_OPTIONS(NSUInteger, HSBeaconLayoutAttribute) {
     HSBeaconLayoutAttributeTop      = 1 << 0,

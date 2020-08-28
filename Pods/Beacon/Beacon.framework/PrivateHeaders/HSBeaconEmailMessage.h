@@ -12,7 +12,10 @@
 @property(strong, nonatomic) NSMutableArray<HSBeaconAttachment *> *attachments;
 @property(strong, nonatomic) NSArray<NSDictionary *> *activity;
 @property(strong, nonatomic) NSArray<HSBeaconCustomFieldValue *> *customFieldValues;
+@property (nonatomic, strong) NSDictionary<NSString*, NSString*> *sessionAttributes;
 
 -(NSDictionary *)toDictionary;
+
+- (BOOL)isEmpty;
 
 @end

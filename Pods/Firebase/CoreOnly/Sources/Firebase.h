@@ -1,19 +1,56 @@
-#import <FirebaseCore/FirebaseCore.h>
+// Copyright 2019 Google
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// The module qualified imports are for CocoaPods and the simple file names
+// for Swift Package Manager.
 
 #if !defined(__has_include)
   #error "Firebase.h won't import anything if your compiler doesn't support __has_include. Please \
           import the headers individually."
 #else
+  #if __has_include(<FirebaseCore/FirebaseCore.h>)
+    #import <FirebaseCore/FirebaseCore.h>
+  #elif __has_include("FirebaseCore.h")
+    #import "FirebaseCore.h"
+  #endif
+
   #if __has_include(<FirebaseAnalytics/FirebaseAnalytics.h>)
     #import <FirebaseAnalytics/FirebaseAnalytics.h>
   #endif
 
   #if __has_include(<FirebaseAuth/FirebaseAuth.h>)
     #import <FirebaseAuth/FirebaseAuth.h>
+  #elif __has_include("FirebaseAuth.h")
+    #import "FirebaseAuth.h"
+  #endif
+
+  #if __has_include(<FirebaseAppDistribution/FirebaseAppDistribution.h>)
+    #import <FirebaseAppDistribution/FirebaseAppDistribution.h>
+  #elif  __has_include("FirebaseAppDistribution.h")
+    #import "FirebaseAppDistribution.h"
+  #endif
+
+  #if __has_include(<FirebaseCrashlytics/FirebaseCrashlytics.h>)
+    #import <FirebaseCrashlytics/FirebaseCrashlytics.h>
+  #elif  __has_include("FirebaseCrashlytics.h")
+    #import "FirebaseCrashlytics.h"
   #endif
 
   #if __has_include(<FirebaseDatabase/FirebaseDatabase.h>)
     #import <FirebaseDatabase/FirebaseDatabase.h>
+  #elif __has_include("FirebaseDatabase.h")
+    #import "FirebaseDatabase.h"
   #endif
 
   #if __has_include(<FirebaseDynamicLinks/FirebaseDynamicLinks.h>)
@@ -25,14 +62,20 @@
 Firebase Dynamic Links works as intended."
       #endif // #ifndef FIREBASE_ANALYTICS_SUPPRESS_WARNING
     #endif
+  #elif __has_include("FirebaseDynamicLinks.h")
+    #import "FirebaseDynamicLinks.h"
   #endif
 
   #if __has_include(<FirebaseFirestore/FirebaseFirestore.h>)
     #import <FirebaseFirestore/FirebaseFirestore.h>
+  #elif __has_include("FirebaseFirestore.h")
+    #import "FirebaseFirestore.h"
   #endif
 
   #if __has_include(<FirebaseFunctions/FirebaseFunctions.h>)
     #import <FirebaseFunctions/FirebaseFunctions.h>
+  #elif __has_include("FirebaseFunctions.h")
+    #import "FirebaseFunctions.h"
   #endif
 
   #if __has_include(<FirebaseInAppMessaging/FirebaseInAppMessaging.h>)
@@ -44,6 +87,8 @@ Firebase Dynamic Links works as intended."
 Firebase In App Messaging works as intended."
       #endif // #ifndef FIREBASE_ANALYTICS_SUPPRESS_WARNING
     #endif
+  #elif __has_include("FirebaseInAppMessaging.h")
+    #import "FirebaseInAppMessaging.h"
   #endif
 
   #if __has_include(<FirebaseInstanceID/FirebaseInstanceID.h>)
@@ -59,7 +104,9 @@ Firebase In App Messaging works as intended."
 Firebase Messaging works as intended."
       #endif // #ifndef FIREBASE_ANALYTICS_SUPPRESS_WARNING
     #endif
-#endif
+  #elif __has_include("FirebaseMessaging.h")
+    #import "FirebaseMessaging.h"
+  #endif
 
   #if __has_include(<FirebaseMLCommon/FirebaseMLCommon.h>)
     #import <FirebaseMLCommon/FirebaseMLCommon.h>
@@ -133,10 +180,14 @@ Firebase Performance works as intended."
 Firebase Remote Config works as intended."
       #endif // #ifndef FIREBASE_ANALYTICS_SUPPRESS_WARNING
     #endif
+  #elif __has_include("FirebaseRemoteConfig.h")
+    #import "FirebaseRemoteConfig.h"
   #endif
 
   #if __has_include(<FirebaseStorage/FirebaseStorage.h>)
     #import <FirebaseStorage/FirebaseStorage.h>
+  #elif __has_include("FirebaseStorage.h")
+    #import "FirebaseStorage.h"
   #endif
 
   #if __has_include(<GoogleMobileAds/GoogleMobileAds.h>)

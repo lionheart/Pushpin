@@ -1,5 +1,5 @@
 #import <UIKit/UIKit.h>
-
+#import "HSViewController.h"
 #import "HSBeaconContext.h"
 #import "HSBeaconConversation.h"
 #import "HSBeaconConversationDetailsWebView.h"
@@ -13,7 +13,7 @@
 
 @end
 
-@interface HSBeaconConversationDetailsController : UIViewController <HSCardStackEmbeddable>
+@interface HSBeaconConversationDetailsController : HSViewController <HSCardStackEmbeddable>
 
 @property (nonatomic) HSBeaconConversation *conversation;
 
@@ -21,7 +21,9 @@
 
 @property (weak, nonatomic) id<HSBeaconConversationDetailsControllerDelegate> delegate;
 
-@property (weak, nonatomic) IBOutlet HSBeaconConversationDetailsWebView *webView;
+@property (strong, nonatomic) HSBeaconConversationDetailsWebView *webView;
+
+@property (weak, nonatomic) IBOutlet UIView *footerView;
 
 @property (weak, nonatomic) IBOutlet UIButton *replyButton;
 

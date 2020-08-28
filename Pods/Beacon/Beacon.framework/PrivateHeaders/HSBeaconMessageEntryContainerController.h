@@ -1,5 +1,5 @@
 #import <UIKit/UIKit.h>
-
+#import "HSViewController.h"
 #import "HSBeaconAgentsView.h"
 #import "HSBeaconContext.h"
 #import "HSBeaconCustomFieldsEntryController.h"
@@ -19,9 +19,10 @@
 
 #pragma mark -
 
-@interface HSBeaconMessageEntryContainerController: UIViewController
+@interface HSBeaconMessageEntryContainerController: HSViewController
 
 @property(strong, nonatomic) HSBeaconContext *beaconContext;
+@property(nonatomic) BOOL showNoAgentsAvailabilityMessage;
 @property (nonatomic, weak) id<HSBeaconMessageEntryContainerControllerDelegate> delegate;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *headerHeight;
@@ -50,5 +51,7 @@
 - (void)showPreviousMessages;
 
 - (void)resetForm;
+
+- (void)showHeader;
 
 @end

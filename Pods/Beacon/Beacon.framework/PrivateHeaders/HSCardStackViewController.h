@@ -1,4 +1,5 @@
 #import <UIKit/UIKit.h>
+#import "HSViewController.h"
 
 @class HSCardStackViewController;
 
@@ -8,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface HSCardStackViewController : UIViewController
+@interface HSCardStackViewController : HSViewController
 
 - (instancetype)initWithCard:(UIViewController<HSCardStackEmbeddable> *)card;
 

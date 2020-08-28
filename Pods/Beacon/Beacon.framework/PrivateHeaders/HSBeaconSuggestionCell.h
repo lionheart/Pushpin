@@ -1,10 +1,10 @@
 #import <UIKit/UIKit.h>
-
+#import "HSTableViewCell.h"
 #import "HSBeaconArticleCell.h"
 #import "HSBeaconContext.h"
 #import "HSBeaconSuggestion.h"
 
-@interface HSBeaconSuggestionCell: UITableViewCell <HSBeaconArticleCell>
+@interface HSBeaconSuggestionCell: HSTableViewCell <HSBeaconArticleCell>
 
 @property(strong, nonatomic) HSBeaconSuggestion *suggestion;
 @property(strong, nonatomic) HSBeaconContext *beaconContext;

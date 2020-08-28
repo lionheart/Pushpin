@@ -1,8 +1,9 @@
 #import <UIKit/UIKit.h>
+#import "HSViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface HSBeaconLoadingViewController : UIViewController
+@interface HSBeaconLoadingViewController : HSViewController
 
 @property(weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
 

@@ -1,8 +1,8 @@
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @protocol HSBeaconKeyboardHeightObserverDelegate
 
--(void)keyboardHeightChanged:(int)keyboardHeight;
+-(void)keyboardHeightChanged:(CGFloat)keyboardHeight;
 
 @end
 

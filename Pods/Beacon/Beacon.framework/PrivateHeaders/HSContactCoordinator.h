@@ -22,10 +22,14 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) UINavigationController *navigationController;
 @property (readonly) HSBeaconContext *beaconContext;
 @property (nonatomic) BOOL navigateWithAnimation;
+@property (nonatomic, assign) BOOL routeToChat;
 
 - (instancetype)initWithNavigationController:(UINavigationController *)navigationController beaconContext:(HSBeaconContext *)context;
 
 - (void)showAsk;
+- (void)presentChat;
+
+- (void)showHistory;
 
 - (void)resetForm;
 

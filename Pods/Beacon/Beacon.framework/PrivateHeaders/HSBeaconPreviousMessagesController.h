@@ -1,8 +1,8 @@
 #import <UIKit/UIKit.h>
-
+#import "HSTableViewController.h"
 #import "HSBeaconContext.h"
 
-@interface HSBeaconPreviousMessagesController : UITableViewController
+@interface HSBeaconPreviousMessagesController : HSTableViewController
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *backButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *closeButton;

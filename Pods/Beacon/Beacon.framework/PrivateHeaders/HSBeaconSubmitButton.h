@@ -1,8 +1,8 @@
 #import <UIKit/UIKit.h>
-
+#import "HSButton.h"
 #import "HSBeaconTintColor.h"
 
-@interface HSBeaconSubmitButton : UIButton
+@interface HSBeaconSubmitButton : HSButton
 
 -(void)inactiveState;
 

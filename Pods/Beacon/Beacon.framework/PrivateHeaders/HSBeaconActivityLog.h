@@ -4,7 +4,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface HSBeaconActivityLog: NSObject
 
-- (void)addActivityOfType: (NSString *)type attributes: (NSDictionary *)dictionary;
+- (void)addActivityOfType:(NSString *)type attributes: (NSDictionary *)dictionary;
 
 - (NSArray<NSDictionary *> *)asArray;
 

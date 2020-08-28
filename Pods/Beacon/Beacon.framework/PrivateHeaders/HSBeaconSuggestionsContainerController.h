@@ -1,14 +1,17 @@
 #import <UIKit/UIKit.h>
-
+#import "HSViewController.h"
 #import "HSBeaconContext.h"
 #import "HSBeaconSuggestion.h"
 #import "HSBeaconSuggestionItem.h"
+#import "HSBeaconMessageEntryContainerController.h"
+#import "HSBeaconPreviousMessagesEnabler.h"
 
 #pragma mark - HSBeaconSuggestionsControllerDelegate
 
 @protocol HSBeaconSuggestionsContainerControllerDelegate
 
 - (void)displayContactFlow;
+- (void)displayChatFlow;
 
 @end
 
@@ -18,7 +21,7 @@ typedef NS_ENUM (NSInteger, HSMessagingItem) {
     HSGetInTouchItem, HSPreviousMessagesItem
 };
 
-@interface HSBeaconSuggestionsContainerController : UIViewController
+@interface HSBeaconSuggestionsContainerController : HSViewController<HSBeaconMessageEntryContainerControllerDelegate, HSBeaconPreviousMessagesEnabler>
 
 @property (nonatomic, weak) id<HSBeaconSuggestionsContainerControllerDelegate> delegate;
 @property (nonatomic, strong) HSBeaconContext *beaconContext;
@@ -34,7 +37,7 @@ typedef NS_ENUM (NSInteger, HSMessagingItem) {
 
 - (void)showPreviousMessages;
 
-- (void)showAsk;
+- (void)showGetInTouch;
 
 - (void)runSearch:(NSString *)searchText;
 

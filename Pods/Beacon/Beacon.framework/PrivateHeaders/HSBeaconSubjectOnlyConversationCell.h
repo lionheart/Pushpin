@@ -1,9 +1,9 @@
 #import <UIKit/UIKit.h>
-
+#import "HSTableViewCell.h"
 #import "HSBeaconContext.h"
 #import "HSBeaconConversation.h"
 
-@interface HSBeaconSubjectOnlyConversationCell : UITableViewCell
+@interface HSBeaconSubjectOnlyConversationCell : HSTableViewCell
 
 @property (weak, nonatomic) IBOutlet UILabel *subjectLabel;
 @property (weak, nonatomic) IBOutlet UIView *convoContainer;

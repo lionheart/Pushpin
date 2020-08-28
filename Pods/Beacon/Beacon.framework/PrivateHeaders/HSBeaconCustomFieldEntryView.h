@@ -1,5 +1,5 @@
 #import <UIKit/UIKit.h>
-
+#import "HSView.h"
 #import "HSBeaconCustomFieldDefinition.h"
 #import "HSBeaconCustomFieldValue.h"
 #import "HSBeaconPlaceholderTextViewDelegate.h"
@@ -13,7 +13,7 @@
 
 @end
 
-@interface HSBeaconCustomFieldEntryView : UIView
+@interface HSBeaconCustomFieldEntryView : HSView
 
 @property (nonatomic, strong) HSBeaconContext *beaconContext;
 

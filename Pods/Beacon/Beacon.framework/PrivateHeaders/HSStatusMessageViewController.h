@@ -1,10 +1,28 @@
 #import <UIKit/UIKit.h>
+#import "HSViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @class HSBorderedButton;
 
-@interface HSStatusMessageViewController : UIViewController
+typedef void(^VoidBlock)(void);
+
+@interface HSStatus : NSObject
+
+@property (nonatomic, readonly, nullable) NSString *title;
+@property (nonatomic, readonly, nonnull) NSString *message;
+@property (nonatomic, readonly, nullable) UIImage *image;
+@property (nonatomic, readonly, nullable) NSString *actionTitle;
+@property (nonatomic, readonly, nullable) VoidBlock action;
+
+- (instancetype)initWithMessage:(NSString *)errorString;
+- (instancetype)initWithTitle:(nullable NSString *)title message:(NSString *)message;
+- (instancetype)initWithTitle:(nullable NSString *)title message:(NSString *)message image:(nullable UIImage *)image;
+- (instancetype)initWithTitle:(nullable NSString *)title message:(NSString *)message image:(nullable UIImage *)image actionTitle:(nullable NSString *)actionTitle action:(nullable VoidBlock)action;
+
+@end
+
+@interface HSStatusMessageViewController : HSViewController
 
 @property (nonatomic, weak) IBOutlet UIImageView *imageView;
 @property (nonatomic, weak) IBOutlet UILabel *titleLabel;
@@ -13,15 +31,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *titleTopConstraint;
 @property (nonatomic, weak) IBOutlet HSBorderedButton *actionButton;
 
-- (instancetype)initWithMessage:(NSString *)errorString;
-
-- (instancetype)initWithTitle:(nullable NSString *)title message:(NSString *)message;
-
-- (instancetype)initWithTitle:(nullable NSString *)title message:(NSString *)message image:(nullable UIImage *)image;
+- (instancetype)initWithStatus:(HSStatus *)status;
 
 - (void)showStatusInViewController:(UIViewController *)viewController;
 
 - (void)removeStatus;
+- (void)updateForStatus:(HSStatus *)status;
 
 @end
 

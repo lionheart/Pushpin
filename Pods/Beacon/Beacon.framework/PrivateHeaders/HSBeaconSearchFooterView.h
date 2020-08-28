@@ -1,9 +1,9 @@
 #import <UIKit/UIKit.h>
-
+#import "HSView.h"
 @class HSBeaconContext;
 @class HSBorderedButton;
 
-@interface HSBeaconSearchFooterView : UIView
+@interface HSBeaconSearchFooterView : HSView
 
 @property (weak, nonatomic) HSBeaconContext *beaconContext;
 

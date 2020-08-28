@@ -1,4 +1,5 @@
 #import <UIKit/UIKit.h>
+@import UserNotifications;
 
 @protocol HSBeaconSuggestionItem;
 @class HSBeaconUser;
@@ -158,6 +159,12 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)setDeviceToken:(NSData *)deviceToken;
 
 /**
+ This lets Beacon know that a potential device token is not forthcoming, so dependent processes can continue.
+ You only need to call this for manual push notification handling.
+*/
++ (void)failedToRegisterForRemoteNotificationsWithError:(NSError *)error;
+
+/**
  Checks whether a given push notification came from Help Scout. You should call
  this method before calling `handlePushNotification:`.
  */
@@ -207,6 +214,15 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (void)handlePushNotification:(NSDictionary *)userInfo beaconSettings:(HSBeaconSettings *)settings viewController:(UIViewController *)viewController signature:(NSString * _Nullable)signature;
 
+/**
+ Determines whether or not a push notification should be shown to the user. The `completionHandler
+ will only be called in the case that `UNNotfication` is a Beacon notification.
+
+@param notification The UNNotification received by the UNUserNotificationCenterDelegate
+@param completionHandler The completion block passed to the UNUnserNotificationCenterDelegate
+*/
++ (void)handleWillPresentNotification:(UNNotification *)notification withCompletionHandler:(void(^)(UNNotificationPresentationOptions options))completionHandler;
+
 #pragma mark - Search
 /**
  Opens the Beacon window to search results for the provided string.
@@ -255,7 +271,7 @@ NS_ASSUME_NONNULL_BEGIN
  "/ask/message/" - message screen
  "/docs/search?query=help" - this is the same as the HSBeacon search method
 
- @param route The screen to navigate to - "/", "/ask/message", or "/docs/search?query=help"
+ @param route The screen to navigate to - "/", "/ask/message", "/previous-messages", or "/docs/search?query=help"
  @param settings The Beacon settings from which to load Beacon.
 
  @note Displays Beacon from the application delegate's window root view controller.
@@ -268,7 +284,7 @@ NS_ASSUME_NONNULL_BEGIN
  "/ask/message/" - message screen
  "/docs/search?query=help" - this is the same as the HSBeacon search method
 
- @param route The screen to navigate to - "/", "/ask/message", or "/docs/search?query=help"
+ @param route The screen to navigate to - "/", "/ask/message", "/previous-messages", or "/docs/search?query=help"
  @param settings The Beacon settings from which to load Beacon.
  @param viewController The view controller to display Beacon from.
  */
@@ -280,7 +296,7 @@ NS_ASSUME_NONNULL_BEGIN
  "/ask/message/" - message screen
  "/docs/search?query=help" - this is the same as the HSBeacon search method
 
- @param route The screen to navigate to - "/", "/ask/message", or "/docs/search?query=help"
+ @param route The screen to navigate to - "/", "/ask/message", "/previous-messages", or "/docs/search?query=help"
  @param settings The Beacon settings from which to load Beacon.
  @param signature The signature to provide, if you are using secure mode.
 
@@ -294,7 +310,7 @@ NS_ASSUME_NONNULL_BEGIN
  "/ask/message/" - message screen
  "/docs/search?query=help" - this is the same as the HSBeacon search method
 
- @param route The screen to navigate to - "/", "/ask/message", or "/docs/search?query=help"
+ @param route The screen to navigate to - "/", "/ask/message", "/previous-messages", or "/docs/search?query=help"
  @param settings The Beacon settings from which to load Beacon.
  @param viewController The view controller to display Beacon from.
  @param signature The signature to provide, if you are using secure mode.

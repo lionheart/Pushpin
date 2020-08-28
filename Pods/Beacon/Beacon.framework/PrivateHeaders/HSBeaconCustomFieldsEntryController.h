@@ -1,5 +1,5 @@
 #import <UIKit/UIKit.h>
-
+#import "HSViewController.h"
 #import "HSBeaconCustomFieldDefinition.h"
 #import "HSBeaconCustomFieldValue.h"
 #import "HSBeaconContext.h"
@@ -12,7 +12,7 @@
 
 @end
 
-@interface HSBeaconCustomFieldsEntryController : UIViewController
+@interface HSBeaconCustomFieldsEntryController : HSViewController
 
 @property (weak, nonatomic) IBOutlet UIView *topSeparator;
 @property (weak, nonatomic) IBOutlet UIView *bottomSeparator;
@@ -22,7 +22,7 @@
 
 @property (readwrite, nonatomic) NSArray<HSBeaconCustomFieldDefinition *> *fieldDefinitions;
 @property (readonly, nonatomic) NSArray<HSBeaconCustomFieldValue *> *fieldValues;
-@property (nonatomic) id<HSBeaconCustomFieldsEntryControllerDelegate> delegate;
+@property (nonatomic, weak) id<HSBeaconCustomFieldsEntryControllerDelegate> delegate;
 
 - (BOOL)validateFieldsWithErrorsDisplayed:(BOOL)showErrors;
 

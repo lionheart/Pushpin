@@ -1,8 +1,8 @@
 #import <UIKit/UIKit.h>
-
+#import "HSViewController.h"
 #import "HSBeaconContext.h"
 
-@interface HSBeaconMessageSentController: UIViewController
+@interface HSBeaconMessageSentController: HSViewController
 
 @property(weak, nonatomic) IBOutlet UIImageView *messageSentImageView;
 @property(weak, nonatomic) IBOutlet UILabel *messageSentHeaderLabel;

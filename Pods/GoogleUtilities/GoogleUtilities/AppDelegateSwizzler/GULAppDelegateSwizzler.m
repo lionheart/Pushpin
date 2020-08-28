@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#import "TargetConditionals.h"
+#import <TargetConditionals.h>
 
-#import <GoogleUtilities/GULAppDelegateSwizzler.h>
-#import <GoogleUtilities/GULAppEnvironmentUtil.h>
-#import <GoogleUtilities/GULLogger.h>
-#import <GoogleUtilities/GULMutableDictionary.h>
-#import "../Common/GULLoggerCodes.h"
-#import "Internal/GULAppDelegateSwizzler_Private.h"
+#import "GoogleUtilities/AppDelegateSwizzler/Internal/GULAppDelegateSwizzler_Private.h"
+#import "GoogleUtilities/AppDelegateSwizzler/Private/GULAppDelegateSwizzler.h"
+#import "GoogleUtilities/Common/GULLoggerCodes.h"
+#import "GoogleUtilities/Environment/Private/GULAppEnvironmentUtil.h"
+#import "GoogleUtilities/Logger/Private/GULLogger.h"
+#import "GoogleUtilities/Network/Private/GULMutableDictionary.h"
 
 #import <objc/runtime.h>
 
@@ -37,12 +37,8 @@ typedef void (*GULRealHandleEventsForBackgroundURLSessionIMP)(
     id, SEL, GULApplication *, NSString *, void (^)());
 #pragma clang diagnostic pop
 
-// This is needed to for the library to be warning free on iOS versions < 8.
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunguarded-availability"
 typedef BOOL (*GULRealContinueUserActivityIMP)(
     id, SEL, GULApplication *, NSUserActivity *, void (^)(NSArray *restorableObjects));
-#pragma clang diagnostic pop
 
 typedef void (*GULRealDidRegisterForRemoteNotificationsIMP)(id, SEL, GULApplication *, NSData *);
 
@@ -53,14 +49,10 @@ typedef void (*GULRealDidFailToRegisterForRemoteNotificationsIMP)(id,
 
 typedef void (*GULRealDidReceiveRemoteNotificationIMP)(id, SEL, GULApplication *, NSDictionary *);
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
-// This is needed to for the library to be warning free on iOS versions < 7.
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunguarded-availability"
+#if !TARGET_OS_WATCH && !TARGET_OS_OSX
 typedef void (*GULRealDidReceiveRemoteNotificationWithCompletionIMP)(
     id, SEL, GULApplication *, NSDictionary *, void (^)(UIBackgroundFetchResult));
-#pragma clang diagnostic pop
-#endif  // __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+#endif  // !TARGET_OS_WATCH && !TARGET_OS_OSX
 
 typedef void (^GULAppDelegateInterceptorCallback)(id<GULApplicationDelegate>);
 
@@ -75,11 +67,12 @@ static GULLoggerService kGULLoggerSwizzler = @"[GoogleUtilities/AppDelegateSwizz
 // Since Firebase SDKs also use this for app delegate proxying, in order to not be a breaking change
 // we disable App Delegate proxying when either of these two flags are set to NO.
 
-/** Plist key that allows Firebase developers to disable App Delegate Proxying. */
+/** Plist key that allows Firebase developers to disable App and Scene Delegate Proxying. */
 static NSString *const kGULFirebaseAppDelegateProxyEnabledPlistKey =
     @"FirebaseAppDelegateProxyEnabled";
 
-/** Plist key that allows developers not using Firebase to disable App Delegate Proxying. */
+/** Plist key that allows developers not using Firebase to disable App and Scene Delegate Proxying.
+ */
 static NSString *const kGULGoogleUtilitiesAppDelegateProxyEnabledPlistKey =
     @"GoogleUtilitiesAppDelegateProxyEnabled";
 
@@ -518,28 +511,26 @@ static dispatch_once_t sProxyAppDelegateRemoteNotificationOnceToken;
        storeDestinationImplementationTo:realImplementationsBySelector];
 
   // For application:didReceiveRemoteNotification:fetchCompletionHandler:
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
-  if ([GULAppEnvironmentUtil isIOS7OrHigher]) {
-    SEL didReceiveRemoteNotificationWithCompletionSEL =
-        NSSelectorFromString(kGULDidReceiveRemoteNotificationWithCompletionSEL);
-    SEL didReceiveRemoteNotificationWithCompletionDonorSEL =
-        @selector(application:donor_didReceiveRemoteNotification:fetchCompletionHandler:);
-    if ([appDelegate respondsToSelector:didReceiveRemoteNotificationWithCompletionSEL]) {
-      // Only add the application:didReceiveRemoteNotification:fetchCompletionHandler: method if
-      // the original AppDelegate implements it.
-      // This fixes a bug if an app only implements application:didReceiveRemoteNotification:
-      // (if we add the method with completion, iOS sees that one exists and does not call
-      // the method without the completion, which in this case is the only one the app implements).
+#if !TARGET_OS_WATCH && !TARGET_OS_OSX
+  SEL didReceiveRemoteNotificationWithCompletionSEL =
+      NSSelectorFromString(kGULDidReceiveRemoteNotificationWithCompletionSEL);
+  SEL didReceiveRemoteNotificationWithCompletionDonorSEL =
+      @selector(application:donor_didReceiveRemoteNotification:fetchCompletionHandler:);
+  if ([appDelegate respondsToSelector:didReceiveRemoteNotificationWithCompletionSEL]) {
+    // Only add the application:didReceiveRemoteNotification:fetchCompletionHandler: method if
+    // the original AppDelegate implements it.
+    // This fixes a bug if an app only implements application:didReceiveRemoteNotification:
+    // (if we add the method with completion, iOS sees that one exists and does not call
+    // the method without the completion, which in this case is the only one the app implements).
 
-      [self proxyDestinationSelector:didReceiveRemoteNotificationWithCompletionSEL
-          implementationsFromSourceSelector:didReceiveRemoteNotificationWithCompletionDonorSEL
-                                  fromClass:[GULAppDelegateSwizzler class]
-                                    toClass:appDelegateSubClass
-                                  realClass:realClass
-           storeDestinationImplementationTo:realImplementationsBySelector];
-    }
+    [self proxyDestinationSelector:didReceiveRemoteNotificationWithCompletionSEL
+        implementationsFromSourceSelector:didReceiveRemoteNotificationWithCompletionDonorSEL
+                                fromClass:[GULAppDelegateSwizzler class]
+                                  toClass:appDelegateSubClass
+                                realClass:realClass
+         storeDestinationImplementationTo:realImplementationsBySelector];
   }
-#endif  // __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+#endif  // !TARGET_OS_WATCH && !TARGET_OS_OSX
 }
 
 /// We have to do this to invalidate the cache that caches the original respondsToSelector of
@@ -548,11 +539,13 @@ static dispatch_once_t sProxyAppDelegateRemoteNotificationOnceToken;
 /// Register KVO only once. Otherwise, the observing method will be called as many times as
 /// being registered.
 + (void)reassignAppDelegate {
+#if !TARGET_OS_WATCH
   id<GULApplicationDelegate> delegate = [self sharedApplication].delegate;
   [self sharedApplication].delegate = nil;
   [self sharedApplication].delegate = delegate;
   gOriginalAppDelegate = delegate;
   [[GULAppDelegateObserver sharedInstance] observeUIApplication];
+#endif
 }
 
 #pragma mark - Helper methods
@@ -796,9 +789,6 @@ static dispatch_once_t sProxyAppDelegateRemoteNotificationOnceToken;
 
 #pragma mark - [Donor Methods] User Activities overridden handler methods
 
-// This is needed to for the library to be warning free on iOS versions < 8.
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunguarded-availability"
 - (BOOL)application:(GULApplication *)application
     continueUserActivity:(NSUserActivity *)userActivity
       restorationHandler:(void (^)(NSArray *restorableObjects))restorationHandler {
@@ -809,6 +799,7 @@ static dispatch_once_t sProxyAppDelegateRemoteNotificationOnceToken;
       continueUserActivityIMPPointer.pointerValue;
 
   __block BOOL returnedValue = NO;
+#if !TARGET_OS_WATCH
   [GULAppDelegateSwizzler
       notifyInterceptorsWithMethodSelector:methodSelector
                                   callback:^(id<GULApplicationDelegate> interceptor) {
@@ -816,6 +807,7 @@ static dispatch_once_t sProxyAppDelegateRemoteNotificationOnceToken;
                                                          continueUserActivity:userActivity
                                                            restorationHandler:restorationHandler];
                                   }];
+#endif
   // Call the real implementation if the real App Delegate has any.
   if (continueUserActivityIMP) {
     returnedValue |= continueUserActivityIMP(self, methodSelector, application, userActivity,
@@ -823,7 +815,6 @@ static dispatch_once_t sProxyAppDelegateRemoteNotificationOnceToken;
   }
   return returnedValue;
 }
-#pragma clang diagnostic pop
 
 #pragma mark - [Donor Methods] Remote Notifications
 
@@ -880,10 +871,7 @@ static dispatch_once_t sProxyAppDelegateRemoteNotificationOnceToken;
   }
 }
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
-// This is needed to for the library to be warning free on iOS versions < 7.
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wunguarded-availability"
+#if !TARGET_OS_WATCH && !TARGET_OS_OSX
 - (void)application:(GULApplication *)application
     donor_didReceiveRemoteNotification:(NSDictionary *)userInfo
                 fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
@@ -913,8 +901,7 @@ static dispatch_once_t sProxyAppDelegateRemoteNotificationOnceToken;
                                                   completionHandler);
   }
 }
-#pragma clang diagnostic pop
-#endif  // __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+#endif  // !TARGET_OS_WATCH && !TARGET_OS_OSX
 
 - (void)application:(GULApplication *)application
     donor_didReceiveRemoteNotification:(NSDictionary *)userInfo {

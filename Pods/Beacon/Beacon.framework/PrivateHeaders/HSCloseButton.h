@@ -1,5 +1,6 @@
 #import <UIKit/UIKit.h>
+#import "HSButton.h"
 
-@interface HSCloseButton : UIButton
+@interface HSCloseButton : HSButton
 
 @end

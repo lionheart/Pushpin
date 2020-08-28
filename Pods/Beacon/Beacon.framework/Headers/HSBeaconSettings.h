@@ -1,4 +1,4 @@
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 #import "HSBeaconContactForm.h"
 #import "HSBeaconMessagingSettings.h"
@@ -17,9 +17,20 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  The `prefill` method is called before showing the new conversation contact form. Any values
  set on the `form` object will be prepopulated for the customer.
+
+ @note Prefilled forms will be ignored if there is an existing draft message. Draft messages can be removed by calling the `reset` function on `HSBeacon`.
  */
 - (void)prefill:(HSBeaconContactForm *)form;
 
+@optional
+/**
+ The `sessionAttributes` method is called before showing the new conversation contact form. Keys (labels) and values in this dictionary (up to 20)
+ will be added into the Beacon visitor activity note that’s only relevant to a specific conversation. We do not sync this data to either the customer
+ profile or the Beacon Sidebar app.
+
+ @note Each attribute label can contain up to 100 characters, and each value can contain up to 10,000 characters.
+ */
+- (NSDictionary<NSString*, NSString*> *)sessionAttributes;
 
 @optional
 /**
@@ -94,11 +105,23 @@ NS_ASSUME_NONNULL_BEGIN
 @property BOOL messagingEnabled;
 
 /**
+Disable previous messages manually if messaging is enabled in the Beacon config.
+*/
+@property BOOL enablePreviousMessages;
+
+/**
  Disable the Docs integration manually if it's enabled in the Beacon config.
 
  This will not enable Docs if it's disabled in the config.
  */
 @property BOOL docsEnabled;
+
+/**
+ Disable the Chat integration manually if it's enabled in the Beacon config.
+
+ This will not enable Chat if it's disabled in the config.
+ */
+@property BOOL chatEnabled;
 
 /**
  This replaces the default blue color used for clickable text throughout Beacon. For example,

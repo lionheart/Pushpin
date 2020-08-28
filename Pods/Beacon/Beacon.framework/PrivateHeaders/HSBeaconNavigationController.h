@@ -1,5 +1,5 @@
 #import <UIKit/UIKit.h>
-
+#import "HSNavigationController.h"
 @class HSBeaconContext;
 @class HSBeaconNavigationController;
 
@@ -9,7 +9,7 @@
 
 @end
 
-@interface HSBeaconNavigationController : UINavigationController
+@interface HSBeaconNavigationController : HSNavigationController
 
 @property (nonatomic, weak) id<HSBeaconNavigationControllerDelegate> beaconNavigationDelegate;
 @property (nonatomic, weak) HSBeaconContext *beaconContext;

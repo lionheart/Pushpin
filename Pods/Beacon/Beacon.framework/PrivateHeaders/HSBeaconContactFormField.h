@@ -1,36 +1,40 @@
 #import <UIKit/UIKit.h>
+#import "HSView.h"
 #import "HSBeaconContactFormValidator.h"
 
 @class HSBeaconContactFormField;
 
-@protocol HSBeaconContactFormFieldDelegate
+@protocol HSBeaconContactFormFieldDelegate <NSObject>
 
-- (void)contactFormFieldTextChanged:(HSBeaconContactFormField *)field;
-- (void)contactFormField:(HSBeaconContactFormField *)field didReachMaximumLength:(BOOL)reachedMaximumLength;
+- (void)contactFormFieldTextChanged:(HSBeaconContactFormField * _Nonnull)field;
+- (void)contactFormField:(HSBeaconContactFormField * _Nonnull)field didReachMaximumLength:(BOOL)reachedMaximumLength;
+
+@optional
+
+- (BOOL)contactFormFieldTypeShouldReturn:(HSContactFieldType)fieldType field:(UITextField * _Nonnull)textField;
 
 @end
 
-@interface HSBeaconContactFormField : UIView
+@interface HSBeaconContactFormField : HSView
 
-@property (weak, nonatomic) IBOutlet UITextField *inputField;
-@property (weak, nonatomic) IBOutlet UIView *topErrorBar;
-@property (weak, nonatomic) IBOutlet UIView *bottomErrorBar;
-@property (weak, nonatomic) IBOutlet UIImageView *errorIcon;
-@property (weak, nonatomic) id<HSBeaconContactFormFieldDelegate> delegate;
-@property (strong, nonatomic) IBOutlet UIView *contentView;
+@property (weak, nonatomic, nullable) IBOutlet UITextField *inputField;
+@property (weak, nonatomic, nullable) IBOutlet UIView *bottomErrorBar;
+@property (weak, nonatomic, nullable) IBOutlet UIImageView *errorIcon;
+@property (weak, nonatomic, nullable) id<HSBeaconContactFormFieldDelegate> delegate;
+@property (strong, nonatomic, nullable) IBOutlet UIView *contentView;
 @property (nonatomic) HSContactFieldType fieldType;
 
 - (void)showError;
 
 - (void)hideError;
 
-- (NSString *)text;
+- (NSString * _Nullable)text;
 
-- (void)setText:(NSString *)text;
+- (void)setText:(NSString * _Nullable)text;
 
 - (void)resetValue;
 
-- (void)setPlaceholder:(NSString *)placeholder;
+- (void)setPlaceholder:(NSString * _Nullable)placeholder;
 
 - (HSContactFieldValidationResult)validate:(BOOL)errorsDisplayed;
 

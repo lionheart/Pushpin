@@ -1,21 +1,17 @@
 #import <Foundation/Foundation.h>
 
-#import "HSBeaconConversation.h"
-
-NS_ASSUME_NONNULL_BEGIN
+@class HSBeaconConversation;
 
 @interface HSBeaconReplyNotificationPayload : NSObject
 
-@property (nonatomic, strong) NSNumber *conversationID;
-@property (nonatomic, strong) NSString *mailboxID;
-@property (nonatomic, strong) NSString *messageID;
-@property (nonatomic, strong) NSString *threadID;
-@property (nonatomic, strong) NSString *title;
+@property (nonatomic, strong, nonnull) NSNumber *conversationID;
+@property (nonatomic, strong, nonnull) NSString *mailboxID;
+@property (nonatomic, strong, nonnull) NSString *messageID;
+@property (nonatomic, strong, nonnull) NSString *threadID;
+@property (nonatomic, strong, nullable) NSString *title;
 
-- (nullable instancetype)initWithUserInfo:(NSDictionary *)userInfo;
+- (nullable instancetype)initWithUserInfo:(NSDictionary *_Nullable)userInfo;
 
-- (HSBeaconConversation *)toConversation;
+- (HSBeaconConversation *_Nonnull)toConversation;
 
 @end
-
-NS_ASSUME_NONNULL_END

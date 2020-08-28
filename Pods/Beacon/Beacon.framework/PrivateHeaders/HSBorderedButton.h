@@ -1,6 +1,7 @@
 #import <UIKit/UIKit.h>
+#import "HSButton.h"
 
-@interface HSBorderedButton : UIButton
+@interface HSBorderedButton : HSButton
 
 @property (nonatomic) IBInspectable UIColor *borderColor;
 @property (nonatomic) IBInspectable CGFloat borderWidth;

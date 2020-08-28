@@ -42,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) BOOL contactFormAllowAttachments;
 
 /**
- Was contactFormAllowAttachmentsSet set with a local override.
+ Returns whether `contactFormAllowAttachments` was set with a local override.
  */
 @property (readonly, nonatomic) BOOL contactFormAllowAttachmentsSet;
 
@@ -52,12 +52,14 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) BOOL showGetInTouch;
 
 /**
- Was showGetInTouchSet set with a local override.
+ Returns whether `showGetInTouch` was set with a local override.
  */
 @property (readonly, nonatomic) BOOL showGetInTouchSet;
 
 /**
- When custom field values are pre-filled, set to true to make them visible.
+ By default, prefilled custom fields will be hidden so that the prefilled values cannot be edited. Set this to true to display them and make them editable.
+
+ @note If a draft has been entered into the contact form, the prefill process will be skipped in favor of using the draft values. Draft messages can be cleared by calling the `reset` function on `HSBeacon`.
  */
 @property (nonatomic) BOOL showPrefilledCustomFields;
 

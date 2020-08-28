@@ -10,6 +10,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (readonly, nonatomic) NSString *beaconId;
 
+@property (readonly, nonatomic) NSString *companyName;
+
 @property (readonly, nonatomic) NSString *name;
 
 @property (readonly, nonatomic) NSString *beaconColorHexValue;
@@ -20,6 +22,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (readonly, nonatomic) BOOL messagingEnabled;
 
+@property (readonly, nonatomic) BOOL chatEnabled;
+
 @property (readonly, nonatomic) BOOL showNameEnabled;
 
 @property (readonly, nonatomic) BOOL showSubjectEnabled;
@@ -29,6 +33,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, nonatomic) BOOL customFieldsEnabled;
 
 @property (readonly, nonatomic) BOOL showGetInTouchEnabled;
+
+@property (readonly, nonatomic) BOOL chatRequiresEmail;
 
 @property (readonly, nonatomic) NSString *expectedResponseTime;
 

@@ -1,6 +1,7 @@
 #import <UIKit/UIKit.h>
+#import "HSView.h"
 
-@interface HSBeaconErrorView : UIView
+@interface HSBeaconErrorView : HSView
 
 -(void)showError:(NSString *)errorMessage;
 

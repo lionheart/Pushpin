@@ -5,7 +5,6 @@
 
 @interface HSBeaconSecurityInfo : NSObject
 
-@property (nonatomic) HSBeaconUser *user;
 @property (nonatomic) NSString *signature;
 @property (nonatomic) NSString *deviceId;
 @property (nonatomic) BOOL signatureVerified;
@@ -17,10 +16,6 @@
 @property (nonatomic) NSString *visitorEmail;
 @property (nonatomic, readonly) NSString *name;
 @property (nonatomic, readonly) NSString *email;
-
--(BOOL)requiresSynchronization;
-
--(void)markSynchronized;
 
 -(HSBeaconUserDeviceInfo *)userDeviceInfo;
 

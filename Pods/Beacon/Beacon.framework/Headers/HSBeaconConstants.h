@@ -1,0 +1,3 @@
+static NSInteger const MAX_SESSION_ATTRIBUTES = 20;
+static NSInteger const MAX_SESSION_ATTRIBUTE_LABEL = 100;
+static NSInteger const MAX_SESSION_ATTRIBUTE_VALUE = 10000;

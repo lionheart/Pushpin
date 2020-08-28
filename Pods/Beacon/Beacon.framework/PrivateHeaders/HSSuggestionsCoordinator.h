@@ -32,6 +32,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)updateSuggestions:(NSArray<id<HSBeaconSuggestionItem>> *)suggestions;
 
+- (void)showPreviousMessages;
+
 - (HSContactCoordinator *)contactCoordinator;
 
 @end

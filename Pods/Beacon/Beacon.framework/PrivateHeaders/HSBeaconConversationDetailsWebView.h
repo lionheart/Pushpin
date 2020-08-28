@@ -1,9 +1,9 @@
 #import <UIKit/UIKit.h>
-
+#import "HSWebView.h"
 #import "HSBeaconContext.h"
 #import "HSBeaconConversationThread.h"
 
-@interface HSBeaconConversationDetailsWebView : UIWebView
+@interface HSBeaconConversationDetailsWebView : HSWebView
 
 @property (nonatomic) HSBeaconContext *beaconContext;
 

@@ -1,11 +1,20 @@
 #import <UIKit/UIKit.h>
-
+#import "HSView.h"
 #import "HSBeaconFontIcons.h"
 
-@interface HSBeaconNavigationTabView : UIView
+@class HSBeaconNavigationTabView;
+
+@protocol HSBeaconNavigationTabViewDelegate <NSObject>
+
+- (void)beaconNavigationTabView:(HSBeaconNavigationTabView *)tabView didSelectTabAtIndex:(NSUInteger)index;
+
+@end
+
+@interface HSBeaconNavigationTabView : HSView
+
+@property (nonatomic, assign, readonly) NSUInteger selectedIndex;
+@property (nonatomic, weak) id<HSBeaconNavigationTabViewDelegate> delegate;
 
 - (void)addTab:(HSIcon)icon text:(NSString *)text pressed:(BOOL)pressed tabColor:(UIColor *)color;
-
-- (void)setTabAction:(int)index target:(id)target action:(SEL)action;
 
 @end

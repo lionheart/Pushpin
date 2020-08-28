@@ -1,4 +1,6 @@
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface HSBeaconBundleUtils : NSObject
 
@@ -7,3 +9,5 @@
 + (UIViewController *)viewControllerInStoryboard:(NSString *_Nonnull)storyboardName viewControllerIdentifier:(NSString *_Nonnull)identifier;
 
 @end
+
+NS_ASSUME_NONNULL_END

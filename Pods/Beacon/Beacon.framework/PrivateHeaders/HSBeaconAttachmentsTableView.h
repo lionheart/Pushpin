@@ -1,5 +1,5 @@
 #import <UIKit/UIKit.h>
-
+#import "HSTableView.h"
 #import "HSBeaconAttachment.h"
 #import "HSBeaconContext.h"
 
@@ -13,7 +13,7 @@
 
 @end
 
-@interface HSBeaconAttachmentsTableView : UITableView
+@interface HSBeaconAttachmentsTableView : HSTableView
 
 @property (nonatomic) HSBeaconContext *beaconContext;
 @property (nonatomic) NSMutableArray<HSBeaconAttachment *> *attachments;

@@ -1,10 +1,10 @@
 #import <UIKit/UIKit.h>
-
+#import "HSTableViewCell.h"
 #import "HSBeaconConversation.h"
 #import "HSBeaconPaddingLabel.h"
 #import "HSBeaconContext.h"
 
-@interface HSBeaconWaitingConversationCell : UITableViewCell
+@interface HSBeaconWaitingConversationCell : HSTableViewCell
 
 @property (weak, nonatomic) IBOutlet UIView *multiThreadHeader;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *multiThreadHeaderHeight;

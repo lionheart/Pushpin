@@ -1,23 +1,23 @@
 #import <UIKit/UIKit.h>
-
+#import "HSTableViewCell.h"
 #import "HSBeaconAttachment.h"
 
 @protocol HSBeaconRemoveAttachmentDelegate
 
--(void)removeAttachment: (HSBeaconAttachment *)attachment;
+-(void)removeAttachment: (nonnull HSBeaconAttachment *)attachment;
 
 @end
 
-@interface HSBeaconAttachmentTableViewCell: UITableViewCell
+@interface HSBeaconAttachmentTableViewCell: HSTableViewCell
 
-@property(weak, nonatomic) IBOutlet UILabel *filenameLabel;
-@property(weak, nonatomic) IBOutlet UILabel *statusLabel;
-@property(weak, nonatomic) IBOutlet UIImageView *attachmentImage;
-@property(weak, nonatomic) IBOutlet UIProgressView *attachmentProgress;
-@property (weak, nonatomic) IBOutlet UIButton *removeLabel;
+@property(weak, nonatomic, nullable) IBOutlet UILabel *filenameLabel;
+@property(weak, nonatomic, nullable) IBOutlet UILabel *statusLabel;
+@property(weak, nonatomic, nullable) IBOutlet UIImageView *attachmentImage;
+@property(weak, nonatomic, nullable) IBOutlet UIProgressView *attachmentProgress;
+@property (weak, nonatomic, nullable) IBOutlet UIButton *removeLabel;
 
-@property(weak, nonatomic) id<HSBeaconRemoveAttachmentDelegate> removeAttachmentDelegate;
+@property(weak, nonatomic, nullable) id<HSBeaconRemoveAttachmentDelegate> removeAttachmentDelegate;
 
--(void)setAttachment: (HSBeaconAttachment *)attachment;
+-(void)setAttachment: (nonnull HSBeaconAttachment *)attachment;
 
 @end
