@@ -1,6 +1,0 @@
-framework module HSAttachmentPicker {
-  umbrella header "HSAttachmentPicker-umbrella.h"
-
-  export *
-  module * { export * }
-}
