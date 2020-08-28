@@ -179,7 +179,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     topBorder.backgroundColor = [UIColor lightGrayColor];
 
     NSDictionary *barButtonTitleTextAttributes = @{NSForegroundColorAttributeName:[UIColor darkGrayColor],
-                                                   NSFontAttributeName: [UIFont fontWithName:[PPTheme boldFontName] size:16] };
+                                                   NSFontAttributeName:[UIFont boldSystemFontOfSize:16] };
 
     self.tagsButton = [UIButton buttonWithType:UIButtonTypeSystem];
     self.tagsButton.translatesAutoresizingMaskIntoConstraints = NO;

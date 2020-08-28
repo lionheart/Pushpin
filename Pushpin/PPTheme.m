@@ -47,31 +47,23 @@
 }
 
 + (UIFont *)boldTextLabelFont {
-    return [UIFont fontWithName:[PPTheme boldFontName] size:16];
+    return [UIFont boldSystemFontOfSize:16];
 }
 
 + (UIFont *)textLabelFontAlternate {
-    return [PPTheme sharedFontHelper:17];
+    return [UIFont systemFontOfSize:17];
 }
 
 + (UIFont *)textLabelFont {
-    return [PPTheme sharedFontHelper:16];
+    return [UIFont systemFontOfSize:16];
 }
 
 + (UIFont *)detailLabelFont {
-    return [PPTheme sharedFontHelper:15];
+    return [UIFont systemFontOfSize:15];
 }
 
 + (UIFont *)detailLabelFontAlternate1 {
-    return [PPTheme sharedFontHelper:13];
-}
-
-+ (UIFont *)sharedFontHelper:(NSInteger)size {
-    if ([[PPTheme fontName] isEqualToString:@".SFUI-Regular"]) {
-        return [UIFont systemFontOfSize:size];
-    }
-    
-    return [UIFont fontWithName:[PPTheme fontName] size:size];
+    return [UIFont systemFontOfSize:13];
 }
 
 + (CGFloat)fontSize {
@@ -110,14 +102,6 @@
 + (NSString *)browseFontName {
     PPSettings *settings = [PPSettings sharedSettings];
     return settings.fontName;
-}
-
-+ (NSString *)fontName {
-    return [UIFont systemFontOfSize:10].fontName;
-}
-
-+ (NSString *)boldFontName {
-    return [UIFont boldSystemFontOfSize:10].fontName;
 }
 
 + (UIColor *)bookmarkBackgroundColor {

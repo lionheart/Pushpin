@@ -34,7 +34,7 @@ static NSString *CellIdentifier = @"Cell";
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:16];
+    UIFont *font = [UIFont systemFontOfSize:16];
     self.userTextField = [[UITextField alloc] init];
     self.userTextField.font = font;
     self.userTextField.delegate = self;

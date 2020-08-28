@@ -124,7 +124,7 @@ static NSString *CellIdentifier = @"Cell";
     self.bottomConstraint = [self.tableView.bottomAnchor constraintEqualToAnchor:self.bottomLayoutGuide.bottomAnchor];
     [self.view addConstraint:self.bottomConstraint];
     
-    UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:16];
+    UIFont *font = [UIFont systemFontOfSize:16];
     self.tagsToAddTextField = [[UITextField alloc] init];
     self.tagsToAddTextField.font = font;
     self.tagsToAddTextField.delegate = self;

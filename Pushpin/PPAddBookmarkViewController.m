@@ -146,13 +146,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                                                                target:self
                                                                                action:@selector(rightBarButtonTouchUpInside:)];
 
-        self.descriptionAttributes = [@{NSFontAttributeName: [UIFont fontWithName:[PPTheme fontName] size:16],
+        self.descriptionAttributes = [@{NSFontAttributeName: [UIFont systemFontOfSize:16],
                                         NSForegroundColorAttributeName: HEX(0xc7c7cdff),
                                         NSParagraphStyleAttributeName: paragraphStyle } mutableCopy];
         
         PPSettings *settings = [PPSettings sharedSettings];
         
-        UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:16];
+        UIFont *font = [UIFont systemFontOfSize:16];
         self.urlTextField = [[UITextField alloc] init];
         self.urlTextField.translatesAutoresizingMaskIntoConstraints = NO;
         self.urlTextField.font = font;
@@ -466,10 +466,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [cell.contentView lhs_removeSubviews];
         cell.textLabel.text = @"";
         cell.textLabel.enabled = YES;
-        cell.textLabel.font = [UIFont fontWithName:[PPTheme fontName] size:16];
+        cell.textLabel.font = [UIFont systemFontOfSize:16];
         cell.imageView.image = nil;
         cell.detailTextLabel.text = @"";
-        cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme fontName] size:16];
+        cell.detailTextLabel.font = [UIFont systemFontOfSize:16];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.accessoryView = nil;
         
@@ -552,10 +552,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [cell.contentView lhs_removeSubviews];
         cell.textLabel.text = @"";
         cell.textLabel.enabled = YES;
-        cell.textLabel.font = [UIFont fontWithName:[PPTheme fontName] size:16];
+        cell.textLabel.font = [UIFont systemFontOfSize:16];
         cell.imageView.image = nil;
         cell.detailTextLabel.text = @"";
-        cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme fontName] size:16];
+        cell.detailTextLabel.font = [UIFont systemFontOfSize:16];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.accessoryView = nil;
         
@@ -589,10 +589,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         }
                         
                         if (self.isUpdate) {
-                            self.urlTextField.font = [UIFont fontWithName:[PPTheme fontName] size:14];
+                            self.urlTextField.font = [UIFont systemFontOfSize:14];
                             self.urlTextField.textColor = [UIColor grayColor];
                         } else {
-                            self.urlTextField.font = [UIFont fontWithName:[PPTheme fontName] size:16];
+                            self.urlTextField.font = [UIFont systemFontOfSize:16];
                             self.urlTextField.textColor = [UIColor blackColor];
                         }
                         
@@ -1315,7 +1315,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
     PPBadgeWrapperView *wrapper = [[PPBadgeWrapperView alloc] initWithBadges:badges
                                                                      options:@{
-                                                                               PPBadgeFontName: [PPTheme fontName],
                                                                                PPBadgeFontSize: @([PPTheme staticBadgeFontSize]) }];
     
     if (!self.isEditingTags) {

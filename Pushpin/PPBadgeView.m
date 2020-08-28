@@ -78,12 +78,17 @@ static const CGFloat PADDING_Y = 2;
                                          } mutableCopy];
 
         NSString *browseFontName = [PPTheme browseFontName];
+        UIFont *font;
+        CGFloat fontSize = [badgeOptions[PPBadgeFontSize] floatValue];
         if (browseFontName) {
             badgeOptions[PPBadgeFontName] = browseFontName;
+            font = [UIFont fontWithName:browseFontName size:fontSize];
+        } else {
+            font = [UIFont systemFontOfSize:fontSize];
         }
 
         [badgeOptions addEntriesFromDictionary:options];
-        UIFont *font = [UIFont fontWithName:badgeOptions[PPBadgeFontName] size:[badgeOptions[PPBadgeFontSize] floatValue]];
+        
         self.normalColor = badgeOptions[PPBadgeNormalBackgroundColor];
         self.selectedColor = badgeOptions[PPBadgeActiveBackgroundColor];
         self.disabledColor = badgeOptions[PPBadgeDisabledBackgroundColor];

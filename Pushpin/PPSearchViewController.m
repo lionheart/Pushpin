@@ -86,7 +86,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
     self.pinboardSearchScope = ASPinboardSearchScopeNone;
     
-    UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:16];
+    UIFont *font = [UIFont systemFontOfSize:16];
     self.searchTextField = [[UITextField alloc] init];
     self.searchTextField.font = font;
     self.searchTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;

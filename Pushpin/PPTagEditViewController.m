@@ -125,7 +125,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                                 modifierFlags:0
                                                        action:@selector(handleKeyCommand:)];
     
-    UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:16];
+    UIFont *font = [UIFont systemFontOfSize:16];
     self.tagTextField = [[UITextField alloc] init];
     self.tagTextField.font = font;
     self.tagTextField.translatesAutoresizingMaskIntoConstraints = NO;
@@ -159,10 +159,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [cell.contentView lhs_removeSubviews];
     cell.textLabel.text = @"";
     cell.textLabel.enabled = YES;
-    cell.textLabel.font = [UIFont fontWithName:[PPTheme fontName] size:16];
+    cell.textLabel.font = [UIFont systemFontOfSize:16];
     cell.imageView.image = nil;
     cell.detailTextLabel.text = @"";
-    cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme fontName] size:16];
+    cell.detailTextLabel.font = [UIFont systemFontOfSize:16];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.accessoryView = nil;
 
@@ -797,7 +797,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
     
     PPBadgeWrapperView *wrapper = [[PPBadgeWrapperView alloc] initWithBadges:badges
                                                                      options:@{
-                                                                               PPBadgeFontName: [PPTheme fontName],
                                                                                PPBadgeFontSize: @([PPTheme staticBadgeFontSize]) }];
     wrapper.translatesAutoresizingMaskIntoConstraints = NO;
     wrapper.delegate = self;

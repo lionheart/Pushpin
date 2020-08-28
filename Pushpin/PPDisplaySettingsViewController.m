@@ -234,7 +234,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                                                    forIndexPath:indexPath];
             cell.textLabel.font = [PPTheme textLabelFont];
             cell.detailTextLabel.text = nil;
-            cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme fontName] size:13];
+            cell.detailTextLabel.font = [UIFont systemFontOfSize:13];
             cell.detailTextLabel.textColor = [UIColor grayColor];
             cell.accessoryView = nil;
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -308,7 +308,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier
                                                            forIndexPath:indexPath];
                     cell.textLabel.font = [PPTheme textLabelFont];
-                    cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme fontName] size:13];
+                    cell.detailTextLabel.font = [UIFont systemFontOfSize:13];
                     cell.detailTextLabel.textColor = [UIColor grayColor];
                     cell.detailTextLabel.numberOfLines = 0;
                     cell.accessoryView = nil;
@@ -327,7 +327,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier
                                                            forIndexPath:indexPath];
                     cell.textLabel.font = [PPTheme textLabelFont];
-                    cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme fontName] size:13];
+                    cell.detailTextLabel.font = [UIFont systemFontOfSize:13];
                     cell.detailTextLabel.textColor = [UIColor grayColor];
                     cell.detailTextLabel.numberOfLines = 0;
                     cell.accessoryView = nil;
@@ -381,7 +381,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier
                                                            forIndexPath:indexPath];
                     cell.textLabel.font = [PPTheme textLabelFont];
-                    cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme fontName] size:13];
+                    cell.detailTextLabel.font = [UIFont systemFontOfSize:13];
                     cell.detailTextLabel.textColor = [UIColor grayColor];
                     cell.detailTextLabel.numberOfLines = 0;
                     cell.accessoryView = nil;
@@ -415,7 +415,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier
                                                    forIndexPath:indexPath];
             cell.textLabel.font = [PPTheme textLabelFont];
-            cell.detailTextLabel.font = [UIFont fontWithName:[PPTheme fontName] size:13];
+            cell.detailTextLabel.font = [UIFont systemFontOfSize:13];
             cell.detailTextLabel.textColor = [UIColor grayColor];
             cell.detailTextLabel.text = nil;
             cell.detailTextLabel.numberOfLines = 0;

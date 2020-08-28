@@ -33,7 +33,7 @@
         self.automaticallyAdjustsScrollViewInsets = NO;
         self.title = NSLocalizedString(@"Description", nil);
         
-        UIFont *font = [UIFont fontWithName:[PPTheme fontName] size:16];
+        UIFont *font = [UIFont systemFontOfSize:16];
         
         PPSettings *settings = [PPSettings sharedSettings];
 
