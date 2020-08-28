@@ -28,7 +28,7 @@
 			<key>CFBundleURLIconFile</key>
 			<string>Icon~iphone</string>
 			<key>CFBundleURLName</key>
-			<string>io.aurora.pushpin</string>
+			<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>pushpin</string>

@@ -24,18 +24,14 @@
 #import "PPLoginViewController.h"
 #import "PPGenericPostViewController.h"
 #import "PPPinboardDataSource.h"
-#import "PPNotification.h"
 #import "PPAddBookmarkViewController.h"
-#import "PPWebViewController.h"
 #import "PPPinboardFeedDataSource.h"
 #import "PPTheme.h"
 #import "PPStatusBar.h"
 #import "PPSettings.h"
 #import "PPCachingURLProtocol.h"
-#import "PPURLCache.h"
 #import "PPUtilities.h"
 #import "PPFeedListViewController.h"
-#import "PPNavigationController.h"
 
 #import "NSString+URLEncoding2.h"
 #import "MFMailComposeViewController+Theme.h"
@@ -67,7 +63,8 @@
     
     NSString *googlePlistName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GooglePlistName"];
     NSString *path = [[NSBundle mainBundle] pathForResource:googlePlistName ofType:@"plist"];
-    if (path.length > 0) {
+    DLog(@"%@", path);
+    if (path && path.length > 0) {
         FIROptions *options = [[FIROptions alloc] initWithContentsOfFile:path];
         [FIRApp configureWithOptions:options];
     } else {
@@ -298,10 +295,10 @@
                 while ([searchResults next]) {
                     NSString *name = [searchResults stringForColumn:@"name"];
                     NSString *query = [searchResults stringForColumn:@"query"];
-                    kPushpinFilterType private = [searchResults intForColumn:@"private"];
-                    kPushpinFilterType unread = [searchResults intForColumn:@"unread"];
-                    kPushpinFilterType starred = [searchResults intForColumn:@"starred"];
-                    kPushpinFilterType tagged = [searchResults intForColumn:@"tagged"];
+                    kPushpinFilterType private = (kPushpinFilterType) [searchResults intForColumn:@"private"];
+                    kPushpinFilterType unread = (kPushpinFilterType) [searchResults intForColumn:@"unread"];
+                    kPushpinFilterType starred = (kPushpinFilterType) [searchResults intForColumn:@"starred"];
+                    kPushpinFilterType tagged = (kPushpinFilterType) [searchResults intForColumn:@"tagged"];
                     
                     search = @{@"name": name,
                                @"query": query,
@@ -317,11 +314,11 @@
                 dataSource.searchQuery = search[@"query"];
             }
             
-            dataSource.unread = [search[@"unread"] integerValue];
-            dataSource.isPrivate = [search[@"private"] integerValue];
-            dataSource.starred = [search[@"starred"] integerValue];
+            dataSource.unread = (kPushpinFilterType) [search[@"unread"] integerValue];
+            dataSource.isPrivate = (kPushpinFilterType) [search[@"private"] integerValue];
+            dataSource.starred = (kPushpinFilterType) [search[@"starred"] integerValue];
             
-            kPushpinFilterType tagged = [search[@"tagged"] integerValue];
+            kPushpinFilterType tagged = (kPushpinFilterType) [search[@"tagged"] integerValue];
             switch (tagged) {
                 case kPushpinFilterTrue:
                     dataSource.untagged = kPushpinFilterFalse;

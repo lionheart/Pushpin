@@ -2430,6 +2430,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
+				GOOGLE_PLIST_NAME = "GoogleService-Info-Release";
 				HEADER_SEARCH_PATHS = (
 					"${SDKROOT}/usr/include/libxml2",
 					"$(TARGET_BUILD_DIR)/usr/local/lib/include",
@@ -2569,6 +2570,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
+				GOOGLE_PLIST_NAME = "GoogleService-Info-Release";
 				HEADER_SEARCH_PATHS = (
 					"${SDKROOT}/usr/include/libxml2",
 					"$(TARGET_BUILD_DIR)/usr/local/lib/include",
@@ -2709,6 +2711,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
+				GOOGLE_PLIST_NAME = "GoogleService-Info-Dev";
 				HEADER_SEARCH_PATHS = (
 					"${SDKROOT}/usr/include/libxml2",
 					"\"$(TARGET_BUILD_DIR)/usr/local/lib/include\"",
@@ -2801,6 +2804,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = NO;
 				GCC_WARN_UNUSED_VARIABLE = NO;
+				GOOGLE_PLIST_NAME = "GoogleService-Info-Release";
 				HEADER_SEARCH_PATHS = (
 					"${SDKROOT}/usr/include/libxml2",
 					"$(TARGET_BUILD_DIR)/usr/local/lib/include",

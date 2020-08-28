@@ -506,7 +506,7 @@
 
                     case 12: {
                         [db executeUpdate:@"ALTER TABLE bookmark ADD COLUMN searchable_in_spotlight BOOL DEFAULT 0;"];
-                        [db executeUpdate:@"PRAGMA user_version=12;"];
+                        [db executeUpdate:@"PRAGMA user_version=13;"];
                     }
 
                     default:

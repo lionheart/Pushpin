@@ -78,7 +78,7 @@
 - (void)setReaderSettings:(PPReaderSettings *)readerSettings {
     _readerSettings = readerSettings;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:readerSettings];
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:readerSettings requiringSecureCoding:YES error:nil];
     [defaults setObject:data forKey:@"io.aurora.pinboard.ReaderSettings"];
     [defaults synchronize];
 }

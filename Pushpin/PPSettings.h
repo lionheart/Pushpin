@@ -18,7 +18,7 @@
 @property (nonatomic) PPOfflineFetchCriteriaType offlineFetchCriteria;
 @property (nonatomic, strong) PPReaderSettings *readerSettings;
 
-@property (nonatomic) NSInteger offlineUsageLimit;
+@property (nonatomic) NSUInteger offlineUsageLimit;
 
 @property (nonatomic, strong) NSArray *hiddenFeedNames;
 @property (nonatomic) BOOL bookmarksNeedUpdate;
