@@ -13,7 +13,6 @@
 @import ASPinboard;
 @import KeychainItemWrapper;
 @import LHSTableViewCells;
-@import OnePasswordExtension;
 @import Beacon;
 
 #import "Pushpin-Swift.h"

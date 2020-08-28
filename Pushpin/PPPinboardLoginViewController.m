@@ -10,7 +10,6 @@
 @import Mixpanel;
 @import LHSCategoryCollection;
 @import ASPinboard;
-@import OnePasswordExtension;
 @import MessageUI;
 @import Beacon;
 
@@ -246,11 +245,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             } else {
                 [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPLoginAuthTokenSection] withRowAnimation:UITableViewRowAnimationFade];
             }
-            
-
-            if ([self is1PasswordAvailable]) {
-                [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:PPLogin1PasswordSection] withRowAnimation:UITableViewRowAnimationFade];
-            }
 
             [self.tableView endUpdates];
             
@@ -320,10 +314,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                         [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPLoginCredentialSection] withRowAnimation:UITableViewRowAnimationFade];
                     } else {
                         [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPLoginAuthTokenSection] withRowAnimation:UITableViewRowAnimationFade];
-                    }
-
-                    if ([self is1PasswordAvailable]) {
-                        [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPLogin1PasswordSection] withRowAnimation:UITableViewRowAnimationFade];
                     }
 
                     [self.tableView endUpdates];
@@ -488,16 +478,9 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     if (self.loginInProgress) {
-        DLog(@"A");
         return 1;
     } else {
-        if ([self is1PasswordAvailable]) {
-            DLog(@"B");
-            return PPLoginSectionCount;
-        } else {
-            DLog(@"C");
-            return PPLoginSectionCount - 1;
-        }
+        return PPLoginSectionCount;
     }
 }
 
@@ -512,9 +495,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                 return 2;
                 
             case PPLoginAuthTokenSection:
-                return 1;
-                
-            case PPLogin1PasswordSection:
                 return 1;
         }
     }
@@ -648,16 +628,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             break;
         }
             
-        case PPLogin1PasswordSection: {
-            cell.selectionStyle = UITableViewCellSelectionStyleGray;
-
-            UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"56_Key-alt"]];
-            cell.accessoryView = imageView;
-            cell.textLabel.text = NSLocalizedString(@"Launch 1Password", nil);
-            cell.textLabel.font = [PPTheme titleFont];
-            break;
-        }
-            
         default:
             break;
     }
@@ -690,42 +660,13 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
         case PPLoginAuthTokenSection:
             [self.authTokenTextField becomeFirstResponder];
             break;
-
-        case PPLogin1PasswordSection: {
-            __weak typeof (self) weakself = self;
-            UIView *cell = [tableView cellForRowAtIndexPath:indexPath];
-            [[OnePasswordExtension sharedExtension] findLoginForURLString:@"pinboard.in"
-                                                        forViewController:self
-                                                                   sender:cell
-                                                               completion:^(NSDictionary *loginDict, NSError *error) {
-                                                                   if (!loginDict) {
-                                                                       if (error.code != AppExtensionErrorCodeCancelledByUser) {
-                                                                           NSLog(@"Error invoking 1Password App Extension for find login: %@", error);
-                                                                       }
-                                                                       return;
-                                                                   }
-
-                                                                   __strong typeof(self) strongself = weakself;
-                                                                   strongself.usernameTextField.text = loginDict[AppExtensionUsernameKey];
-                                                                   strongself.passwordTextField.text = loginDict[AppExtensionPasswordKey];
-            }];
-            break;
-        }
             
         default:
             break;
     }
-    
 }
 
 #pragma mark - Utils
-
-- (BOOL)is1PasswordAvailable {
-
-    NSString *searchTerm = @"pinboard";
-    
-    return [[OnePasswordExtension sharedExtension] isAppExtensionAvailable];
-}
             
 - (BOOL)authTokenProvided {
     return self.authTokenTextField.text.length > 0;

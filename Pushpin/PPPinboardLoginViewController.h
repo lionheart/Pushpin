@@ -18,10 +18,9 @@ typedef NS_ENUM(NSInteger, PPLoginCredentialRowType) {
 typedef NS_ENUM(NSInteger, PPLoginSectionType) {
     PPLoginCredentialSection,
     PPLoginAuthTokenSection,
-    PPLogin1PasswordSection
 };
 
-static NSInteger PPLoginSectionCount = PPLogin1PasswordSection + 1;
+static NSInteger PPLoginSectionCount = PPLoginAuthTokenSection + 1;
 
 @interface PPPinboardLoginViewController : UITableViewController <UITextFieldDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate, HSBeaconDelegate>
 
@@ -39,6 +38,5 @@ static NSInteger PPLoginSectionCount = PPLogin1PasswordSection + 1;
 - (void)resetLoginScreen;
 - (void)updateLoadingMessage;
 - (void)showContactForm;
-- (BOOL)is1PasswordAvailable;
 
 @end
