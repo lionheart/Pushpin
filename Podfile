@@ -44,10 +44,27 @@ end
 target 'Read Later Extension' do
 end
 
+# TODO: uncomment to attempt to build for Catalyst 
+# excluded = ['TipJarViewController', 'ChimpKit', 'Beacon', 'FirebaseAnalytics', 'FIRAnalyticsConnector', 'GoogleAppMeasurement']
+
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
       config.build_settings['APPLICATION_EXTENSION_API_ONLY'] = 'No'
     end
   end
+
+#  installer.pods_project.targets.each do |target|
+#    if target.name == "Pods-Pushpin"
+#      puts "Updating #{target.name} to exclude non-iOS libraries"
+#      target.build_configurations.each do |config|
+#        xcconfig_path = config.base_configuration_reference.real_path
+#        xcconfig = File.read(xcconfig_path)
+#        excluded.each { |item| xcconfig.sub!('-framework "' + item + '"', '') }
+#        items = excluded.collect { |item| '-framework "' + item + '"' }
+#        new_xcconfig = xcconfig + 'OTHER_LDFLAGS[sdk=iphone*] = ' + items.join(' ')
+#        File.open(xcconfig_path, "w") { |file| file << new_xcconfig }
+#      end
+#    end
+#  end
 end
