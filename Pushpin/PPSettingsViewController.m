@@ -13,9 +13,12 @@
 @import ASPinboard;
 @import KeychainItemWrapper;
 @import LHSTableViewCells;
-@import Beacon;
 
+#if !TARGET_OS_MACCATALYST
+@import Beacon;
 #import "Pushpin-Swift.h"
+#endif
+
 #import "PPAppDelegate.h"
 #import "PPSettingsViewController.h"
 #import "PPPinboardLoginViewController.h"
@@ -353,10 +356,12 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                 }
 
                 case PPOtherFeedback: {
+#if !TARGET_OS_MACCATALYST
                     HSBeaconSettings *settings = [[HSBeaconSettings alloc] initWithBeaconId:kHelpScoutBeaconId];
                     settings.delegate = self;
                     [HSBeacon openBeacon:settings];
                     break;
+#endif
                 }
                     
                 case PPOtherLogout:
@@ -365,9 +370,11 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                     break;
 
                 case PPOtherTipJar: {
+#if !TARGET_OS_MACCATALYST
                     UIViewController *controller = [PPTipJarViewControllerFactory controller];
                     [self.navigationController pushViewController:controller animated:YES];
                     break;
+#endif
                 }
             }
             break;
@@ -430,10 +437,12 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
 #pragma mark - HSBeaconDelegate
 
+#if !TARGET_OS_MACCATALYST
 - (void)prefill:(HSBeaconContactForm *)form {
     form.subject = @"Pushpin Support Inquiry";
     NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     form.text = [NSString stringWithFormat:@"\n\n\n\nApp version: %@", version];
 }
+#endif
 
 @end

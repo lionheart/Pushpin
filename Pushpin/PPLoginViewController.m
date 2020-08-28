@@ -10,10 +10,14 @@
 @import LHSTableViewCells;
 @import LHSKeyboardAdjusting;
 @import MessageUI;
-@import Beacon;
 
 #import "PPLoginViewController.h"
+
+#if !TARGET_OS_MACCATALYST
+@import Beacon;
 #import "PPMailChimp.h"
+#endif
+
 #import "PPPinboardLoginViewController.h"
 
 static NSString * const CellIdentifier = @"CellIdentifier";
@@ -119,13 +123,16 @@ static NSString * const CellIdentifier = @"CellIdentifier";
         }
             
         case PPLoginPushpinRow: {
+#if !TARGET_OS_MACCATALYST
             UIAlertController *alert = [PPMailChimp mailChimpSubscriptionAlertController];
             [self presentViewController:alert animated:YES completion:nil];
             break;
+#endif
         }
     }
 }
 
+#if !TARGET_OS_MACCATALYST
 #pragma mark - Utils
 
 - (void)showContactForm {
@@ -139,5 +146,6 @@ static NSString * const CellIdentifier = @"CellIdentifier";
 - (void)prefill:(HSBeaconContactForm *)form {
     form.subject = @"Pushpin Support Inquiry";
 }
+#endif
 
 @end

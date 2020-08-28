@@ -7,6 +7,9 @@
 //
 
 import Foundation
+
+#if !targetEnvironment(macCatalyst)
+
 import TipJarViewController
 
 struct ExampleTipJarOptions: TipJarConfiguration {
@@ -53,3 +56,5 @@ final class PPTipJarViewController: TipJarViewController<ExampleTipJarOptions> {
         return PPTipJarViewController()
     }
 }
+
+#endif

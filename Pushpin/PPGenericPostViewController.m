@@ -36,7 +36,6 @@
 #import "PPShrinkBackTransition.h"
 #import "PPNotification.h"
 #import "PPSplitViewController.h"
-#import "PPMailChimp.h"
 
 #import "NSAttributedString+Attributes.h"
 #import "NSString+URLEncoding2.h"

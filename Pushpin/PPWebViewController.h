@@ -8,15 +8,26 @@
 
 @import UIKit;
 @import MessageUI;
+@import WebKit;
 
 #import "PPAppDelegate.h"
 #import "PPToolbar.h"
 
+#if TARGET_OS_MACCATALYST
+@interface PPWebViewController : UIViewController <WKNavigationDelegate, MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate, NSURLConnectionDataDelegate, NSURLSessionTaskDelegate, NSURLSessionDataDelegate>
+#else
 @interface PPWebViewController : UIViewController <UIWebViewDelegate, MFMailComposeViewControllerDelegate, MFMessageComposeViewControllerDelegate, UIGestureRecognizerDelegate, UIScrollViewDelegate, NSURLConnectionDataDelegate, NSURLSessionTaskDelegate, NSURLSessionDataDelegate>
+#endif
 
 @property (nonatomic, strong) UIView *statusBarBackgroundView;
 @property (nonatomic, strong) UIView *webViewContainer;
+
+#if TARGET_OS_MACCATALYST
+@property (nonatomic, strong) WKWebView *webView;
+#else
 @property (nonatomic, strong) UIWebView *webView;
+#endif
+
 @property (nonatomic, strong) NSMutableData *data;
 @property (nonatomic, strong) NSHTTPURLResponse *response;
 @property (nonatomic, strong) NSString *urlString;

@@ -6,7 +6,10 @@
 //  Copyright (c) 2015 Lionheart Software. All rights reserved.
 //
 
+#if !TARGET_OS_MACCATALYST
 @import ChimpKit;
+#endif
+
 @import LHSCategoryCollection;
 
 #import "PPMailChimp.h"
@@ -35,7 +38,8 @@
     
     [alert lhs_addActionWithTitle:@"Subscribe"
                             style:UIAlertActionStyleDefault
-                          handler:^(UIAlertAction *action) {
+                            handler:^(UIAlertAction *action) {
+#if !TARGET_OS_MACCATALYST
                               UITextField *textField = alert.textFields[0];
                               
                               NSMutableDictionary *params = [NSMutableDictionary dictionary];
@@ -76,6 +80,7 @@
                                                      });
                                                  }
                                              }];
+#endif
                           }];
     
     return alert;

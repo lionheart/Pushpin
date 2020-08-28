@@ -11,7 +11,10 @@
 @import LHSCategoryCollection;
 @import ASPinboard;
 @import MessageUI;
+
+#if !TARGET_OS_MACCATALYST
 @import Beacon;
+#endif
 
 #import "PPPinboardLoginViewController.h"
 #import "PPAppDelegate.h"
@@ -671,6 +674,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     return self.authTokenTextField.text.length > 0;
 }
 
+#if !TARGET_OS_MACCATALYST
 #pragma mark - Utils
 
 - (void)showContactForm {
@@ -684,5 +688,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 - (void)prefill:(HSBeaconContactForm *)form {
     form.subject = @"Pushpin Support Inquiry";
 }
+#endif
 
 @end

@@ -9,7 +9,11 @@
 @import MessageUI;
 @import Social;
 @import QuartzCore;
+
+#if !TARGET_OS_MACCATALYST
 @import Twitter;
+#endif
+
 @import SafariServices;
 @import Mixpanel;
 @import LHSCategoryCollection;
@@ -47,7 +51,13 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 @property (nonatomic, strong) UIPopoverController *popover;
 @property (nonatomic, strong) PPActivityViewController *activityView;
 @property (nonatomic, strong) UIKeyCommand *goBackKeyCommand;
+
+#if TARGET_OS_MACCATALYST
+@property (nonatomic, strong) WKWebView *readerWebView;
+#else
 @property (nonatomic, strong) UIWebView *readerWebView;
+#endif
+
 @property (nonatomic) BOOL mobilized;
 @property (nonatomic, strong) NSMutableSet *loadedURLs;
 @property (nonatomic) UIStatusBarStyle statusBarStyle;
@@ -57,12 +67,21 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 - (void)handleKeyCommand:(UIKeyCommand *)keyCommand;
 - (void)markAsReadButtonTouchUpInside:(id)sender;
 //- (BOOL)mobilized;
+
+#if TARGET_OS_MACCATALYST
+- (WKWebView *)currentWebView;
+#else
 - (UIWebView *)currentWebView;
+#endif
 
 - (void)setReaderViewVisible:(BOOL)visible animated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
 - (void)setToolbarVisible:(BOOL)visible animated:(BOOL)animated;
 
+#if TARGET_OS_MACCATALYST
+- (void)addTouchOverridesForWebView:(WKWebView *)webView;
+#else
 - (void)addTouchOverridesForWebView:(UIWebView *)webView;
+#endif
 
 @end
 
@@ -93,25 +112,33 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     self.bottomTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     self.bottomTapGestureRecognizer.numberOfTapsRequired = 1;
     
-    self.webViewTimeoutTimer = [NSTimer timerWithTimeInterval:5 target:self.webView selector:@selector(stopLoading) userInfo:nil repeats:NO];
-    
     self.statusBarBackgroundView = [[UIView alloc] init];
     self.statusBarBackgroundView.backgroundColor = [UIColor whiteColor];
     self.statusBarBackgroundView.userInteractionEnabled = NO;
     self.statusBarBackgroundView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.statusBarBackgroundView];
 
+#if TARGET_OS_MACCATALYST
+    self.webView = [[WKWebView alloc] init];
+#else
     self.webView = [[UIWebView alloc] init];
-    self.webView.translatesAutoresizingMaskIntoConstraints = NO;
     self.webView.delegate = self;
     self.webView.scalesPageToFit = YES;
+#endif
+    self.webView.translatesAutoresizingMaskIntoConstraints = NO;
     self.webView.scrollView.delegate = self;
     self.webView.scrollView.contentInset = UIEdgeInsetsMake(0, 0, kToolbarHeight, 0);
     [self.view addSubview:self.webView];
     
+    self.webViewTimeoutTimer = [NSTimer timerWithTimeInterval:5 target:self.webView selector:@selector(stopLoading) userInfo:nil repeats:NO];
+    
+#if TARGET_OS_MACCATALYST
+    self.readerWebView = [[WKWebView alloc] init];
+#else
     self.readerWebView = [[UIWebView alloc] init];
-    self.readerWebView.backgroundColor = [UIColor whiteColor];
     self.readerWebView.delegate = self;
+#endif
+    self.readerWebView.backgroundColor = [UIColor whiteColor];
     self.readerWebView.alpha = 0;
     self.readerWebView.scrollView.contentInset = UIEdgeInsetsMake(0, 0, kToolbarHeight, 0);
     self.readerWebView.scrollView.delegate = self;
@@ -606,7 +633,12 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 }
 
 - (NSURL *)url {
+#if TARGET_OS_MACCATALYST
+    NSURL *url = self.webView.URL;
+#else
     NSURL *url = [self.webView.request URL];
+#endif
+    
     if (!url || ![url isKindOfClass:[NSURL class]] || [url.absoluteString isEqualToString:@""]) {
         return [NSURL URLWithString:self.urlString];
     }
@@ -614,12 +646,22 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 }
 
 - (void)showAddViewController {
+#if TARGET_OS_MACCATALYST
+    [self.webView evaluateJavaScript:@"document.title" completionHandler:^(NSString * _Nullable title, NSError * _Nullable error) {
+        NSDictionary *post = @{
+            @"title": title,
+            @"url": self.url.absoluteString
+        };
+        [self showAddViewController:post];
+    }];
+#else
     NSString *pageTitle = [self.webView stringByEvaluatingJavaScriptFromString:@"document.title"];
     NSDictionary *post = @{
         @"title": pageTitle,
         @"url": self.url.absoluteString
     };
     [self showAddViewController:post];
+#endif
 }
 
 - (void)showAddViewController:(NSDictionary *)data {
@@ -756,6 +798,14 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 }
 
 #pragma mark - UIWebViewDelegate
+
+#if TARGET_OS_MACCATALYST
+
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+    
+}
+
+#else
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     if (self.selectedActionSheet) {
@@ -939,6 +989,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         [self enableOrDisableButtons];
     }
 }
+#endif
 
 - (void)webViewLoadTimedOut {
     [self updateInterfaceWithComputedWebPageBackgroundColorTimedOut:YES];
@@ -954,10 +1005,17 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 #if HIDE_STATUS_BAR_WHILE_SCROLLING
     self.prefersStatusBarHidden = NO;
 #endif
+    
+#if TARGET_OS_MACCATALYST
+    WKWebView *webView = self.currentWebView;
+#else
     UIWebView *webView = self.currentWebView;
+#endif
+    
     UIColor *backgroundColor = [UIColor whiteColor];
     BOOL isDark = NO;
 
+#if !TARGET_OS_MACCATALYST
     if (!timedOut) {
         NSString *response = [webView stringByEvaluatingJavaScriptFromString:@"window.getComputedStyle(document.body, null).getPropertyValue(\"background-color\")"];
         
@@ -991,6 +1049,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
             backgroundColor = [UIColor colorWithRed:newR green:newG blue:newB alpha:1];
         }
     }
+#endif
 
     [UIView animateWithDuration:0.3 animations:^{
         self.statusBarBackgroundView.backgroundColor = backgroundColor;
@@ -1071,6 +1130,17 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
 #pragma mark -
 
+#if TARGET_OS_MACCATALYST
+- (WKWebView *)currentWebView {
+    WKWebView *webView;
+    if (self.mobilized) {
+        webView = self.readerWebView;
+    } else {
+        webView = self.webView;
+    }
+    return webView;
+}
+#else
 - (UIWebView *)currentWebView {
     UIWebView *webView;
     if (self.mobilized) {
@@ -1080,6 +1150,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     }
     return webView;
 }
+#endif
 
 + (void)mobilizedPageForURL:(NSURL *)url withCompletion:(void (^)(NSDictionary *, NSError *))completion {
     NSURL *mobilizedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [url.absoluteString urlEncodeUsingEncoding:NSUTF8StringEncoding]]];

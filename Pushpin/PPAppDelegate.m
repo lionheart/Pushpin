@@ -13,7 +13,11 @@
 @import TMReachability;
 @import LHSCategoryCollection;
 @import OpenInChrome;
+
+#if !TARGET_OS_MACCATALYST
 @import ChimpKit;
+#endif
+
 @import KeychainItemWrapper;
 @import FMDB;
 @import StoreKit;
@@ -59,7 +63,9 @@
 
     PPSettings *settings = [PPSettings sharedSettings];
 
+#if !TARGET_OS_MACCATALYST
     [[ChimpKit sharedKit] setApiKey:@"f3bfc69f8d267252c14d76664432f968-us7"];
+#endif
     
     NSString *googlePlistName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GooglePlistName"];
     NSString *path = [[NSBundle mainBundle] pathForResource:googlePlistName ofType:@"plist"];
@@ -147,9 +153,24 @@
                                  }];
 
     [PPURLCache migrateDatabase];
+    
+#if TARGET_OS_MACCATALYST
+    NSURL *cacheURL = [[[NSFileManager defaultManager] URLForDirectory:NSCachesDirectory
+                                                              inDomain:NSUserDomainMask
+                                                     appropriateForURL:nil
+                                                                create:YES
+                                                                 error:nil]
+                       URLByAppendingPathComponent:@"io.aurora.pushpin.urlcache"];
+    
+    
+    self.urlCache = [[PPURLCache alloc] initWithMemoryCapacity:0
+                                  diskCapacity:[PPSettings sharedSettings].offlineUsageLimit
+                                                  directoryURL:cacheURL];
+#else
     self.urlCache = [[PPURLCache alloc] initWithMemoryCapacity:0
                                                   diskCapacity:[PPSettings sharedSettings].offlineUsageLimit
                                                       diskPath:@"urlcache"];
+#endif
 
     [self copyCredentialsToSharedContainer:application];
 

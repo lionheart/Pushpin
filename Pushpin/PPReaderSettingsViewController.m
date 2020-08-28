@@ -27,8 +27,15 @@ static NSString *CellIdentifier = @"Cell";
 @property (nonatomic, strong) UILabel *fontSizeLabel;
 @property (nonatomic, strong) UILabel *lineSpacingLabel;
 @property (nonatomic, strong) UILabel *marginLabel;
+
 @property (nonatomic, strong) NSMutableSet *toggledIndexPaths;
+
+#if TARGET_OS_MACCATALYST
+@property (nonatomic, strong) WKWebView *exampleWebView;
+#else
 @property (nonatomic, strong) UIWebView *exampleWebView;
+#endif
+
 @property (nonatomic, strong) UIView *webViewContainer;
 @property (nonatomic, strong) UIAlertController *textAlignmentActionSheet;
 
@@ -194,7 +201,11 @@ static NSString *CellIdentifier = @"Cell";
     self.displayImagesSwitch.on = [PPSettings sharedSettings].readerSettings.displayImages;
     [self.displayImagesSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
     
+#if TARGET_OS_MACCATALYST
+    self.exampleWebView = [[WKWebView alloc] init];
+#else
     self.exampleWebView = [[UIWebView alloc] init];
+#endif
     self.exampleWebView.backgroundColor = [PPSettings sharedSettings].readerSettings.backgroundColor;
     self.exampleWebView.translatesAutoresizingMaskIntoConstraints = NO;
 
