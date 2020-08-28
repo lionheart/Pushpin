@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -1479,6 +1479,7 @@
 		37FEEB8515745488003F2B77 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				CLASSPREFIX = PP;
 				LastSwiftUpdateCheck = 0910;
 				LastUpgradeCheck = 1000;
@@ -2041,7 +2042,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpindev.Read-Later-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Pushpin-Swift.h";
 			};
 			name = Debug;
@@ -2084,7 +2085,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpin.Read-Later-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Pushpin-Swift.h";
 			};
 			name = Release;
@@ -2127,7 +2128,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpin.Read-Later-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Pushpin-Swift.h";
 			};
 			name = "Release Debug";
@@ -2170,7 +2171,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpinbeta.Read-Later-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Pushpin-Swift.h";
 			};
 			name = Beta;
@@ -2212,7 +2213,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpindev.Bookmark-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "Bookmark Extension/Bookmark Extension-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Pushpin-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -2259,7 +2260,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpin.Bookmark-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "Bookmark Extension/Bookmark Extension-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Pushpin-Swift.h";
 				SWIFT_VERSION = 5.0;
@@ -2305,7 +2306,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpin.Bookmark-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "Bookmark Extension/Bookmark Extension-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Pushpin-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -2352,7 +2353,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpinbeta.Bookmark-Extension";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "Bookmark Extension/Bookmark Extension-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Pushpin-Swift.h";
 				SWIFT_VERSION = 5.0;
@@ -2493,14 +2494,14 @@
 					"\"@executable_path/Frameworks\"",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.1.21;
+				MARKETING_VERSION = 4.1.19;
 				PRODUCT_NAME = Pushpin;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = YES;
-				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "Pushpin/Pushpin-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Pushpin-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -2639,14 +2640,14 @@
 					"\"@executable_path/Frameworks\"",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.1.21;
+				MARKETING_VERSION = 4.1.19;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = YES;
-				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OBJC_BRIDGING_HEADER = "Pushpin/Pushpin-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Pushpin-Swift.h";
@@ -2888,7 +2889,7 @@
 					"\"@executable_path/Frameworks\"",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.1.21;
+				MARKETING_VERSION = 4.1.19;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2896,7 +2897,7 @@
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = YES;
-				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "Pushpin/Pushpin-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Pushpin-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -2942,14 +2943,14 @@
 					"\"@executable_path/Frameworks\"",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.1.21;
+				MARKETING_VERSION = 4.1.19;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = YES;
 				SDKROOT = iphoneos;
 				STRIP_INSTALLED_PRODUCT = YES;
-				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OBJC_BRIDGING_HEADER = "Pushpin/Pushpin-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Pushpin-Swift.h";
