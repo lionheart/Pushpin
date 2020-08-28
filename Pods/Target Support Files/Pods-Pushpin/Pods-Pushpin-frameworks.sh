@@ -36,44 +36,41 @@ install_framework()
     local source="${BUILT_PRODUCTS_DIR}/$(basename "$1")"
   elif [ -r "$1" ]; then
     local source="$1"
-  else
-    local source=""
   fi
 
-  if [ -n "${source}" ]; then
-    local destination="${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}"
+  local destination="${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}"
 
-    if [ -L "${source}" ]; then
+  if [ -L "${source}" ]; then
     echo "Symlinked..."
     source="$(readlink "${source}")"
-    fi
+  fi
 
-    # Use filter instead of exclude so missing patterns don't throw errors.
-    echo "rsync --delete -av "${RSYNC_PROTECT_TMP_FILES[@]}" --filter \"- CVS/\" --filter \"- .svn/\" --filter \"- .git/\" --filter \"- .hg/\" --filter \"- Headers\" --filter \"- PrivateHeaders\" --filter \"- Modules\" \"${source}\" \"${destination}\""
-    rsync --delete -av "${RSYNC_PROTECT_TMP_FILES[@]}" --filter "- CVS/" --filter "- .svn/" --filter "- .git/" --filter "- .hg/" --filter "- Headers" --filter "- PrivateHeaders" --filter "- Modules" "${source}" "${destination}"
+  # Use filter instead of exclude so missing patterns don't throw errors.
+  echo "rsync --delete -av "${RSYNC_PROTECT_TMP_FILES[@]}" --filter \"- CVS/\" --filter \"- .svn/\" --filter \"- .git/\" --filter \"- .hg/\" --filter \"- Headers\" --filter \"- PrivateHeaders\" --filter \"- Modules\" \"${source}\" \"${destination}\""
+  rsync --delete -av "${RSYNC_PROTECT_TMP_FILES[@]}" --filter "- CVS/" --filter "- .svn/" --filter "- .git/" --filter "- .hg/" --filter "- Headers" --filter "- PrivateHeaders" --filter "- Modules" "${source}" "${destination}"
 
-    local basename
-    basename="$(basename -s .framework "$1")"
-    binary="${destination}/${basename}.framework/${basename}"
+  local basename
+  basename="$(basename -s .framework "$1")"
+  binary="${destination}/${basename}.framework/${basename}"
 
-    if ! [ -r "$binary" ]; then
+  if ! [ -r "$binary" ]; then
     binary="${destination}/${basename}"
-    elif [ -L "${binary}" ]; then
+  elif [ -L "${binary}" ]; then
     echo "Destination binary is symlinked..."
     dirname="$(dirname "${binary}")"
     binary="${dirname}/$(readlink "${binary}")"
-    fi
+  fi
 
-    # Strip invalid architectures so "fat" simulator / device frameworks work on device
-    if [[ "$(file "$binary")" == *"dynamically linked shared library"* ]]; then
+  # Strip invalid architectures so "fat" simulator / device frameworks work on device
+  if [[ "$(file "$binary")" == *"dynamically linked shared library"* ]]; then
     strip_invalid_archs "$binary"
-    fi
+  fi
 
-    # Resign the code if required by the build settings to avoid unstable apps
-    code_sign_if_enabled "${destination}/$(basename "$1")"
+  # Resign the code if required by the build settings to avoid unstable apps
+  code_sign_if_enabled "${destination}/$(basename "$1")"
 
-    # Embed linked Swift runtime libraries. No longer necessary as of Xcode 7.
-    if [ "${XCODE_VERSION_MAJOR}" -lt 7 ]; then
+  # Embed linked Swift runtime libraries. No longer necessary as of Xcode 7.
+  if [ "${XCODE_VERSION_MAJOR}" -lt 7 ]; then
     local swift_runtime_libs
     swift_runtime_libs=$(xcrun otool -LX "$binary" | grep --color=never @rpath/libswift | sed -E s/@rpath\\/\(.+dylib\).*/\\1/g | uniq -u)
     for lib in $swift_runtime_libs; do
@@ -81,7 +78,6 @@ install_framework()
       rsync -auv "${SWIFT_STDLIB_PATH}/${lib}" "${destination}"
       code_sign_if_enabled "${destination}/${lib}"
     done
-    fi
   fi
 }
 
