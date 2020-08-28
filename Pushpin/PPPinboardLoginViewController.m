@@ -143,7 +143,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 - (void)resetLoginScreen {
     self.loginInProgress = NO;
 
-
     NSString *textViewText = NSLocalizedString(@"Enter your Pinboard credentials above. Email support@lionheartsw.com if you have any issues.", nil);
     
     self.textView.attributedText = [[NSAttributedString alloc] initWithString:textViewText

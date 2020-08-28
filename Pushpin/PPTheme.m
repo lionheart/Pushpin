@@ -51,19 +51,27 @@
 }
 
 + (UIFont *)textLabelFontAlternate {
-    return [UIFont fontWithName:[PPTheme fontName] size:17];
+    return [PPTheme sharedFontHelper:17];
 }
 
 + (UIFont *)textLabelFont {
-    return [UIFont fontWithName:[PPTheme fontName] size:16];
+    return [PPTheme sharedFontHelper:16];
 }
 
 + (UIFont *)detailLabelFont {
-    return [UIFont fontWithName:[PPTheme fontName] size:15];
+    return [PPTheme sharedFontHelper:15];
 }
 
 + (UIFont *)detailLabelFontAlternate1 {
-    return [UIFont fontWithName:[PPTheme fontName] size:13];
+    return [PPTheme sharedFontHelper:13];
+}
+
++ (UIFont *)sharedFontHelper:(NSInteger)size {
+    if ([[PPTheme fontName] isEqualToString:@".SFUI-Regular"]) {
+        return [UIFont systemFontOfSize:size];
+    }
+    
+    return [UIFont fontWithName:[PPTheme fontName] size:size];
 }
 
 + (CGFloat)fontSize {
