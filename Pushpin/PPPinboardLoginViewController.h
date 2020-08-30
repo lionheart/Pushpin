@@ -7,7 +7,8 @@
 //
 
 @import UIKit;
-@import Beacon;
+
+@protocol HSBeaconDelegate;
 
 typedef NS_ENUM(NSInteger, PPLoginCredentialRowType) {
     PPLoginCredentialUsernameRow,
