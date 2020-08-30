@@ -9,8 +9,7 @@
 @import UIKit;
 @import MessageUI;
 @import MessageUI.MFMessageComposeViewController;
-
-@protocol HSBeaconDelegate;
+@import Beacon;
 
 #import "PPAppDelegate.h"
 #import "PPLoadingView.h"
