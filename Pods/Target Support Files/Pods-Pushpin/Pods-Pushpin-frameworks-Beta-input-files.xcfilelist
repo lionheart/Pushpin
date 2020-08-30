@@ -12,7 +12,6 @@ ${BUILT_PRODUCTS_DIR}/LHSKeyboardAdjusting/LHSKeyboardAdjusting.framework
 ${BUILT_PRODUCTS_DIR}/LHSTableViewCells/LHSTableViewCells.framework
 ${BUILT_PRODUCTS_DIR}/LionheartExtensions/LionheartExtensions.framework
 ${BUILT_PRODUCTS_DIR}/MWFeedParser/MWFeedParser.framework
-${BUILT_PRODUCTS_DIR}/Mixpanel/Mixpanel.framework
 ${BUILT_PRODUCTS_DIR}/QuickTableView/QuickTableView.framework
 ${BUILT_PRODUCTS_DIR}/RNCryptor-objc/RNCryptor_objc.framework
 ${BUILT_PRODUCTS_DIR}/SuperLayout/SuperLayout.framework
