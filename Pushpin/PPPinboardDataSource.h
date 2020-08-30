@@ -68,4 +68,8 @@ enum PINBOARD_DATA_SOURCE_ERROR_CODES {
 + (NSDictionary *)postFromResultSet:(FMResultSet *)resultSet;
 + (NSCache *)resultCache;
 
+- (void)updateSpotlightSearchIndex;
+- (void)BookmarksUpdatedTimeSuccessBlock:(NSDate *)updateTime count:(NSInteger)count completion:(void (^)(BOOL updated, NSError *))completion progress:(void (^)(NSInteger, NSInteger))progress skipStarred:(BOOL)skipStarred;
+- (void)BookmarksSuccessBlock:(NSArray *)posts constraints:(NSDictionary *)constraints count:(NSInteger)count completion:(void (^)(BOOL updated, NSError *))completion progress:(void (^)(NSInteger, NSInteger))progress skipStarred:(BOOL)skipStarred;
+
 @end
