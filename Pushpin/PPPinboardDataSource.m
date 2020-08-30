@@ -1020,10 +1020,10 @@ static BOOL kPinboardSyncInProgress = NO;
                 if (weakSelf) {
                     __strong PPPinboardDataSource *strongSelf = weakSelf;
                     [strongSelf BookmarksUpdatedTimeSuccessBlock:date
-                                                         count:count
-                                                    completion:completion
-                                                      progress:progress
-                                                   skipStarred:skipStarred];
+                                                           count:count
+                                                      completion:completion
+                                                        progress:progress
+                                                     skipStarred:skipStarred];
                 } else {
                     completion(NO, nil);
                 }
@@ -1038,7 +1038,6 @@ static BOOL kPinboardSyncInProgress = NO;
     DLog(@"%@ - Received data", [NSDate date]);
     NSDate *startDate = [NSDate date];
     PPSettings *settings = [PPSettings sharedSettings];
-    
 
     __weak PPPinboardDataSource *weakSelf = self;
 
