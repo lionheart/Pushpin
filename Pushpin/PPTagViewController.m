@@ -7,7 +7,6 @@
 //
 
 @import QuartzCore;
-@import Mixpanel;
 @import LHSCategoryCollection;
 @import LHSTableViewCells;
 @import MWFeedParser;
@@ -126,8 +125,8 @@ static NSString *CellIdentifier = @"TagCell";
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    Mixpanel *mixpanel = [Mixpanel sharedInstance];
-    [mixpanel track:@"Opened tags"];
+    
+    
 }
 
 #pragma mark - UITableViewDataSource

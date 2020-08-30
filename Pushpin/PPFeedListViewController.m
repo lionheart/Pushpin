@@ -8,7 +8,6 @@
 
 @import QuartzCore;
 @import CoreMotion;
-@import Mixpanel;
 @import ASPinboard;
 @import LHSCategoryCollection;
 @import TMReachability;
@@ -718,7 +717,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    Mixpanel *mixpanel = [Mixpanel sharedInstance];
+    
     PPGenericPostViewController *postViewController = [[PPGenericPostViewController alloc] init];
     
     UIViewController *viewControllerToPush;
@@ -784,32 +783,32 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
                 switch (feedType) {
                     case PPPinboardPersonalFeedAll:
-                        [mixpanel track:@"Browsed all bookmarks"];
+                        
                         break;
 
                     case PPPinboardPersonalFeedPrivate:
                         dataSource.isPrivate = YES;
-                        [mixpanel track:@"Browsed private bookmarks"];
+                        
                         break;
 
                     case PPPinboardPersonalFeedPublic:
                         dataSource.isPrivate = NO;
-                        [mixpanel track:@"Browsed public bookmarks"];
+                        
                         break;
 
                     case PPPinboardPersonalFeedUnread:
                         dataSource.unread = YES;
-                        [mixpanel track:@"Browsed unread bookmarks"];
+                        
                         break;
 
                     case PPPinboardPersonalFeedUntagged:
                         dataSource.untagged = YES;
-                        [mixpanel track:@"Browsed untagged bookmarks"];
+                        
                         break;
 
                     case PPPinboardPersonalFeedStarred:
                         dataSource.starred = YES;
-                        [mixpanel track:@"Browsed starred bookmarks"];
+                        
                         break;
                 }
 
@@ -839,37 +838,37 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                     switch (feedType) {
                         case PPPinboardCommunityFeedNetwork: {
                             feedDataSource.components = @[[NSString stringWithFormat:@"secret:%@", settings.feedToken], [NSString stringWithFormat:@"u:%@", settings.username], @"network"];
-                            [mixpanel track:@"Browsed network bookmarks"];
+                            
                             break;
                         }
 
                         case PPPinboardCommunityFeedPopular: {
                             feedDataSource.components = @[@"popular?count=100"];
-                            [mixpanel track:@"Browsed popular bookmarks"];
+                            
                             break;
                         }
 
                         case PPPinboardCommunityFeedWikipedia: {
                             feedDataSource.components = @[@"popular", @"wikipedia"];
-                            [mixpanel track:@"Browsed wikipedia bookmarks"];
+                            
                             break;
                         }
 
                         case PPPinboardCommunityFeedFandom: {
                             feedDataSource.components = @[@"popular", @"fandom"];
-                            [mixpanel track:@"Browsed fandom bookmarks"];
+                            
                             break;
                         }
 
                         case PPPinboardCommunityFeedJapan: {
                             feedDataSource.components = @[@"popular", @"japanese"];
-                            [mixpanel track:@"Browsed 日本語 bookmarks"];
+                            
                             break;
                         }
 
                         case PPPinboardCommunityFeedRecent: {
                             feedDataSource.components = @[@"recent"];
-                            [mixpanel track:@"Browsed Recent bookmarks"];
+                            
                             break;
                         }
                     }

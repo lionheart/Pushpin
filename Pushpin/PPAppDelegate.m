@@ -8,7 +8,6 @@
 
 @import QuartzCore;
 @import CoreSpotlight;
-@import Mixpanel;
 @import ASPinboard;
 @import TMReachability;
 @import LHSCategoryCollection;
@@ -90,7 +89,7 @@
 
     [PPTheme customizeUIElements];
 
-    Mixpanel *mixpanel = [Mixpanel sharedInstanceWithToken:PPMixpanelToken];
+    
 
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if (![defaults boolForKey:@"HasLaunchedOnce"]) {
@@ -211,8 +210,8 @@
     if (settings.isAuthenticated) {
         pinboard.token = settings.token;
 
-        [mixpanel identify:settings.username];
-        [mixpanel.people set:@"$username" to:settings.username];
+        
+        
 
         if ([UIApplication isIPad]) {
             [self.window setRootViewController:self.splitViewController];
@@ -653,7 +652,7 @@
                 return;
             }
 
-            Mixpanel *mixpanel = [Mixpanel sharedInstance];
+            
             __block BOOL alreadyExistsInBookmarks;
             __block BOOL alreadyRejected;
 
@@ -706,7 +705,7 @@
                                                         }
 
                                                         [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
-                                                        [[Mixpanel sharedInstance] track:@"Decided to edit bookmark from clipboard"];
+                                                        
                                                     }];
 
                     [[UIViewController lhs_topViewController] presentViewController:alertController animated:YES completion:nil];
@@ -746,7 +745,7 @@
                                                                                       }
 
                                                                                       [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
-                                                                                      [[Mixpanel sharedInstance] track:@"Decided to add bookmark from clipboard"];
+                                                                                      
 
                                                                                       self.addOrEditPromptVisible = NO;
                                                                                   }];
@@ -755,7 +754,7 @@
                                                       self.addOrEditPromptVisible = YES;
                                                   }];
                                               });
-                                              [mixpanel track:@"Prompted to add bookmark from clipboard"];
+                                              
                                           }];
 
                 }

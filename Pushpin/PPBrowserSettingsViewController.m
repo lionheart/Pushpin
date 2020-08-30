@@ -7,7 +7,6 @@
 //
 
 @import QuartzCore;
-@import Mixpanel;
 @import OpenInChrome;
 @import LHSCategoryCollection;
 @import LHSTableViewCells;
@@ -59,28 +58,20 @@ static NSString *CellIdentifier = @"Cell";
         PPSettings *settings = [PPSettings sharedSettings];
 
         if ([action.title isEqualToString:NSLocalizedString(@"Webview", nil)]) {
-            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Webview"];
             settings.browser = PPBrowserWebview;
         } else if ([action.title isEqualToString:NSLocalizedString(@"Safari", nil)]) {
-            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Safari"];
             settings.browser = PPBrowserSafari;
         } else if ([action.title isEqualToString:NSLocalizedString(@"Chrome", nil)]) {
-            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Chrome"];
             settings.browser = PPBrowserChrome;
         } else if ([action.title isEqualToString:NSLocalizedString(@"iCab Mobile", nil)]) {
-            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"iCab Mobile"];
             settings.browser = PPBrowseriCabMobile;
         } else if ([action.title isEqualToString:NSLocalizedString(@"Dolphin", nil)]) {
-            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Dolphin"];
             settings.browser = PPBrowserDolphin;
         } else if ([action.title isEqualToString:NSLocalizedString(@"Cyberspace", nil)]) {
-            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Cyberpsace"];
             settings.browser = PPBrowserCyberspace;
         } else if ([action.title isEqualToString:NSLocalizedString(@"Opera", nil)]) {
-            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Opera"];
             settings.browser = PPBrowserOpera;
         } else if ([action.title isEqualToString:NSLocalizedString(@"Firefox", nil)]) {
-            [[[Mixpanel sharedInstance] people] set:@"Browser" to:@"Firefox"];
             settings.browser = PPBrowserFirefox;
         }
         

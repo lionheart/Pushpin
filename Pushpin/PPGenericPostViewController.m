@@ -11,7 +11,6 @@
 @import ASPinboard;
 @import KeychainItemWrapper;
 @import LHSCategoryCollection;
-@import Mixpanel;
 @import SafariServices;
 @import TMReachability;
 
@@ -573,7 +572,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
         }
         
         [self.selectedTableView deselectRowAtIndexPath:self.selectedIndexPath animated:NO];
-        Mixpanel *mixpanel = [Mixpanel sharedInstance];
+        
         
         if (![dataSource respondsToSelector:@selector(viewControllerForPostAtIndex:)]) {
             NSString *urlString = [dataSource urlForPostAtIndex:self.selectedIndexPath.row];
@@ -584,7 +583,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
             
 #warning TODO Check outside links
             if (settings.openLinksInApp) {
-                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Webview"}];
+                
 
                 TMReachability *reach = [TMReachability reachabilityForInternetConnection];
                 if (settings.useSafariViewController && reach.isReachable) {
@@ -617,7 +616,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                     PPBrowserType browser = settings.browser;
                     switch (browser) {
                         case PPBrowserSafari: {
-                            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Safari"}];
+                            
                             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString] options:@{} completionHandler:nil];;
                             break;
                         }
@@ -625,11 +624,11 @@ static NSInteger PPBookmarkEditMaximum = 25;
                         case PPBrowserChrome: {
                             if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"googlechrome-x-callback://"]]) {
                                 NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"googlechrome-x-callback://x-callback-url/open/?url=%@&x-success=pushpin%%3A%%2F%%2F&&x-source=Pushpin", [urlString urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
-                                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
+                                
                                 [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];;
                             } else {
                                 NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"googlechrome"]];
-                                [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Chrome"}];
+                                
                                 [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];;
                             }
                             break;
@@ -637,28 +636,28 @@ static NSInteger PPBookmarkEditMaximum = 25;
                             
                         case PPBrowseriCabMobile: {
                             NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"icabmobile"]];
-                            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"iCab Mobile"}];
+                            
                             [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];;
                             break;
                         }
                             
                         case PPBrowserOpera: {
                             NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"ohttp"]];
-                            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Opera"}];
+                            
                             [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];;
                             break;
                         }
                             
                         case PPBrowserDolphin: {
                             NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"dolphin"]];
-                            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"dolphin"}];
+                            
                             [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];;
                             break;
                         }
                             
                         case PPBrowserCyberspace: {
                             NSURL *url = [NSURL URLWithString:[urlString stringByReplacingCharactersInRange:httpRange withString:@"cyber"]];
-                            [mixpanel track:@"Visited bookmark" properties:@{@"Browser": @"Cyberspace Browser"}];
+                            
                             [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];;
                             break;
                         }
@@ -1297,7 +1296,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                               updated:NO];
     
     [[UIPasteboard generalPasteboard] setString:[self.currentDataSource urlForPostAtIndex:self.selectedIndexPath.row]];
-    [[Mixpanel sharedInstance] track:@"Copied URL"];
+    
 }
 
 - (void)showConfirmDeletionAlert {

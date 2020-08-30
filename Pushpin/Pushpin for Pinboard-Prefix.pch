@@ -29,10 +29,6 @@
 #define DEVICE [UIDevice currentDevice]
 #define HEX(c) [UIColor colorWithRed:((c>>24)&0xff)/255.0 green:((c>>16)&0xff)/255.0 blue:((c>>8)&0xff)/255.0 alpha:((c)&0xff)/255.0]
 
-#define MPTrackProperties(event, ...) [[MixpanelAPI sharedAPI] track:event properties:[NSDictionary dictionaryWithObjectsAndKeys:__VA_ARGS__, nil]]
-#define MPTrack(event) [[MixpanelAPI sharedAPI] track:event]
-#define MPSetProperties(...) [[MixpanelAPI sharedAPI] registerSuperProperties:[NSDictionary dictionaryWithObjectsAndKeys:__VA_ARGS__, nil]]
-
 #define kFontName @"Helvetica"
 
 #define kReadabilityKey @"dlo"

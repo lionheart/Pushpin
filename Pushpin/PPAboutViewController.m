@@ -10,7 +10,6 @@
 @import Accounts;
 @import Social;
 @import StoreKit;
-@import Mixpanel;
 @import LHSCategoryCollection;
 @import LHSTableViewCells;
 
@@ -108,7 +107,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     
     self.heights = [heights mutableCopy];
     
-    [[Mixpanel sharedInstance] track:@"Opened about page"];
+    
     [self.tableView reloadData];
 }
 

@@ -431,7 +431,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[hash]];
             }];
 
-            [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
+
             dispatch_group_leave(group);
         };
 
@@ -475,7 +475,7 @@ static BOOL kPinboardSyncInProgress = NO;
                     [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
                 }];
 
-                [[Mixpanel sharedInstance] track:@"Deleted bookmark"];
+
 
                 NSInteger index = [self.posts indexOfObject:post];
                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
@@ -1038,7 +1038,7 @@ static BOOL kPinboardSyncInProgress = NO;
     DLog(@"%@ - Received data", [NSDate date]);
     NSDate *startDate = [NSDate date];
     PPSettings *settings = [PPSettings sharedSettings];
-    Mixpanel *mixpanel = [Mixpanel sharedInstance];
+    
 
     __weak PPPinboardDataSource *weakSelf = self;
 
@@ -1085,7 +1085,7 @@ static BOOL kPinboardSyncInProgress = NO;
         [results close];
     }];
     
-    [mixpanel.people set:@"Bookmarks" to:@(total)];
+    
 
     DLog(@"Iterating posts");
     progress(0, total);
@@ -1167,7 +1167,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 NSDate *date = [self.enUSPOSIXDateFormatter dateFromString:post[@"time"]];
                 if (!dateError && !date) {
                     date = [NSDate dateWithTimeIntervalSince1970:0];
-                    [[Mixpanel sharedInstance] track:@"NSDate error in updateLocalDatabaseFromRemoteAPIWithSuccess" properties:@{@"Locale": [NSLocale currentLocale]}];
+
                     dateError = YES;
                 }
 
@@ -1229,7 +1229,7 @@ static BOOL kPinboardSyncInProgress = NO;
         NSNotification *note = [NSNotification notificationWithName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(total), @"total": @(total)}];
         [queue enqueueNotification:note postingStyle:NSPostASAP];
 
-        [[Mixpanel sharedInstance] track:@"Synced Pinboard bookmarks" properties:@{@"Duration": @([endDate timeIntervalSinceDate:startDate])}];
+
 
         BOOL updatesMade = addCount > 0 || updateCount > 0 || deleteCount > 0;
         if (weakSelf) {
@@ -1334,7 +1334,7 @@ static BOOL kPinboardSyncInProgress = NO;
     NSDate *date = [self.enUSPOSIXDateFormatter dateFromString:post[@"time"]];
     if (!dateError && !date) {
         date = [NSDate dateWithTimeIntervalSince1970:0];
-        [[Mixpanel sharedInstance] track:@"NSDate error in updateLocalDatabaseFromRemoteAPIWithSuccess" properties:@{@"Locale": [NSLocale currentLocale]}];
+
         DLog(@"Error parsing date: %@", post[@"time"]);
         
         // XXX This changed recently! Could be a source of issues.

@@ -13,7 +13,6 @@
 @import LHSTableViewCells;
 @import LHSCategoryCollection;
 @import FMDB;
-@import Mixpanel;
 
 #import "Pushpin-Swift.h"
 #import "PPAddBookmarkViewController.h"
@@ -1095,8 +1094,8 @@ static NSString *CellIdentifier = @"CellIdentifier";
             [self presentViewController:alert animated:YES completion:nil];
             
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                Mixpanel *mixpanel = [Mixpanel sharedInstance];
-                [mixpanel track:@"Failed to add bookmark" properties:@{@"Reason": @"Missing title or URL"}];
+
+
             });
             return;
         }
@@ -1122,7 +1121,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             void (^BookmarkSuccessBlock)(void) = ^{
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    Mixpanel *mixpanel = [Mixpanel sharedInstance];
+
                     __block BOOL bookmarkAdded;
                     __block NSDictionary *post;
 
@@ -1151,7 +1150,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         if (count > 0) {
                             // The bookmark already exists, so we're updating it.
                             
-                            [mixpanel track:@"Updated bookmark" properties:@{@"Private": @(private), @"Read": @(!unread)}];
+
                             
                             if (hashExists) {
                                 [params removeObjectForKey:@"url"];
@@ -1174,7 +1173,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         } else {
                             // We're adding this bookmark for the first time.
                             params[@"created_at"] = [NSDate date];
-                            [mixpanel track:@"Added bookmark" properties:@{@"Private": @(private), @"Read": @(!unread)}];
+
                             
                             
 

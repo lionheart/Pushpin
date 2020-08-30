@@ -15,7 +15,6 @@
 #endif
 
 @import SafariServices;
-@import Mixpanel;
 @import LHSCategoryCollection;
 @import RNCryptor_objc;
 @import JavaScriptCore;
@@ -621,7 +620,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                               updated:NO];
     
     [[UIPasteboard generalPasteboard] setString:self.url.absoluteString];
-    [[Mixpanel sharedInstance] track:@"Copied URL"];
+    
 }
 
 - (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {

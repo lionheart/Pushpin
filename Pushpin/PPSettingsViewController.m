@@ -7,7 +7,6 @@
 //
 
 @import QuartzCore;
-@import Mixpanel;
 @import LHSCategoryCollection;
 @import FMDB;
 @import ASPinboard;
@@ -139,7 +138,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [[Mixpanel sharedInstance] track:@"Opened settings"];
+    
 }
 
 -(BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
@@ -151,7 +150,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 }
 
 - (void)showAboutPage {
-    [[Mixpanel sharedInstance] track:@"Opened about page"];
+    
     PPAboutViewController *aboutViewController = [[PPAboutViewController alloc] init];
     [self.navigationController pushViewController:aboutViewController animated:YES];
 }

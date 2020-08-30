@@ -7,7 +7,6 @@
 //
 
 @import QuartzCore;
-@import Mixpanel;
 @import LHSCategoryCollection;
 @import ASPinboard;
 @import MessageUI;
@@ -210,7 +209,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                     [self presentViewController:alert animated:YES completion:nil];
                 });
 
-                [[Mixpanel sharedInstance] track:@"Failed to log in"];
+                
                 break;
             }
 
@@ -228,7 +227,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                     [self presentViewController:alert animated:YES completion:nil];
                 });
 
-                [[Mixpanel sharedInstance] track:@"Cancelled log in"];
+                
                 break;
             }
         }
@@ -266,11 +265,11 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     });
 
     PPSettings *settings = [PPSettings sharedSettings];
-    Mixpanel *mixpanel = [Mixpanel sharedInstance];
-    [mixpanel identify:settings.username];
-    [mixpanel.people set:@"$created" to:[NSDate date]];
-    [mixpanel.people set:@"$username" to:settings.username];
-    [mixpanel.people set:@"Browser" to:@"Webview"];
+    
+    
+    
+    
+    
 }
 
 - (void)updateProgressCallback:(NSInteger)current total:(NSInteger)total {
