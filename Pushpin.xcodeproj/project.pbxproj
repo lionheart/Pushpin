@@ -560,6 +560,8 @@
 		37CBB7511881F31C000F9C36 /* PPPlainTextViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPPlainTextViewController.h; sourceTree = "<group>"; };
 		37CBB7521881F31C000F9C36 /* PPPlainTextViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPPlainTextViewController.m; sourceTree = "<group>"; };
 		37CBB7541881FFBC000F9C36 /* About.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = About.json; path = Assets/About.json; sourceTree = SOURCE_ROOT; };
+		37CC829624FC206800D24A8F /* Pushpin-Beta.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Pushpin-Beta.entitlements"; sourceTree = SOURCE_ROOT; };
+		37CC829724FC206800D24A8F /* Pushpin-Dev.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Pushpin-Dev.entitlements"; sourceTree = SOURCE_ROOT; };
 		37CD84CF19ABF4BD0045CD6D /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/Localizable.strings; sourceTree = "<group>"; };
 		37CFA5FE19683ED300C67338 /* PPNoteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPNoteViewController.h; sourceTree = "<group>"; };
 		37CFA5FF19683ED300C67338 /* PPNoteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPNoteViewController.m; sourceTree = "<group>"; };
@@ -576,8 +578,6 @@
 		37DE5AA0174EF8AE0073A2F4 /* back_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = back_icon.png; path = Assets/back_icon.png; sourceTree = "<group>"; };
 		37DE5AA1174EF8AE0073A2F4 /* back_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "back_icon@2x.png"; path = "Assets/back_icon@2x.png"; sourceTree = "<group>"; };
 		37DE5AB8174F2A2E0073A2F4 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
-		37DF2CBF16C4B7EA00CFCA81 /* Beta.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Beta.entitlements; sourceTree = "<group>"; };
-		37DF2CC116C4B80600CFCA81 /* Dev.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Dev.entitlements; sourceTree = "<group>"; };
 		37E312E31868CCD600B944F1 /* 56_Key-alt.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "56_Key-alt.png"; path = "Assets/56_Key-alt.png"; sourceTree = "<group>"; };
 		37E312E41868CCD600B944F1 /* 56_Key-alt@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "56_Key-alt@2x.png"; path = "Assets/56_Key-alt@2x.png"; sourceTree = "<group>"; };
 		37E9965B1D32EC3500659E82 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
@@ -959,8 +959,8 @@
 		376ABBBE1895892300132CFF /* Entitlements */ = {
 			isa = PBXGroup;
 			children = (
-				37DF2CBF16C4B7EA00CFCA81 /* Beta.entitlements */,
-				37DF2CC116C4B80600CFCA81 /* Dev.entitlements */,
+				37CC829624FC206800D24A8F /* Pushpin-Beta.entitlements */,
+				37CC829724FC206800D24A8F /* Pushpin-Dev.entitlements */,
 				37561D8816ADFEC400D69CDE /* Pushpin.entitlements */,
 			);
 			name = Entitlements;
@@ -2554,7 +2554,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = NO;
-				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "Pushpin-Beta.entitlements";
 				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = YES;
@@ -2627,7 +2627,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_MODULES_AUTOLINK = NO;
-				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "Pushpin-Beta.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -2704,7 +2704,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = NO;
-				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "Pushpin-Dev.entitlements";
 				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -2880,7 +2880,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_MODULES_AUTOLINK = NO;
-				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "Pushpin-Dev.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
