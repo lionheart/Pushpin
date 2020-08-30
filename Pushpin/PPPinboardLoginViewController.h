@@ -39,4 +39,9 @@ static NSInteger PPLoginSectionCount = PPLoginAuthTokenSection + 1;
 - (void)updateLoadingMessage;
 - (void)showContactForm;
 
+- (void)loginSuccessCallback:(BOOL)authTokenProvided;
+- (void)loginFailureCallback:(NSError *)error authTokenProvided:(BOOL)authTokenProvided;
+- (void)syncCompletedCallback;
+- (void)updateProgressCallback:(NSInteger)current total:(NSInteger)total;
+
 @end

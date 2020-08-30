@@ -188,6 +188,7 @@
 		37C4D51C1F9BEB40000F50CB /* MultilineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C4D51B1F9BEB40000F50CB /* MultilineTableViewCell.swift */; };
 		37CBB7411881B44B000F9C36 /* About.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7401881B44B000F9C36 /* About.plist */; };
 		37CBB7551881FFBC000F9C36 /* About.json in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7541881FFBC000F9C36 /* About.json */; };
+		37CC829524FBDEED00D24A8F /* PSPDFUIKitMainThreadGuard.m in Sources */ = {isa = PBXBuildFile; fileRef = 3794AE9F176D33D100250909 /* PSPDFUIKitMainThreadGuard.m */; };
 		37D620561F9A9D060020B52A /* StoreReviewPointsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D620551F9A9D060020B52A /* StoreReviewPointsManager.swift */; };
 		37D620581F9AB4BA0020B52A /* PPAddBookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E44162B389B009FCB17 /* PPAddBookmarkViewController.m */; };
 		37DE5AAA174EF8AF0073A2F4 /* back_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 37DE5AA0174EF8AE0073A2F4 /* back_icon.png */; };
@@ -1914,6 +1915,7 @@
 				37F9D0D91D33049B002A168D /* PPCachingURLProtocol.m in Sources */,
 				37F9D0B11D330025002A168D /* PPChangelogViewController.m in Sources */,
 				37B620101F4520D9005DE789 /* PPDefaultFeedViewController.m in Sources */,
+				37CC829524FBDEED00D24A8F /* PSPDFUIKitMainThreadGuard.m in Sources */,
 				37F9D0A61D32FE55002A168D /* PPDisplaySettingsViewController.m in Sources */,
 				37B6201D1F45211D005DE789 /* PPEditDescriptionViewController.m in Sources */,
 				37F9D0A51D32FE50002A168D /* PPFeedListViewController.m in Sources */,
