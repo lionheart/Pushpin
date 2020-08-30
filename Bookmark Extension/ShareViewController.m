@@ -57,28 +57,34 @@
     nc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     [PPTheme customizeUIElements];
 
+    __weak ShareViewController *weakSelf = self;
     [self presentViewController:nc animated:YES completion:^{
-        if (self.hasToken) {
+        if (weakSelf.hasToken) {
             [[ASPinboard sharedInstance] lastUpdateWithSuccess:^(NSDate *date) {}
                                                        failure:^(NSError *error) {
-                                                           [self handleInvalidCredentials:nc];
+                                                           [weakSelf handleInvalidCredentials:nc];
                                                        }];
         } else {
-            [self handleInvalidCredentials:nc];
+            [weakSelf handleInvalidCredentials:nc];
         }
     }];
 }
 
-- (void)completeWithURLString:(NSString *)urlString title:(NSString *)title description:(NSString *)description token:(NSString *)token {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (urlString) {
-            // Check if the bookmark is already in the database.
-            __block NSDictionary *post = @{@"url": urlString, @"title": title, @"description": description};
-            __block NSInteger count;
+- (void)completeWithURLString:(NSString *)urlString
+                        title:(NSString *)title
+                  description:(NSString *)description
+                        token:(NSString *)token {
+    if (urlString) {
+        // Check if the bookmark is already in the database.
+        __block NSDictionary *post = @{@"url": urlString, @"title": title, @"description": description};
+        __block NSInteger count;
 
-            NSURL *containerURL = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:APP_GROUP];
-            NSString *path = [containerURL URLByAppendingPathComponent:@"shared.db"].path;
-            DLog(@"%@", path);
+        NSURL *containerURL = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:APP_GROUP];
+        NSString *path = [containerURL URLByAppendingPathComponent:@"shared.db"].path;
+        DLog(@"%@", path);
+
+        __weak ShareViewController *weakSelf = self;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [[FMDatabaseQueue databaseQueueWithPath:path] inDatabase:^(FMDatabase *db) {
                 FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) AS count, * FROM bookmark WHERE url=?" withArgumentsInArray:@[urlString]];
                 [results next];
@@ -94,54 +100,69 @@
             if (count == 0) {
                 [[ASPinboard sharedInstance] bookmarkWithURL:urlString
                                                      success:^(NSDictionary *post) {
-                                                         dispatch_async(dispatch_get_main_queue(), ^{
-                                                             NSDictionary *bookmark = @{@"title": post[@"description"],
-                                                                                        @"description": post[@"extended"],
-                                                                                        @"url": urlString,
-                                                                                        @"private": @([post[@"shared"] isEqualToString:@"no"]),
-                                                                                        @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
-                                                                                        @"tags": post[@"tags"]};
-                                                             UINavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark
-                                                                                                                                                              update:@(YES)
-                                                                                                                                                            callback:nil];
-                                                             [self presentController:navigation token:token];
-                                                         });
-                                                     }
+                    NSDictionary *bookmark = @{@"title": post[@"description"],
+                                               @"description": post[@"extended"],
+                                               @"url": urlString,
+                                               @"private": @([post[@"shared"] isEqualToString:@"no"]),
+                                               @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
+                                               @"tags": post[@"tags"]};
+
+                    if (weakSelf) {
+                        __strong ShareViewController *strongSelf = weakSelf;
+
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            UINavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark
+                                                                                                                             update:@(YES)
+                                                                                                                           callback:nil];
+                            [strongSelf presentController:navigation token:token];
+                        });
+                    }
+                }
                                                      failure:^(NSError *error) {
-                                                         dispatch_async(dispatch_get_main_queue(), ^{
-                                                             NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
-                                                             BOOL readByDefault = [[sharedDefaults objectForKey:@"ReadByDefault"] boolValue];
-                                                             BOOL privateByDefault = [[sharedDefaults objectForKey:@"PrivateByDefault"] boolValue];
+                    NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
+                    BOOL readByDefault = [[sharedDefaults objectForKey:@"ReadByDefault"] boolValue];
+                    BOOL privateByDefault = [[sharedDefaults objectForKey:@"PrivateByDefault"] boolValue];
 
-                                                             NSDictionary *bookmark = @{
-                                                                                        @"title": title,
-                                                                                        @"url": urlString,
-                                                                                        @"description": description,
-                                                                                        @"private": @(privateByDefault),
-                                                                                        @"unread": @(!readByDefault)
-                                                                                        };
+                    NSDictionary *bookmark = @{
+                        @"title": title,
+                        @"url": urlString,
+                        @"description": description,
+                        @"private": @(privateByDefault),
+                        @"unread": @(!readByDefault)
+                    };
 
-                                                             PPNavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark
-                                                                                                                                                              update:@(NO)
-                                                                                                                                                            callback:nil];
+                    if (weakSelf) {
+                        __strong ShareViewController *strongSelf = weakSelf;
 
-                                                             PPAddBookmarkViewController *addBookmarkViewController = (PPAddBookmarkViewController *)navigation.topViewController;
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            PPNavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark
+                                                                                                                             update:@(NO)
+                                                                                                                           callback:nil];
 
-                                                             if (!title && !description) {
-                                                                 [addBookmarkViewController prefillTitleAndForceUpdate:YES];
-                                                             }
+                            PPAddBookmarkViewController *addBookmarkViewController = (PPAddBookmarkViewController *)navigation.topViewController;
 
-                                                             [self presentController:navigation token:token];
-                                                         });
-                                                     }];
+                            if (!title && !description) {
+                                [addBookmarkViewController prefillTitleAndForceUpdate:YES];
+                            }
+
+                            [strongSelf presentController:navigation token:token];
+                        });
+                    }
+                }];
             } else {
-                UINavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:post
-                                                                                                                 update:@(YES)
-                                                                                                               callback:nil];
-                [self presentController:navigation token:token];
+                if (weakSelf) {
+                    __strong ShareViewController *strongSelf = weakSelf;
+
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        UINavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:post
+                                                                                                                         update:@(YES)
+                                                                                                                       callback:nil];
+                        [strongSelf presentController:navigation token:token];
+                    });
+                }
             }
-        }
-    });
+        });
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
