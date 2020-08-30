@@ -89,7 +89,6 @@ PODS:
   - LionheartExtensions (5.0.2):
     - LionheartExtensions/Core (= 5.0.2)
   - LionheartExtensions/Core (5.0.2)
-  - Mixpanel (3.6.2)
   - MWFeedParser (1.0.1):
     - MWFeedParser/FeedParser (= 1.0.1)
     - "MWFeedParser/NSDate+InternetDateTime (= 1.0.1)"
@@ -134,7 +133,6 @@ DEPENDENCIES:
   - LHSKeyboardAdjusting (~> 2.0)
   - LHSTableViewCells
   - LionheartExtensions
-  - Mixpanel
   - MWFeedParser (= 1.0.1)
   - OpenInChrome (~> 0.0)
   - QuickTableView
@@ -169,7 +167,6 @@ SPEC REPOS:
     - LHSKeyboardAdjusting
     - LHSTableViewCells
     - LionheartExtensions
-    - Mixpanel
     - MWFeedParser
     - nanopb
     - OpenInChrome
@@ -214,7 +211,6 @@ SPEC CHECKSUMS:
   LHSKeyboardAdjusting: 8f9b8d6e80315e653bf3188ae62963874d342d68
   LHSTableViewCells: 47b4d33382cb4a09960371267e2142970afdfdd6
   LionheartExtensions: 09fa816d98176012c8f9adf7f21774f528dbc90e
-  Mixpanel: 0a78141d1a073308201f76c55c3e629535e72b47
   MWFeedParser: 2cf646014c1baf6ad1b08c480b40a08180079247
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
   OpenInChrome: f1f3f9dec682216fe78a0d7fe0b5b263d6312c32
@@ -226,6 +222,6 @@ SPEC CHECKSUMS:
   TMReachability: 48c99d728a8b0ad4493800592484b8cbb65c896c
   TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
 
-PODFILE CHECKSUM: 4407098d33ab37153117bdb0b86fb95050fba177
+PODFILE CHECKSUM: c4506c4ed51154d4404aec8660ed6f5ac36e44e8
 
-COCOAPODS: 1.8.3
+COCOAPODS: 1.9.3
