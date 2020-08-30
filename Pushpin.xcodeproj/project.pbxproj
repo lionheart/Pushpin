@@ -2480,6 +2480,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 623;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 63553QQ62F;
 				ENABLE_BITCODE = NO;
@@ -2504,7 +2505,7 @@
 					"\"@executable_path/Frameworks\"",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.1.19;
+				MARKETING_VERSION = 4.1.20;
 				PRODUCT_NAME = Pushpin;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2627,6 +2628,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = YES;
+				CURRENT_PROJECT_VERSION = 623;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 63553QQ62F;
 				ENABLE_BITCODE = NO;
@@ -2650,7 +2652,7 @@
 					"\"@executable_path/Frameworks\"",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.1.19;
+				MARKETING_VERSION = 4.1.20;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2876,6 +2878,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 623;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 63553QQ62F;
 				ENABLE_BITCODE = NO;
@@ -2899,7 +2902,7 @@
 					"\"@executable_path/Frameworks\"",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.1.19;
+				MARKETING_VERSION = 4.1.20;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2930,6 +2933,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = YES;
+				CURRENT_PROJECT_VERSION = 623;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 63553QQ62F;
 				ENABLE_BITCODE = NO;
@@ -2953,7 +2957,7 @@
 					"\"@executable_path/Frameworks\"",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.1.19;
+				MARKETING_VERSION = 4.1.20;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
