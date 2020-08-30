@@ -446,8 +446,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 return kBookmarkTagRow + 1;
                 
             case kBookmarkBottomSection:
-                
-
                 return 2;
                 
             default:
@@ -495,7 +493,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     [cell.contentView addSubview:topImageView];
                     
                     if (self.loadingTags) {
-                        UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                        UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
                         [activity startAnimating];
                         cell.accessoryView = activity;
                         cell.textLabel.text = NSLocalizedString(@"Retrieving popular tags", nil);
@@ -579,7 +577,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         [cell.contentView lhs_addConstraints:@"V:|-8-[title(24)][url]" views:views];
                         
                         if (self.loadingTitle) {
-                            UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                            UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
                             [activity startAnimating];
                             cell.accessoryView = activity;
                             [cell.contentView lhs_addConstraints:@"H:|-40-[title]-30-|" views:views];
@@ -608,7 +606,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         [cell.contentView lhs_addConstraints:@"V:|-12-[image(20)]" views:views];
                         
                         if (self.loadingTitle) {
-                            UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                            UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
                             [activity startAnimating];
                             cell.accessoryView = activity;
                             self.descriptionAttributes[NSForegroundColorAttributeName] = HEX(0xc7c7cdff);
@@ -752,7 +750,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
     //doesnt matter if they are already added, tags with '&' are shown when searching, so the loop below will avoid adding them again into 'existing tags' when they are tapped
-    for(id object in self.existingTags) {
+    for (id object in self.existingTags) {
         if ([object caseInsensitiveCompare:[tableView cellForRowAtIndexPath:indexPath].textLabel.text] == NSOrderedSame) {
             return;
         }
@@ -826,33 +824,36 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         
                     case kBookmarkTagRow: {
                         self.isEditingTags = YES;
-                        self.tagTextField.userInteractionEnabled = YES;
-                        self.tagTextField.hidden = NO;
-                        self.badgeWrapperView.userInteractionEnabled = YES;
-                        
-                        NSMutableIndexSet *indexSetsToReload = [NSMutableIndexSet indexSet];
-                        [indexSetsToReload addIndex:0];
 
-                        NSMutableIndexSet *indexSetsToDelete = [NSMutableIndexSet indexSet];
-                        
-                        if (self.existingTags.count > 0) {
-                            [indexSetsToReload addIndex:1];
-                        } else {
-                            [indexSetsToDelete addIndex:1];
-                        }
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            self.tagTextField.userInteractionEnabled = YES;
+                            self.tagTextField.hidden = NO;
+                            self.badgeWrapperView.userInteractionEnabled = YES;
 
-                        [self.tableView beginUpdates];
-                        [self.tableView reloadSections:indexSetsToReload withRowAnimation:UITableViewRowAnimationFade];
-                        [self.tableView deleteSections:indexSetsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                        [self.tableView endUpdates];
+                            NSMutableIndexSet *indexSetsToReload = [NSMutableIndexSet indexSet];
+                            [indexSetsToReload addIndex:0];
 
-                        [self.tagTextField becomeFirstResponder];
+                            NSMutableIndexSet *indexSetsToDelete = [NSMutableIndexSet indexSet];
 
-                        self.navigationItem.leftBarButtonItem = nil;
-                        self.navigationItem.rightBarButtonItem = self.doneBarButtonItem;
+                            if (self.existingTags.count > 0) {
+                                [indexSetsToReload addIndex:1];
+                            } else {
+                                [indexSetsToDelete addIndex:1];
+                            }
 
-                        self.originalTitle = self.title;
-                        self.title = NSLocalizedString(@"Edit Tags", nil);
+                            [self.tableView beginUpdates];
+                            [self.tableView reloadSections:indexSetsToReload withRowAnimation:UITableViewRowAnimationFade];
+                            [self.tableView deleteSections:indexSetsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                            [self.tableView endUpdates];
+
+                            [self.tagTextField becomeFirstResponder];
+
+                            self.navigationItem.leftBarButtonItem = nil;
+                            self.navigationItem.rightBarButtonItem = self.doneBarButtonItem;
+
+                            self.originalTitle = self.title;
+                            self.title = NSLocalizedString(@"Edit Tags", nil);
+                        });
                         break;
                     }
                 }
@@ -1727,9 +1728,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (NSInteger)maxTagsToAutocomplete {
     if ([UIApplication isIPad]) {
-        return 8;
+        return 10;
     } else {
-        return 6;
+        return 10;
     }
 }
 

@@ -25,8 +25,10 @@
 
 @property (nonatomic, weak) id<PPBadgeWrapperDelegate> delegate;
 @property (nonatomic, strong) NSMutableArray *badges;
+@property (nonatomic, strong) PPBadgeView *ellipsisView;
 @property (nonatomic, strong) NSDictionary *badgeOptions;
 @property (nonatomic) BOOL compressed;
+@property (nonatomic) BOOL isInvalidated;
 
 - (id)initWithBadges:(NSArray *)badges;
 - (id)initWithBadges:(NSArray *)badges options:(NSDictionary *)options;

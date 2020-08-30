@@ -38,6 +38,7 @@ static const CGFloat PADDING_Y = 6;
         _compressed = compressed;
         self.badgeOptions = options;
         self.badges = [badges mutableCopy];
+        self.isInvalidated = YES;
     }
     return self;
 }
@@ -91,6 +92,8 @@ static const CGFloat PADDING_Y = 6;
 
 - (void)setBadges:(NSMutableArray *)badges {
     _badges = badges;
+
+    self.isInvalidated = YES;
     
     [self lhs_removeSubviews];
 
@@ -114,23 +117,31 @@ static const CGFloat PADDING_Y = 6;
 
 - (void)setCompressed:(BOOL)compressed {
     _compressed = compressed;
+    self.isInvalidated = YES;
     [self layoutSubviews];
 }
 
 - (void)layoutSubviews {
+    if (!self.isInvalidated) {
+        return;
+    }
+
     CGFloat offsetX = 0;
     CGFloat offsetY = 0;
 
-    PPBadgeView *ellipsisView = [[PPBadgeView alloc] initWithText:ellipsis options:self.badgeOptions];
-    ellipsisView.delegate = self;
-    CGRect ellipsisFrame = ellipsisView.frame;
+    if (!self.ellipsisView) {
+        self.ellipsisView = [[PPBadgeView alloc] initWithText:ellipsis options:self.badgeOptions];
+        self.ellipsisView.delegate = self;
+    }
+
+    CGRect ellipsisFrame = self.ellipsisView.frame;
 
     // Hide all the subviews initially.
     for (UIView *subview in self.subviews) {
         subview.hidden = YES;
     }
 
-    CGRect badgeFrame;
+    CGRect badgeFrame = self.frame;
     for (UIView *subview in self.subviews) {
         if ([subview isKindOfClass:[PPBadgeView class]]) {
             PPBadgeView *badgeView = (PPBadgeView *)subview;
@@ -144,8 +155,8 @@ static const CGFloat PADDING_Y = 6;
                     // Hide the current badge and put the ellipsis in its place
                     badgeView.hidden = YES;
 
-                    [self addSubview:ellipsisView];
-                    ellipsisView.frame = (CGRect){badgeFrame.origin, ellipsisFrame.size};
+                    [self addSubview:self.ellipsisView];
+                    self.ellipsisView.frame = (CGRect){badgeFrame.origin, ellipsisFrame.size};
                     break;
                 }
             } else {
@@ -172,6 +183,7 @@ static const CGFloat PADDING_Y = 6;
     CGRect frame = self.frame;
     frame.size.height = offsetY + PADDING_Y;
     self.frame = frame;
+    self.isInvalidated = NO;
 }
 
 - (CGSize)intrinsicContentSize {
@@ -181,14 +193,22 @@ static const CGFloat PADDING_Y = 6;
 #pragma mark - PPBadgeViewDelegate
 
 - (void)didSelectBadgeView:(PPBadgeView *)badgeView {
-    if ([self.delegate respondsToSelector:@selector(badgeWrapperView:didSelectBadge:)]) {
-        [self.delegate badgeWrapperView:self didSelectBadge:badgeView];
+    if (self.delegate) {
+        __strong id strongDelegate = self.delegate;
+
+        if ([strongDelegate respondsToSelector:@selector(badgeWrapperView:didSelectBadge:)]) {
+            [strongDelegate badgeWrapperView:self didSelectBadge:badgeView];
+        }
     }
 }
 
 - (void)didTapAndHoldBadgeView:(PPBadgeView *)badgeView {
-    if ([self.delegate respondsToSelector:@selector(badgeWrapperView:didTapAndHoldBadge:)]) {
-        [self.delegate badgeWrapperView:self didTapAndHoldBadge:badgeView];
+    if (self.delegate) {
+        __strong id strongDelegate = self.delegate;
+
+        if ([strongDelegate respondsToSelector:@selector(badgeWrapperView:didTapAndHoldBadge:)]) {
+            [strongDelegate badgeWrapperView:self didTapAndHoldBadge:badgeView];
+        }
     }
 }
 

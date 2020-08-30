@@ -37,16 +37,21 @@
 }
 
 - (void)handleInvalidCredentials:(UIViewController *)controller {
+    __weak ShareViewController *weakSelf = self;
     dispatch_async(dispatch_get_main_queue(), ^{
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Invalid Token", nil)
                                                                        message:NSLocalizedString(@"Please open Pushpin to refresh your credentials.", nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];
         [alert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-            [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
+            if (weakSelf) {
+                __strong ShareViewController *strongSelf = weakSelf;
+
+                [strongSelf.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
+            }
         }];
         [controller presentViewController:alert animated:YES completion:nil];
     });
-}
+} 
 
 - (void)presentController:(UINavigationController *)nc token:(NSString *)token {
     PPAddBookmarkViewController *addBookmarkViewController = (PPAddBookmarkViewController *)nc.topViewController;
@@ -59,13 +64,24 @@
 
     __weak ShareViewController *weakSelf = self;
     [self presentViewController:nc animated:YES completion:^{
-        if (weakSelf.hasToken) {
-            [[ASPinboard sharedInstance] lastUpdateWithSuccess:^(NSDate *date) {}
-                                                       failure:^(NSError *error) {
-                                                           [weakSelf handleInvalidCredentials:nc];
-                                                       }];
-        } else {
-            [weakSelf handleInvalidCredentials:nc];
+        if (weakSelf) {
+            __strong ShareViewController *strongSelf = weakSelf;
+
+            if (strongSelf.hasToken) {
+                __weak ShareViewController *_weakSelf = strongSelf;
+
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    [[ASPinboard sharedInstance] lastUpdateWithSuccess:^(NSDate *date) {}
+                                                               failure:^(NSError *error) {
+                        if (_weakSelf) {
+                            __strong ShareViewController *_strongSelf = _weakSelf;
+                            [_strongSelf handleInvalidCredentials:nc];
+                        }
+                    }];
+                });
+            } else {
+                [strongSelf handleInvalidCredentials:nc];
+            }
         }
     }];
 }
@@ -107,16 +123,15 @@
                                                @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
                                                @"tags": post[@"tags"]};
 
-                    if (weakSelf) {
-                        __strong ShareViewController *strongSelf = weakSelf;
-
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            UINavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark
-                                                                                                                             update:@(YES)
-                                                                                                                           callback:nil];
-                            [strongSelf presentController:navigation token:token];
+                            if (weakSelf) {
+                                __strong ShareViewController *strongSelf = weakSelf;
+                                UINavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark
+                                                                                                                                 update:@(YES)
+                                                                                                                               callback:nil];
+                                [strongSelf presentController:navigation token:token];
+                            }
                         });
-                    }
                 }
                                                      failure:^(NSError *error) {
                     NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
@@ -131,10 +146,9 @@
                         @"unread": @(!readByDefault)
                     };
 
-                    if (weakSelf) {
-                        __strong ShareViewController *strongSelf = weakSelf;
-
-                        dispatch_async(dispatch_get_main_queue(), ^{
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if (weakSelf) {
+                            __strong ShareViewController *strongSelf = weakSelf;
                             PPNavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark
                                                                                                                              update:@(NO)
                                                                                                                            callback:nil];
@@ -146,20 +160,19 @@
                             }
 
                             [strongSelf presentController:navigation token:token];
-                        });
-                    }
+                        }
+                    });
                 }];
             } else {
-                if (weakSelf) {
-                    __strong ShareViewController *strongSelf = weakSelf;
-
-                    dispatch_async(dispatch_get_main_queue(), ^{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (weakSelf) {
+                        __strong ShareViewController *strongSelf = weakSelf;
                         UINavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:post
                                                                                                                          update:@(YES)
                                                                                                                        callback:nil];
                         [strongSelf presentController:navigation token:token];
-                    });
-                }
+                    }
+                });
             }
         });
     }
@@ -198,13 +211,18 @@
         }
     }
 
+    __weak ShareViewController *weakSelf = self;
     if (propertyListItemProvider) {
         [propertyListItemProvider loadItemForTypeIdentifier:(__bridge NSString *)kUTTypePropertyList
                                                     options:0
                                           completionHandler:^(NSDictionary *results, NSError *error) {
-                                              NSDictionary *data = results[NSExtensionJavaScriptPreprocessingResultsKey];
-                                              [self completeWithURLString:data[@"url"] title:data[@"title"] description:data[@"selection"] token:token];
-                                          }];
+            NSDictionary *data = results[NSExtensionJavaScriptPreprocessingResultsKey];
+
+            if (weakSelf) {
+                __strong ShareViewController *strongSelf = weakSelf;
+                [strongSelf completeWithURLString:data[@"url"] title:data[@"title"] description:data[@"selection"] token:token];
+            }
+        }];
     } else if (titleItemProvider != nil || urlItemProvider != nil) {
         dispatch_group_t group = dispatch_group_create();
 
@@ -244,10 +262,14 @@
                 title = @"";
             }
 
-            if (urlString) {
-                [self completeWithURLString:urlString title:title description:@"" token:token];
-            } else {
-                [self displayNoURLAlert];
+            if (weakSelf) {
+                __strong ShareViewController *strongSelf = weakSelf;
+
+                if (urlString) {
+                    [strongSelf completeWithURLString:urlString title:title description:@"" token:token];
+                } else {
+                    [strongSelf displayNoURLAlert];
+                }
             }
         });
     } else {
@@ -256,10 +278,15 @@
 }
 
 - (void)displayNoURLAlert {
+    __weak ShareViewController *weakSelf = self;
     UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:@"No URL Found" message:@"No URL was provided for this webpage. Please try using another browser. If you still experience issues, please contact support."];
     [alert lhs_addActionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        [self.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
+        if (weakSelf) {
+            __strong ShareViewController *strongSelf = weakSelf;
+            [strongSelf.extensionContext completeRequestReturningItems:@[] completionHandler:nil];
+        }
     }];
+
     [self presentViewController:alert animated:YES completion:nil];
 }
 

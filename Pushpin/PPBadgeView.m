@@ -32,19 +32,19 @@ static const CGFloat PADDING_Y = 2;
     if (self) {
         // Defaults
         NSMutableDictionary *badgeOptions = [@{
-                                               PPBadgeFontSize: @(10.0f),
-                                               PPBadgeNormalBackgroundColor: HEX(0x73c5ffff),
-                                               PPBadgeActiveBackgroundColor: [self lightenColor:HEX(0x73c5ffff) amount:50],
-                                               PPBadgeDisabledBackgroundColor: HEX(0xCCCCCCFF),
-                                           } mutableCopy];
+            PPBadgeFontSize: @(10.0f),
+            PPBadgeNormalBackgroundColor: HEX(0x73c5ffff),
+            PPBadgeActiveBackgroundColor: [self lightenColor:HEX(0x73c5ffff) amount:50],
+            PPBadgeDisabledBackgroundColor: HEX(0xCCCCCCFF),
+        } mutableCopy];
         [badgeOptions addEntriesFromDictionary:options];
-        
+
         self.normalColor = badgeOptions[PPBadgeNormalBackgroundColor];
         self.selectedColor = badgeOptions[PPBadgeActiveBackgroundColor];
         self.disabledColor = badgeOptions[PPBadgeDisabledBackgroundColor];
 
         self.backgroundColor = self.normalColor;
-        
+
         self.imageView = [[UIImageView alloc] initWithImage:image];
         self.imageView.backgroundColor = self.normalColor;
         [self addSubview:self.imageView];
@@ -54,7 +54,7 @@ static const CGFloat PADDING_Y = 2;
         label.font = [PPTheme tagFont];
         label.lineBreakMode = NSLineBreakByTruncatingTail;
         CGSize size = [label textRectForBounds:CGRectMake(0, 0, CGFLOAT_MAX, CGFLOAT_MAX) limitedToNumberOfLines:1].size;
-        
+
         self.frame = CGRectMake(0, 0, size.height + PADDING_X * 2, size.height + PADDING_Y * 2);
         self.imageView.frame = CGRectInset(self.frame, PADDING_X, PADDING_Y);
     }
@@ -70,12 +70,12 @@ static const CGFloat PADDING_Y = 2;
     if (self) {
         // Defaults
         NSMutableDictionary *badgeOptions = [@{
-                                         PPBadgeFontSize: @(10),
-                                         PPBadgeNormalBackgroundColor: HEX(0x73c5ffff),
-                                         PPBadgeActiveBackgroundColor: [self lightenColor:HEX(0x73c5ffff) amount:50],
-                                         PPBadgeDisabledBackgroundColor: HEX(0xCCCCCCFF),
-                                         PPBadgeFontColor: [UIColor whiteColor],
-                                         } mutableCopy];
+            PPBadgeFontSize: @(10),
+            PPBadgeNormalBackgroundColor: HEX(0x73c5ffff),
+            PPBadgeActiveBackgroundColor: [self lightenColor:HEX(0x73c5ffff) amount:50],
+            PPBadgeDisabledBackgroundColor: HEX(0xCCCCCCFF),
+            PPBadgeFontColor: [UIColor whiteColor],
+        } mutableCopy];
 
         NSString *browseFontName = [PPTheme browseFontName];
         UIFont *font;
@@ -88,11 +88,11 @@ static const CGFloat PADDING_Y = 2;
         }
 
         [badgeOptions addEntriesFromDictionary:options];
-        
+
         self.normalColor = badgeOptions[PPBadgeNormalBackgroundColor];
         self.selectedColor = badgeOptions[PPBadgeActiveBackgroundColor];
         self.disabledColor = badgeOptions[PPBadgeDisabledBackgroundColor];
-        
+
         self.backgroundColor = self.normalColor;
 
         self.textLabel = [[UILabel alloc] init];
@@ -105,7 +105,7 @@ static const CGFloat PADDING_Y = 2;
         self.text = text;
 
         [self addSubview:self.textLabel];
-        
+
         self.enabled = YES;
         self.userInteractionEnabled = YES;
 
@@ -115,11 +115,12 @@ static const CGFloat PADDING_Y = 2;
 
         self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
         [self addGestureRecognizer:self.longPressGestureRecognizer];
-        
+
         CGSize size = [self.textLabel textRectForBounds:CGRectMake(0, 0, CGFLOAT_MAX, CGFLOAT_MAX) limitedToNumberOfLines:1].size;
         self.frame = CGRectMake(0, 0, size.width + PADDING_X * 2, size.height + PADDING_Y * 2);
         self.textLabel.frame = CGRectInset(self.frame, PADDING_X, PADDING_Y);
     }
+
     return self;
 }
 
@@ -151,7 +152,7 @@ static const CGFloat PADDING_Y = 2;
         h = (b == 1) ? h * 0.98 : h;
         return [UIColor colorWithHue:h saturation:s brightness:(b + b * (amount / 100)) alpha:a];
     }
-    
+
     return nil;
 }
 
@@ -165,7 +166,7 @@ static const CGFloat PADDING_Y = 2;
             self.selected = YES;
         } else if (recognizer.state == UIGestureRecognizerStateEnded) {
             self.selected = NO;
-            
+
             if (self.enabled) {
                 if ([self.delegate respondsToSelector:@selector(didSelectBadgeView:)]) {
                     [self.delegate didSelectBadgeView:self];
@@ -182,3 +183,4 @@ static const CGFloat PADDING_Y = 2;
 }
 
 @end
+

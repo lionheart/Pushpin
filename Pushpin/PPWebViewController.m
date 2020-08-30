@@ -190,7 +190,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     self.markAsReadButton.hidden = YES;
     [self.toolbar addSubview:self.markAsReadButton];
     
-    self.indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
     self.indicator.translatesAutoresizingMaskIntoConstraints = NO;
     self.indicator.hidesWhenStopped = YES;
     [self.indicator startAnimating];

@@ -764,7 +764,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
         } else {
             BOOL firstLoad = [self.postDataSource numberOfPosts] == 0;
             
-            UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+            UIActivityIndicatorView *activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
             
             if (firstLoad) {
                 activityIndicator.translatesAutoresizingMaskIntoConstraints = NO;

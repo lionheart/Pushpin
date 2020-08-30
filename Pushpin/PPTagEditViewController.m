@@ -189,7 +189,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 [cell.contentView addSubview:topImageView];
                 
                 if (self.loadingTags) {
-                    UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+                    UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
                     [activity startAnimating];
                     cell.accessoryView = activity;
                     cell.textLabel.text = NSLocalizedString(@"Retrieving popular tags", nil);
