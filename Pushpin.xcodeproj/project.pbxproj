@@ -2039,7 +2039,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 4.1.19;
+				MARKETING_VERSION = 4.1.20;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -D APP_EXTENSION";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpindev.Read-Later-Extension";
@@ -2083,7 +2083,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 4.1.19;
+				MARKETING_VERSION = 4.1.20;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -D APP_EXTENSION";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpin.Read-Later-Extension";
@@ -2127,7 +2127,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 4.1.19;
+				MARKETING_VERSION = 4.1.20;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -D APP_EXTENSION";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpin.Read-Later-Extension";
@@ -2171,7 +2171,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 4.1.19;
+				MARKETING_VERSION = 4.1.20;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -D APP_EXTENSION";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpinbeta.Read-Later-Extension";
@@ -2214,7 +2214,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 4.1.19;
+				MARKETING_VERSION = 4.1.20;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -D APP_EXTENSION";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpindev.Bookmark-Extension";
@@ -2262,7 +2262,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 4.1.19;
+				MARKETING_VERSION = 4.1.20;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -D APP_EXTENSION";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpin.Bookmark-Extension";
@@ -2309,7 +2309,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 4.1.19;
+				MARKETING_VERSION = 4.1.20;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -D APP_EXTENSION";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpin.Bookmark-Extension";
@@ -2357,7 +2357,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 4.1.19;
+				MARKETING_VERSION = 4.1.20;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -D APP_EXTENSION";
 				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpinbeta.Bookmark-Extension";
