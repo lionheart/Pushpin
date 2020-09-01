@@ -32,7 +32,7 @@ target 'Pushpin' do
   pod 'OpenInChrome', '~> 0.0'
   pod 'LionheartExtensions'
   pod 'QuickTableView'
-  pod 'TipJarViewController'
+  pod 'TipJarViewController', '~> 2.0'
   pod 'Beacon'
   pod 'Firebase/Core'
 end

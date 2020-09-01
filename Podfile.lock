@@ -16,13 +16,13 @@ PODS:
     - AFNetworking/NSURLSession
   - ASPinboard (1.0.0):
     - hpple (~> 0.2.0)
-  - Beacon (2.0.0)
+  - Beacon (2.0.1)
   - BRYHTMLParser (2.1.3)
   - ChimpKit (3.1.1)
-  - Firebase/Core (6.31.0):
+  - Firebase/Core (6.31.1):
     - Firebase/CoreOnly
     - FirebaseAnalytics (= 6.8.0)
-  - Firebase/CoreOnly (6.31.0):
+  - Firebase/CoreOnly (6.31.1):
     - FirebaseCore (= 6.10.1)
   - FirebaseAnalytics (6.8.0):
     - FirebaseCore (~> 6.10)
@@ -79,16 +79,16 @@ PODS:
     - GoogleUtilities/Logger
   - hpple (0.2.0)
   - HTMLParser (0.1.2)
-  - KeyboardAdjuster (4.0.0)
+  - KeyboardAdjuster (5.0.2)
   - KeychainItemWrapper (1.2)
   - LHSCategoryCollection (0.0.22)
   - LHSFMDatabaseAdditions (0.0.3):
     - FMDB
   - LHSKeyboardAdjusting (2.0.1)
   - LHSTableViewCells (0.0.1)
-  - LionheartExtensions (5.0.2):
-    - LionheartExtensions/Core (= 5.0.2)
-  - LionheartExtensions/Core (5.0.2)
+  - LionheartExtensions (5.1.1):
+    - LionheartExtensions/Core (= 5.1.1)
+  - LionheartExtensions/Core (5.1.1)
   - MWFeedParser (1.0.1):
     - MWFeedParser/FeedParser (= 1.0.1)
     - "MWFeedParser/NSDate+InternetDateTime (= 1.0.1)"
@@ -105,16 +105,16 @@ PODS:
   - nanopb/encode (1.30906.0)
   - OpenInChrome (0.0.1)
   - PromisesObjC (1.2.10)
-  - QuickTableView (3.0.0):
-    - KeyboardAdjuster (~> 4)
+  - QuickTableView (4.0.0):
+    - KeyboardAdjuster (~> 5)
   - RNCryptor-objc (3.0.6)
   - SuperLayout (2.0.0):
     - SuperLayout/Core (= 2.0.0)
   - SuperLayout/Core (2.0.0)
-  - TipJarViewController (1.1.0):
-    - LionheartExtensions (~> 5)
-    - QuickTableView (~> 3)
-    - SuperLayout (~> 2)
+  - TipJarViewController (2.0.0):
+    - LionheartExtensions (~> 5.0)
+    - QuickTableView (~> 4.0)
+    - SuperLayout (~> 2.0)
   - TMReachability (3.2)
   - TTTAttributedLabel (1.13.4)
 
@@ -138,12 +138,12 @@ DEPENDENCIES:
   - QuickTableView
   - RNCryptor-objc (~> 3)
   - SuperLayout (~> 2.0)
-  - TipJarViewController
+  - TipJarViewController (~> 2.0)
   - TMReachability (from `https://github.com/lionheart/Reachability`, commit `e34782b386307e386348b481c02c176d58ba45e6`)
   - TTTAttributedLabel (~> 1.13)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/cocoapods/specs.git:
     - AFNetworking
     - ASPinboard
     - Beacon
@@ -190,10 +190,10 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   AFNetworking: 7864c38297c79aaca1500c33288e429c3451fdce
   ASPinboard: 04dbe1357a1ebc6a8ec63bc8e9a06a06308ee8d1
-  Beacon: d635eac549b17359c4da9509c51bda5d5376df2b
+  Beacon: 4a53af3bab95ccf7d1081589ba9a4730fa295b92
   BRYHTMLParser: c84b3e5aa4fd6706271c48ed480af13ab0d71afb
   ChimpKit: d020126089544daa349397a91f1489a3f271b791
-  Firebase: 87483fa19acfdf99244523f2389e931927b91457
+  Firebase: 658370fa0181826a74b7cfca8d68c5856ca749ae
   FirebaseAnalytics: 0ca9aa2af7cc4dc92392b7a78bfc49feaa2eb60f
   FirebaseCore: 6fb954e350af0885803d5aa49865d15d9a6b264c
   FirebaseCoreDiagnostics: 7415bfb3883b3500c5a95c42b6ba66baae78f600
@@ -204,24 +204,24 @@ SPEC CHECKSUMS:
   GoogleUtilities: 7f2f5a07f888cdb145101d6042bc4422f57e70b3
   hpple: 3b765f96fc2cd56ad1a49aef6f7be5cb2aa64b57
   HTMLParser: 0aff2823b285cfe41996d55d1ae742a27ff89305
-  KeyboardAdjuster: 50eec4e8d52fd5d7f5df74fc07193cdadcc88abb
+  KeyboardAdjuster: 93eff119ccdeae5d997008a8d3258dce5fad2a4a
   KeychainItemWrapper: 67a240172ed669842bc6bc13ed554dcd50469fa2
   LHSCategoryCollection: 738329e3b0f67a5f981c6e3eb102ce841c6e5ab6
   LHSFMDatabaseAdditions: aba229cb0db6aea013a64c3be1542cd13b0a069e
   LHSKeyboardAdjusting: 8f9b8d6e80315e653bf3188ae62963874d342d68
   LHSTableViewCells: 47b4d33382cb4a09960371267e2142970afdfdd6
-  LionheartExtensions: 09fa816d98176012c8f9adf7f21774f528dbc90e
+  LionheartExtensions: a7095285260f2817776217efe7f46204f903a80d
   MWFeedParser: 2cf646014c1baf6ad1b08c480b40a08180079247
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
   OpenInChrome: f1f3f9dec682216fe78a0d7fe0b5b263d6312c32
   PromisesObjC: b14b1c6b68e306650688599de8a45e49fae81151
-  QuickTableView: 296b258f41ac91521ae517404646da4beab73fa3
+  QuickTableView: 379683237a429be2fd94257e08373b8656a3be24
   RNCryptor-objc: d1b228f9c02e2173df063f0617684c134aed890e
   SuperLayout: 0208ad821522fb50b62d9b8b808690d190a871ea
-  TipJarViewController: 96ca084840cec265f2aea1d9d66800f9df71b72a
+  TipJarViewController: 426641d907fb2029c0f2d808ab8d8cf6633274d6
   TMReachability: 48c99d728a8b0ad4493800592484b8cbb65c896c
   TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
 
-PODFILE CHECKSUM: c4506c4ed51154d4404aec8660ed6f5ac36e44e8
+PODFILE CHECKSUM: 31c83300f0c63952311a30a73327763ceccb61d9
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.7.1
