@@ -6,9 +6,7 @@ Help Scout's Beacon SDK allows you to embed the same Beacon functionality we hav
 
 ## Requirements
 
-The Beacon SDK requires iOS 9.0+.
-
-The Beacon SDK 2.0 beta requires iOS 11.0+.
+The Beacon SDK 2.0 requires iOS 11.0+.
 
 Xcode 11 is required to build with the Beacon SDK.
 
@@ -22,6 +20,8 @@ Beacon is available through [CocoaPods][1]. To install it, add the following lin
 pod 'Beacon'
 ```
 
+Beacon is currently distributed as a dynamic framework so the `use_frameworks!` flag will also need to be present in your Podfile.
+
 ### Carthage
 
 Beacon can be installed using Carthage by adding the following line to your `Cartfile` and then following the [Carthage installation instructions][2]:
@@ -34,20 +34,7 @@ _Because of the way Beacon is distributed, attempting to use the `--no-use-binar
 
 ### Manually
 
-Beacon can be installed manually by linking the Beacon framework and bundle. To do so, download the Beacon framework from this GitHub repo and integrate it similar to [how Carthage integrates frameworks](https://github.com/Carthage/Carthage#adding-frameworks-to-an-application).
-
-Next, ensure your project is linking against the following system frameworks:
-
-* `UIKit`
-* `Foundation`
-* `MobileCoreServices`
-* `Photos`
-* `QuickLook`
-* `SafariServices`
-* `UserNotifications`
-* `WebKit`
-
-Finally, ensure your project includes `-all_load` in its `OTHER_LINKER_FLAGS` build setting.
+Beacon can be installed manually by linking the Beacon framework and bundle. To do so, download the Beacon framework from [here](https://github.com/helpscout/beacon-ios-sdk/releases) and integrate it similar to [how Carthage integrates frameworks](https://github.com/Carthage/Carthage#adding-frameworks-to-an-application).
 
 ## Additional Setup
 

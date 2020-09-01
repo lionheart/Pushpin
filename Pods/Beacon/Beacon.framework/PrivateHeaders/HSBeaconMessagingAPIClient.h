@@ -11,6 +11,8 @@
 #import "HSBeaconReplyMessage.h"
 #import "HSBeaconSecurityInfo.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface HSBeaconMessagingAPIClient: HSBeaconBaseAPIClient
 
 - (NSURLSessionDataTask *)registerForPushNotificationsWithVendorID:(NSString *)vendorID securityInfo:(HSBeaconSecurityInfo *)securityInfo token:(NSData *)token completion:(ErrorCompletionHandler)completion;
@@ -29,13 +31,13 @@
 
 - (NSURLSessionTask *)deleteAttachment:(HSBeaconAttachment *)attachment securityInfo:(HSBeaconSecurityInfo *)securityInfo completion:(ErrorCompletionHandler)completion;
 
-- (NSURLSessionTask *)getPreviousMessages:(HSBeaconSecurityInfo *)securityInfo page:(int)page completion: (void (^)(HSBeaconPaginatedResponse *response, NSError *error))completion;
+- (NSURLSessionTask *)getPreviousMessages:(HSBeaconSecurityInfo *)securityInfo page:(int)page completion: (void (^)(HSBeaconPaginatedResponse *_Nullable response, NSError *_Nullable error))completion;
 
-- (NSURLSessionTask *)getPreviousMessagesCountWithSecurityInfo:(HSBeaconSecurityInfo *)securityInfo completion:(void (^)(NSNumber *previousMessagesCount, NSError *error))completion;
+- (NSURLSessionTask *)getPreviousMessagesCountWithSecurityInfo:(HSBeaconSecurityInfo *)securityInfo completion:(void (^)(NSNumber *_Nullable previousMessagesCount, NSError *error))completion;
 
-- (NSURLSessionTask *)getConversation:(long)conversationID securityInfo:(HSBeaconSecurityInfo *)securityInfo completion:(void (^)(HSBeaconConversation *conversation, NSArray<HSBeaconConversationThread *> *threads, NSError *error))completion;
+- (NSURLSessionTask *)getConversation:(long)conversationID securityInfo:(HSBeaconSecurityInfo *)securityInfo completion:(void (^)(HSBeaconConversation *_Nullable conversation, NSArray<HSBeaconConversationThread *> *_Nullable threads, NSError *_Nullable error))completion;
 
-- (NSURLSessionTask *)getConversationThreads:(long)conversationID securityInfo:(HSBeaconSecurityInfo *)securityInfo page:(int)page completion:(void (^)(HSBeaconPaginatedResponse *response, NSError *error))completion;
+- (NSURLSessionTask *)getConversationThreads:(long)conversationID securityInfo:(HSBeaconSecurityInfo *)securityInfo page:(int)page completion:(void (^)(HSBeaconPaginatedResponse *_Nullable response, NSError *_Nullable error))completion;
 
 - (NSURLSessionDataTask *)getFieldsWithCompletionHandler:(void (^)(NSArray<HSBeaconCustomFieldDefinition *> *fields, NSError *error))completion;
 
@@ -46,3 +48,5 @@
 - (NSURLSessionTask *)markThreadAsRead:(long)threadId conversationId:(long)conversationId securityInfo:(HSBeaconSecurityInfo *)securityInfo;
 
 @end
+
+NS_ASSUME_NONNULL_END

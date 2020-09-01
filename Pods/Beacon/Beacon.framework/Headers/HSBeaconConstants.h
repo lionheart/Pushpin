@@ -1,3 +1,6 @@
-static NSInteger const MAX_SESSION_ATTRIBUTES = 20;
-static NSInteger const MAX_SESSION_ATTRIBUTE_LABEL = 100;
-static NSInteger const MAX_SESSION_ATTRIBUTE_VALUE = 10000;
+/** The maximum number of session attributes */
+static NSInteger const HSBeaconMaxSessionAttributesCount = 20;
+/** The maximum length of a key used with session attributes */
+static NSInteger const HSBeaconMaxSessionLabelLength = 100;
+/** The maximum length of a value used with session attributes */
+static NSInteger const HSBeaconMaxSessionValueLength = 10000;

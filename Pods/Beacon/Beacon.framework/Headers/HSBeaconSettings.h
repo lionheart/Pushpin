@@ -79,7 +79,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @note This can be found during Beacon creation.
  */
-@property(strong, nonatomic) NSString *beaconId;
+@property(strong, nonatomic, readonly, nonnull) NSString *beaconId;
 
 /**
  The title used in the main Beacon interface. This is `Support` by default.
@@ -151,7 +151,15 @@ Disable previous messages manually if messaging is enabled in the Beacon config.
 /**
  Initialize Beacon settings with a given Beacon ID.
  */
-- (instancetype)initWithBeaconId:(NSString *)beaconId;
+- (instancetype)initWithBeaconId:(NSString * _Nonnull)beaconId;
+
+#pragma mark - Unavailable Methods
+
+/**
+ `-[HSBeaconSettings init]` is not available because `HSBeaconSettings` must be initialized with a `beaconId`
+ Use the `initWithBeaconId:` method to display the Beacon SDK.
+ */
+- (instancetype)init __attribute__((unavailable("HSBeaconSettings must be initialized with a `beaconId`")));
 
 @end
 

@@ -36,6 +36,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (readonly, nonatomic) BOOL chatRequiresEmail;
 
+@property (readonly, nonatomic) BOOL emailTranscriptEnabled;
+
 @property (readonly, nonatomic) NSString *expectedResponseTime;
 
 @property (readonly, nonatomic) NSDictionary <NSString *, NSString *> *translations;
