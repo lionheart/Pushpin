@@ -46,8 +46,8 @@ install_framework()
   fi
 
   # Use filter instead of exclude so missing patterns don't throw errors.
-  echo "rsync --delete -av "${RSYNC_PROTECT_TMP_FILES[@]}" --links --filter \"- CVS/\" --filter \"- .svn/\" --filter \"- .git/\" --filter \"- .hg/\" --filter \"- Headers\" --filter \"- PrivateHeaders\" --filter \"- Modules\" \"${source}\" \"${destination}\""
-  rsync --delete -av "${RSYNC_PROTECT_TMP_FILES[@]}" --links --filter "- CVS/" --filter "- .svn/" --filter "- .git/" --filter "- .hg/" --filter "- Headers" --filter "- PrivateHeaders" --filter "- Modules" "${source}" "${destination}"
+  echo "rsync --delete -av "${RSYNC_PROTECT_TMP_FILES[@]}" --filter \"- CVS/\" --filter \"- .svn/\" --filter \"- .git/\" --filter \"- .hg/\" --filter \"- Headers\" --filter \"- PrivateHeaders\" --filter \"- Modules\" \"${source}\" \"${destination}\""
+  rsync --delete -av "${RSYNC_PROTECT_TMP_FILES[@]}" --filter "- CVS/" --filter "- .svn/" --filter "- .git/" --filter "- .hg/" --filter "- Headers" --filter "- PrivateHeaders" --filter "- Modules" "${source}" "${destination}"
 
   local basename
   basename="$(basename -s .framework "$1")"
@@ -84,29 +84,27 @@ install_framework()
 # Copies and strips a vendored dSYM
 install_dsym() {
   local source="$1"
-  warn_missing_arch=${2:-true}
   if [ -r "$source" ]; then
-    # Copy the dSYM into the targets temp dir.
+    # Copy the dSYM into a the targets temp dir.
     echo "rsync --delete -av "${RSYNC_PROTECT_TMP_FILES[@]}" --filter \"- CVS/\" --filter \"- .svn/\" --filter \"- .git/\" --filter \"- .hg/\" --filter \"- Headers\" --filter \"- PrivateHeaders\" --filter \"- Modules\" \"${source}\" \"${DERIVED_FILES_DIR}\""
     rsync --delete -av "${RSYNC_PROTECT_TMP_FILES[@]}" --filter "- CVS/" --filter "- .svn/" --filter "- .git/" --filter "- .hg/" --filter "- Headers" --filter "- PrivateHeaders" --filter "- Modules" "${source}" "${DERIVED_FILES_DIR}"
 
     local basename
-    basename="$(basename -s .dSYM "$source")"
-    binary_name="$(ls "$source/Contents/Resources/DWARF")"
-    binary="${DERIVED_FILES_DIR}/${basename}.dSYM/Contents/Resources/DWARF/${binary_name}"
+    basename="$(basename -s .framework.dSYM "$source")"
+    binary="${DERIVED_FILES_DIR}/${basename}.framework.dSYM/Contents/Resources/DWARF/${basename}"
 
     # Strip invalid architectures so "fat" simulator / device frameworks work on device
     if [[ "$(file "$binary")" == *"Mach-O "*"dSYM companion"* ]]; then
-      strip_invalid_archs "$binary" "$warn_missing_arch"
+      strip_invalid_archs "$binary"
     fi
 
     if [[ $STRIP_BINARY_RETVAL == 1 ]]; then
       # Move the stripped file into its final destination.
-      echo "rsync --delete -av "${RSYNC_PROTECT_TMP_FILES[@]}" --links --filter \"- CVS/\" --filter \"- .svn/\" --filter \"- .git/\" --filter \"- .hg/\" --filter \"- Headers\" --filter \"- PrivateHeaders\" --filter \"- Modules\" \"${DERIVED_FILES_DIR}/${basename}.framework.dSYM\" \"${DWARF_DSYM_FOLDER_PATH}\""
-      rsync --delete -av "${RSYNC_PROTECT_TMP_FILES[@]}" --links --filter "- CVS/" --filter "- .svn/" --filter "- .git/" --filter "- .hg/" --filter "- Headers" --filter "- PrivateHeaders" --filter "- Modules" "${DERIVED_FILES_DIR}/${basename}.dSYM" "${DWARF_DSYM_FOLDER_PATH}"
+      echo "rsync --delete -av "${RSYNC_PROTECT_TMP_FILES[@]}" --filter \"- CVS/\" --filter \"- .svn/\" --filter \"- .git/\" --filter \"- .hg/\" --filter \"- Headers\" --filter \"- PrivateHeaders\" --filter \"- Modules\" \"${DERIVED_FILES_DIR}/${basename}.framework.dSYM\" \"${DWARF_DSYM_FOLDER_PATH}\""
+      rsync --delete -av "${RSYNC_PROTECT_TMP_FILES[@]}" --filter "- CVS/" --filter "- .svn/" --filter "- .git/" --filter "- .hg/" --filter "- Headers" --filter "- PrivateHeaders" --filter "- Modules" "${DERIVED_FILES_DIR}/${basename}.framework.dSYM" "${DWARF_DSYM_FOLDER_PATH}"
     else
       # The dSYM was not stripped at all, in this case touch a fake folder so the input/output paths from Xcode do not reexecute this script because the file is missing.
-      touch "${DWARF_DSYM_FOLDER_PATH}/${basename}.dSYM"
+      touch "${DWARF_DSYM_FOLDER_PATH}/${basename}.framework.dSYM"
     fi
   fi
 }
@@ -137,16 +135,13 @@ code_sign_if_enabled() {
 # Strip invalid architectures
 strip_invalid_archs() {
   binary="$1"
-  warn_missing_arch=${2:-true}
   # Get architectures for current target binary
   binary_archs="$(lipo -info "$binary" | rev | cut -d ':' -f1 | awk '{$1=$1;print}' | rev)"
   # Intersect them with the architectures we are building for
   intersected_archs="$(echo ${ARCHS[@]} ${binary_archs[@]} | tr ' ' '\n' | sort | uniq -d)"
   # If there are no archs supported by this binary then warn the user
   if [[ -z "$intersected_archs" ]]; then
-    if [[ "$warn_missing_arch" == "true" ]]; then
-      echo "warning: [CP] Vendored binary '$binary' contains architectures ($binary_archs) none of which match the current build architectures ($ARCHS)."
-    fi
+    echo "warning: [CP] Vendored binary '$binary' contains architectures ($binary_archs) none of which match the current build architectures ($ARCHS)."
     STRIP_BINARY_RETVAL=0
     return
   fi
@@ -164,43 +159,15 @@ strip_invalid_archs() {
   STRIP_BINARY_RETVAL=1
 }
 
-install_artifact() {
-  artifact="$1"
-  base="$(basename "$artifact")"
-  case $base in
-  *.framework)
-    install_framework "$artifact"
-    ;;
-  *.dSYM)
-    # Suppress arch warnings since XCFrameworks will include many dSYM files
-    install_dsym "$artifact" "false"
-    ;;
-  *.bcsymbolmap)
-    install_bcsymbolmap "$artifact"
-    ;;
-  *)
-    echo "error: Unrecognized artifact "$artifact""
-    ;;
-  esac
-}
-
-copy_artifacts() {
-  file_list="$1"
-  while read artifact; do
-    install_artifact "$artifact"
-  done <$file_list
-}
-
-ARTIFACT_LIST_FILE="${BUILT_PRODUCTS_DIR}/cocoapods-artifacts-${CONFIGURATION}.txt"
-if [ -r "${ARTIFACT_LIST_FILE}" ]; then
-  copy_artifacts "${ARTIFACT_LIST_FILE}"
-fi
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/ASPinboard/ASPinboard.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/BRYHTMLParser/BRYHTMLParser.framework"
+  install_framework "${PODS_ROOT}/Beacon/Beacon.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/ChimpKit/ChimpKit.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/FMDB/FMDB.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/HTMLParser/HTMLParser.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/KeyboardAdjuster/KeyboardAdjuster.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/KeychainItemWrapper/KeychainItemWrapper.framework"
@@ -210,25 +177,25 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/LHSTableViewCells/LHSTableViewCells.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/LionheartExtensions/LionheartExtensions.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/MWFeedParser/MWFeedParser.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/OpenInChrome/OpenInChrome.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/QuickTableView/QuickTableView.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/RNCryptor-objc/RNCryptor_objc.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/SuperLayout/SuperLayout.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/TMReachability/TMReachability.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/TTTAttributedLabel/TTTAttributedLabel.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/hpple/hpple.framework"
-  install_framework "${PODS_ROOT}/Beacon/Beacon.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/ChimpKit/ChimpKit.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/OpenInChrome/OpenInChrome.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/TipJarViewController/TipJarViewController.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/hpple/hpple.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/ASPinboard/ASPinboard.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/BRYHTMLParser/BRYHTMLParser.framework"
+  install_framework "${PODS_ROOT}/Beacon/Beacon.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/ChimpKit/ChimpKit.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/FMDB/FMDB.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/HTMLParser/HTMLParser.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/KeyboardAdjuster/KeyboardAdjuster.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/KeychainItemWrapper/KeychainItemWrapper.framework"
@@ -238,25 +205,25 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/LHSTableViewCells/LHSTableViewCells.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/LionheartExtensions/LionheartExtensions.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/MWFeedParser/MWFeedParser.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/OpenInChrome/OpenInChrome.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/QuickTableView/QuickTableView.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/RNCryptor-objc/RNCryptor_objc.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/SuperLayout/SuperLayout.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/TMReachability/TMReachability.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/TTTAttributedLabel/TTTAttributedLabel.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/hpple/hpple.framework"
-  install_framework "${PODS_ROOT}/Beacon/Beacon.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/ChimpKit/ChimpKit.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/OpenInChrome/OpenInChrome.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/TipJarViewController/TipJarViewController.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/hpple/hpple.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework"
 fi
 if [[ "$CONFIGURATION" == "Release Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/ASPinboard/ASPinboard.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/BRYHTMLParser/BRYHTMLParser.framework"
+  install_framework "${PODS_ROOT}/Beacon/Beacon.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/ChimpKit/ChimpKit.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/FMDB/FMDB.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/HTMLParser/HTMLParser.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/KeyboardAdjuster/KeyboardAdjuster.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/KeychainItemWrapper/KeychainItemWrapper.framework"
@@ -266,25 +233,25 @@ if [[ "$CONFIGURATION" == "Release Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/LHSTableViewCells/LHSTableViewCells.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/LionheartExtensions/LionheartExtensions.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/MWFeedParser/MWFeedParser.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/OpenInChrome/OpenInChrome.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/QuickTableView/QuickTableView.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/RNCryptor-objc/RNCryptor_objc.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/SuperLayout/SuperLayout.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/TMReachability/TMReachability.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/TTTAttributedLabel/TTTAttributedLabel.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/hpple/hpple.framework"
-  install_framework "${PODS_ROOT}/Beacon/Beacon.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/ChimpKit/ChimpKit.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/OpenInChrome/OpenInChrome.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/TipJarViewController/TipJarViewController.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/hpple/hpple.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework"
 fi
 if [[ "$CONFIGURATION" == "Beta" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/ASPinboard/ASPinboard.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/BRYHTMLParser/BRYHTMLParser.framework"
+  install_framework "${PODS_ROOT}/Beacon/Beacon.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/ChimpKit/ChimpKit.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/FMDB/FMDB.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/HTMLParser/HTMLParser.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/KeyboardAdjuster/KeyboardAdjuster.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/KeychainItemWrapper/KeychainItemWrapper.framework"
@@ -294,18 +261,15 @@ if [[ "$CONFIGURATION" == "Beta" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/LHSTableViewCells/LHSTableViewCells.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/LionheartExtensions/LionheartExtensions.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/MWFeedParser/MWFeedParser.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/OpenInChrome/OpenInChrome.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/QuickTableView/QuickTableView.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/RNCryptor-objc/RNCryptor_objc.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/SuperLayout/SuperLayout.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/TMReachability/TMReachability.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/TTTAttributedLabel/TTTAttributedLabel.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/hpple/hpple.framework"
-  install_framework "${PODS_ROOT}/Beacon/Beacon.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/ChimpKit/ChimpKit.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/OpenInChrome/OpenInChrome.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/TipJarViewController/TipJarViewController.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/hpple/hpple.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework"
 fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then
