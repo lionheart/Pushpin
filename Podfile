@@ -35,6 +35,7 @@ target 'Pushpin' do
   pod 'TipJarViewController', '~> 2.0'
   pod 'Beacon'
   pod 'Firebase/Core'
+  pod 'Heap'
 end
 
 target 'Bookmark Extension' do
