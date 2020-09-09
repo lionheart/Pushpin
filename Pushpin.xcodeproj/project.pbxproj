@@ -2449,7 +2449,7 @@
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
-					"-all_load",
+					"-ObjC",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.$(PRODUCT_NAME:rfc1034identifier:lower)";
 				PRODUCT_NAME = Pushpin;
@@ -2507,7 +2507,7 @@
 					"\"@executable_path/Frameworks\"",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.1.20;
+				MARKETING_VERSION = 4.1.21;
 				PRODUCT_NAME = Pushpin;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2602,7 +2602,7 @@
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
-					"-all_load",
+					"-ObjC",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.$(PRODUCT_NAME:rfc1034identifier:lower)beta";
 				PRODUCT_NAME = Pushpin;
@@ -2656,7 +2656,7 @@
 					"\"@executable_path/Frameworks\"",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.1.20;
+				MARKETING_VERSION = 4.1.21;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2754,7 +2754,7 @@
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
-					"-all_load",
+					"-ObjC",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.$(PRODUCT_NAME:rfc1034identifier:lower)dev";
 				PRODUCT_NAME = Pushpin;
@@ -2852,7 +2852,7 @@
 				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
-					"-all_load",
+					"-ObjC",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.$(PRODUCT_NAME:rfc1034identifier:lower)";
 				PRODUCT_NAME = Pushpin;
@@ -2910,7 +2910,7 @@
 					"\"@executable_path/Frameworks\"",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.1.20;
+				MARKETING_VERSION = 4.1.21;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2965,7 +2965,7 @@
 					"\"@executable_path/Frameworks\"",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.1.20;
+				MARKETING_VERSION = 4.1.21;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
