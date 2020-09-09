@@ -22,7 +22,6 @@
 @import StoreKit;
 @import Firebase;
 
-#import "Pushpin-Swift.h"
 #import "PPAppDelegate.h"
 #import "PPLoginViewController.h"
 #import "PPGenericPostViewController.h"
