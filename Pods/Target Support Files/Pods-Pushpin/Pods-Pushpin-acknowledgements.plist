@@ -1705,6 +1705,16 @@ THE SOFTWARE.
 		</dict>
 		<dict>
 			<key>FooterText</key>
+			<string>See https://heapanalytics.com/terms</string>
+			<key>License</key>
+			<string>Commercial</string>
+			<key>Title</key>
+			<string>Heap</string>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+		</dict>
+		<dict>
+			<key>FooterText</key>
 			<string>
 
                                  Apache License
