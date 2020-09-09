@@ -1014,12 +1014,21 @@ static BOOL kPinboardSyncInProgress = NO;
     __weak PPPinboardDataSource *weakSelf = self;
     // Dispatch serially to ensure that no two syncs happen simultaneously.
     dispatch_async(PPBookmarkUpdateQueue(), ^{
+        __weak PPPinboardDataSource *_weakSelf;
+        if (weakSelf) {
+            __strong PPPinboardDataSource *strongSelf = weakSelf;
+            _weakSelf = strongSelf;
+        } else {
+            _weakSelf = self;
+        }
+
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            __strong PPPinboardDataSource *_strongSelf = self;
+
             ASPinboard *pinboard = [ASPinboard sharedInstance];
             [pinboard lastUpdateWithSuccess:^(NSDate *date) {
-                if (weakSelf) {
-                    __strong PPPinboardDataSource *strongSelf = weakSelf;
-                    [strongSelf BookmarksUpdatedTimeSuccessBlock:date
+                if (_strongSelf) {
+                    [_strongSelf BookmarksUpdatedTimeSuccessBlock:date
                                                            count:count
                                                       completion:completion
                                                         progress:progress

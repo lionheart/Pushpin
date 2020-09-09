@@ -231,20 +231,21 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                 break;
             }
         }
+    } else {
+        [self.passwordTextField setValue:@(YES) forKey:@"heapIgnore"];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self resetLoginScreen];
+            [self.tableView beginUpdates];
+
+            if (authTokenProvided) {
+                [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPLoginCredentialSection] withRowAnimation:UITableViewRowAnimationFade];
+            } else {
+                [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPLoginAuthTokenSection] withRowAnimation:UITableViewRowAnimationFade];
+            }
+
+            [self.tableView endUpdates];
+        });
     }
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self resetLoginScreen];
-        [self.tableView beginUpdates];
-
-        if (authTokenProvided) {
-            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPLoginCredentialSection] withRowAnimation:UITableViewRowAnimationFade];
-        } else {
-            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:PPLoginAuthTokenSection] withRowAnimation:UITableViewRowAnimationFade];
-        }
-
-        [self.tableView endUpdates];
-    });
 }
 
 - (void)syncCompletedCallback {
@@ -252,6 +253,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
     dispatch_async(dispatch_get_main_queue(), ^{
         PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
+
         [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
 
         if ([UIApplication isIPad]) {
@@ -263,13 +265,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                              completion:nil];
         }
     });
-
-    PPSettings *settings = [PPSettings sharedSettings];
-    
-    
-    
-    
-    
 }
 
 - (void)updateProgressCallback:(NSInteger)current total:(NSInteger)total {
@@ -404,18 +399,18 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             [pinboard authenticateWithUsername:self.usernameTextField.text
                                       password:self.passwordTextField.text
                                        success:^(NSString *token) {
-                                           settings.password = self.passwordTextField.text;
-                                           settings.token = token;
+                settings.password = self.passwordTextField.text;
+                settings.token = token;
 
-                                           [self loginSuccessCallback:authTokenProvided];
+                [self loginSuccessCallback:authTokenProvided];
 
-                                           [pinboard rssKeyWithSuccess:^(NSString *feedToken) {
-                                               settings.feedToken = feedToken;
-                                           } failure:nil];
-                                       }
+                [pinboard rssKeyWithSuccess:^(NSString *feedToken) {
+                    settings.feedToken = feedToken;
+                } failure:nil];
+            }
                                        failure:^(NSError *error) {
-                                           [self loginFailureCallback:error authTokenProvided:authTokenProvided];
-                                       }];
+                [self loginFailureCallback:error authTokenProvided:authTokenProvided];
+            }];
         }
     }
 }
