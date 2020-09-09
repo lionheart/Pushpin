@@ -22,8 +22,6 @@
 @import StoreKit;
 @import Firebase;
 
-#import <Heap/Heap.h>
-
 #import "Pushpin-Swift.h"
 #import "PPAppDelegate.h"
 #import "PPLoginViewController.h"
@@ -63,8 +61,6 @@
     [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
 
     PPSettings *settings = [PPSettings sharedSettings];
-
-    [Heap initialize:@"3459817682"];
 
 #if !TARGET_OS_MACCATALYST
     [[ChimpKit sharedKit] setApiKey:@"f3bfc69f8d267252c14d76664432f968-us7"];
