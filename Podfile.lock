@@ -77,7 +77,6 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (6.7.2):
     - GoogleUtilities/Logger
-  - Heap (7.2.0)
   - hpple (0.2.0)
   - HTMLParser (0.1.2)
   - KeyboardAdjuster (5.0.2)
@@ -127,7 +126,6 @@ DEPENDENCIES:
   - ChimpKit
   - Firebase/Core
   - FMDB
-  - Heap
   - HTMLParser
   - KeychainItemWrapper (~> 1.2)
   - LHSCategoryCollection
@@ -160,7 +158,6 @@ SPEC REPOS:
     - GoogleAppMeasurement
     - GoogleDataTransport
     - GoogleUtilities
-    - Heap
     - hpple
     - HTMLParser
     - KeyboardAdjuster
@@ -205,7 +202,6 @@ SPEC CHECKSUMS:
   GoogleAppMeasurement: ecc30d0ab5b66d7d18e85ce1b8e2b345db60626d
   GoogleDataTransport: e85fb700c9b027079ce182c3d08e12e0f9618bb4
   GoogleUtilities: 7f2f5a07f888cdb145101d6042bc4422f57e70b3
-  Heap: c51b75f4e106f910dbe54bcfe1b6bc73c7b3ab50
   hpple: 3b765f96fc2cd56ad1a49aef6f7be5cb2aa64b57
   HTMLParser: 0aff2823b285cfe41996d55d1ae742a27ff89305
   KeyboardAdjuster: 93eff119ccdeae5d997008a8d3258dce5fad2a4a
@@ -226,6 +222,6 @@ SPEC CHECKSUMS:
   TMReachability: 48c99d728a8b0ad4493800592484b8cbb65c896c
   TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
 
-PODFILE CHECKSUM: 72fccbcba3534a6219fae1faf720d5d71eb27808
+PODFILE CHECKSUM: 31c83300f0c63952311a30a73327763ceccb61d9
 
 COCOAPODS: 1.7.1
