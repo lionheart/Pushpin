@@ -56,8 +56,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    
-
     self.title = @"Pinboard";
     self.loginInProgress = NO;
 
@@ -86,7 +84,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     self.authTokenFooterTextView.hidden = NO;
     self.authTokenFooterTextView.userInteractionEnabled = NO;
     self.authTokenFooterTextView.textAlignment = NSTextAlignmentLeft;
-    
+
     self.authTokenTextField = [[UITextField alloc] init];
     self.authTokenTextField.translatesAutoresizingMaskIntoConstraints = NO;
     self.authTokenTextField.font = [PPTheme titleFont];
@@ -209,7 +207,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                     [self presentViewController:alert animated:YES completion:nil];
                 });
 
-                
+
                 break;
             }
 
@@ -227,7 +225,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                     [self presentViewController:alert animated:YES completion:nil];
                 });
 
-                
                 break;
             }
         }

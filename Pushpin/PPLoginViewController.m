@@ -42,8 +42,10 @@ static NSString * const CellIdentifier = @"CellIdentifier";
     self.tableView.dataSource = self;
     [self.tableView registerClass:[LHSTableViewCellSubtitle class] forCellReuseIdentifier:CellIdentifier];
 
-    NSDictionary *views = @{@"top": self.topLayoutGuide,
-                            @"table": self.tableView};
+    NSDictionary *views = @{
+        @"top": self.topLayoutGuide,
+        @"table": self.tableView
+    };
     
     [self.view addSubview:self.tableView];
 
@@ -73,6 +75,10 @@ static NSString * const CellIdentifier = @"CellIdentifier";
 
 - (UIView *)keyboardAdjustingView {
     return self.tableView;
+}
+
+- (NSLayoutConstraint *)keyboardAdjustingBottomConstraint {
+    return self.bottomConstraint;
 }
 
 #pragma mark - UITableViewDataSource
