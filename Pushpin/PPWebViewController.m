@@ -801,7 +801,6 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 #if TARGET_OS_MACCATALYST
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
-
 }
 
 #else
@@ -1241,7 +1240,6 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 }
 
 - (void)markAsReadButtonTouchUpInside:(id)sender {
-
     id<PPDataSource> dataSource = [[PPPinboardDataSource alloc] init];
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{

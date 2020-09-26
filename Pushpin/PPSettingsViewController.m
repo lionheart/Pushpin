@@ -150,7 +150,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 }
 
 - (void)showAboutPage {
-
     PPAboutViewController *aboutViewController = [[PPAboutViewController alloc] init];
     [self.navigationController pushViewController:aboutViewController animated:YES];
 }

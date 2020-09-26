@@ -614,7 +614,6 @@ static NSInteger PPBookmarkEditMaximum = 25;
                     PPBrowserType browser = settings.browser;
                     switch (browser) {
                         case PPBrowserSafari: {
-
                             [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString] options:@{} completionHandler:nil];;
                             break;
                         }
@@ -809,7 +808,6 @@ static NSInteger PPBookmarkEditMaximum = 25;
 }
 
 - (void)updateSearchResultsForSearchPerformedAtTime:(NSDate *)time {
-
     if (self.searchController.searchBar.selectedScopeButtonIndex == PPSearchScopeFullText) {
         [(PPPinboardDataSource *)self.searchPostDataSource setSearchScope:ASPinboardSearchScopeFullText];
     } else {
@@ -927,7 +925,6 @@ static NSInteger PPBookmarkEditMaximum = 25;
 - (void)deletePosts:(NSArray *)posts dataSource:(id<PPDataSource>)dataSource {
     [dataSource deletePosts:posts callback:^(NSIndexPath *indexPath) {
         dispatch_async(dispatch_get_main_queue(), ^{
-
             if (dataSource == self.searchPostDataSource) {
                 [self.searchResultsController.tableView deselectRowAtIndexPath:indexPath animated:YES];
             } else {

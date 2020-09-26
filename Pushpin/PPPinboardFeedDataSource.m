@@ -139,7 +139,6 @@
                                cancel:(BOOL (^)(void))cancel
                                 width:(CGFloat)width {
     dispatch_async(PPPinboardFeedReloadQueue(), ^{
-
         if (cancel && cancel()) {
             completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
             return;

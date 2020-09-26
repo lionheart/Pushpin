@@ -33,7 +33,6 @@
     [alert lhs_addActionWithTitle:@"Cancel"
                             style:UIAlertActionStyleCancel
                           handler:^(UIAlertAction *action) {
-
     }];
 
     [alert lhs_addActionWithTitle:@"Subscribe"
@@ -62,9 +61,7 @@
 
                     [errorAlert lhs_addActionWithTitle:@"OK"
                                                  style:UIAlertActionStyleCancel
-                                               handler:^(UIAlertAction *action) {
-
-                    }];
+                                               handler:^(UIAlertAction *action) {}];
                     [[UIViewController lhs_topViewController] presentViewController:errorAlert animated:YES completion:nil];
                 });
             } else {
@@ -73,9 +70,7 @@
 
                     [successAlert lhs_addActionWithTitle:@"OK"
                                                    style:UIAlertActionStyleCancel
-                                                 handler:^(UIAlertAction *action) {
-
-                    }];
+                                                 handler:^(UIAlertAction *action) {}];
                     [[UIViewController lhs_topViewController] presentViewController:successAlert animated:YES completion:nil];
                 });
             }

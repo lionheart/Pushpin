@@ -123,7 +123,6 @@
 }
 
 + (NSDictionary *)dictionaryFromResultSet:(id)resultSet {
-
     NSNumber *starred = @([resultSet boolForColumn:@"starred"]);
     if (!starred) {
         starred = @(NO);

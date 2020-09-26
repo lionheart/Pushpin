@@ -1117,7 +1117,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             void (^BookmarkSuccessBlock)(void) = ^{
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-
                     __block BOOL bookmarkAdded;
                     __block NSDictionary *post;
 
@@ -1741,7 +1740,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
                            andFinalAmount:(NSInteger)final
                                    offset:(NSInteger)offset
                                  callback:(void (^)(NSArray *, NSArray *, NSArray *))callback {
-
     NSMutableArray *indexPathsToReload = [NSMutableArray array];
     NSMutableArray *indexPathsToInsert = [NSMutableArray array];
     NSMutableArray *indexPathsToDelete = [NSMutableArray array];

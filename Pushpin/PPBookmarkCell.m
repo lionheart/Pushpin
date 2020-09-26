@@ -80,7 +80,6 @@ static NSInteger kEditButtonOuterMargin = 20;
                     badgeDelegate:(id<PPBadgeWrapperDelegate>)badgeDelegate
                              post:(NSDictionary *)post
                        compressed:(BOOL)compressed {
-
     [self.contentView lhs_removeSubviews];
     self.contentView.clipsToBounds = YES;
     self.clipsToBounds = YES;
@@ -268,7 +267,6 @@ static NSInteger kEditButtonOuterMargin = 20;
     if (recognizer == self.panGestureRecognizer) {
         CGPoint offset = [self.panGestureRecognizer translationInView:self.contentView];
         if (recognizer.state == UIGestureRecognizerStateChanged) {
-
             self.deleteButton.enabled = offset.x <= -(23 + kEditButtonOuterMargin + kEditButtonInnerMargin);
             self.editButton.enabled = offset.x >= (20 + kEditButtonOuterMargin + kEditButtonInnerMargin);
 

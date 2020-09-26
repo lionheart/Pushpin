@@ -343,7 +343,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-
     PPPinboardSectionType sectionType = [self sectionTypeForSection:section];
     switch (sectionType) {
         case PPPinboardSectionPersonal:
@@ -651,7 +650,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 - (NSIndexPath *)tableView:(UITableView *)tableView targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath
        toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath {
-
     PPPinboardSectionType destinationSection = (PPPinboardSectionType)proposedDestinationIndexPath.section;
     PPPinboardSectionType sourceSection = (PPPinboardSectionType)sourceIndexPath.section;
 
@@ -678,7 +676,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath
       toIndexPath:(NSIndexPath *)destinationIndexPath {
-
     PPPinboardSectionType sectionType = [self sectionTypeForSection:sourceIndexPath.section];
     PPSettings *settings = [PPSettings sharedSettings];
 
@@ -710,13 +707,11 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-
     PPGenericPostViewController *postViewController = [[PPGenericPostViewController alloc] init];
 
     UIViewController *viewControllerToPush;
 
     if (tableView.allowsMultipleSelectionDuringEditing) {
-
         PPPinboardSectionType sectionType = [self sectionTypeForSection:indexPath.section];
         switch (sectionType) {
             case PPPinboardSectionSavedFeeds: {
@@ -1198,7 +1193,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
     if (![self personalSectionIsHidden]) {
         for (NSInteger i=0; i<[PPPersonalFeeds() count]; i++) {
-
             if ([settings.hiddenFeedNames containsObject:[@[@"personal", [self personalFeedNameForIndex:i]] componentsJoinedByString:@"-"]]) {
                 [indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:PPPinboardSectionPersonal]];
             }
@@ -1221,7 +1215,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     NSMutableArray *indexPaths = [NSMutableArray array];
     PPSettings *settings = [PPSettings sharedSettings];
     for (NSInteger i=0; i<[PPPersonalFeeds() count]; i++) {
-
         if (![settings.hiddenFeedNames containsObject:[@[@"personal", [self personalFeedNameForIndex:i]] componentsJoinedByString:@"-"]]) {
             [indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:PPPinboardSectionPersonal]];
         }
