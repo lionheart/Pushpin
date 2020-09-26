@@ -204,9 +204,11 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                             style:UIAlertActionStyleDefault
                                           handler:nil];
 
-                    [self presentViewController:alert animated:YES completion:nil];
+                    [self presentViewController:alert animated:YES completion:^{
+                        [self resetLoginScreen];
+                        [self.tableView reloadData];
+                    }];
                 });
-
 
                 break;
             }
