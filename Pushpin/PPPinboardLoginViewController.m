@@ -1,6 +1,6 @@
 //
 //  PPPinboardLoginViewController.m
-//  Pinboard for iPhone
+//  Pushpin
 //
 //  Created by Dan Loewenherz on 9/18/12.
 //

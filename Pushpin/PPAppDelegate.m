@@ -1,6 +1,6 @@
 //
 //  AppDelegate.m
-//  Pinboard for iPhone
+//  Pushpin
 //
 //  Created by Dan Loewenherz on 5/28/12.
 //  Copyright (c) 2012 Lionheart Software LLC. All rights reserved.
