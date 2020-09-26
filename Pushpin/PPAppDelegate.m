@@ -89,8 +89,6 @@
 
     [PPTheme customizeUIElements];
 
-    
-
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if (![defaults boolForKey:@"HasLaunchedOnce"]) {
         [defaults setBool:YES forKey:@"HasLaunchedOnce"];
