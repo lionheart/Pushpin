@@ -1,6 +1,6 @@
 //
 //  NSString+URLEncoding.m
-//  Pinboard for iPhone
+//  Pushpin
 //
 //  Created by Dan Loewenherz on 10/20/12.
 //
