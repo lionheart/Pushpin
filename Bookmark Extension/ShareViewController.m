@@ -51,7 +51,7 @@
         }];
         [controller presentViewController:alert animated:YES completion:nil];
     });
-} 
+}
 
 - (void)presentController:(UINavigationController *)nc token:(NSString *)token {
     PPAddBookmarkViewController *addBookmarkViewController = (PPAddBookmarkViewController *)nc.topViewController;
@@ -123,15 +123,15 @@
                                                @"unread": @([post[@"toread"] isEqualToString:@"yes"]),
                                                @"tags": post[@"tags"]};
 
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            if (weakSelf) {
-                                __strong ShareViewController *strongSelf = weakSelf;
-                                UINavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark
-                                                                                                                                 update:@(YES)
-                                                                                                                               callback:nil];
-                                [strongSelf presentController:navigation token:token];
-                            }
-                        });
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if (weakSelf) {
+                            __strong ShareViewController *strongSelf = weakSelf;
+                            UINavigationController *navigation = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:bookmark
+                                                                                                                             update:@(YES)
+                                                                                                                           callback:nil];
+                            [strongSelf presentController:navigation token:token];
+                        }
+                    });
                 }
                                                      failure:^(NSError *error) {
                     NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
@@ -234,10 +234,10 @@
             [urlItemProvider loadItemForTypeIdentifier:(__bridge NSString *)kUTTypeURL
                                                options:0
                                      completionHandler:^(NSURL *url, NSError *error) {
-                                         urlString = url.absoluteString;
+                urlString = url.absoluteString;
 
-                                         dispatch_group_leave(group);
-                                     }];
+                dispatch_group_leave(group);
+            }];
         }
 
         if (titleItemProvider) {
@@ -246,15 +246,15 @@
             [titleItemProvider loadItemForTypeIdentifier:(__bridge NSString *)kUTTypePlainText
                                                  options:0
                                        completionHandler:^(NSString *text, NSError *error) {
-                                           NSURL *url = [NSURL URLWithString:text];
-                                           if (url) {
-                                               urlString = text;
-                                           } else {
-                                               title = text;
-                                           }
+                NSURL *url = [NSURL URLWithString:text];
+                if (url) {
+                    urlString = text;
+                } else {
+                    title = text;
+                }
 
-                                           dispatch_group_leave(group);
-                                       }];
+                dispatch_group_leave(group);
+            }];
         }
 
         dispatch_group_notify(group, dispatch_get_main_queue(), ^{
@@ -291,3 +291,4 @@
 }
 
 @end
+
