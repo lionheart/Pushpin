@@ -37,13 +37,11 @@
 
 - (NSArray *)keyCommands {
     static NSArray *keyCommands;
-
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         self.createBookmarkKeyCommand = [UIKeyCommand keyCommandWithInput:@"c"
                                                             modifierFlags:UIKeyModifierAlternate
                                                                    action:@selector(handleKeyCommand:)];
-
         keyCommands = @[self.createBookmarkKeyCommand];
     });
 

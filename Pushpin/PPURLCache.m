@@ -733,7 +733,6 @@
             [self updateProgressWithCompletedValues];
             dispatch_semaphore_signal([PPURLCache semaphore]);
             dispatch_semaphore_signal([PPURLCache HTMLDownloadSemaphore]);
-
         });
     });
 }
