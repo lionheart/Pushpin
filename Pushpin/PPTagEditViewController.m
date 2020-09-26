@@ -446,7 +446,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
                            andFinalAmount:(NSInteger)final
                                    offset:(NSInteger)offset
                                  callback:(void (^)(NSArray *, NSArray *, NSArray *))callback {
-
     NSMutableArray *indexPathsToReload = [NSMutableArray array];
     NSMutableArray *indexPathsToInsert = [NSMutableArray array];
     NSMutableArray *indexPathsToDelete = [NSMutableArray array];

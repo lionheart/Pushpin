@@ -579,7 +579,6 @@
 }
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task willPerformHTTPRedirection:(NSHTTPURLResponse *)response newRequest:(NSURLRequest *)request completionHandler:(void (^)(NSURLRequest *))completionHandler {
-
     if (![request.URL isEqual:task.originalRequest.URL]) {
         NSURL *url = self.assetURLsToHTMLURLs[task.originalRequest.URL];
         if (url) {
