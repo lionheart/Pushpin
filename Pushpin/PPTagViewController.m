@@ -358,8 +358,8 @@ static NSString *CellIdentifier = @"TagCell";
                 [self.tagActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Delete", nil)
                                                       style:UIAlertActionStyleDestructive
                                                     handler:^(UIAlertAction *action) {
-                                                        [self showDeleteConfirmationAlertView];
-                                                    }];
+                    [self showDeleteConfirmationAlertView];
+                }];
 
                 [self.tagActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                       style:UIAlertActionStyleCancel
@@ -545,34 +545,34 @@ static NSString *CellIdentifier = @"TagCell";
     ASPinboard *pinboard = [ASPinboard sharedInstance];
     [pinboard deleteTag:name
                 success:^{
-                        // Delete the tag from the database.
+        // Delete the tag from the database.
 
-                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                        [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
-                            [db executeUpdate:@"DELETE FROM tag WHERE name=?" withArgumentsInArray:@[name]];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
+                [db executeUpdate:@"DELETE FROM tag WHERE name=?" withArgumentsInArray:@[name]];
 
-                            NSMutableArray *hashesToUpdate = [NSMutableArray array];
-                            NSMutableArray *parameterPlaceholders = [NSMutableArray array];
-                            FMResultSet *result = [db executeQuery:@"SELECT bookmark_hash FROM tagging WHERE tag_name=?" withArgumentsInArray:@[name]];
-                            while ([result next]) {
-                                // Convert the tags to a list, remove the removed tag, and then update the bookmark.
-                                NSString *hash = [result stringForColumnIndex:0];
-                                [hashesToUpdate addObject:hash];
-                                [parameterPlaceholders addObject:@"?"];
-                            }
+                NSMutableArray *hashesToUpdate = [NSMutableArray array];
+                NSMutableArray *parameterPlaceholders = [NSMutableArray array];
+                FMResultSet *result = [db executeQuery:@"SELECT bookmark_hash FROM tagging WHERE tag_name=?" withArgumentsInArray:@[name]];
+                while ([result next]) {
+                    // Convert the tags to a list, remove the removed tag, and then update the bookmark.
+                    NSString *hash = [result stringForColumnIndex:0];
+                    [hashesToUpdate addObject:hash];
+                    [parameterPlaceholders addObject:@"?"];
+                }
 
-                            [result close];
+                [result close];
 
-                            [db executeUpdate:@"DELETE FROM tagging WHERE tag_name=?" withArgumentsInArray:@[name]];
+                [db executeUpdate:@"DELETE FROM tagging WHERE tag_name=?" withArgumentsInArray:@[name]];
 
-                            NSString *query = [NSString stringWithFormat:@"UPDATE bookmark SET tags=(SELECT (group_concat(tag_name, ' ') || '') FROM tagging WHERE bookmark_hash=bookmark.hash) WHERE hash IN (%@)", [parameterPlaceholders componentsJoinedByString:@", "]];
-                            [db executeUpdate:query withArgumentsInArray:hashesToUpdate];
-                        }];
+                NSString *query = [NSString stringWithFormat:@"UPDATE bookmark SET tags=(SELECT (group_concat(tag_name, ' ') || '') FROM tagging WHERE bookmark_hash=bookmark.hash) WHERE hash IN (%@)", [parameterPlaceholders componentsJoinedByString:@", "]];
+                [db executeUpdate:query withArgumentsInArray:hashesToUpdate];
+            }];
 
-                        [self.tagCounts removeObjectForKey:name];
-                        self.tagToDelete = nil;
-                    });
-                }];
+            [self.tagCounts removeObjectForKey:name];
+            self.tagToDelete = nil;
+        });
+    }];
 }
 
 - (void)showDeleteConfirmationAlertView {
@@ -582,8 +582,8 @@ static NSString *CellIdentifier = @"TagCell";
     [self.deleteConfirmationAlertView lhs_addActionWithTitle:NSLocalizedString(@"Delete", nil)
                                                        style:UIAlertActionStyleDestructive
                                                      handler:^(UIAlertAction *action) {
-                                                         [self deleteTagWithName:self.tagToDelete];
-                                                     }];
+        [self deleteTagWithName:self.tagToDelete];
+    }];
 
     [self.deleteConfirmationAlertView lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                        style:UIAlertActionStyleCancel
@@ -600,9 +600,9 @@ static NSString *CellIdentifier = @"TagCell";
         [self.selectTagToDeleteActionSheet lhs_addActionWithTitle:duplicate
                                                             style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction *action) {
-                                                              self.tagToDelete = action.title;
-                                                              [self showDeleteConfirmationAlertView];
-                                                          }];
+            self.tagToDelete = action.title;
+            [self showDeleteConfirmationAlertView];
+        }];
     }
 
     [self.selectTagToDeleteActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
@@ -614,3 +614,4 @@ static NSString *CellIdentifier = @"TagCell";
 }
 
 @end
+

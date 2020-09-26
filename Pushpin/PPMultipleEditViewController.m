@@ -506,12 +506,12 @@ static NSString *CellIdentifier = @"Cell";
                               shared:![bookmark[@"private"] boolValue]
                               unread:[bookmark[@"unread"] boolValue]
                              success:^{
-                                 succeeded++;
-                                 dispatch_group_leave(group);
-                             }
+            succeeded++;
+            dispatch_group_leave(group);
+        }
                              failure:^(NSError *error) {
-                                 dispatch_group_leave(group);
-                             }];
+            dispatch_group_leave(group);
+        }];
     }
 
     NSInteger total = updatedBookmarks.count;
@@ -563,3 +563,4 @@ static NSString *CellIdentifier = @"Cell";
 }
 
 @end
+

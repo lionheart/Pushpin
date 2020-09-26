@@ -264,23 +264,23 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     [self.toolbar lhs_addConstraints:@"V:|[border(0.5)]" views:toolbarViews];
 
     NSArray<UIView *> *fullHeightViews = @[
-                                     self.backButton,
-                                     self.markAsReadButton,
-                                     self.mobilizeButton,
-                                     self.actionButton,
-                                     self.editButton,
-                                     self.addButton,
-                                     ];
+        self.backButton,
+        self.markAsReadButton,
+        self.mobilizeButton,
+        self.actionButton,
+        self.editButton,
+        self.addButton,
+    ];
 
     NSArray <UIView *> *fullWidthViews = @[
-                                           toolbarBorderView,
-                                           self.toolbarBackgroundView,
-                                           self.statusBarBackgroundView,
-                                           self.toolbar,
-                                           self.webView,
-                                           self.readerWebView,
-                                           self.showToolbarAndTitleBarHiddenView,
-                                           ];
+        toolbarBorderView,
+        self.toolbarBackgroundView,
+        self.statusBarBackgroundView,
+        self.toolbar,
+        self.webView,
+        self.readerWebView,
+        self.showToolbarAndTitleBarHiddenView,
+    ];
 
     [UIView lhs_addConstraints:@"V:|[view]|" views:fullHeightViews];
     [UIView lhs_addConstraints:@"H:|[view]|" views:fullWidthViews];
@@ -367,22 +367,22 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         [self.selectedActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Add to Pinboard", nil)
                                                    style:UIAlertActionStyleDefault
                                                  handler:^(UIAlertAction *action) {
-                                                     [self showAddViewController:self.selectedLink];
-                                                     self.selectedActionSheet = nil;
-                                                 }];
+            [self showAddViewController:self.selectedLink];
+            self.selectedActionSheet = nil;
+        }];
 
         [self.selectedActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Copy URL", nil)
                                                    style:UIAlertActionStyleDefault
                                                  handler:^(UIAlertAction *action) {
-                                                     [self copyURL:[NSURL URLWithString:self.selectedLink[@"url"]]];
-                                                     self.selectedActionSheet = nil;
-                                                 }];
+            [self copyURL:[NSURL URLWithString:self.selectedLink[@"url"]]];
+            self.selectedActionSheet = nil;
+        }];
 
         [self.selectedActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                    style:UIAlertActionStyleCancel
                                                  handler:^(UIAlertAction *action) {
-                                                     self.selectedActionSheet = nil;
-                                                 }];
+            self.selectedActionSheet = nil;
+        }];
 
         self.selectedActionSheet.popoverPresentationController.sourceView = self.view;
         self.selectedActionSheet.popoverPresentationController.sourceRect = (CGRect){webViewCoordinates, {1, 1}};
@@ -398,21 +398,21 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                 [self.backActionSheet lhs_addActionWithTitle:[NSString stringWithFormat:@"%@", item[@"host"]]
                                                        style:UIAlertActionStyleDefault
                                                      handler:^(UIAlertAction *action) {
-                                                         NSInteger buttonIndex = [self.backActionSheet.actions indexOfObject:action];
-                                                         NSInteger i=0;
-                                                         while (i<buttonIndex+1) {
-                                                             [self.webView goBack];
-                                                             i++;
-                                                         }
-                                                     }];
+                    NSInteger buttonIndex = [self.backActionSheet.actions indexOfObject:action];
+                    NSInteger i=0;
+                    while (i<buttonIndex+1) {
+                        [self.webView goBack];
+                        i++;
+                    }
+                }];
             }
 
             [self.backActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Close Browser", nil)
                                                    style:UIAlertActionStyleDefault
                                                  handler:^(UIAlertAction *action) {
-                                                     self.readerWebView.hidden = YES;
-                                                     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
-                                                 }];
+                self.readerWebView.hidden = YES;
+                [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+            }];
 
             [self.backActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                    style:UIAlertActionStyleCancel
@@ -534,9 +534,9 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
         [UIView animateWithDuration:0.3
                          animations:^{
-                             self.statusBarStyle = UIStatusBarStyleLightContent;
-                             [self setNeedsStatusBarAppearanceUpdate];
-                         }];
+            self.statusBarStyle = UIStatusBarStyleLightContent;
+            [self setNeedsStatusBarAppearanceUpdate];
+        }];
 
         if ([self.presentingViewController respondsToSelector:@selector(setNeedsUpdate:)]) {
             [(PPGenericPostViewController *)self.presentingViewController setNeedsUpdate:YES];
@@ -855,8 +855,8 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                     [self.openLinkExternallyAlertView lhs_addActionWithTitle:NSLocalizedString(@"Open", nil)
                                                                        style:UIAlertActionStyleDefault
                                                                      handler:^(UIAlertAction *action) {
-                                                                         [[UIApplication sharedApplication] openURL:webView.request.URL options:@{} completionHandler:nil];;
-                                                                     }];
+                        [[UIApplication sharedApplication] openURL:webView.request.URL options:@{} completionHandler:nil];;
+                    }];
 
                     [self.openLinkExternallyAlertView lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                                        style:UIAlertActionStyleCancel
@@ -975,7 +975,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     if (webView == self.webView) {
         [self.webViewTimeoutTimer invalidate];
 
-    #warning https://crashlytics.com/lionheart-software2/ios/apps/io.aurora.pushpin/issues/532e17d2fabb27481b18f9ce
+#warning https://crashlytics.com/lionheart-software2/ios/apps/io.aurora.pushpin/issues/532e17d2fabb27481b18f9ce
         self.webViewTimeoutTimer = [NSTimer timerWithTimeInterval:5
                                                            target:self
                                                          selector:@selector(webViewLoadTimedOut)
@@ -1180,26 +1180,26 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];
     NSURLSessionDataTask *task = [session dataTaskWithRequest:request
                                             completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                                [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
+        [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
 
-                                                if ([[(NSHTTPURLResponse *)response MIMEType] isEqualToString:@"text/plain"]) {
-                                                    NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                                                    NSData *encodedData = [[NSData alloc] initWithBase64EncodedString:string options:NSDataBase64DecodingIgnoreUnknownCharacters];
-                                                    NSData *decryptedData = [RNDecryptor decryptData:encodedData withPassword:@"Isabelle and Dante" error:nil];
-                                                    id article = [NSJSONSerialization JSONObjectWithData:decryptedData
-                                                                                                 options:NSJSONReadingAllowFragments
-                                                                                                   error:nil];
+        if ([[(NSHTTPURLResponse *)response MIMEType] isEqualToString:@"text/plain"]) {
+            NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            NSData *encodedData = [[NSData alloc] initWithBase64EncodedString:string options:NSDataBase64DecodingIgnoreUnknownCharacters];
+            NSData *decryptedData = [RNDecryptor decryptData:encodedData withPassword:@"Isabelle and Dante" error:nil];
+            id article = [NSJSONSerialization JSONObjectWithData:decryptedData
+                                                         options:NSJSONReadingAllowFragments
+                                                           error:nil];
 
-                                                    if ([article[@"work_count"] isEqualToNumber:@(0)]) {
+            if ([article[@"work_count"] isEqualToNumber:@(0)]) {
 #warning TODO
-                                                        completion(nil, nil);
-                                                    } else {
-                                                        completion(article, nil);
-                                                    }
-                                                } else {
-                                                    completion(nil, error);
-                                                }
-                                            }];
+                completion(nil, nil);
+            } else {
+                completion(article, nil);
+            }
+        } else {
+            completion(nil, error);
+        }
+    }];
     [task resume];
 }
 
@@ -1224,17 +1224,17 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                             options:UIViewAnimationOptionCurveLinear | UIViewAnimationOptionBeginFromCurrentState
                          animations:animations
                          completion:^(BOOL finished) {
-                             if (visible) {
-                                 [self.indicator stopAnimating];
-                                 self.markAsReadButton.hidden = NO;
-                             } else {
-                                 self.readerWebView.hidden = YES;
-                             }
+            if (visible) {
+                [self.indicator stopAnimating];
+                self.markAsReadButton.hidden = NO;
+            } else {
+                self.readerWebView.hidden = YES;
+            }
 
-                             if (completion) {
-                                 completion(finished);
-                             }
-                         }];
+            if (completion) {
+                completion(finished);
+            }
+        }];
     } else {
         animations();
     }
@@ -1300,3 +1300,4 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 }
 
 @end
+

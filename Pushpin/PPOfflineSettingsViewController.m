@@ -196,37 +196,37 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
                     [actionSheet lhs_addActionWithTitle:@"10 MB"
                                                   style:UIAlertActionStyleDefault
                                                 handler:^(UIAlertAction *action) {
-                                                    [self updateUsageLimitTo:10 * 1000 * 1000];
-                                                }];
+                        [self updateUsageLimitTo:10 * 1000 * 1000];
+                    }];
 
                     [actionSheet lhs_addActionWithTitle:@"100 MB"
                                                   style:UIAlertActionStyleDefault
                                                 handler:^(UIAlertAction *action) {
-                                                    [self updateUsageLimitTo:100 * 1000 * 1000];
-                                                }];
+                        [self updateUsageLimitTo:100 * 1000 * 1000];
+                    }];
 
                     [actionSheet lhs_addActionWithTitle:@"500 MB"
                                                   style:UIAlertActionStyleDefault
                                                 handler:^(UIAlertAction *action) {
-                                                    [self updateUsageLimitTo:500 * 1000 * 1000];
-                                                }];
+                        [self updateUsageLimitTo:500 * 1000 * 1000];
+                    }];
 
                     [actionSheet lhs_addActionWithTitle:@"1 GB"
                                                   style:UIAlertActionStyleDefault
                                                 handler:^(UIAlertAction *action) {
-                                                    [self updateUsageLimitTo:1000 * 1000 * 1000];
-                                                }];
+                        [self updateUsageLimitTo:1000 * 1000 * 1000];
+                    }];
 
                     [actionSheet lhs_addActionWithTitle:@"2 GB"
                                                   style:UIAlertActionStyleDefault
                                                 handler:^(UIAlertAction *action) {
-                                                    [self updateUsageLimitTo:2 * 1000 * 1000 * 1000];
-                                                }];
+                        [self updateUsageLimitTo:2 * 1000 * 1000 * 1000];
+                    }];
 
                     [actionSheet lhs_addActionWithTitle:@"Cancel"
                                                   style:UIAlertActionStyleCancel
                                                 handler:^(UIAlertAction *action) {
-                                                }];
+                    }];
 
                     actionSheet.modalPresentationStyle = UIModalPresentationPopover;
 
@@ -247,26 +247,26 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
                     [actionSheet lhs_addActionWithTitle:NSLocalizedString(@"Unread", nil)
                                                   style:UIAlertActionStyleDefault
                                                 handler:^(UIAlertAction *action) {
-                                                    [self updateOfflineFetchCriteriaTo:PPOfflineFetchCriteriaUnread];
-                                                }];
+                        [self updateOfflineFetchCriteriaTo:PPOfflineFetchCriteriaUnread];
+                    }];
 
                     [actionSheet lhs_addActionWithTitle:NSLocalizedString(@"Recent (last 30 days)", nil)
                                                   style:UIAlertActionStyleDefault
                                                 handler:^(UIAlertAction *action) {
-                                                    [self updateOfflineFetchCriteriaTo:PPOfflineFetchCriteriaRecent];
-                                                }];
+                        [self updateOfflineFetchCriteriaTo:PPOfflineFetchCriteriaRecent];
+                    }];
 
                     [actionSheet lhs_addActionWithTitle:NSLocalizedString(@"Unread and Recent", nil)
                                                   style:UIAlertActionStyleDefault
                                                 handler:^(UIAlertAction *action) {
-                                                    [self updateOfflineFetchCriteriaTo:PPOfflineFetchCriteriaUnreadAndRecent];
-                                                }];
+                        [self updateOfflineFetchCriteriaTo:PPOfflineFetchCriteriaUnreadAndRecent];
+                    }];
 
                     [actionSheet lhs_addActionWithTitle:NSLocalizedString(@"Everything", nil)
                                                   style:UIAlertActionStyleDefault
                                                 handler:^(UIAlertAction *action) {
-                                                    [self updateOfflineFetchCriteriaTo:PPOfflineFetchCriteriaEverything];
-                                                }];
+                        [self updateOfflineFetchCriteriaTo:PPOfflineFetchCriteriaEverything];
+                    }];
 
                     [actionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                   style:UIAlertActionStyleCancel
@@ -320,20 +320,20 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
             [confirmation lhs_addActionWithTitle:NSLocalizedString(@"Delete", nil)
                                            style:UIAlertActionStyleDestructive
                                          handler:^(UIAlertAction *action) {
-                                             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                 PPURLCache *cache = [PPAppDelegate sharedDelegate].urlCache;
-                                                 [cache removeAllCachedResponses];
-                                                 [[PPPinboardMetadataCache sharedCache] removeAllObjects];
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    PPURLCache *cache = [PPAppDelegate sharedDelegate].urlCache;
+                    [cache removeAllCachedResponses];
+                    [[PPPinboardMetadataCache sharedCache] removeAllObjects];
 
-                                                 dispatch_async(dispatch_get_main_queue(), ^{
-                                                     [tableView beginUpdates];
-                                                     [tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPOfflineSettingsRowUsage
-                                                                                                            inSection:PPOfflineSettingsSectionTop]]
-                                                                      withRowAnimation:UITableViewRowAnimationFade];
-                                                     [tableView endUpdates];
-                                                 });
-                                             });
-                                         }];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [tableView beginUpdates];
+                        [tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPOfflineSettingsRowUsage
+                                                                               inSection:PPOfflineSettingsSectionTop]]
+                                         withRowAnimation:UITableViewRowAnimationFade];
+                        [tableView endUpdates];
+                    });
+                });
+            }];
 
             [confirmation lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                            style:UIAlertActionStyleCancel
@@ -404,3 +404,4 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
 }
 
 @end
+

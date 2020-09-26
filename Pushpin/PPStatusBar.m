@@ -109,16 +109,16 @@
           initialSpringVelocity:0
                         options:0
                      animations:^{
-                         self.topConstraint.constant = -20;
-                         [self.superview layoutIfNeeded];
-                     }
+        self.topConstraint.constant = -20;
+        [self.superview layoutIfNeeded];
+    }
                      completion:^(BOOL finished) {
-                         double delayInSeconds = secondsNeededToRead;
-                         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-                         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                             [self hide];
-                         });
-                     }];
+        double delayInSeconds = secondsNeededToRead;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [self hide];
+        });
+    }];
 }
 
 - (void)hide {
@@ -128,16 +128,17 @@
         CGFloat height = CGRectGetHeight(self.view.frame) + 20;
         [UIView animateWithDuration:0.1
                          animations:^{
-                             self.topConstraint.constant = -10;
-                             [self.superview layoutIfNeeded];
-                         }
+            self.topConstraint.constant = -10;
+            [self.superview layoutIfNeeded];
+        }
                          completion:^(BOOL finished) {
-                             [UIView animateWithDuration:0.2 animations:^{
-                                 self.topConstraint.constant = -height;
-                                 [self.superview layoutIfNeeded];
-                             }];
-                         }];
+            [UIView animateWithDuration:0.2 animations:^{
+                self.topConstraint.constant = -height;
+                [self.superview layoutIfNeeded];
+            }];
+        }];
     }
 }
 
 @end
+

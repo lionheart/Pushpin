@@ -16,9 +16,9 @@ import StoreKit
 
     var value: NSDecimalNumber {
         switch self {
-        case .high: return 100
-        case .medium: return 10
-        case .low: return 1
+            case .high: return 100
+            case .medium: return 10
+            case .low: return 1
         }
     }
 }
@@ -31,10 +31,10 @@ import StoreKit
 
     var seconds: Int {
         switch self {
-        case .hour: return 60*60
-        case .day: return StoreReviewHalfLife.hour.seconds * 24
-        case .week: return StoreReviewHalfLife.day.seconds * 7
-        case .month: return StoreReviewHalfLife.week.seconds * 4
+            case .hour: return 60*60
+            case .day: return StoreReviewHalfLife.hour.seconds * 24
+            case .week: return StoreReviewHalfLife.day.seconds * 7
+            case .month: return StoreReviewHalfLife.week.seconds * 4
         }
     }
 }
@@ -87,7 +87,7 @@ struct StoreReviewAction: Codable {
     @objc init(threshold: NSDecimalNumber) {
         let decoder = JSONDecoder()
         if let data = try? Data(contentsOf: fileURL),
-            let _actions = try? decoder.decode([StoreReviewAction].self, from: data) {
+           let _actions = try? decoder.decode([StoreReviewAction].self, from: data) {
             actions = _actions
         }
 
@@ -112,3 +112,4 @@ struct StoreReviewAction: Codable {
         try? save()
     }
 }
+

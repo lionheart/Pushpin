@@ -214,7 +214,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         for (NSString *input in self.existingTags)
         {
             NSString *replacement = [input stringByReplacingOccurrencesOfString:@"amp;" withString:@""];
-                [newArray addObject:replacement];
+            [newArray addObject:replacement];
         }
         self.existingTags = newArray;
 
@@ -361,16 +361,16 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                  andFinalAmount:finalAmount
                                          offset:[self tagOffset]
                                        callback:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
-                                           [self.tagCompletions removeAllObjects];
-                                           [self.popularTags removeAllObjects];
-                                           [self.recommendedTags removeAllObjects];
+            [self.tagCompletions removeAllObjects];
+            [self.popularTags removeAllObjects];
+            [self.recommendedTags removeAllObjects];
 
-                                           [self.tableView beginUpdates];
-                                           [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationAutomatic];
-                                           [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
-                                           [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationAutomatic];
-                                           [self.tableView endUpdates];
-                                       }];
+            [self.tableView beginUpdates];
+            [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationAutomatic];
+            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
+            [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationAutomatic];
+            [self.tableView endUpdates];
+        }];
     } else {
         self.searchString = [self.tagTextField.text stringByReplacingCharactersInRange:range withString:string];
         [self searchUpdatedWithString:self.searchString];
@@ -518,21 +518,21 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                      andFinalAmount:self.filteredPopularAndRecommendedTags.count
                                              offset:[self tagOffset]
                                            callback:^(NSArray *indexPathsToInsert, NSArray *indexPathsToReload, NSArray *indexPathsToDelete) {
-                                               dispatch_async(dispatch_get_main_queue(), ^{
-                                                   self.tagTextField.text = @"";
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.tagTextField.text = @"";
 
-                                                   [self.tableView beginUpdates];
+                    [self.tableView beginUpdates];
 
-                                                   if (self.loadingTags) {
-                                                       self.loadingTags = NO;
-                                                   }
+                    if (self.loadingTags) {
+                        self.loadingTags = NO;
+                    }
 
-                                                   [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
-                                                   [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
-                                                   [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
-                                                   [self.tableView endUpdates];
-                                               });
-                                           }];
+                    [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
+                    [self.tableView endUpdates];
+                });
+            }];
         }
     });
 }
@@ -555,12 +555,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
             [pinboard tagSuggestionsForURL:self.bookmarkData[@"url"]
                                    success:^(NSArray *popular, NSArray *recommended) {
-                                       dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                           [self.unfilteredPopularTags addObjectsFromArray:popular];
-                                           [self.unfilteredRecommendedTags addObjectsFromArray:recommended];
-                                           [self handleTagSuggestions];
-                                       });
-                                   }];
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    [self.unfilteredPopularTags addObjectsFromArray:popular];
+                    [self.unfilteredRecommendedTags addObjectsFromArray:recommended];
+                    [self handleTagSuggestions];
+                });
+            }];
         });
     } else {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -666,7 +666,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     for (NSString *input in self.tagCompletions)
                     {
                         NSString *replacement = [input stringByReplacingOccurrencesOfString:@"amp;" withString:@""];
-                            [newArray addObject:replacement];
+                        [newArray addObject:replacement];
                     }
                     self.tagCompletions = newArray;
 
@@ -797,7 +797,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
     PPBadgeWrapperView *wrapper = [[PPBadgeWrapperView alloc] initWithBadges:badges
                                                                      options:@{
-                                                                               PPBadgeFontSize: @([PPTheme staticBadgeFontSize]) }];
+                                                                         PPBadgeFontSize: @([PPTheme staticBadgeFontSize]) }];
     wrapper.translatesAutoresizingMaskIntoConstraints = NO;
     wrapper.delegate = self;
     return wrapper;
@@ -814,17 +814,17 @@ static NSString *CellIdentifier = @"CellIdentifier";
     [self.removeTagActionSheet lhs_addActionWithTitle:[NSString stringWithFormat:@"Remove '%@'", tag]
                                                 style:UIAlertActionStyleDestructive
                                               handler:^(UIAlertAction *action) {
-                                                  self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
+        self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
 
-                                                  NSIndexPath *indexPathToReload;
-                                                  indexPathToReload = [NSIndexPath indexPathForRow:0 inSection:0];
+        NSIndexPath *indexPathToReload;
+        indexPathToReload = [NSIndexPath indexPathForRow:0 inSection:0];
 
-                                                  [self.tableView beginUpdates];
-                                                  [self.tableView reloadRowsAtIndexPaths:@[indexPathToReload] withRowAnimation:UITableViewRowAnimationFade];
-                                                  [self.tableView endUpdates];
+        [self.tableView beginUpdates];
+        [self.tableView reloadRowsAtIndexPaths:@[indexPathToReload] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView endUpdates];
 
-                                                  [self deleteTagWithName:self.currentlySelectedTag];
-                                              }];
+        [self deleteTagWithName:self.currentlySelectedTag];
+    }];
 
     [self.removeTagActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil];
 
@@ -857,3 +857,4 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 @end
+

@@ -60,9 +60,10 @@
         }
 
         [[PPAppDelegate sharedDelegate].navigationController presentViewController:addBookmarkViewController
-                                                                        animated:YES
-                                                                      completion:nil];
+                                                                          animated:YES
+                                                                        completion:nil];
     }
 }
 
 @end
+

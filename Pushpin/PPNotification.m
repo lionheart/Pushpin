@@ -68,15 +68,15 @@ static PPNotification *shared;
         if (animated) {
             [UIView animateWithDuration:0.2
                              animations:^{
-                                 self.notificationView.frame = hiddenFrame;
-                             }
+                self.notificationView.frame = hiddenFrame;
+            }
                              completion:^(BOOL finished) {
-                                 if (finished) {
-                                     self.notificationView = nil;
-                                     self.hiding = NO;
-                                     kPPNotificationIsVisible = NO;
-                                 }
-                             }];
+                if (finished) {
+                    self.notificationView = nil;
+                    self.hiding = NO;
+                    kPPNotificationIsVisible = NO;
+                }
+            }];
         } else {
             self.notificationView.frame = hiddenFrame;
             self.notificationView = nil;
@@ -97,17 +97,17 @@ static PPNotification *shared;
                               delay:0
                             options:UIViewAnimationCurveEaseIn | UIViewAnimationOptionAllowUserInteraction
                          animations:^{
-                             self.notificationView.frame = CGRectMake(0, [UIApplication currentSize].height - CGRectGetHeight(self.notificationView.frame), [UIApplication currentSize].width, CGRectGetHeight(self.notificationView.frame));
-                         }
+            self.notificationView.frame = CGRectMake(0, [UIApplication currentSize].height - CGRectGetHeight(self.notificationView.frame), [UIApplication currentSize].width, CGRectGetHeight(self.notificationView.frame));
+        }
                          completion:^(BOOL finished) {
-                             if (finished) {
-                                 double delayInSeconds = 2.5;
-                                 dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-                                 dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-                                     [self hide:YES];
-                                 });
-                             }
-                             }];
+            if (finished) {
+                double delayInSeconds = 2.5;
+                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+                dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                    [self hide:YES];
+                });
+            }
+        }];
     }
 }
 
@@ -160,3 +160,4 @@ static PPNotification *shared;
 }
 
 @end
+

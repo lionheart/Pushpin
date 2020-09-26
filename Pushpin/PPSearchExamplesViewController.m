@@ -28,21 +28,22 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.examples = @[@{@"example": @"url:apple",
-                        @"description": @"Bookmarks with \"apple\" in the URL." },
-                      @{@"example": @"url:apple title:ios",
-                        @"description": @"Bookmarks with \"apple\" in the URL and \"ios\" in the title." },
-                      @{@"example": @"tags:programming tags:python",
-                        @"description": @"Bookmarks tagged with both \"programming\" and \"python\"." },
-                      @{@"example": @"tags:programming OR tags:python",
-                        @"description": @"Bookmarks tagged either \"programming\" or \"python\". Note that the \"OR\" must be capitalized." },
-                      @{@"example": @"tags:programming NOT tags:python",
-                        @"description": @"Bookmarks tagged with \"programming\" but NOT \"python\"." },
-                      @{@"example": @"(url:wirecutter OR url:anand) title:mac",
-                        @"description": @"Bookmarks from either the Wirecutter or AnandTech that have \"mac\" in the title." },
-                      @{@"example": @"((url:macstories OR url:macdrifter OR url:appstorm) AND title:pinboard) OR description:pushpin",
-                        @"description": @"Bookmarks from either Macdrifter, Macstories, or Appstorm that have \"pinboard\" in the title OR bookmarks with pushpin in the description." },
-                      ];
+    self.examples = @[
+        @{@"example": @"url:apple",
+          @"description": @"Bookmarks with \"apple\" in the URL." },
+        @{@"example": @"url:apple title:ios",
+          @"description": @"Bookmarks with \"apple\" in the URL and \"ios\" in the title." },
+        @{@"example": @"tags:programming tags:python",
+          @"description": @"Bookmarks tagged with both \"programming\" and \"python\"." },
+        @{@"example": @"tags:programming OR tags:python",
+          @"description": @"Bookmarks tagged either \"programming\" or \"python\". Note that the \"OR\" must be capitalized." },
+        @{@"example": @"tags:programming NOT tags:python",
+          @"description": @"Bookmarks tagged with \"programming\" but NOT \"python\"." },
+        @{@"example": @"(url:wirecutter OR url:anand) title:mac",
+          @"description": @"Bookmarks from either the Wirecutter or AnandTech that have \"mac\" in the title." },
+        @{@"example": @"((url:macstories OR url:macdrifter OR url:appstorm) AND title:pinboard) OR description:pushpin",
+          @"description": @"Bookmarks from either Macdrifter, Macstories, or Appstorm that have \"pinboard\" in the title OR bookmarks with pushpin in the description."},
+    ];
     self.title = NSLocalizedString(@"Advanced Searching", nil);
 
     self.text = @"Pushpin uses SQLite FTS (full-text search) internally to index bookmarks and to facilitate advanced searching. Indexed fields include 'title', 'description', 'tags', and 'url'. To search for text within a field, just type the field, a colon, and then the phrase you're looking for. If you don't specify a field, Pushpin will search within all fields.\n\n"
@@ -117,3 +118,4 @@ static NSString *CellIdentifier = @"CellIdentifier";
 }
 
 @end
+

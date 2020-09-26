@@ -72,27 +72,27 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
     [self.logOutAlertView lhs_addActionWithTitle:NSLocalizedString(@"Log Out", nil)
                                            style:UIAlertActionStyleDestructive
                                          handler:^(UIAlertAction *action) {
-                                             PPSettings *settings = [PPSettings sharedSettings];
-                                             PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
-                                             settings.lastUpdated = nil;
-                                             [delegate logout];
+        PPSettings *settings = [PPSettings sharedSettings];
+        PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
+        settings.lastUpdated = nil;
+        [delegate logout];
 
-                                             [[ASPinboard sharedInstance] resetAuthentication];
+        [[ASPinboard sharedInstance] resetAuthentication];
 
-                                             [delegate setLoginViewController:nil];
-                                             [delegate setNavigationController:nil];
-                                             delegate.loginViewController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+        [delegate setLoginViewController:nil];
+        [delegate setNavigationController:nil];
+        delegate.loginViewController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
 
-                                             if ([UIApplication isIPad]) {
-                                                 [delegate.window setRootViewController:delegate.loginViewController];
-                                             } else {
-                                                 [self presentViewController:delegate.loginViewController
-                                                                    animated:YES
-                                                                  completion:nil];
-                                             }
+        if ([UIApplication isIPad]) {
+            [delegate.window setRootViewController:delegate.loginViewController];
+        } else {
+            [self presentViewController:delegate.loginViewController
+                               animated:YES
+                             completion:nil];
+        }
 
-                                             [PPUtilities migrateDatabase];
-                                         }];
+        [PPUtilities migrateDatabase];
+    }];
 
     [self.logOutAlertView lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                            style:UIAlertActionStyleCancel
@@ -102,25 +102,25 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
         NSURLSession *session = [NSURLSession sharedSession];
         NSURLSessionDataTask *task = [session dataTaskWithURL:[NSURL URLWithString:@"https://itunes.apple.com/lookup?id=548052590"]
                                             completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                                NSDictionary *object = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+            NSDictionary *object = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
 
-                                                NSDictionary *app = [object[@"results"] firstObject];
+            NSDictionary *app = [object[@"results"] firstObject];
 
-                                                if (app) {
-                                                    NSNumber *rating = app[@"userRatingCountForCurrentVersion"];
-                                                    if (rating) {
-                                                        self.numberOfRatings = [app[@"userRatingCountForCurrentVersion"] integerValue];
-                                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                                            [self.tableView beginUpdates];
-                                                            [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPOtherRatePushpin inSection:1]]
-                                                                                  withRowAnimation:UITableViewRowAnimationNone];
-                                                            [self.tableView endUpdates];
-                                                        });
-                                                    } else {
-                                                        self.numberOfRatings = 0;
-                                                    }
-                                                }
-                                            }];
+            if (app) {
+                NSNumber *rating = app[@"userRatingCountForCurrentVersion"];
+                if (rating) {
+                    self.numberOfRatings = [app[@"userRatingCountForCurrentVersion"] integerValue];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self.tableView beginUpdates];
+                        [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPOtherRatePushpin inSection:1]]
+                                              withRowAnimation:UITableViewRowAnimationNone];
+                        [self.tableView endUpdates];
+                    });
+                } else {
+                    self.numberOfRatings = 0;
+                }
+            }
+        }];
         [task resume];
     }
 
@@ -445,3 +445,4 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 #endif
 
 @end
+

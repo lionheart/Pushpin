@@ -21,18 +21,18 @@ If you've been enjoying Pushpin for a while, and would like to show your support
 
     static func subscriptionProductIdentifier(for subscription: TipJarViewController<ExampleTipJarOptions>.SubscriptionRow) -> String {
         switch subscription {
-        case .monthly: return "com.lionheartsw.Pushpin.TipJarSubscription.Monthly"
-        case .yearly: return "com.lionheartsw.Pushpin.TipJarSubscription.Yearly"
+            case .monthly: return "com.lionheartsw.Pushpin.TipJarSubscription.Monthly"
+            case .yearly: return "com.lionheartsw.Pushpin.TipJarSubscription.Yearly"
         }
     }
 
     static func oneTimeProductIdentifier(for subscription: TipJarViewController<ExampleTipJarOptions>.OneTimeRow) -> String {
         switch subscription {
-        case .small: return "com.lionheartsw.Pushpin.Tip.Small"
-        case .medium: return "com.lionheartsw.Pushpin.Tip.Medium"
-        case .large: return "com.lionheartsw.Pushpin.Tip.Large"
-        case .huge: return "com.lionheartsw.Pushpin.Tip.Huge"
-        case .massive: return "com.lionheartsw.Pushpin.Tip.Massive"
+            case .small: return "com.lionheartsw.Pushpin.Tip.Small"
+            case .medium: return "com.lionheartsw.Pushpin.Tip.Medium"
+            case .large: return "com.lionheartsw.Pushpin.Tip.Large"
+            case .huge: return "com.lionheartsw.Pushpin.Tip.Huge"
+            case .massive: return "com.lionheartsw.Pushpin.Tip.Massive"
         }
     }
 
@@ -58,3 +58,4 @@ final class PPTipJarViewController: TipJarViewController<ExampleTipJarOptions> {
 }
 
 #endif
+

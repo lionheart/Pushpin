@@ -329,11 +329,11 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             NSString *message = NSLocalizedString(@"Please enter both a username and password to sign into Pinboard.", nil);
 
             UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:nil
-                                                                           message:message];
+                                                                         message:message];
 
             [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
-                                                      style:UIAlertActionStyleDefault
-                                                    handler:nil];
+                                    style:UIAlertActionStyleDefault
+                                  handler:nil];
 
             [self presentViewController:alert animated:YES completion:nil];
             self.loginInProgress = NO;
@@ -670,3 +670,4 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 #endif
 
 @end
+

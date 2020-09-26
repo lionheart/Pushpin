@@ -82,32 +82,32 @@ static NSString *CellIdentifier = @"Cell";
     };
 
     [self.browserActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Safari", nil)
-                                                                    style:UIAlertActionStyleDefault
-                                                                  handler:BrowserAlertActionHandler];
+                                              style:UIAlertActionStyleDefault
+                                            handler:BrowserAlertActionHandler];
 
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"icabmobile://"]]) {
         [self.browserActionSheet lhs_addActionWithTitle:NSLocalizedString(@"iCab Mobile", nil)
-                                                                        style:UIAlertActionStyleDefault
-                                                                      handler:BrowserAlertActionHandler];
+                                                  style:UIAlertActionStyleDefault
+                                                handler:BrowserAlertActionHandler];
     }
 
     OpenInChromeController *openInChromeController = [OpenInChromeController sharedInstance];
     if ([openInChromeController isChromeInstalled]) {
         [self.browserActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Chrome", nil)
-                                                                        style:UIAlertActionStyleDefault
-                                                                      handler:BrowserAlertActionHandler];
+                                                  style:UIAlertActionStyleDefault
+                                                handler:BrowserAlertActionHandler];
     }
 
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"ohttp://"]]) {
         [self.browserActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Opera", nil)
-                                                                        style:UIAlertActionStyleDefault
-                                                                      handler:BrowserAlertActionHandler];
+                                                  style:UIAlertActionStyleDefault
+                                                handler:BrowserAlertActionHandler];
     }
 
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"dolphin://"]]) {
         [self.browserActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Dolphin", nil)
-                                                                        style:UIAlertActionStyleDefault
-                                                                      handler:BrowserAlertActionHandler];
+                                                  style:UIAlertActionStyleDefault
+                                                handler:BrowserAlertActionHandler];
     }
 
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"cyber://"]]) {
@@ -123,8 +123,8 @@ static NSString *CellIdentifier = @"Cell";
     }
 
     [self.browserActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
-                                                                    style:UIAlertActionStyleCancel
-                                                                  handler:nil];
+                                              style:UIAlertActionStyleCancel
+                                            handler:nil];
 
     [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
 }
@@ -273,3 +273,4 @@ static NSString *CellIdentifier = @"Cell";
 }
 
 @end
+

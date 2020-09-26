@@ -20,12 +20,13 @@
     ASPinboard *pinboard = [ASPinboard sharedInstance];
     [pinboard noteWithId:self.noteID
                  success:^(NSString *title, NSString *text) {
-                     dispatch_async(dispatch_get_main_queue(), ^{
-                         self.text = text;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.text = text;
 
-                         [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
-                     });
-                 }];
+            [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
+        });
+    }];
 }
 
 @end
+

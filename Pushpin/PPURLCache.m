@@ -173,8 +173,8 @@
 
                 case PPOfflineFetchCriteriaEverything:
 #if 0
-                        query = @"SELECT url FROM bookmark WHERE url LIKE '%%thesaurus.com%%' ORDER BY created_at DESC";
-//                    query = @"SELECT url FROM bookmark ORDER BY created_at DESC";
+                    query = @"SELECT url FROM bookmark WHERE url LIKE '%%thesaurus.com%%' ORDER BY created_at DESC";
+                    //                    query = @"SELECT url FROM bookmark ORDER BY created_at DESC";
 #else
                     query = @"SELECT url FROM bookmark ORDER BY created_at DESC";
 #endif
@@ -443,10 +443,10 @@
                 case 0:
                     [db executeUpdate:
                      @"CREATE TABLE cache("
-                         "url TEXT UNIQUE,"
-                         "md5 TEXT,"
-                         "size INTEGER,"
-                         "created_at DATETIME DEFAULT CURRENT_TIMESTAMP"
+                     "url TEXT UNIQUE,"
+                     "md5 TEXT,"
+                     "size INTEGER,"
+                     "created_at DATETIME DEFAULT CURRENT_TIMESTAMP"
                      ");"];
 
                     [db executeUpdate:@"CREATE INDEX cache_created_at_idx ON cache (created_at);"];
@@ -539,7 +539,7 @@
                                                                      password:@"9346edb36e542dab1e7861227f9222b7"
                                                                   persistence:NSURLCredentialPersistenceForSession];
 
-//            [challenge.sender useCredential:credential forAuthenticationChallenge:challenge];
+            //            [challenge.sender useCredential:credential forAuthenticationChallenge:challenge];
             completionHandler(NSURLSessionAuthChallengeUseCredential, credential);
         } else {
             completionHandler(NSURLSessionAuthChallengeCancelAuthenticationChallenge, NULL);
@@ -667,14 +667,14 @@
                     }
 
                     // If there are still ../'s in the URL, assume it was malformed and remove them.
-//                        NSRange range = [finalURLString rangeOfString:@"../"];
-//                        while (range.location != NSNotFound) {
-//                            finalURLString = [finalURLString stringByReplacingCharactersInRange:range withString:@""];
-//                            range = [finalURLString rangeOfString:@"../"];
-//                        }
+                    //                        NSRange range = [finalURLString rangeOfString:@"../"];
+                    //                        while (range.location != NSNotFound) {
+                    //                            finalURLString = [finalURLString stringByReplacingCharactersInRange:range withString:@""];
+                    //                            range = [finalURLString rangeOfString:@"../"];
+                    //                        }
 
                     NSURL *url = [NSURL URLWithString:finalURLString];
-//                        NSURL *url = [NSURL URLWithString:@"http://testing1234442322.com"];
+                    //                        NSURL *url = [NSURL URLWithString:@"http://testing1234442322.com"];
 
                     if (![[self.assetURLsToHTMLURLs allKeys] containsObject:url]) {
                         NSURLRequest *request = [NSURLRequest requestWithURL:url];
@@ -773,3 +773,4 @@
 }
 
 @end
+

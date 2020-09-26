@@ -390,9 +390,9 @@ static NSInteger PPBookmarkEditMaximum = 25;
 
             if (@available(iOS 11, *)) {
                 self.multipleEditToolbarVisibleConstraints = @[
-                                                              [self.multipleDeleteButton.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor],
-                                                              [self.multiToolbarView.bottomAnchor constraintEqualToAnchor:self.bottomLayoutGuide.bottomAnchor]
-                                                              ];
+                    [self.multipleDeleteButton.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor],
+                    [self.multiToolbarView.bottomAnchor constraintEqualToAnchor:self.bottomLayoutGuide.bottomAnchor]
+                ];
             } else {
                 self.multipleEditToolbarVisibleConstraints = @[[self.multiToolbarView.bottomAnchor constraintEqualToAnchor:self.bottomLayoutGuide.bottomAnchor]];
             }
@@ -468,8 +468,8 @@ static NSInteger PPBookmarkEditMaximum = 25;
 
     [UIView animateWithDuration:0.3
                      animations:^{
-                         [self setNeedsStatusBarAppearanceUpdate];
-                     }];
+        [self setNeedsStatusBarAppearanceUpdate];
+    }];
 
     // Register for Dynamic Type notifications
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -559,11 +559,11 @@ static NSInteger PPBookmarkEditMaximum = 25;
         NSUInteger selectedRowCount = [self.selectedTableView.indexPathsForSelectedRows count];
         [self alertIfSelectedBookmarkCountExceedsRecommendation:selectedRowCount
                                                          cancel:^{
-                                                             [tableView deselectRowAtIndexPath:indexPath animated:YES];
-                                                         }
+            [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        }
                                                          update:^{
-                                                             [self updateMultipleEditUI];
-                                                         }];
+            [self updateMultipleEditUI];
+        }];
     } else {
         // If configured, always mark the post as read
         if (settings.markReadPosts) {
@@ -996,21 +996,21 @@ static NSInteger PPBookmarkEditMaximum = 25;
     [self.confirmMultipleDeletionActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Delete", nil)
                                                               style:UIAlertActionStyleDestructive
                                                             handler:^(UIAlertAction *action) {
-                                                                self.tableView.scrollEnabled = YES;
+        self.tableView.scrollEnabled = YES;
 
-                                                                [self deletePostsAtIndexPaths:self.indexPathsToDelete];
-                                                                [self toggleEditingMode:nil];
-                                                            }];
+        [self deletePostsAtIndexPaths:self.indexPathsToDelete];
+        [self toggleEditingMode:nil];
+    }];
 
     [self.confirmMultipleDeletionActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                               style:UIAlertActionStyleCancel
                                                             handler:^(UIAlertAction *action) {
-                                                                self.tableView.scrollEnabled = YES;
+        self.tableView.scrollEnabled = YES;
 
-                                                                if (self.tableView.editing) {
-                                                                    [self toggleEditingMode:nil];
-                                                                }
-                                                            }];
+        if (self.tableView.editing) {
+            [self toggleEditingMode:nil];
+        }
+    }];
 
     self.confirmMultipleDeletionActionSheet.popoverPresentationController.sourceRect = [self.view convertRect:[self.multipleDeleteButton lhs_centerRect] fromView:self.multipleDeleteButton];
     self.confirmMultipleDeletionActionSheet.popoverPresentationController.sourceView = self.view;
@@ -1093,100 +1093,100 @@ static NSInteger PPBookmarkEditMaximum = 25;
             [self.longPressActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Delete Bookmark", nil)
                                                         style:UIAlertActionStyleDestructive
                                                       handler:^(UIAlertAction *action) {
-                                                          self.tableView.scrollEnabled = YES;
+                self.tableView.scrollEnabled = YES;
 
-                                                          [self showConfirmDeletionAlert];
-                                                      }];
+                [self showConfirmDeletionAlert];
+            }];
         }
 
         if (actions & PPPostActionEdit) {
             [self.longPressActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Edit Bookmark", nil)
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
-                                                          self.tableView.scrollEnabled = YES;
+                self.tableView.scrollEnabled = YES;
 
-                                                          UIViewController *vc = [self editViewControllerForPostAtIndex:self.selectedIndexPath.row dataSource:dataSource];
-                                        vc.modalPresentationStyle = UIModalPresentationFullScreen;
-                                                          [self presentViewControllerInFormSheetIfApplicable:vc];
-                                                      }];
+                UIViewController *vc = [self editViewControllerForPostAtIndex:self.selectedIndexPath.row dataSource:dataSource];
+                vc.modalPresentationStyle = UIModalPresentationFullScreen;
+                [self presentViewControllerInFormSheetIfApplicable:vc];
+            }];
         }
 
         if (actions & PPPostActionMarkAsRead) {
             [self.longPressActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Mark as read", nil)
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
-                                                          self.tableView.scrollEnabled = YES;
+                self.tableView.scrollEnabled = YES;
 
-                                                          [self markPostAsRead];
-                                                      }];
+                [self markPostAsRead];
+            }];
         }
 
         if (actions & PPPostActionCopyToMine) {
             [self.longPressActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Copy to mine", nil)
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
-                                                          self.tableView.scrollEnabled = YES;
+                self.tableView.scrollEnabled = YES;
 
-                                                          UIViewController *vc = (UIViewController *)[dataSource addViewControllerForPostAtIndex:self.selectedIndexPath.row];
+                UIViewController *vc = (UIViewController *)[dataSource addViewControllerForPostAtIndex:self.selectedIndexPath.row];
 
-                                                          [self presentViewControllerInFormSheetIfApplicable:vc];
-                                                      }];
+                [self presentViewControllerInFormSheetIfApplicable:vc];
+            }];
         }
 
         if (actions & PPPostActionCopyURL) {
             [self.longPressActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Copy URL", nil)
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
-                                                          self.tableView.scrollEnabled = YES;
+                self.tableView.scrollEnabled = YES;
 
-                                                          [self copyURL];
-                                                      }];
+                [self copyURL];
+            }];
         }
 
         if (actions & PPPostActionShare) {
             [self.longPressActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Share Bookmark", nil)
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
-                                                          self.tableView.scrollEnabled = YES;
+                self.tableView.scrollEnabled = YES;
 
-                                                          NSURL *url = [NSURL URLWithString:[dataSource urlForPostAtIndex:self.selectedIndexPath.row]];
-                                                          NSString *title = [self.currentDataSource titleForPostAtIndex:self.selectedIndexPath.row].string;
+                NSURL *url = [NSURL URLWithString:[dataSource urlForPostAtIndex:self.selectedIndexPath.row]];
+                NSString *title = [self.currentDataSource titleForPostAtIndex:self.selectedIndexPath.row].string;
 
-                                                          CGRect rect;
-                                                          if (self.searchController.isActive) {
-                                                              rect = [self.searchResultsController.tableView rectForRowAtIndexPath:self.selectedIndexPath];
-                                                          } else {
-                                                              rect = [self.tableView rectForRowAtIndexPath:self.selectedIndexPath];
-                                                          }
+                CGRect rect;
+                if (self.searchController.isActive) {
+                    rect = [self.searchResultsController.tableView rectForRowAtIndexPath:self.selectedIndexPath];
+                } else {
+                    rect = [self.tableView rectForRowAtIndexPath:self.selectedIndexPath];
+                }
 
-                                                          NSArray *activityItems = @[title, url];
-                                                          self.activityView = [[PPActivityViewController alloc] initWithActivityItems:activityItems];
+                NSArray *activityItems = @[title, url];
+                self.activityView = [[PPActivityViewController alloc] initWithActivityItems:activityItems];
 
-                                                          __weak PPGenericPostViewController *weakself = self;
-                                                          self.activityView.completionWithItemsHandler = ^(UIActivityType activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
-                                                              [weakself setNeedsStatusBarAppearanceUpdate];
+                __weak PPGenericPostViewController *weakself = self;
+                self.activityView.completionWithItemsHandler = ^(UIActivityType activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
+                    [weakself setNeedsStatusBarAppearanceUpdate];
 
-                                                              if (weakself.popover) {
-                                                                  [weakself.popover dismissPopoverAnimated:YES];
-                                                              }
-                                                          };
+                    if (weakself.popover) {
+                        [weakself.popover dismissPopoverAnimated:YES];
+                    }
+                };
 
-                                                          if ([UIApplication isIPad]) {
-                                                              self.popover = [[UIPopoverController alloc] initWithContentViewController:self.activityView];
-                                                              [self.popover presentPopoverFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.tableView
-                                                                          permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-                                                          } else {
-                                                              [self presentViewController:self.activityView animated:YES completion:nil];
-                                                          }
-                                                      }];
+                if ([UIApplication isIPad]) {
+                    self.popover = [[UIPopoverController alloc] initWithContentViewController:self.activityView];
+                    [self.popover presentPopoverFromRect:(CGRect){self.selectedPoint, {1, 1}} inView:self.tableView
+                                permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+                } else {
+                    [self presentViewController:self.activityView animated:YES completion:nil];
+                }
+            }];
         }
 
         // Properly set the cancel button index
         [self.longPressActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                     style:UIAlertActionStyleCancel
                                                   handler:^(UIAlertAction *action) {
-                                                      self.tableView.scrollEnabled = YES;
-                                                  }];
+            self.tableView.scrollEnabled = YES;
+        }];
 
         self.longPressActionSheet.popoverPresentationController.sourceView = self.tableView;
         self.longPressActionSheet.popoverPresentationController.sourceRect = (CGRect){self.selectedPoint, {1, 1}};
@@ -1306,24 +1306,24 @@ static NSInteger PPBookmarkEditMaximum = 25;
     [self.confirmDeletionAlertView lhs_addActionWithTitle:NSLocalizedString(@"Delete", nil)
                                                     style:UIAlertActionStyleDestructive
                                                   handler:^(UIAlertAction *action) {
-                                                      self.tableView.scrollEnabled = YES;
+        self.tableView.scrollEnabled = YES;
 
-                                                      // http://crashes.to/s/2565a27d5df
-                                                      if (self.selectedPost) {
-                                                          [self deletePosts:@[self.selectedPost]];
-                                                      } else {
-                                                          UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Error", nil)
-                                                                                                                       message:NSLocalizedString(@"An error occurred and this bookmark could not be deleted. Please try again.", nil)];
-                                                          [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil];
-                                                          [self presentViewController:alert animated:YES completion:nil];
-                                                      }
-                                                  }];
+        // http://crashes.to/s/2565a27d5df
+        if (self.selectedPost) {
+            [self deletePosts:@[self.selectedPost]];
+        } else {
+            UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Error", nil)
+                                                                         message:NSLocalizedString(@"An error occurred and this bookmark could not be deleted. Please try again.", nil)];
+            [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil) style:UIAlertActionStyleDefault handler:nil];
+            [self presentViewController:alert animated:YES completion:nil];
+        }
+    }];
 
     [self.confirmDeletionAlertView lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                     style:UIAlertActionStyleCancel
                                                   handler:^(UIAlertAction *action) {
-                                                      self.tableView.scrollEnabled = YES;
-                                                  }];
+        self.tableView.scrollEnabled = YES;
+    }];
 
     [self presentViewController:self.confirmDeletionAlertView animated:YES completion:nil];
 }
@@ -1334,20 +1334,20 @@ static NSInteger PPBookmarkEditMaximum = 25;
     [self.confirmDeletionActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Delete", nil)
                                                       style:UIAlertActionStyleDestructive
                                                     handler:^(UIAlertAction *action) {
-                                                        self.tableView.scrollEnabled = YES;
+        self.tableView.scrollEnabled = YES;
 
-                                                        if (self.searchController.isActive) {
-                                                            [self deletePosts:@[self.selectedPost] dataSource:self.searchPostDataSource];
-                                                        } else {
-                                                            [self deletePostsAtIndexPaths:self.indexPathsToDelete];
-                                                        }
-                                                    }];
+        if (self.searchController.isActive) {
+            [self deletePosts:@[self.selectedPost] dataSource:self.searchPostDataSource];
+        } else {
+            [self deletePostsAtIndexPaths:self.indexPathsToDelete];
+        }
+    }];
 
     [self.confirmDeletionActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                       style:UIAlertActionStyleCancel
                                                     handler:^(UIAlertAction *action) {
-                                                        self.tableView.scrollEnabled = YES;
-                                                    }];
+        self.tableView.scrollEnabled = YES;
+    }];
 
     self.confirmDeletionActionSheet.popoverPresentationController.sourceView = self.view;
     [self presentViewController:self.confirmDeletionActionSheet animated:YES completion:nil];
@@ -1367,13 +1367,13 @@ static NSInteger PPBookmarkEditMaximum = 25;
         [self alertIfSelectedBookmarkCountExceedsRecommendation:numberOfRows
                                                          cancel:nil
                                                          update:^{
-                                                             for (NSInteger i=0; i<numberOfRows; i++) {
-                                                                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
-                                                                 [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
-                                                             }
+            for (NSInteger i=0; i<numberOfRows; i++) {
+                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:i inSection:0];
+                [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+            }
 
-                                                             [self updateMultipleEditUI];
-                                                         }];
+            [self updateMultipleEditUI];
+        }];
     }
 }
 
@@ -1541,19 +1541,19 @@ static NSInteger PPBookmarkEditMaximum = 25;
                             [self.additionalTagsActionSheet lhs_addActionWithTitle:tappedTag
                                                                              style:UIAlertActionStyleDefault
                                                                            handler:^(UIAlertAction *action) {
-                                                                               self.tableView.scrollEnabled = YES;
+                                self.tableView.scrollEnabled = YES;
 
-                                                                               if (!self.tableView.editing) {
-                                                                                   [dataSource handleTapOnLinkWithURL:[NSURL URLWithString:[tappedTag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]
-                                                                                                             callback:^(UIViewController *controller) {
-                                                                                                                 dispatch_async(dispatch_get_main_queue(), ^{
-                                                                                                                     [self.navigationController pushViewController:controller animated:YES];
-                                                                                                                 });
-                                                                                                             }];
-                                                                               }
+                                if (!self.tableView.editing) {
+                                    [dataSource handleTapOnLinkWithURL:[NSURL URLWithString:[tappedTag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]
+                                                              callback:^(UIViewController *controller) {
+                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                            [self.navigationController pushViewController:controller animated:YES];
+                                        });
+                                    }];
+                                }
 
-                                                                               self.tableView.scrollEnabled = YES;
-                                                                           }];
+                                self.tableView.scrollEnabled = YES;
+                            }];
                         }
                     }
                 }
@@ -1561,8 +1561,8 @@ static NSInteger PPBookmarkEditMaximum = 25;
                 [self.additionalTagsActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                                  style:UIAlertActionStyleCancel
                                                                handler:^(UIAlertAction *action) {
-                                                                   self.tableView.scrollEnabled = YES;
-                                                               }];
+                    self.tableView.scrollEnabled = YES;
+                }];
 
                 self.additionalTagsActionSheet.popoverPresentationController.sourceView = badgeWrapperView;
 
@@ -1580,8 +1580,8 @@ static NSInteger PPBookmarkEditMaximum = 25;
                         // We need to percent escape all tags, since some contain unicode characters which will cause NSURL to be nil
                         [dataSource handleTapOnLinkWithURL:[NSURL URLWithString:[tag stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]
                                                   callback:^(UIViewController *controller) {
-                                                      [self.navigationController pushViewController:controller animated:YES];
-                                                  }];
+                            [self.navigationController pushViewController:controller animated:YES];
+                        }];
                     }
                 }
             }
@@ -1603,7 +1603,7 @@ static NSInteger PPBookmarkEditMaximum = 25;
                                                                        starred:pinboardDataSource.starred
                                                                         tagged:[PPUtilities inverseValueForFilter:pinboardDataSource.untagged]
                                                                     completion:^{
-                                                                    }];
+    }];
     [self presentViewController:alert animated:YES completion:nil];
 }
 
@@ -1735,30 +1735,30 @@ static NSInteger PPBookmarkEditMaximum = 25;
 
     [UIView animateWithDuration:0.25
                      animations:^{
-                         [self.tableView scrollToRowAtIndexPath:self.selectedIndexPath atScrollPosition:position animated:NO];
-                     }
+        [self.tableView scrollToRowAtIndexPath:self.selectedIndexPath atScrollPosition:position animated:NO];
+    }
                      completion:^(BOOL finished) {
-                         CGRect rect = [self.tableView rectForRowAtIndexPath:self.selectedIndexPath];
-                         CGRect viewRect = [self.tableView convertRect:rect toView:self.view];
-                         CGPoint point = CGPointMake(CGRectGetMidX(viewRect), CGRectGetMidY(viewRect));
+        CGRect rect = [self.tableView rectForRowAtIndexPath:self.selectedIndexPath];
+        CGRect viewRect = [self.tableView convertRect:rect toView:self.view];
+        CGPoint point = CGPointMake(CGRectGetMidX(viewRect), CGRectGetMidY(viewRect));
 
-                         [self.animator removeBehavior:self.circleSnapBehavior];
-                         self.circleSnapBehavior = [[UISnapBehavior alloc] initWithItem:self.circle snapToPoint:point];
-                         self.circleSnapBehavior.damping = 0.7;
-                         [self.animator addBehavior:self.circleSnapBehavior];
+        [self.animator removeBehavior:self.circleSnapBehavior];
+        self.circleSnapBehavior = [[UISnapBehavior alloc] initWithItem:self.circle snapToPoint:point];
+        self.circleSnapBehavior.damping = 0.7;
+        [self.animator addBehavior:self.circleSnapBehavior];
 
-                         if (self.circleHideTimer) {
-                             [self.circleHideTimer invalidate];
-                         }
-                         self.circleHideTimer = [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(hideCircle) userInfo:nil repeats:NO];
-                     }];
+        if (self.circleHideTimer) {
+            [self.circleHideTimer invalidate];
+        }
+        self.circleHideTimer = [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(hideCircle) userInfo:nil repeats:NO];
+    }];
 }
 
 - (void)hideCircle {
     [UIView animateWithDuration:0.5
                      animations:^{
-                         self.circle.alpha = 0;
-                     }];
+        self.circle.alpha = 0;
+    }];
 }
 
 #pragma mark - Key Commands
@@ -2005,4 +2005,5 @@ static NSInteger PPBookmarkEditMaximum = 25;
 }
 
 @end
+
 

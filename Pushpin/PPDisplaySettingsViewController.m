@@ -70,23 +70,23 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
         [self.fontSizeAdjustmentActionSheet lhs_addActionWithTitle:NSLocalizedString(title, nil)
                                                              style:UIAlertActionStyleDefault
                                                            handler:^(UIAlertAction *action) {
-                                                               NSInteger index = [PPFontAdjustmentTypes() indexOfObject:action.title];
-                                                               if (index < [PPFontAdjustmentTypes() count]) {
-                                                                   PPFontAdjustmentType fontAdjustment = (PPFontAdjustmentType)index;
-                                                                   PPSettings *settings = [PPSettings sharedSettings];
-                                                                   settings.fontAdjustment = fontAdjustment;
+            NSInteger index = [PPFontAdjustmentTypes() indexOfObject:action.title];
+            if (index < [PPFontAdjustmentTypes() count]) {
+                PPFontAdjustmentType fontAdjustment = (PPFontAdjustmentType)index;
+                PPSettings *settings = [PPSettings sharedSettings];
+                settings.fontAdjustment = fontAdjustment;
 
-                                                                   [self.tableView reloadData];
+                [self.tableView reloadData];
 
-                                                                   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                                       [[PPPinboardMetadataCache sharedCache] reset];
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    [[PPPinboardMetadataCache sharedCache] reset];
 
-                                                                       dispatch_async(dispatch_get_main_queue(), ^{
-                                                                           [[NSNotificationCenter defaultCenter] postNotificationName:PPBookmarkDisplaySettingUpdated object:nil];
-                                                                       });
-                                                                   });
-                                                               }
-                                                           }];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [[NSNotificationCenter defaultCenter] postNotificationName:PPBookmarkDisplaySettingUpdated object:nil];
+                    });
+                });
+            }
+        }];
     }
 
     [self.fontSizeAdjustmentActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
@@ -507,7 +507,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             switch ((PPOtherDisplaySettingsRowType)indexPath.row) {
                 case PPOtherDisplayClearCache: {
                     UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Please Wait", nil)
-                                                                                   message:NSLocalizedString(@"Resetting stored URL list", nil)];
+                                                                                 message:NSLocalizedString(@"Resetting stored URL list", nil)];
 
                     [self presentViewController:alert animated:YES completion:^{
                         [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
@@ -519,7 +519,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                             [self dismissViewControllerAnimated:YES completion:^{
                                 UIAlertController *successAlert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Success", nil)
-                                                                                                     message:NSLocalizedString(@"The URL list was cleared.", nil)];
+                                                                                                    message:NSLocalizedString(@"The URL list was cleared.", nil)];
 
                                 [self presentViewController:successAlert animated:YES completion:^{
                                     double delayInSeconds = 1.0;
@@ -646,3 +646,4 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 }
 
 @end
+

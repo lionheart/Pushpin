@@ -100,54 +100,54 @@
     }
 
     [defaults registerDefaults:@{
-                                 @"io.aurora.pinboard.OpenLinksInApp": @(YES),
-                                 @"io.aurora.pinboard.UseSafariViewController": @(YES),
-                                 @"io.aurora.pinboard.PrivateByDefault": @(NO),
-                                 @"io.aurora.pinboard.ReadByDefault": @(NO),
-                                 @"io.aurora.pinboard.Browser": @(PPBrowserSafari),
-                                 @"io.aurora.pinboard.CompressPosts": @(NO),
-                                 @"io.aurora.pinboard.HidePrivateLock": @(NO),
-                                 @"io.aurora.pinboard.DimReadPosts": @(NO),
-                                 @"io.aurora.pinboard.OpenLinksWithMobilizer": @(NO),
-                                 @"io.aurora.pinboard.DoubleTapToEdit": @(NO),
-                                 @"io.aurora.pinboard.BrowseFontName": @"AvenirNext-Regular",
-                                 @"io.aurora.pinboard.FontName": @"AvenirNext-Regular",
-                                 @"io.aurora.pinboard.BoldFontName": @"AvenirNext-Medium",
-                                 @"io.aurora.pinboard.EnableAutoCapitalize": @(YES),
-                                 @"io.aurora.pinboard.EnableAutoCorrect": @(YES),
-                                 @"io.aurora.pinboard.EnableTagAutoCorrect": @(NO),
+        @"io.aurora.pinboard.OpenLinksInApp": @(YES),
+        @"io.aurora.pinboard.UseSafariViewController": @(YES),
+        @"io.aurora.pinboard.PrivateByDefault": @(NO),
+        @"io.aurora.pinboard.ReadByDefault": @(NO),
+        @"io.aurora.pinboard.Browser": @(PPBrowserSafari),
+        @"io.aurora.pinboard.CompressPosts": @(NO),
+        @"io.aurora.pinboard.HidePrivateLock": @(NO),
+        @"io.aurora.pinboard.DimReadPosts": @(NO),
+        @"io.aurora.pinboard.OpenLinksWithMobilizer": @(NO),
+        @"io.aurora.pinboard.DoubleTapToEdit": @(NO),
+        @"io.aurora.pinboard.BrowseFontName": @"AvenirNext-Regular",
+        @"io.aurora.pinboard.FontName": @"AvenirNext-Regular",
+        @"io.aurora.pinboard.BoldFontName": @"AvenirNext-Medium",
+        @"io.aurora.pinboard.EnableAutoCapitalize": @(YES),
+        @"io.aurora.pinboard.EnableAutoCorrect": @(YES),
+        @"io.aurora.pinboard.EnableTagAutoCorrect": @(NO),
 
-                                 // If a user decides not to add a bookmark when it's on the clipboard, don't ask again.
-                                 @"io.aurora.pinboard.OnlyPromptToAddOnce": @(YES),
-                                 @"io.aurora.pinboard.TurnOffBookmarkPrompt": @(YES),
-                                 @"io.aurora.pinboard.TurnOffPushpinCloudPrompt": @(NO),
-                                 @"io.aurora.pinboard.AlwaysShowClipboardNotification": @(YES),
-                                 @"io.aurora.pinboard.HiddenFeedNames": @[],
-                                 @"io.aurora.pinboard.FontAdjustment": @(PPFontAdjustmentMedium),
-                                 @"io.aurora.pinboard.OfflineUsageLimit": @(100 * 1000 * 1000),
-                                 @"io.aurora.pinboard.OfflineFetchCriteria": @(PPOfflineFetchCriteriaUnread),
-                                 @"io.aurora.pinboard.UseCellularDataForOffline": @(NO),
-                                 @"io.aurora.pinboard.OfflineReadingEnabled": @(NO),
-                                 @"io.aurora.pinboard.DownloadFullWebpageForOffline": @(YES),
+        // If a user decides not to add a bookmark when it's on the clipboard, don't ask again.
+        @"io.aurora.pinboard.OnlyPromptToAddOnce": @(YES),
+        @"io.aurora.pinboard.TurnOffBookmarkPrompt": @(YES),
+        @"io.aurora.pinboard.TurnOffPushpinCloudPrompt": @(NO),
+        @"io.aurora.pinboard.AlwaysShowClipboardNotification": @(YES),
+        @"io.aurora.pinboard.HiddenFeedNames": @[],
+        @"io.aurora.pinboard.FontAdjustment": @(PPFontAdjustmentMedium),
+        @"io.aurora.pinboard.OfflineUsageLimit": @(100 * 1000 * 1000),
+        @"io.aurora.pinboard.OfflineFetchCriteria": @(PPOfflineFetchCriteriaUnread),
+        @"io.aurora.pinboard.UseCellularDataForOffline": @(NO),
+        @"io.aurora.pinboard.OfflineReadingEnabled": @(NO),
+        @"io.aurora.pinboard.DownloadFullWebpageForOffline": @(YES),
 
-                                 @"io.aurora.pinboard.PersonalFeedOrder": @[
-                                         @(PPPinboardPersonalFeedAll),
-                                         @(PPPinboardPersonalFeedPrivate),
-                                         @(PPPinboardPersonalFeedPublic),
-                                         @(PPPinboardPersonalFeedUnread),
-                                         @(PPPinboardPersonalFeedUntagged),
-                                         @(PPPinboardPersonalFeedStarred),
-                                         ],
-                                 @"io.aurora.pinboard.CommunityFeedOrder": @[
-                                         @(PPPinboardCommunityFeedNetwork),
-                                         @(PPPinboardCommunityFeedPopular),
-                                         @(PPPinboardCommunityFeedWikipedia),
-                                         @(PPPinboardCommunityFeedFandom),
-                                         @(PPPinboardCommunityFeedJapan),
-                                         @(PPPinboardCommunityFeedRecent),
-                                         ],
+        @"io.aurora.pinboard.PersonalFeedOrder": @[
+                @(PPPinboardPersonalFeedAll),
+                @(PPPinboardPersonalFeedPrivate),
+                @(PPPinboardPersonalFeedPublic),
+                @(PPPinboardPersonalFeedUnread),
+                @(PPPinboardPersonalFeedUntagged),
+                @(PPPinboardPersonalFeedStarred),
+        ],
+        @"io.aurora.pinboard.CommunityFeedOrder": @[
+                @(PPPinboardCommunityFeedNetwork),
+                @(PPPinboardCommunityFeedPopular),
+                @(PPPinboardCommunityFeedWikipedia),
+                @(PPPinboardCommunityFeedFandom),
+                @(PPPinboardCommunityFeedJapan),
+                @(PPPinboardCommunityFeedRecent),
+        ],
 
-                                 }];
+    }];
 
     [PPURLCache migrateDatabase];
 
@@ -161,7 +161,7 @@
 
 
     self.urlCache = [[PPURLCache alloc] initWithMemoryCapacity:0
-                                  diskCapacity:[PPSettings sharedSettings].offlineUsageLimit
+                                                  diskCapacity:[PPSettings sharedSettings].offlineUsageLimit
                                                   directoryURL:cacheURL];
 #else
     self.urlCache = [[PPURLCache alloc] initWithMemoryCapacity:0
@@ -293,12 +293,12 @@
         [self showAddBookmarkViewControllerWithBookmark:[self parseQueryParameters:url.query]
                                                  update:@(NO)
                                                callback:^(NSDictionary *post) {
-                                                   NSDictionary *data = [self parseQueryParameters:url.query];
-                                                   if (data[@"x-success"]) {
-                                                       NSURL *url = [NSURL URLWithString:[data[@"x-success"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-                                                       [application openURL:url options:@{} completionHandler:nil];
-                                                   }
-                                               }];
+            NSDictionary *data = [self parseQueryParameters:url.query];
+            if (data[@"x-success"]) {
+                NSURL *url = [NSURL URLWithString:[data[@"x-success"] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+                [application openURL:url options:@{} completionHandler:nil];
+            }
+        }];
     } else if ([url.host isEqualToString:@"search"]) {
         NSDictionary *data = [self parseQueryParameters:url.query];
         PPGenericPostViewController *postViewController = [[PPGenericPostViewController alloc] init];
@@ -480,22 +480,22 @@
     settings.hiddenFeedNames = @[];
 
     settings.personalFeedOrder = @[
-                               @(PPPinboardPersonalFeedAll),
-                               @(PPPinboardPersonalFeedPrivate),
-                               @(PPPinboardPersonalFeedPublic),
-                               @(PPPinboardPersonalFeedUnread),
-                               @(PPPinboardPersonalFeedUntagged),
-                               @(PPPinboardPersonalFeedStarred),
-                           ];
+        @(PPPinboardPersonalFeedAll),
+        @(PPPinboardPersonalFeedPrivate),
+        @(PPPinboardPersonalFeedPublic),
+        @(PPPinboardPersonalFeedUnread),
+        @(PPPinboardPersonalFeedUntagged),
+        @(PPPinboardPersonalFeedStarred),
+    ];
 
     settings.communityFeedOrder = @[
-                                @(PPPinboardCommunityFeedNetwork),
-                                @(PPPinboardCommunityFeedPopular),
-                                @(PPPinboardCommunityFeedWikipedia),
-                                @(PPPinboardCommunityFeedFandom),
-                                @(PPPinboardCommunityFeedJapan),
-                                @(PPPinboardCommunityFeedRecent),
-                            ];
+        @(PPPinboardCommunityFeedNetwork),
+        @(PPPinboardCommunityFeedPopular),
+        @(PPPinboardCommunityFeedWikipedia),
+        @(PPPinboardCommunityFeedFandom),
+        @(PPPinboardCommunityFeedJapan),
+        @(PPPinboardCommunityFeedRecent),
+    ];
 
     settings.hiddenFeedNames = @[];
 
@@ -686,25 +686,25 @@
                     [alertController lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                       style:UIAlertActionStyleCancel
                                                     handler:^(UIAlertAction *action) {
-                                                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                            [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
-                                                                [db executeUpdate:@"INSERT INTO rejected_bookmark (url) VALUES(?)" withArgumentsInArray:@[self.clipboardBookmarkURL]];
-                                                            }];
-                                                        });
-                                                    }];
+                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                            [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
+                                [db executeUpdate:@"INSERT INTO rejected_bookmark (url) VALUES(?)" withArgumentsInArray:@[self.clipboardBookmarkURL]];
+                            }];
+                        });
+                    }];
 
                     [alertController lhs_addActionWithTitle:NSLocalizedString(@"Edit", nil)
                                                       style:UIAlertActionStyleDefault
                                                     handler:^(UIAlertAction *action) {
-                                                        PPNavigationController *addBookmarkViewController = [PPAddBookmarkViewController updateBookmarkViewControllerWithURLString:self.clipboardBookmarkURL callback:nil];
+                        PPNavigationController *addBookmarkViewController = [PPAddBookmarkViewController updateBookmarkViewControllerWithURLString:self.clipboardBookmarkURL callback:nil];
 
-                                                        if ([UIApplication isIPad]) {
-                                                            addBookmarkViewController.modalPresentationStyle = UIModalPresentationFormSheet;
-                                                        }
+                        if ([UIApplication isIPad]) {
+                            addBookmarkViewController.modalPresentationStyle = UIModalPresentationFormSheet;
+                        }
 
-                                                        [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
+                        [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
 
-                                                    }];
+                    }];
 
                     [[UIViewController lhs_topViewController] presentViewController:alertController animated:YES completion:nil];
                 });
@@ -713,47 +713,47 @@
                 if (candidateURL && candidateURL.scheme && candidateURL.host) {
                     [PPUtilities retrievePageTitle:candidateURL
                                           callback:^(NSString *title, NSString *description) {
-                                              dispatch_async(dispatch_get_main_queue(), ^{
-                                                  self.clipboardBookmarkTitle = title;
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            self.clipboardBookmarkTitle = title;
 
-                                                  NSString *message = [NSString stringWithFormat:@"%@\n\n%@", NSLocalizedString(@"We've detected a URL in your clipboard. Would you like to bookmark it?", nil), self.clipboardBookmarkURL];
+                            NSString *message = [NSString stringWithFormat:@"%@\n\n%@", NSLocalizedString(@"We've detected a URL in your clipboard. Would you like to bookmark it?", nil), self.clipboardBookmarkURL];
 
-                                                  UIAlertController *alertController = [UIAlertController lhs_alertViewWithTitle:nil
-                                                                                                                         message:message];
+                            UIAlertController *alertController = [UIAlertController lhs_alertViewWithTitle:nil
+                                                                                                   message:message];
 
-                                                  [alertController lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
-                                                                                    style:UIAlertActionStyleCancel
-                                                                                  handler:^(UIAlertAction *action) {
-                                                                                      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                                                          [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
-                                                                                              [db executeUpdate:@"INSERT INTO rejected_bookmark (url) VALUES(?)" withArgumentsInArray:@[self.clipboardBookmarkURL]];
-                                                                                          }];
-                                                                                      });
+                            [alertController lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
+                                                              style:UIAlertActionStyleCancel
+                                                            handler:^(UIAlertAction *action) {
+                                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                    [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
+                                        [db executeUpdate:@"INSERT INTO rejected_bookmark (url) VALUES(?)" withArgumentsInArray:@[self.clipboardBookmarkURL]];
+                                    }];
+                                });
 
-                                                                                      self.addOrEditPromptVisible = NO;
-                                                                                  }];
+                                self.addOrEditPromptVisible = NO;
+                            }];
 
-                                                  [alertController lhs_addActionWithTitle:NSLocalizedString(@"Add", nil)
-                                                                                    style:UIAlertActionStyleDefault
-                                                                                  handler:^(UIAlertAction *action) {
-                                                                                      PPNavigationController *addBookmarkViewController = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:@{@"url": self.clipboardBookmarkURL, @"title": self.clipboardBookmarkTitle} update:@(NO) callback:nil];
+                            [alertController lhs_addActionWithTitle:NSLocalizedString(@"Add", nil)
+                                                              style:UIAlertActionStyleDefault
+                                                            handler:^(UIAlertAction *action) {
+                                PPNavigationController *addBookmarkViewController = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:@{@"url": self.clipboardBookmarkURL, @"title": self.clipboardBookmarkTitle} update:@(NO) callback:nil];
 
-                                                                                      if ([UIApplication isIPad]) {
-                                                                                          addBookmarkViewController.modalPresentationStyle = UIModalPresentationFormSheet;
-                                                                                      }
+                                if ([UIApplication isIPad]) {
+                                    addBookmarkViewController.modalPresentationStyle = UIModalPresentationFormSheet;
+                                }
 
-                                                                                      [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
+                                [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
 
 
-                                                                                      self.addOrEditPromptVisible = NO;
-                                                                                  }];
+                                self.addOrEditPromptVisible = NO;
+                            }];
 
-                                                  [[UIViewController lhs_topViewController] presentViewController:alertController animated:YES completion:^{
-                                                      self.addOrEditPromptVisible = YES;
-                                                  }];
-                                              });
+                            [[UIViewController lhs_topViewController] presentViewController:alertController animated:YES completion:^{
+                                self.addOrEditPromptVisible = YES;
+                            }];
+                        });
 
-                                          }];
+                    }];
 
                 }
             }
@@ -982,3 +982,4 @@
 }
 
 @end
+
