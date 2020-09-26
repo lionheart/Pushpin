@@ -51,9 +51,9 @@ static NSString *CellIdentifier = @"Cell";
     }
 
     self.navigationItem.title = NSLocalizedString(@"Browser Settings", nil);
-    
+
     self.browserActionSheet = [UIAlertController lhs_actionSheetWithTitle:nil];
-    
+
     void (^BrowserAlertActionHandler)(UIAlertAction *action) = ^(UIAlertAction *action) {
         PPSettings *settings = [PPSettings sharedSettings];
 
@@ -74,36 +74,36 @@ static NSString *CellIdentifier = @"Cell";
         } else if ([action.title isEqualToString:NSLocalizedString(@"Firefox", nil)]) {
             settings.browser = PPBrowserFirefox;
         }
-        
+
         [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]]
                               withRowAnimation:UITableViewRowAnimationAutomatic];
-        
+
         self.actionSheet = nil;
     };
-    
+
     [self.browserActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Safari", nil)
                                                                     style:UIAlertActionStyleDefault
                                                                   handler:BrowserAlertActionHandler];
-    
+
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"icabmobile://"]]) {
         [self.browserActionSheet lhs_addActionWithTitle:NSLocalizedString(@"iCab Mobile", nil)
                                                                         style:UIAlertActionStyleDefault
                                                                       handler:BrowserAlertActionHandler];
     }
-    
+
     OpenInChromeController *openInChromeController = [OpenInChromeController sharedInstance];
     if ([openInChromeController isChromeInstalled]) {
         [self.browserActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Chrome", nil)
                                                                         style:UIAlertActionStyleDefault
                                                                       handler:BrowserAlertActionHandler];
     }
-    
+
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"ohttp://"]]) {
         [self.browserActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Opera", nil)
                                                                         style:UIAlertActionStyleDefault
                                                                       handler:BrowserAlertActionHandler];
     }
-    
+
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"dolphin://"]]) {
         [self.browserActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Dolphin", nil)
                                                                         style:UIAlertActionStyleDefault
@@ -121,11 +121,11 @@ static NSString *CellIdentifier = @"Cell";
                                                   style:UIAlertActionStyleDefault
                                                 handler:BrowserAlertActionHandler];
     }
-    
+
     [self.browserActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                                     style:UIAlertActionStyleCancel
                                                                   handler:nil];
-    
+
     [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
 }
 
@@ -162,7 +162,7 @@ static NSString *CellIdentifier = @"Cell";
                 case 0:
                     cell.textLabel.text = NSLocalizedString(@"Default Browser", nil);
                     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
-                    
+
                     PPBrowserType browser = [PPSettings sharedSettings].browser;
 
                     switch (browser) {
@@ -221,18 +221,18 @@ static NSString *CellIdentifier = @"Cell";
             }
             break;
         }
-            
+
         case 1: {
             cell.textLabel.text = NSLocalizedString(@"Installation instructions", nil);
             cell.selectionStyle = UITableViewCellSelectionStyleDefault;
             cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
             break;
         }
-            
+
         default:
             break;
     }
-    
+
     return cell;
 }
 

@@ -139,7 +139,7 @@
                                cancel:(BOOL (^)(void))cancel
                                 width:(CGFloat)width {
     dispatch_async(PPPinboardFeedReloadQueue(), ^{
-        
+
         if (cancel && cancel()) {
             completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
             return;
@@ -152,35 +152,35 @@
         NSURLSessionDataTask *task = [session dataTaskWithRequest:request
                                                 completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                                                     [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
-                                                    
+
                                                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                                         if (!error) {
                                                             NSDictionary *payload = [NSJSONSerialization
                                                                                      JSONObjectWithData:data
                                                                                      options:NSJSONReadingMutableContainers
                                                                                      error:nil];
-                                                            
+
                                                             NSMutableDictionary *oldURLsToIndexPaths = [NSMutableDictionary dictionary];
                                                             NSMutableDictionary *newURLsToIndexPaths = [NSMutableDictionary dictionary];
                                                             NSInteger row = 0;
-                                                            
+
                                                             NSMutableArray *newPosts = [NSMutableArray array];
                                                             NSMutableArray *oldURLs = [NSMutableArray array];
                                                             NSMutableArray *oldPosts = [self.posts copy];
-                                                            
+
                                                             for (NSDictionary *post in oldPosts) {
                                                                 [oldURLs addObject:post[@"url"]];
                                                                 oldURLsToIndexPaths[post[@"url"]] = [NSIndexPath indexPathForRow:row inSection:0];
                                                                 row++;
                                                             }
-                                                            
+
                                                             if (cancel && cancel()) {
                                                                 completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                                                                 return;
                                                             }
-                                                            
+
                                                             NSDate *date;
-                                                            
+
                                                             row = 0;
                                                             for (NSDictionary *element in payload) {
                                                                 NSMutableArray *tags = [NSMutableArray array];
@@ -190,13 +190,13 @@
                                                                         [tags addObject:[tag stringByDecodingHTMLEntities]];
                                                                     }
                                                                 }
-                                                                
+
                                                                 date = [[self feedDateFormatter] dateFromString:element[@"dt"]];
                                                                 if (!date) {
                                                                     // https://rink.hockeyapp.net/manage/apps/33685/app_versions/4/crash_reasons/4734816
                                                                     date = [NSDate date];
                                                                 }
-                                                                
+
                                                                 // There is a bug where spaces are not encoded as %20 in feeds when the space occurs after a hash. In this case, we encode it ourselves first.
                                                                 NSString *url = [element[@"u"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
                                                                 NSMutableDictionary *post = [@{
@@ -206,18 +206,18 @@
                                                                                                @"tags": [tags componentsJoinedByString:@" "],
                                                                                                @"created_at": date
                                                                                            } mutableCopy];
-                                                                
+
                                                                 [newPosts addObject:post];
                                                                 newURLsToIndexPaths[url] = [NSIndexPath indexPathForRow:row inSection:0];
                                                                 row++;
                                                             }
-                                                            
-                                                            
+
+
                                                             if (cancel && cancel()) {
                                                                 completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                                                                 return;
                                                             }
-                                                            
+
                                                             [PPUtilities generateDiffForPrevious:oldPosts
                                                                                          updated:newPosts
                                                                                             hash:^NSString *(id obj) {
@@ -228,28 +228,28 @@
                                                                                           NSMutableArray *indexPathsToInsert = [NSMutableArray array];
                                                                                           NSMutableArray *indexPathsToReload = [NSMutableArray array];
                                                                                           NSMutableArray *indexPathsToDelete = [NSMutableArray array];
-                                                                                          
+
                                                                                           for (NSString *urlDate in deleted) {
                                                                                               NSString *url = [[urlDate componentsSeparatedByString:@" "] firstObject];
                                                                                               [indexPathsToDelete addObject:oldURLsToIndexPaths[url]];
                                                                                           }
-                                                                                          
+
                                                                                           for (NSString *urlDate in inserted) {
                                                                                               NSString *url = [[urlDate componentsSeparatedByString:@" "] firstObject];
                                                                                               [indexPathsToInsert addObject:newURLsToIndexPaths[url]];
                                                                                           }
-                                                                                          
+
                                                                                           NSMutableArray *newMetadata = [NSMutableArray array];
                                                                                           NSMutableArray *newCompressedMetadata = [NSMutableArray array];
-                                                                                          
+
                                                                                           for (NSDictionary *post in newPosts) {
                                                                                               PostMetadata *metadata = [PostMetadata metadataForPost:post compressed:NO width:width tagsWithFrequency:nil];
                                                                                               [newMetadata addObject:metadata];
-                                                                                              
+
                                                                                               PostMetadata *compressedMetadata = [PostMetadata metadataForPost:post compressed:YES width:width tagsWithFrequency:nil];
                                                                                               [newCompressedMetadata addObject:compressedMetadata];
                                                                                           }
-                                                                                          
+
                                                                                           if (cancel && cancel()) {
                                                                                               completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                                                                                               return;
@@ -257,7 +257,7 @@
                                                                                               self.posts = newPosts;
                                                                                               self.metadata = newMetadata;
                                                                                               self.compressedMetadata = newCompressedMetadata;
-                                                                                              
+
                                                                                               completion(nil);
                                                                                           }
                                                                                       }];
@@ -282,9 +282,9 @@
             [escapedComponents addObject:component];
         }
     }
-    
+
     NSString *urlString;
-    
+
     PPSettings *settings = [PPSettings sharedSettings];
     // If it's our username, we need to use the feed token to get any private tags
     if ([escapedComponents[0] isEqualToString:[NSString stringWithFormat:@"u:%@", settings.username]]) {
@@ -292,7 +292,7 @@
     } else {
         urlString = [NSString stringWithFormat:@"https://feeds.pinboard.in/json/%@?count=%ld", [escapedComponents componentsJoinedByString:@"/"], (long)self.count];
     }
-    
+
     return [NSURL URLWithString:urlString];
 }
 
@@ -357,14 +357,14 @@
             } else {
                 components = [NSMutableArray array];
             }
-            
+
             NSString *tagNameWithPrefix = [NSString stringWithFormat:@"t:%@", tagName];
             if (![components containsObject:tagNameWithPrefix]) {
                 [components addObject:tagNameWithPrefix];
                 shouldPush = YES;
             }
         }
-        
+
         if (components.count > 4) {
             shouldPush = NO;
         }
@@ -381,7 +381,7 @@
 + (PPGenericPostViewController *)postViewControllerWithComponents:(NSArray *)components {
     PPGenericPostViewController *postViewController = [[PPGenericPostViewController alloc] init];
     PPPinboardFeedDataSource *dataSource = [[PPPinboardFeedDataSource alloc] initWithComponents:components];
-    
+
     [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
         FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM feeds WHERE components=?" withArgumentsInArray:@[[components componentsJoinedByString:@" "]]];
         [result next];
@@ -410,10 +410,10 @@
         [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
             [db executeUpdate:@"INSERT INTO feeds (components) VALUES (?)" withArgumentsInArray:@[componentString]];
         }];
-        
+
         NSUbiquitousKeyValueStore *store = [NSUbiquitousKeyValueStore defaultStore];
         [store synchronize];
-        
+
         NSMutableArray *iCloudFeeds = [NSMutableArray arrayWithArray:[store arrayForKey:kSavedFeedsKey]];
         if (![iCloudFeeds containsObject:componentString]) {
             [iCloudFeeds addObject:componentString];
@@ -451,7 +451,7 @@
         *trimmed = string.length - punctuationRange.location;
         return [NSAttributedString attributedStringWithAttributedString:[string attributedSubstringFromRange:NSMakeRange(0, punctuationRange.location)]];
     }
-    
+
     *trimmed = 0;
     return string;
 }
@@ -462,7 +462,7 @@
         *offset += punctuationRange.location - string.length;
         return [NSAttributedString attributedStringWithAttributedString:[string attributedSubstringFromRange:NSMakeRange(0, punctuationRange.location)]];
     }
-    
+
     return string;
 }
 
@@ -474,22 +474,22 @@
             } else if ([self.components[0] isEqualToString:@"recent"]) {
                 return HEX(0x2AC5FFFF);
             }
-            
+
         case 2:
             if ([self.components[0] isEqualToString:@"popular"]) {
                 if ([self.components[1] isEqualToString:@"wikipedia"]) {
                     return HEX(0x2CA881FF);
                 }
-                
+
                 if ([self.components[1] isEqualToString:@"fandom"]) {
                     return HEX(0xE062D6FF);
                 }
-                
+
                 if ([self.components[1] isEqualToString:@"japanese"]) {
                     return HEX(0xFF5353FF);
                 }
             }
-            
+
         case 3:
             if ([self.components containsObject:@"network"]) {
             // Network Feed
@@ -516,11 +516,11 @@
                 if ([self.components[1] isEqualToString:@"wikipedia"]) {
                     return @"Wikipedia";
                 }
-                
+
                 if ([self.components[1] isEqualToString:@"fandom"]) {
                     return NSLocalizedString(@"Fandom", nil);
                 }
-                
+
                 if ([self.components[1] isEqualToString:@"japanese"]) {
                     return @"日本語";
                 }
@@ -562,12 +562,12 @@
                     titleViewSet = YES;
                     [titleButton setTitle:NSLocalizedString(@"Wikipedia", nil) imageName:@"navigation-wikipedia"];
                 }
-                
+
                 if ([self.components[1] isEqualToString:@"fandom"]) {
                     titleViewSet = YES;
                     [titleButton setTitle:NSLocalizedString(@"Fandom", nil) imageName:@"navigation-fandom"];
                 }
-                
+
                 if ([self.components[1] isEqualToString:@"japanese"]) {
                     titleViewSet = YES;
                     [titleButton setTitle:NSLocalizedString(@"日本語", nil) imageName:@"navigation-japanese"];
@@ -583,7 +583,7 @@
             }
             break;
     }
-    
+
     if (!titleViewSet) {
         [titleButton setTitle:[self.components componentsJoinedByString:@"+"] imageName:nil];
     }

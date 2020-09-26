@@ -15,34 +15,34 @@ static CGFloat const kSpaceToCoverStatusBars = 44;
 
 - (void)setBarTintColor:(UIColor *)barTintColor {
     [super setBarTintColor:barTintColor];
-    
+
     if (self.colorLayer == nil) {
         self.colorLayer = [CALayer layer];
         self.colorLayer.opacity = kDefaultColorLayerOpacity;
         [self.layer addSublayer:self.colorLayer];
     }
-    
+
     CGFloat red, green, blue, alpha;
     [barTintColor getRed:&red green:&green blue:&blue alpha:&alpha];
-    
+
     CGFloat opacity = kDefaultColorLayerOpacity;
-    
+
     CGFloat minVal = MIN(MIN(red, green), blue);
-    
+
     if ([self convertValue:minVal withOpacity:opacity] < 0) {
         opacity = [self minOpacityForValue:minVal];
     }
-    
+
     self.colorLayer.opacity = opacity;
-    
+
     red = [self convertValue:red withOpacity:opacity];
     green = [self convertValue:green withOpacity:opacity];
     blue = [self convertValue:blue withOpacity:opacity];
-    
+
     red = MAX(MIN(1.0, red), 0);
     green = MAX(MIN(1.0, green), 0);
     blue = MAX(MIN(1.0, blue), 0);
-    
+
     self.colorLayer.backgroundColor = [UIColor colorWithRed:red green:green blue:blue alpha:alpha].CGColor;
 }
 
@@ -58,10 +58,10 @@ static CGFloat const kSpaceToCoverStatusBars = 44;
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    
+
     if (self.colorLayer != nil) {
         self.colorLayer.frame = CGRectMake(0, 0 - kSpaceToCoverStatusBars, CGRectGetWidth(self.bounds), CGRectGetHeight(self.bounds) + kSpaceToCoverStatusBars);
-        
+
         [self.layer insertSublayer:self.colorLayer atIndex:1];
     }
 }

@@ -27,7 +27,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     self.examples = @[@{@"example": @"url:apple",
                         @"description": @"Bookmarks with \"apple\" in the URL." },
                       @{@"example": @"url:apple title:ios",
@@ -44,10 +44,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         @"description": @"Bookmarks from either Macdrifter, Macstories, or Appstorm that have \"pinboard\" in the title OR bookmarks with pushpin in the description." },
                       ];
     self.title = NSLocalizedString(@"Advanced Searching", nil);
-    
+
     self.text = @"Pushpin uses SQLite FTS (full-text search) internally to index bookmarks and to facilitate advanced searching. Indexed fields include 'title', 'description', 'tags', and 'url'. To search for text within a field, just type the field, a colon, and then the phrase you're looking for. If you don't specify a field, Pushpin will search within all fields.\n\n"
     "Tap the action button in the top right to read more about SQLite FTS advanced query syntax (pay attention to the examples with the MATCH keyword, since Pushpin feeds your input right into that), or check out the examples below.";
-    
+
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                                                                            target:self
                                                                                            action:@selector(openSQLiteFTSDocumentation)];
@@ -107,7 +107,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
     if (indexPath.section > 0) {
         [[UIPasteboard generalPasteboard] setString:self.examples[indexPath.section - 1][@"example"]];
-        
+
         [PPNotification notifyWithMessage:NSLocalizedString(@"Copied search to clipboard.", nil)];
     }
 }

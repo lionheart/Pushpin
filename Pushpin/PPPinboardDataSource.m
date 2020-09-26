@@ -80,7 +80,7 @@ static BOOL kPinboardSyncInProgress = NO;
     self = [super init];
     if (self) {
         self.totalNumberOfPosts = 0;
-        
+
         // Keys are hash:meta pairs
         self.cache = [PPPinboardMetadataCache sharedCache];
         self.metadata = [NSMutableArray array];
@@ -111,12 +111,12 @@ static BOOL kPinboardSyncInProgress = NO;
         [self.enUSPOSIXDateFormatter setLocale:enUSPOSIXLocale];
         [self.enUSPOSIXDateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
         [self.enUSPOSIXDateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-        
+
         self.tagsWithFrequency = [NSMutableDictionary dictionary];
-        
+
         self.fullTextSearchAlertView = [UIAlertController lhs_alertViewWithTitle:nil
                                                                          message:NSLocalizedString(@"To enable Pinboard full-text search, please log out and then log back in to Pushpin.", nil)];
-        
+
         [self.fullTextSearchAlertView lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
                                                        style:UIAlertActionStyleDefault
                                                      handler:nil];
@@ -139,7 +139,7 @@ static BOOL kPinboardSyncInProgress = NO;
     if (parameters[@"starred"]) {
         starred = [parameters[@"starred"] boolValue];
     }
-    
+
     kPushpinFilterType untagged = kPushpinFilterNone;
     if (parameters[@"tagged"]) {
         untagged = ![parameters[@"tagged"] boolValue];
@@ -171,7 +171,7 @@ static BOOL kPinboardSyncInProgress = NO;
 
         NSMutableOrderedSet *components = [NSMutableOrderedSet orderedSet];
         NSMutableArray *rangeValuesToDelete = [NSMutableArray array];
-        
+
         for (NSTextCheckingResult *result in complexExpressions) {
             NSString *value = [query substringWithRange:result.range];
             [rangeValuesToDelete addObject:[NSValue valueWithRange:result.range]];
@@ -185,7 +185,7 @@ static BOOL kPinboardSyncInProgress = NO;
 
         NSRegularExpression *simpleExpression = [NSRegularExpression regularExpressionWithPattern:@"((\\w+:[^\" ]+)|([^ \"]+))" options:0 error:&error];
         NSArray *simpleExpressions = [simpleExpression matchesInString:remainingQuery options:0 range:NSMakeRange(0, remainingQuery.length)];
-        
+
         for (NSTextCheckingResult *result in simpleExpressions) {
             NSString *value = [query substringWithRange:result.range];
 
@@ -203,17 +203,17 @@ static BOOL kPinboardSyncInProgress = NO;
                 if (![value hasSuffix:@"*"] && ![value hasSuffix:@")"]) {
                     value = [value stringByAppendingString:@"*"];
                 }
-                
+
                 [components addObject:value];
             }
 
         }
-        
+
         NSMutableArray *finalArray = [NSMutableArray array];
         for (NSString *item in components) {
             [finalArray addObject:item];
         }
-        
+
         self.searchQuery = [finalArray componentsJoinedByString:@" "];
     }
 }
@@ -274,7 +274,7 @@ static BOOL kPinboardSyncInProgress = NO;
 - (NSInteger)totalNumberOfPosts {
     if (!_totalNumberOfPosts) {
         __block NSInteger count;
-        
+
         [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
             FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM bookmark;"];
             [result next];
@@ -300,7 +300,7 @@ static BOOL kPinboardSyncInProgress = NO;
             completion(error);
         } else {
             NSArray *posts = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-            
+
             NSMutableArray *previous = [NSMutableArray array];
 
             [[PPUtilities databaseQueue] inTransaction:^(FMDatabase *db, BOOL *rollback) {
@@ -460,10 +460,10 @@ static BOOL kPinboardSyncInProgress = NO;
 - (void)deletePosts:(NSArray *)posts callback:(void (^)(NSIndexPath *))callback {
     void (^SuccessBlock)(void);
     void (^ErrorBlock)(NSError *);
-    
+
     dispatch_group_t group = dispatch_group_create();
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    
+
     ASPinboard *pinboard = [ASPinboard sharedInstance];
     for (NSDictionary *post in posts) {
         SuccessBlock = ^{
@@ -590,16 +590,16 @@ static BOOL kPinboardSyncInProgress = NO;
 
 + (NSDictionary *)postFromResultSet:(FMResultSet *)resultSet {
     NSString *title = [resultSet stringForColumn:@"title"];
-    
+
     if ([title isEqualToString:@""]) {
         title = @"untitled";
     }
-    
+
     NSString *hash = [resultSet stringForColumn:@"hash"];
     if (!hash) {
         hash = @"";
     }
-    
+
     NSString *tags = [resultSet stringForColumn:@"tags"];
     if (!tags) {
         tags = @"";
@@ -624,7 +624,7 @@ static BOOL kPinboardSyncInProgress = NO;
     NSMutableArray *parameters = [NSMutableArray array];
 
     [components addObject:@"SELECT bookmark.* FROM"];
-    
+
     // Use only one match query with the FTS4 syntax.
     BOOL generateSubquery = YES;
     NSMutableArray *tables = [NSMutableArray arrayWithObject:@"bookmark"];
@@ -647,13 +647,13 @@ static BOOL kPinboardSyncInProgress = NO;
             NSMutableArray *valuesForRanges = [NSMutableArray array];
             for (NSTextCheckingResult *result in fieldMatches) {
                 [valuesForRanges addObject:[NSValue valueWithRange:result.range]];
-                
+
                 NSString *matchString = [self.searchQuery substringWithRange:result.range];
                 NSTextCheckingResult *subresult = [subExpression firstMatchInString:matchString options:0 range:NSMakeRange(0, matchString.length)];
-                
+
                 if (subresult.numberOfRanges == 3) {
                     NSString *field = [[matchString substringWithRange:[subresult rangeAtIndex:1]] lowercaseString];
-                    
+
                     BOOL isValidField = NO;
                     for (NSString *validField in @[@"title", @"description", @"url", @"tags"]) {
                         if ([validField isEqualToString:field]) {
@@ -661,7 +661,7 @@ static BOOL kPinboardSyncInProgress = NO;
                             break;
                         }
                     }
-                    
+
                     if (isValidField) {
                         NSString *value = [PPUtilities stringByTrimmingWhitespace:[matchString substringWithRange:[subresult rangeAtIndex:2]]];
                         NSArray *words = [value componentsSeparatedByString:@" "];
@@ -673,24 +673,24 @@ static BOOL kPinboardSyncInProgress = NO;
                                 [wordsWithWildcards addObject:[word stringByAppendingString:@"*"]];
                             }
                         }
-                        
+
                         [subqueries addObject:[NSString stringWithFormat:@"SELECT hash FROM bookmark_fts WHERE bookmark_fts.%@ MATCH ?", field]];
                         [parameters addObject:[wordsWithWildcards componentsJoinedByString:@" "]];
                     }
                 }
             }
-            
+
             NSMutableString *remainingQuery = [NSMutableString stringWithString:self.searchQuery];
             for (NSValue *value in [valuesForRanges reverseObjectEnumerator]) {
                 [remainingQuery replaceCharactersInRange:[value rangeValue] withString:@""];
             }
-            
+
             NSString *trimmedQuery = [PPUtilities stringByTrimmingWhitespace:remainingQuery];
             if (![trimmedQuery isEqualToString:@""]) {
                 [subqueries addObject:@"SELECT hash FROM bookmark_fts WHERE bookmark_fts MATCH ?"];
                 [parameters addObject:trimmedQuery];
             }
-            
+
             [whereComponents addObject:[NSString stringWithFormat:@"bookmark.hash IN (%@)", [subqueries componentsJoinedByString:@" INTERSECT "]]];
         } else {
             [whereComponents addObject:@"bookmark.hash = bookmark_fts.hash"];
@@ -704,7 +704,7 @@ static BOOL kPinboardSyncInProgress = NO;
             [whereComponents addObject:@"bookmark.tags != ?"];
             [parameters addObject:@""];
             break;
-            
+
         case kPushpinFilterTrue:
             [whereComponents addObject:@"bookmark.tags = ?"];
             [parameters addObject:@""];
@@ -719,13 +719,13 @@ static BOOL kPinboardSyncInProgress = NO;
             }
             break;
     }
-    
+
     switch (self.starred) {
         case kPushpinFilterTrue:
             [whereComponents addObject:@"bookmark.starred = ?"];
             [parameters addObject:@(YES)];
             break;
-            
+
         case kPushpinFilterFalse:
             [whereComponents addObject:@"(bookmark.starred IS NULL)"];
             break;
@@ -738,33 +738,33 @@ static BOOL kPinboardSyncInProgress = NO;
         [whereComponents addObject:@"bookmark.private = ?"];
         [parameters addObject:@(self.isPrivate)];
     }
-        
+
     if (self.unread != kPushpinFilterNone) {
         [whereComponents addObject:@"bookmark.unread = ?"];
         [parameters addObject:@(self.unread)];
     }
-    
+
     [whereComponents addObject:@"bookmark.hash IS NOT NULL"];
 
     if (whereComponents.count > 0) {
         [components addObject:@"WHERE"];
         [components addObject:[whereComponents componentsJoinedByString:@" AND "]];
     }
-    
+
     if (self.orderBy) {
         [components addObject:[NSString stringWithFormat:@"ORDER BY %@", self.orderBy]];
     }
-    
+
     if (self.limit > 0) {
         [components addObject:@"LIMIT ?"];
         [parameters addObject:@(self.limit)];
     }
-    
+
     if (self.offset > 0) {
         [components addObject:@"OFFSET ?"];
         [parameters addObject:@(self.offset)];
     }
-    
+
     NSString *query = [components componentsJoinedByString:@" "];
     callback(query, parameters);
 }
@@ -789,25 +789,25 @@ static BOOL kPinboardSyncInProgress = NO;
     if (self.searchQuery && ![self.searchQuery isEqualToString:@"*"]) {
         return NSLocalizedString(@"Search in Results", nil);
     }
-    
+
     switch (self.untagged) {
         case kPushpinFilterFalse:
             return NSLocalizedString(@"Search Tagged", nil);
-            
+
         case kPushpinFilterTrue:
             return NSLocalizedString(@"Search Untagged", nil);
-            
+
         default:
             break;
     }
-    
+
     switch (self.starred) {
         case kPushpinFilterTrue:
             return NSLocalizedString(@"Search Starred", nil);
-            
+
         case kPushpinFilterFalse:
             return NSLocalizedString(@"Search Unstarred", nil);
-            
+
         default:
             break;
     }
@@ -815,10 +815,10 @@ static BOOL kPinboardSyncInProgress = NO;
     switch (self.isPrivate) {
         case kPushpinFilterTrue:
             return NSLocalizedString(@"Search Private", nil);
-            
+
         case kPushpinFilterFalse:
             return NSLocalizedString(@"Search Public", nil);
-            
+
         default:
             break;
     }
@@ -826,10 +826,10 @@ static BOOL kPinboardSyncInProgress = NO;
     switch (self.unread) {
         case kPushpinFilterTrue:
             return NSLocalizedString(@"Search Unread", nil);
-            
+
         case kPushpinFilterFalse:
             return NSLocalizedString(@"Search Read", nil);
-            
+
         default:
             break;
     }
@@ -841,26 +841,26 @@ static BOOL kPinboardSyncInProgress = NO;
     if (self.starred == kPushpinFilterTrue) {
         return HEX(0x8361F4FF);
     }
-    
+
     if (self.unread == kPushpinFilterTrue) {
         return HEX(0xEF6034FF);
     }
-    
+
     switch (self.isPrivate) {
         case kPushpinFilterTrue:
             return HEX(0xFFAE46FF);
-            
+
         case kPushpinFilterFalse:
             return HEX(0x7BB839FF);
-            
+
         default:
             break;
     }
-    
+
     if (self.untagged == kPushpinFilterTrue) {
         return HEX(0xACB3BBFF);
     }
-    
+
     return HEX(0x0096FFFF);
 }
 
@@ -868,27 +868,27 @@ static BOOL kPinboardSyncInProgress = NO;
     if (self.isPrivate == kPushpinFilterTrue) {
         return NSLocalizedString(@"Private Bookmarks", nil);
     }
-    
+
     if (self.isPrivate == kPushpinFilterFalse) {
         return NSLocalizedString(@"Public", nil);
     }
-    
+
     if (self.starred == kPushpinFilterTrue) {
         return NSLocalizedString(@"Starred", nil);
     }
-    
+
     if (self.unread == kPushpinFilterTrue) {
         return NSLocalizedString(@"Unread", nil);
     }
-    
+
     if (self.untagged == kPushpinFilterTrue) {
         return NSLocalizedString(@"Untagged", nil);
     }
-    
+
     if (self.isPrivate == kPushpinFilterNone && self.starred == kPushpinFilterNone && self.unread == kPushpinFilterNone && self.untagged == kPushpinFilterNone && self.searchQuery == nil && self.tags.count == 0) {
         return NSLocalizedString(@"All Bookmarks", nil);
     }
-    
+
     return [self.tags componentsJoinedByString:@"+"];
 }
 
@@ -903,7 +903,7 @@ static BOOL kPinboardSyncInProgress = NO;
             [imageNames addObject:@"navigation-private"];
             title = NSLocalizedString(@"Private Bookmarks", nil);
             break;
-            
+
         case kPushpinFilterFalse:
             [imageNames addObject:@"navigation-public"];
             title = NSLocalizedString(@"Public", nil);
@@ -917,12 +917,12 @@ static BOOL kPinboardSyncInProgress = NO;
         [imageNames addObject:@"navigation-starred"];
         title = NSLocalizedString(@"Starred", nil);
     }
-    
+
     if (self.unread == kPushpinFilterTrue) {
         [imageNames addObject:@"navigation-unread"];
         title = NSLocalizedString(@"Unread", nil);
     }
-    
+
     if (self.untagged == kPushpinFilterTrue) {
         [imageNames addObject:@"navigation-untagged"];
         title = NSLocalizedString(@"Untagged", nil);
@@ -932,11 +932,11 @@ static BOOL kPinboardSyncInProgress = NO;
         [imageNames addObject:@"navigation-all"];
         title = NSLocalizedString(@"All Bookmarks", nil);
     }
-    
+
     if (self.searchQuery) {
         title = [NSString stringWithFormat:@"\"%@\"", self.searchQuery];
     }
-    
+
     if (title) {
         if (imageNames.count > 1) {
             if (self.searchQuery) {
@@ -1055,9 +1055,9 @@ static BOOL kPinboardSyncInProgress = NO;
 
     [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
         [db executeUpdate:@"DELETE FROM bookmark WHERE hash IS NULL"];
-        
+
         FMResultSet *results;
-        
+
         NSMutableArray *tags = [NSMutableArray array];
         results = [db executeQuery:@"SELECT name FROM tag"];
         while ([results next]) {
@@ -1066,14 +1066,14 @@ static BOOL kPinboardSyncInProgress = NO;
         }
 
         [results close];
-        
+
         NSString *firstHash;
         if (posts.count > 0) {
             firstHash = posts[0][@"hash"];
         } else {
             firstHash = @"";
         }
-        
+
         total = posts.count;
 
         if (count > 0) {
@@ -1083,7 +1083,7 @@ static BOOL kPinboardSyncInProgress = NO;
         } else {
             results = [db executeQuery:@"SELECT meta, hash, url FROM bookmark ORDER BY created_at DESC"];
         }
-        
+
         previousBookmarks = [NSMutableArray array];
         while ([results next]) {
             [previousBookmarks addObject:@{@"hash": [results stringForColumn:@"hash"],
@@ -1092,8 +1092,8 @@ static BOOL kPinboardSyncInProgress = NO;
 
         [results close];
     }];
-    
-    
+
+
 
     DLog(@"Iterating posts");
     progress(0, total);
@@ -1344,18 +1344,18 @@ static BOOL kPinboardSyncInProgress = NO;
         date = [NSDate dateWithTimeIntervalSince1970:0];
 
         DLog(@"Error parsing date: %@", post[@"time"]);
-        
+
         // XXX This changed recently! Could be a source of issues.
         return nil;
     }
-    
+
     NSString *hash = post[@"hash"];
     NSString *meta = post[@"meta"];
-    
+
     NSString *postTags = [PPUtilities stringByTrimmingWhitespace:post[@"tags"]];
     NSString *title = [PPUtilities stringByTrimmingWhitespace:post[@"description"]];
     NSString *description = [PPUtilities stringByTrimmingWhitespace:post[@"extended"]];
-    
+
     return @{
              @"url": post[@"href"],
              @"title": title,
@@ -1382,12 +1382,12 @@ static BOOL kPinboardSyncInProgress = NO;
             __block NSInteger row = 0;
 
             NSMutableDictionary *newTagsWithFrequencies = [NSMutableDictionary dictionary];
-            
+
             if (cancel && cancel()) {
                 completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                 return;
             }
-            
+
             __block BOOL shouldReturn = NO;
             __block NSMutableSet *urls = [NSMutableSet set];
             [[PPURLCache databaseQueue] inDatabase:^(FMDatabase *db) {
@@ -1402,7 +1402,7 @@ static BOOL kPinboardSyncInProgress = NO;
 
             NSString *key = [query stringByAppendingString:[parameters componentsJoinedByString:@""]];
             NSString *checksum = [PPURLCache md5ChecksumForData:[key dataUsingEncoding:NSUTF8StringEncoding]];
-            
+
             PPCachedResult *result = [[PPPinboardDataSource resultCache] objectForKey:checksum];
             if (result) {
                 newTagsWithFrequencies = result.tagsWithFrequencies;
@@ -1416,7 +1416,7 @@ static BOOL kPinboardSyncInProgress = NO;
                         shouldReturn = YES;
                         return;
                     }
-                    
+
                     row = 0;
                     while ([results next]) {
                         NSMutableDictionary *post = [[PPPinboardDataSource postFromResultSet:results] mutableCopy];
@@ -1425,7 +1425,7 @@ static BOOL kPinboardSyncInProgress = NO;
                         }
                         [updatedBookmarks addObject:post];
                     }
-                    
+
                     [results close];
 
                     if (cancel && cancel()) {
@@ -1451,7 +1451,7 @@ static BOOL kPinboardSyncInProgress = NO;
 
                 [[PPPinboardDataSource resultCache] setObject:result forKey:checksum];
             }
-            
+
             if (shouldReturn) {
                 return;
             }
@@ -1461,7 +1461,7 @@ static BOOL kPinboardSyncInProgress = NO;
                 completion([NSError errorWithDomain:PPErrorDomain code:0 userInfo:nil]);
                 return;
             }
-            
+
             NSMutableArray *newMetadata = [NSMutableArray array];
             NSMutableArray *newCompressedMetadata = [NSMutableArray array];
 
@@ -1480,7 +1480,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                                                            cache:YES];
                 [newCompressedMetadata addObject:compressedMetadata];
             }
-            
+
             // We run this block to make sure that these results should be the latest on file
             if (cancel && cancel() && self.latestReloadTime != timeWhenReloadBegan) {
                 DLog(@"Cancelling search for query (%@)", self.searchQuery);
@@ -1490,11 +1490,11 @@ static BOOL kPinboardSyncInProgress = NO;
                 self.metadata = newMetadata;
                 self.compressedMetadata = newCompressedMetadata;
                 self.tagsWithFrequency = newTagsWithFrequencies;
-                
+
                 completion(nil);
             }
         };
-        
+
         if (self.searchScope != ASPinboardSearchScopeNone) {
             ASPinboard *pinboard = [ASPinboard sharedInstance];
             PPSettings *settings = [PPSettings sharedSettings];
@@ -1511,18 +1511,18 @@ static BOOL kPinboardSyncInProgress = NO;
                                                        NSMutableArray *components = [NSMutableArray array];
                                                        NSMutableArray *parameters = [NSMutableArray array];
                                                        [components addObject:@"SELECT * FROM bookmark WHERE url IN ("];
-                                                       
+
                                                        NSMutableArray *urlComponents = [NSMutableArray array];
                                                        for (NSString *url in urls) {
                                                            [urlComponents addObject:@"?"];
                                                            [parameters addObject:url];
                                                        }
-                                                       
+
                                                        [components addObject:[urlComponents componentsJoinedByString:@", "]];
                                                        [components addObject:@")"];
-                                                       
+
                                                        NSString *query = [components componentsJoinedByString:@" "];
-                                                       
+
                                                        HandleSearch(query, parameters);
                                                    }
                                                });

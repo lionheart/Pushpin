@@ -82,7 +82,7 @@
             return result;
         }
     }
-    
+
     NSCharacterSet *whitespace = [NSCharacterSet whitespaceAndNewlineCharacterSet];
 
     NSString *title = [post[@"title"] stringByTrimmingCharactersInSet:whitespace];
@@ -95,7 +95,7 @@
     NSString *tags = post[@"tags"];
 
     NSRange titleRange = NSMakeRange(0, title.length);
-    
+
     NSURL *linkUrl = [NSURL URLWithString:post[@"url"]];
     NSString *linkHost = [linkUrl host];
     if ([linkHost hasPrefix:@"www."]) {
@@ -129,7 +129,7 @@
     NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
     paragraphStyle.paragraphSpacing = 0;
     paragraphStyle.lineHeightMultiple = 1;
-    
+
     NSMutableParagraphStyle *defaultParagraphStyle = [[NSMutableParagraphStyle alloc] init];
     defaultParagraphStyle.paragraphSpacingBefore = 0;
     defaultParagraphStyle.headIndent = 0;
@@ -140,7 +140,7 @@
 
     NSMutableDictionary *linkAttributes = [@{NSFontAttributeName: [PPTheme urlFont],
                                              NSParagraphStyleAttributeName: paragraphStyle } mutableCopy];
-    
+
     NSMutableDictionary *titleAttributes = [@{NSFontAttributeName: [PPTheme titleFont],
                                               NSParagraphStyleAttributeName: defaultParagraphStyle } mutableCopy];
 
@@ -156,15 +156,15 @@
         linkAttributes[NSForegroundColorAttributeName] = HEX(0xb4b6b9ff);
         descriptionAttributes[NSForegroundColorAttributeName] = HEX(0x585858ff);
     }
-    
+
     if (!title) {
         title = @"";
     }
-    
+
     if (!linkHost) {
         linkHost = @"";
     }
-    
+
     if (!description) {
         description = @"";
     }
@@ -172,7 +172,7 @@
     NSAttributedString *titleString = [[NSAttributedString alloc] initWithString:title attributes:titleAttributes];
     NSMutableAttributedString *linkString = [[NSMutableAttributedString alloc] initWithString:linkHost attributes:linkAttributes];
     NSAttributedString *descriptionString = [[NSAttributedString alloc] initWithString:description attributes:descriptionAttributes];
-    
+
     CGSize titleSize;
     CGSize linkSize;
     CGSize descriptionSize;
@@ -223,7 +223,7 @@
             [badges addObject:@{ @"type": @"image", @"image": @"badge-private", @"options": @{ PPBadgeNormalBackgroundColor: privateColor } }];
         }
     }
-    
+
     if (post[@"starred"]) {
         if ([post[@"starred"] boolValue]) {
             [badges addObject:@{ @"type": @"image", @"image": @"badge-favorite", @"options": @{ PPBadgeNormalBackgroundColor: starredColor } }];
@@ -246,7 +246,7 @@
                 return tagsWithFrequency[first] > tagsWithFrequency[second];
             }];
         }
-        
+
         BOOL lightOnDark = YES;
         for (NSString *tag in tagList) {
             NSMutableDictionary *options = [NSMutableDictionary dictionary];
@@ -266,7 +266,7 @@
             [badges addObject:@{@"type": @"tag", @"tag": tag, @"options": options}];
         }
     }
-    
+
     if (badges.count > 0) {
         dispatch_sync(dispatch_get_main_queue(), ^{
             NSMutableDictionary *options = [NSMutableDictionary dictionary];
@@ -306,7 +306,7 @@
         *offset += punctuationRange.location - string.length;
         return [[NSAttributedString alloc] initWithAttributedString:[string attributedSubstringFromRange:NSMakeRange(0, punctuationRange.location)]];
     }
-    
+
     return string;
 }
 

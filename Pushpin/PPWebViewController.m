@@ -107,10 +107,10 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     self.goBackKeyCommand = [UIKeyCommand keyCommandWithInput:UIKeyInputEscape
                                                 modifierFlags:0
                                                        action:@selector(handleKeyCommand:)];
-    
+
     self.bottomTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     self.bottomTapGestureRecognizer.numberOfTapsRequired = 1;
-    
+
     self.statusBarBackgroundView = [[UIView alloc] init];
     self.statusBarBackgroundView.backgroundColor = [UIColor whiteColor];
     self.statusBarBackgroundView.userInteractionEnabled = NO;
@@ -128,9 +128,9 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     self.webView.scrollView.delegate = self;
     self.webView.scrollView.contentInset = UIEdgeInsetsMake(0, 0, kToolbarHeight, 0);
     [self.view addSubview:self.webView];
-    
+
     self.webViewTimeoutTimer = [NSTimer timerWithTimeInterval:5 target:self.webView selector:@selector(stopLoading) userInfo:nil repeats:NO];
-    
+
 #if TARGET_OS_MACCATALYST
     self.readerWebView = [[WKWebView alloc] init];
 #else
@@ -144,12 +144,12 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     self.readerWebView.scrollView.scrollsToTop = NO;
     self.readerWebView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.readerWebView];
-    
+
     self.showToolbarAndTitleBarHiddenView = [[UIView alloc] init];
     self.showToolbarAndTitleBarHiddenView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.showToolbarAndTitleBarHiddenView addGestureRecognizer:self.bottomTapGestureRecognizer];
     [self.view addSubview:self.showToolbarAndTitleBarHiddenView];
-    
+
     // Long press gesture for custom menu
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     self.longPressGestureRecognizer.delegate = self;
@@ -158,7 +158,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     self.readerLongPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     self.readerLongPressGestureRecognizer.delegate = self;
     [self.readerWebView addGestureRecognizer:self.readerLongPressGestureRecognizer];
-    
+
     self.toolbar = [[UIView alloc] init];
     self.toolbar.backgroundColor = [UIColor whiteColor];
     self.toolbar.translatesAutoresizingMaskIntoConstraints = NO;
@@ -167,7 +167,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     self.toolbarBackgroundView.backgroundColor = [UIColor whiteColor];
     self.toolbarBackgroundView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.toolbar addSubview:self.toolbarBackgroundView];
-    
+
     self.backButtonLongPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] init];
     [self.backButtonLongPressGestureRecognizer addTarget:self action:@selector(gestureDetected:)];
 
@@ -189,7 +189,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     self.markAsReadButton.enabled = NO;
     self.markAsReadButton.hidden = YES;
     [self.toolbar addSubview:self.markAsReadButton];
-    
+
     self.indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
     self.indicator.translatesAutoresizingMaskIntoConstraints = NO;
     self.indicator.hidesWhenStopped = YES;
@@ -212,7 +212,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     [self.actionButton addTarget:self action:@selector(actionButtonTouchUp:) forControlEvents:UIControlEventTouchUpInside];
     self.actionButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.toolbar addSubview:self.actionButton];
-    
+
     UIImage *editButtonImage = [[UIImage imageNamed:@"edit"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.editButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.editButton setImage:editButtonImage forState:UIControlStateNormal];
@@ -220,7 +220,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     self.editButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.editButton.enabled = NO;
     [self.toolbar addSubview:self.editButton];
-    
+
     UIImage *addButtonImage = [[UIImage imageNamed:@"add"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     self.addButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.addButton setImage:addButtonImage forState:UIControlStateNormal];
@@ -229,15 +229,15 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     self.addButton.hidden = YES;
     self.addButton.enabled = NO;
     [self.toolbar addSubview:self.addButton];
-    
+
     UIView *toolbarBorderView = [[UIView alloc] init];
     toolbarBorderView.backgroundColor = HEX(0xb2b2b2ff);
     toolbarBorderView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.toolbar addSubview:toolbarBorderView];
     [self.view addSubview:self.toolbar];
-    
-    
-    
+
+
+
     self.titleLabel = [[UILabel alloc] init];
     self.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     self.titleLabel.adjustsFontSizeToFitWidth = YES;
@@ -289,7 +289,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     [self.editButton.rightAnchor constraintEqualToAnchor:self.addButton.rightAnchor].active = YES;
 
     [self tintButtonsWithColor:[UIColor darkGrayColor]];
-    
+
     NSDictionary *views = @{
         @"toolbar": self.toolbar,
         @"background": self.statusBarBackgroundView,
@@ -303,7 +303,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     [self.readerWebView.heightAnchor constraintEqualToAnchor:self.webView.heightAnchor].active = YES;
     [self.readerWebView.centerXAnchor constraintEqualToAnchor:self.webView.centerXAnchor].active = YES;
     [self.readerWebView.centerYAnchor constraintEqualToAnchor:self.webView.centerYAnchor].active = YES;
-    
+
     NSDictionary *metrics = @{@"height": @(kToolbarHeight)};
 
     [self.view lhs_addConstraints:@"V:[show(height)][bottom]" metrics:metrics views:views];
@@ -315,7 +315,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
     [self.bottomLayoutGuide.bottomAnchor constraintLessThanOrEqualToAnchor:self.toolbar.bottomAnchor];
     self.topLayoutConstraint = [self.statusBarBackgroundView lhs_setHeight:0];
-    
+
     UIView *myView = [[UIView alloc] init];
     [self.view addSubview:myView];
     myView.backgroundColor = self.toolbar.backgroundColor;
@@ -347,20 +347,20 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         // Search the DOM for the link - will just return immediately if there is an A element at our exact coordinates
         [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"PINBOARD_ACTIVE_ELEMENT = PINBOARD_CLOSEST_LINK_AT(%f, %f)", webViewCoordinates.x, webViewCoordinates.y]];
         NSString *locatorString = @"PINBOARD_ACTIVE_ELEMENT.nodeName";
-        
+
         // Only process link elements any further
         locatorString = @"PINBOARD_ACTIVE_ELEMENT.nodeName";
         if (![[webView stringByEvaluatingJavaScriptFromString:locatorString] isEqualToString:@"A"]) {
             return;
         }
-        
+
         // Parse the link and title into an NSDictionary
         locatorString = @"PINBOARD_ACTIVE_ELEMENT.innerText";
         NSString *title = [webView stringByEvaluatingJavaScriptFromString:locatorString];
         locatorString = @"PINBOARD_ACTIVE_ELEMENT.href";
         NSString *url = [webView stringByEvaluatingJavaScriptFromString:locatorString];
         self.selectedLink = @{ @"url": url, @"title": title };
-        
+
         // Show the context menu
         self.selectedActionSheet = [UIAlertController lhs_actionSheetWithTitle:url];
 
@@ -370,14 +370,14 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                                                      [self showAddViewController:self.selectedLink];
                                                      self.selectedActionSheet = nil;
                                                  }];
-        
+
         [self.selectedActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Copy URL", nil)
                                                    style:UIAlertActionStyleDefault
                                                  handler:^(UIAlertAction *action) {
                                                      [self copyURL:[NSURL URLWithString:self.selectedLink[@"url"]]];
                                                      self.selectedActionSheet = nil;
                                                  }];
-        
+
         [self.selectedActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                    style:UIAlertActionStyleCancel
                                                  handler:^(UIAlertAction *action) {
@@ -406,7 +406,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                                                          }
                                                      }];
             }
-            
+
             [self.backActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Close Browser", nil)
                                                    style:UIAlertActionStyleDefault
                                                  handler:^(UIAlertAction *action) {
@@ -418,7 +418,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                                                    style:UIAlertActionStyleCancel
                                                  handler:nil];
             CGPoint point = [self.backButtonLongPressGestureRecognizer locationInView:self.backButton];
-            
+
             self.backActionSheet.popoverPresentationController.sourceView = self.backButton;
             self.backActionSheet.popoverPresentationController.sourceRect = (CGRect){point, {1, 1}};
             [self presentViewController:self.backActionSheet animated:YES completion:nil];
@@ -435,11 +435,11 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+
     [UIView animateWithDuration:0.3 animations:^{
         [self setNeedsStatusBarAppearanceUpdate];
     }];
-    
+
     // Determine if we should mobilize or not
     if (self.shouldMobilize && !self.mobilized && [PPMobilizerUtility canMobilizeURL:self.url]) {
         [self toggleMobilizerAnimated:NO loadOriginalURL:YES];
@@ -448,7 +448,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
+
     self.yOffsetToStartShowingToolbar = self.webView.scrollView.contentOffset.y + kToolbarHeight;
 
     if (![self.loadedURLs containsObject:self.url]) {
@@ -482,7 +482,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     if (self.numberOfRequestsInProgress <= 0) {
         self.markAsReadButton.hidden = NO;
         [self.indicator stopAnimating];
-        
+
         if (self.webView.scrollView.contentOffset.y == 0) {
             [self setToolbarVisible:YES animated:NO];
         }
@@ -499,7 +499,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
                 [results close];
             }];
-            
+
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.navigationItem.rightBarButtonItem = nil;
 
@@ -565,7 +565,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
             [weakself.popover dismissPopoverAnimated:YES];
         }
     };
-    
+
     if ([UIApplication isIPad]) {
         self.popover = [[UIPopoverController alloc] initWithContentViewController:self.activityView];
         [self.popover presentPopoverFromRect:self.actionButton.frame
@@ -592,7 +592,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     if (self.mobilized) {
         self.webView.scrollView.scrollsToTop = NO;
         self.readerWebView.scrollView.scrollsToTop = YES;
-        
+
         [self.webViewTimeoutTimer invalidate];
         [self.webView stopLoading];
         [self.readerWebView loadHTMLString:@"<html><head><script type='text/javascript'>var isLoaded=false;</script></head></html>" baseURL:self.url];
@@ -618,9 +618,9 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     [PPNotification notifyWithMessage:NSLocalizedString(@"URL copied to clipboard.", nil)
                               success:YES
                               updated:NO];
-    
+
     [[UIPasteboard generalPasteboard] setString:self.url.absoluteString];
-    
+
 }
 
 - (void)messageComposeViewController:(MFMessageComposeViewController *)controller didFinishWithResult:(MessageComposeResult)result {
@@ -637,7 +637,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 #else
     NSURL *url = [self.webView.request URL];
 #endif
-    
+
     if (!url || ![url isKindOfClass:[NSURL class]] || [url.absoluteString isEqualToString:@""]) {
         return [NSURL URLWithString:self.urlString];
     }
@@ -665,11 +665,11 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
 - (void)showAddViewController:(NSDictionary *)data {
     PPNavigationController *vc = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:data update:@(NO) callback:nil];
-    
+
     if ([UIApplication isIPad]) {
         vc.modalPresentationStyle = UIModalPresentationFormSheet;
     }
-    
+
     [self presentViewController:vc animated:YES completion:nil];
 }
 
@@ -686,7 +686,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
         dispatch_async(dispatch_get_main_queue(), ^{
             PPNavigationController *vc = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:post update:@(YES) callback:nil];
-            
+
             if ([UIApplication isIPad]) {
                 vc.modalPresentationStyle = UIModalPresentationFormSheet;
             }
@@ -736,7 +736,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if (![UIApplication isIPad]) {
         CGPoint currentContentOffset = scrollView.contentOffset;
-        
+
         // Only change if the offset is less than the content size minus the height of the toolbar.
         CGFloat distanceFromBottomOfView = scrollView.contentSize.height - currentContentOffset.y - CGRectGetHeight(scrollView.frame);
         BOOL isAtBottomOfView = distanceFromBottomOfView < kToolbarHeight;
@@ -745,7 +745,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         BOOL isToolbarPartlyVisible = self.toolbarConstraint.constant > 0;
         BOOL isToolbarFullyVisible = self.toolbarConstraint.constant == kToolbarHeight;
         self.previousContentOffset = currentContentOffset;
-        
+
 #if HIDE_STATUS_BAR_WHILE_SCROLLING
         if (isScrollingDown && !isAtBottomOfView) {
             [UIView animateWithDuration:0.3 animations:^{
@@ -801,7 +801,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 #if TARGET_OS_MACCATALYST
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
-    
+
 }
 
 #else
@@ -825,33 +825,33 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                 self.numberOfRequests = 0;
                 self.markAsReadButton.hidden = YES;
                 [self.indicator startAnimating];
-                
+
                 switch (navigationType) {
                     case UIWebViewNavigationTypeLinkClicked:
                         break;
 
                     case UIWebViewNavigationTypeOther:
                         break;
-                        
+
                     case UIWebViewNavigationTypeReload:
                         break;
-                        
+
                     case UIWebViewNavigationTypeBackForward:
                         // We've disabled forward in the UI, so it must be a pop of the stack.
                         [self.history removeLastObject];
-                        
+
                     default:
                         webView.scrollView.contentOffset = CGPointMake(0, 0);
                         break;
                 }
-                
+
                 return YES;
             } else {
 #warning is this right?
                 if (!self.openLinkExternallyAlertView.presentingViewController) {
                     self.openLinkExternallyAlertView = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Leave Pushpin?", nil)
                                                                                          message:NSLocalizedString(@"The link is requesting to open an external application. Would you like to continue?", nil)];
-                    
+
                     [self.openLinkExternallyAlertView lhs_addActionWithTitle:NSLocalizedString(@"Open", nil)
                                                                        style:UIAlertActionStyleDefault
                                                                      handler:^(UIAlertAction *action) {
@@ -892,10 +892,10 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     if (webView == self.webView) {
         self.numberOfRequestsCompleted++;
-        
+
         [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];
         [self enableOrDisableButtons];
-        
+
         // Only run the following when this is an actual web URL.
         if (![self.url.scheme isEqualToString:@"file"]) {
             self.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
@@ -905,7 +905,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
             } else {
                 self.titleLabel.text = self.title;
             }
-            
+
             if (![[self.history lastObject][@"url"] isEqualToString:self.url.absoluteString]) {
                 NSArray *titleComponents = [self.title componentsSeparatedByString:@" "];
                 NSMutableArray *finalTitleComponents = [NSMutableArray array];
@@ -916,7 +916,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                         break;
                     }
                 }
-                
+
                 if ([finalTitleComponents count] > 0) {
                     [self.history addObject:@{@"url": self.url.absoluteString,
                                               @"host": self.url.host,
@@ -925,15 +925,15 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
             }
 
             self.mobilizeButton.enabled = [PPMobilizerUtility canMobilizeURL:self.url];
-            
+
             // Disable the default action sheet
             [self addTouchOverridesForWebView:webView];
-            
+
             if (self.numberOfRequestsInProgress == 0) {
                 [self updateInterfaceWithComputedWebPageBackgroundColor];
                 [self.loadedURLs addObject:self.url];
             }
-            
+
             if ([self.webView canGoBack]) {
                 UIImage *backButtonImage = [[UIImage imageNamed:@"back_icon"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
                 [self.backButton setImage:backButtonImage forState:UIControlStateNormal];
@@ -946,7 +946,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         BOOL isLoaded = [[self.readerWebView stringByEvaluatingJavaScriptFromString:@"isLoaded"] isEqualToString:@"true"];
         if (isLoaded) {
             [self updateInterfaceWithComputedWebPageBackgroundColor];
-            
+
             self.markAsReadButton.hidden = NO;
             [self.indicator stopAnimating];
 
@@ -974,7 +974,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 - (void)webViewDidStartLoad:(UIWebView *)webView {
     if (webView == self.webView) {
         [self.webViewTimeoutTimer invalidate];
-        
+
     #warning https://crashlytics.com/lionheart-software2/ios/apps/io.aurora.pushpin/issues/532e17d2fabb27481b18f9ce
         self.webViewTimeoutTimer = [NSTimer timerWithTimeInterval:5
                                                            target:self
@@ -1004,20 +1004,20 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 #if HIDE_STATUS_BAR_WHILE_SCROLLING
     self.prefersStatusBarHidden = NO;
 #endif
-    
+
 #if TARGET_OS_MACCATALYST
     WKWebView *webView = self.currentWebView;
 #else
     UIWebView *webView = self.currentWebView;
 #endif
-    
+
     UIColor *backgroundColor = [UIColor whiteColor];
     BOOL isDark = NO;
 
 #if !TARGET_OS_MACCATALYST
     if (!timedOut) {
         NSString *response = [webView stringByEvaluatingJavaScriptFromString:@"window.getComputedStyle(document.body, null).getPropertyValue(\"background-color\")"];
-        
+
         NSError *error;
         NSRegularExpression *expression = [NSRegularExpression regularExpressionWithPattern:@"rgba?\\((\\d*), (\\d*), (\\d*)(, (\\d*))?\\)" options:NSRegularExpressionCaseInsensitive error:&error];
         NSTextCheckingResult *match = [expression firstMatchInString:response options:0 range:NSMakeRange(0, response.length)];
@@ -1029,16 +1029,16 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
             CGFloat G = [greenString floatValue] / 255;
             CGFloat B = [blueString floatValue] / 255;
             CGFloat alpha = 1;
-            
+
             NSRange alphaRange = [match rangeAtIndex:5];
             if (alphaRange.location != NSNotFound) {
                 NSString *alphaString = [response substringWithRange:alphaRange];
                 alpha = [alphaString floatValue];
             }
-            
+
             // Formula derived from here:
             // http://www.w3.org/WAI/ER/WD-AERT/#color-contrast
-            
+
             // Alpha blending:
             // http://stackoverflow.com/a/746937/39155
             CGFloat newR = (255 * (1 - alpha) + 255 * R * alpha) / 255.;
@@ -1054,7 +1054,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         self.statusBarBackgroundView.backgroundColor = backgroundColor;
         self.toolbarBackgroundView.backgroundColor = backgroundColor;
         webView.backgroundColor = backgroundColor;
-        
+
         if (isDark) {
             [self tintButtonsWithColor:[UIColor whiteColor]];
             self.titleLabel.textColor = [UIColor whiteColor];
@@ -1085,11 +1085,11 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     } else {
         constant = 0;
     }
-    
+
     void (^UpdateConstraint)(void) = ^{
         self.toolbarConstraint.constant = constant;
         [self.view layoutIfNeeded];
-        
+
 #if HIDE_STATUS_BAR_WHILE_SCROLLING
         if (visible) {
             self.prefersStatusBarHidden = NO;
@@ -1097,7 +1097,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
         }
 #endif
     };
-    
+
     if (animated) {
         [UIView animateWithDuration:0.3
                               delay:0
@@ -1153,19 +1153,19 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 
 + (void)mobilizedPageForURL:(NSURL *)url withCompletion:(void (^)(NSDictionary *, NSError *))completion {
     NSURL *mobilizedURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [url.absoluteString urlEncodeUsingEncoding:NSUTF8StringEncoding]]];
-    
+
     NSURLProtectionSpace *protectionSpace = [[NSURLProtectionSpace alloc] initWithHost:@"pushpin-readability.herokuapp.com"
                                                                                   port:443
                                                                               protocol:@"https"
                                                                                  realm:@"Pushpin"
                                                                   authenticationMethod:NSURLAuthenticationMethodHTTPBasic];
     NSURLCredentialStorage *credentials = [NSURLCredentialStorage sharedCredentialStorage];
-    
+
     NSURLCredential *credential = [NSURLCredential credentialWithUser:@"pushpin"
                                                              password:@"9346edb36e542dab1e7861227f9222b7"
                                                           persistence:NSURLCredentialPersistenceForSession];
     [credentials setDefaultCredential:credential forProtectionSpace:protectionSpace];
-    
+
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     configuration.URLCredentialStorage = credentials;
     configuration.URLCache = [PPAppDelegate sharedDelegate].urlCache;
@@ -1176,7 +1176,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     NSURLRequest *request = [NSURLRequest requestWithURL:mobilizedURL
                                              cachePolicy:NSURLRequestReturnCacheDataElseLoad
                                          timeoutInterval:10];
-    
+
     [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];
     NSURLSessionDataTask *task = [session dataTaskWithRequest:request
                                             completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
@@ -1217,7 +1217,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
             self.readerWebView.alpha = 0;
         };
     }
-    
+
     if (animated) {
         [UIView animateWithDuration:kPPReaderViewAnimationDuration
                               delay:0
@@ -1230,7 +1230,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                              } else {
                                  self.readerWebView.hidden = YES;
                              }
-                             
+
                              if (completion) {
                                  completion(finished);
                              }
@@ -1243,10 +1243,10 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
 - (void)markAsReadButtonTouchUpInside:(id)sender {
 
     id<PPDataSource> dataSource = [[PPPinboardDataSource alloc] init];
-    
+
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         __block NSDictionary *post;
-        
+
         [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
             FMResultSet *results = [db executeQuery:@"SELECT * FROM bookmark WHERE url=?" withArgumentsInArray:@[self.url.absoluteString]];
             [results next];

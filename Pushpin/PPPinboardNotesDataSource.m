@@ -33,9 +33,9 @@
     if (self) {
         self.posts = [NSMutableArray array];
         self.metadata = [NSMutableArray array];
-        
+
         self.locale = [NSLocale currentLocale];
-        
+
         self.dateFormatter = [[NSDateFormatter alloc] init];
         [self.dateFormatter setTimeStyle:NSDateFormatterShortStyle];
         [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
@@ -89,7 +89,7 @@
     NSMutableArray *indexPathsToAdd = [NSMutableArray array];
     NSMutableArray *indexPathsToRemove = [NSMutableArray array];
     NSMutableArray *indexPathsToReload = [NSMutableArray array];
-    
+
     NSMutableArray *newNotesUnsorted = [NSMutableArray array];
     NSMutableArray *newIDs = [NSMutableArray array];
     NSMutableArray *oldIDs = [NSMutableArray array];
@@ -117,18 +117,18 @@
                         NSString *noteID = note[@"id"];
                         NSString *title = note[@"title"];
                         NSDate *date = [enUSPOSIXDateFormatter dateFromString:note[@"updated_at"]];
-                        
+
 #warning XXX
                         if (note[@"updated_at"]) {
                         } else {
                             date = [NSDate date];
                         }
-                        
+
                         if (title) {
                         } else {
                             title = @"Untitled";
                         }
-                        
+
                         [newNotesUnsorted addObject:@{
                                                       @"updated_at": date,
                                                       @"description": [self.dateFormatter stringFromDate:date],
@@ -136,33 +136,33 @@
                                                       @"id": noteID,
                                                       }];
                     }
-                    
+
                     NSArray *newNotes = [newNotesUnsorted sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
                         return [obj2[@"updated_at"] compare:obj1[@"updated_at"]];
                     }];
-                    
+
                     [self.metadata removeAllObjects];
                     for (NSDictionary *note in newNotes) {
                         [newIDs addObject:note[@"id"]];
-                        
+
                         if (![oldIDs containsObject:note[@"id"]]) {
                             [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
                         } else {
                             [indexPathsToReload addObject:[NSIndexPath indexPathForRow:[oldIDs indexOfObject:note[@"id"]] inSection:0]];
                         }
-                        
+
                         PostMetadata *metadata = [PostMetadata metadataForPost:note compressed:NO width:width tagsWithFrequency:@{} cache:NO];
                         [self.metadata addObject:metadata];
                         index++;
                     }
-                    
+
                     NSInteger i;
                     for (i=0; i<oldIDs.count; i++) {
                         if (![newIDs containsObject:oldIDs[i]]) {
                             [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:i inSection:0]];
                         }
                     }
-                    
+
                     self.posts = [newNotes copy];
                     completion(nil);
                 });

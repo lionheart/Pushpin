@@ -63,9 +63,9 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     [super viewDidLoad];
 
     self.title = NSLocalizedString(@"Advanced Settings", nil);
-    
+
     self.fontSizeAdjustmentActionSheet = [UIAlertController lhs_actionSheetWithTitle:NSLocalizedString(@"Font Adjustment", nil)];
-    
+
     for (NSString *title in PPFontAdjustmentTypes()) {
         [self.fontSizeAdjustmentActionSheet lhs_addActionWithTitle:NSLocalizedString(title, nil)
                                                              style:UIAlertActionStyleDefault
@@ -77,7 +77,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                                                                    settings.fontAdjustment = fontAdjustment;
 
                                                                    [self.tableView reloadData];
-                                                                   
+
                                                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                                                                        [[PPPinboardMetadataCache sharedCache] reset];
 
@@ -88,16 +88,16 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                                                                }
                                                            }];
     }
-    
+
     [self.fontSizeAdjustmentActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                          style:UIAlertActionStyleCancel
                                                        handler:nil];
-    
+
     PPSettings *settings = [PPSettings sharedSettings];
     self.enableBookmarkPromptSwitch = [[UISwitch alloc] init];
     self.enableBookmarkPromptSwitch.on = !settings.turnOffBookmarkPrompt;
     [self.enableBookmarkPromptSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
-    
+
     self.privateByDefaultSwitch = [[UISwitch alloc] init];
     self.privateByDefaultSwitch.on = settings.privateByDefault;
     [self.privateByDefaultSwitch addTarget:self action:@selector(privateByDefaultSwitchChangedValue:) forControlEvents:UIControlEventValueChanged];
@@ -125,7 +125,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     self.doubleTapToEditSwitch = [[UISwitch alloc] init];
     self.doubleTapToEditSwitch.on = settings.doubleTapToEdit;
     [self.doubleTapToEditSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
-    
+
     self.autoCorrectionSwitch = [[UISwitch alloc] init];
     self.autoCorrectionSwitch.on = settings.enableAutoCorrect;
     [self.autoCorrectionSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
@@ -133,7 +133,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     self.tagAutoCorrectionSwitch = [[UISwitch alloc] init];
     self.tagAutoCorrectionSwitch.on = settings.enableTagAutoCorrect;
     [self.tagAutoCorrectionSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
-    
+
     self.onlyPromptToAddOnceSwitch = [[UISwitch alloc] init];
     self.onlyPromptToAddOnceSwitch.on = !settings.onlyPromptToAddOnce;
     [self.onlyPromptToAddOnceSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
@@ -145,7 +145,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     self.alwaysShowAlertSwitch = [[UISwitch alloc] init];
     self.alwaysShowAlertSwitch.on = settings.alwaysShowClipboardNotification;
     [self.alwaysShowAlertSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
-    
+
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
     [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:ChoiceCellIdentifier];
     [self.tableView registerClass:[LHSTableViewCellSubtitle class] forCellReuseIdentifier:SubtitleCellIdentifier];
@@ -172,7 +172,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 
         case PPSectionBrowseSettings:
             return PPRowCountBrowse;
-            
+
         case PPSectionOtherDisplaySettings:
             if (self.enableBookmarkPromptSwitch.on) {
                 if (self.onlyPromptToAddOnceSwitch.on) {
@@ -192,20 +192,20 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             switch ((PPEditSettingsRowType)indexPath.row) {
                 case PPEditAutoMarkAsReadRow:
                     return 56;
-                    
+
                 default:
                     return 44;
             }
-            
+
         case PPSectionBrowseSettings:
             switch ((PPBrowseSettingsRowType)indexPath.row) {
                 case PPBrowseCompressRow:
                     return 74;
-                    
+
                 default:
                     return 44;
             }
-            
+
         case PPSectionOtherDisplaySettings:
             switch ((PPOtherDisplaySettingsRowType)indexPath.row) {
                 case PPOtherTurnOffPrompt:
@@ -213,10 +213,10 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 
                 case PPOtherOnlyPromptToAddBookmarksOnce:
                     return 92;
-                    
+
                 case PPOtherDisplayClearCache:
                     return 74;
-                    
+
                 case PPOtherAlwaysShowAlert:
                     return 92;
             }
@@ -227,7 +227,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     UITableViewCell *cell;
     CGSize size;
     CGSize switchSize;
-    
+
     switch ((PPDisplaySettingsSectionType)indexPath.section) {
         case PPSectionDisplaySettings:
             cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier
@@ -248,7 +248,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     self.privateByDefaultSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
                     cell.accessoryView = self.privateByDefaultSwitch;
                     break;
-                    
+
                 case PPEditDefaultToRead:
                     cell.textLabel.text = NSLocalizedString(@"Read by default?", nil);
                     size = cell.frame.size;
@@ -340,7 +340,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     self.dimReadPostsSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
                     cell.accessoryView = self.dimReadPostsSwitch;
                     break;
-                    
+
                 case PPBrowseFontRow: {
                     cell = [tableView dequeueReusableCellWithIdentifier:ChoiceCellIdentifier
                                                            forIndexPath:indexPath];
@@ -348,7 +348,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.detailTextLabel.font = [PPTheme detailLabelFont];
                     cell.detailTextLabel.textColor = [UIColor grayColor];
                     cell.accessoryView = nil;
-                    
+
                     cell.textLabel.text = NSLocalizedString(@"Font", nil);
 
                     UIFont *font = [PPTheme titleFont];
@@ -362,7 +362,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
                 }
-                    
+
                 case PPBrowseFontSizeRow: {
                     cell = [tableView dequeueReusableCellWithIdentifier:ChoiceCellIdentifier
                                                            forIndexPath:indexPath];
@@ -376,7 +376,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
                 }
-                    
+
                 case PPBrowseHidePrivateLock: {
                     cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier
                                                            forIndexPath:indexPath];
@@ -395,7 +395,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.accessoryView = self.hidePrivateLockSwitch;
                     break;
                 }
-                    
+
                 case PPBrowseDefaultFeedRow:
                     cell = [tableView dequeueReusableCellWithIdentifier:ChoiceCellIdentifier
                                                            forIndexPath:indexPath];
@@ -410,7 +410,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     break;
             }
             break;
-            
+
         case PPSectionOtherDisplaySettings:
             cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier
                                                    forIndexPath:indexPath];
@@ -426,7 +426,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                 case PPOtherTurnOffPrompt:
                     cell.textLabel.text = NSLocalizedString(@"Enable clipboard prompt", nil);
                     cell.detailTextLabel.text = NSLocalizedString(@"Display a prompt when Pushpin detects a URL on the clipboard.", nil);
-                    
+
                     size = cell.frame.size;
                     switchSize = self.enableBookmarkPromptSwitch.frame.size;
                     self.enableBookmarkPromptSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
@@ -449,7 +449,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                     cell.isAccessibilityElement = YES;
                     cell.accessibilityLabel = NSLocalizedString(@"Reset URL", nil);
                     break;
-                    
+
                 case PPOtherAlwaysShowAlert:
                     cell.textLabel.text = NSLocalizedString(@"Notify when a URL isn't added", nil);
                     cell.detailTextLabel.text = NSLocalizedString(@"Display a notification when the URL currently on the clipboard is one that you've previously decided not to add.", nil);
@@ -462,7 +462,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             }
             break;
     }
-    
+
     return cell;
 }
 
@@ -502,7 +502,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                 default: break;
             }
             break;
-            
+
         case PPSectionOtherDisplaySettings: {
             switch ((PPOtherDisplaySettingsRowType)indexPath.row) {
                 case PPOtherDisplayClearCache: {
@@ -513,7 +513,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                         [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                             [db executeUpdate:@"DELETE FROM rejected_bookmark;"];
                         }];
-                        
+
                         double delayInSeconds = 1.0;
                         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
                         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
@@ -531,7 +531,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
                             }];
                         });
                     }];
-                    
+
                     break;
                 }
 
@@ -539,7 +539,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
             }
             break;
         }
-            
+
         case PPSectionDisplaySettings:
             break;
     }
@@ -549,10 +549,10 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     switch ((PPDisplaySettingsSectionType)section) {
         case PPSectionBrowseSettings:
             return NSLocalizedString(@"Browsing", nil);
-            
+
         case PPSectionDisplaySettings:
             return NSLocalizedString(@"Editing", nil);
-            
+
         case PPSectionOtherDisplaySettings:
             return NSLocalizedString(@"Clipboard URL detection", nil);
     }
@@ -562,10 +562,10 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     switch ((PPDisplaySettingsSectionType)section) {
         case PPSectionDisplaySettings:
             return nil;
-            
+
         case PPSectionBrowseSettings:
             return NSLocalizedString(@"The selected default feed will be shown immediately after starting the app.", nil);
-            
+
         case PPSectionOtherDisplaySettings:
             return nil;
     }
@@ -610,7 +610,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCell";
 
         [self.tableView reloadData];
     }
-    
+
     if (sender == self.compressPostsSwitch) {
         [[NSNotificationCenter defaultCenter] postNotificationName:PPBookmarkCompressSettingUpdate object:nil];
     } else {

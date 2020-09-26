@@ -51,7 +51,7 @@
         self.textAlignment = [aDecoder decodeIntegerForKey:@"textAlignment"];
         self.displayImages = [aDecoder decodeBoolForKey:@"displayImages"];
     }
-    
+
     return self;
 }
 
@@ -131,13 +131,13 @@
     switch (self.textAlignment) {
         case NSTextAlignmentLeft:
             return @"left";
-            
+
         case NSTextAlignmentCenter:
             return @"center";
-            
+
         case NSTextAlignmentRight:
             return @"right";
-            
+
         case NSTextAlignmentJustified:
             return @"justify";
 
@@ -145,7 +145,7 @@
 #warning XXX
             return @"";
     }
-    
+
     return @"";
 }
 

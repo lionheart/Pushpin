@@ -46,7 +46,7 @@
     if (self = [super init]) {
         self.urlScheme = scheme;
     }
-    
+
     return self;
 }
 
@@ -54,7 +54,7 @@
     if (self = [self initWithUrlScheme:scheme]) {
         self.browserName = browser;
     }
-    
+
     return self;
 }
 
@@ -85,7 +85,7 @@
         NSRange range = [self.url.absoluteString rangeOfString:@"http"];
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[self.url.absoluteString stringByReplacingCharactersInRange:range withString:self.urlScheme]] options:@{} completionHandler:nil];;
     }
-    
+
     [self activityDidFinish:YES];
 }
 

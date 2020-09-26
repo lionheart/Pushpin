@@ -32,9 +32,9 @@
     if (self) {
         self.automaticallyAdjustsScrollViewInsets = NO;
         self.title = NSLocalizedString(@"Description", nil);
-        
+
         UIFont *font = [UIFont systemFontOfSize:16];
-        
+
         PPSettings *settings = [PPSettings sharedSettings];
 
         self.textView = [[UITextView alloc] initWithFrame:CGRectZero];
@@ -65,7 +65,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+
     [self.textView becomeFirstResponder];
 
     [self lhs_activateKeyboardAdjustment];

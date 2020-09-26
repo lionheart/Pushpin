@@ -37,7 +37,7 @@
 
 - (NSArray *)keyCommands {
     static NSArray *keyCommands;
-    
+
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         self.createBookmarkKeyCommand = [UIKeyCommand keyCommandWithInput:@"c"
@@ -46,7 +46,7 @@
 
         keyCommands = @[self.createBookmarkKeyCommand];
     });
-    
+
     return keyCommands;
 }
 
@@ -54,7 +54,7 @@
     if (keyCommand == self.createBookmarkKeyCommand) {
         PPNavigationController *addBookmarkViewController = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:@{} update:@(NO) callback:^(NSDictionary *response) {
         }];
-        
+
         if ([UIApplication isIPad]) {
             addBookmarkViewController.modalPresentationStyle = UIModalPresentationFormSheet;
         }

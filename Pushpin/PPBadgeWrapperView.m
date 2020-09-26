@@ -46,7 +46,7 @@ static const CGFloat PADDING_Y = 6;
 - (CGFloat)calculateHeightForWidth:(CGFloat)width {
     CGFloat offsetX = 0;
     CGFloat offsetY = 0;
-    
+
     if (self.badges.count == 0) {
         return 0;
     }
@@ -78,11 +78,11 @@ static const CGFloat PADDING_Y = 6;
             }
         }
     }
-    
+
     if (self.subviews.count > 0) {
         offsetY += badgeSize.height;
     }
-    
+
     return offsetY + PADDING_Y;
 }
 
@@ -94,7 +94,7 @@ static const CGFloat PADDING_Y = 6;
     _badges = badges;
 
     self.isInvalidated = YES;
-    
+
     [self lhs_removeSubviews];
 
     for (NSDictionary *badge in badges) {
@@ -109,7 +109,7 @@ static const CGFloat PADDING_Y = 6;
         } else if ([badge[@"type"] isEqualToString:@"tag"]) {
             badgeView = [[PPBadgeView alloc] initWithText:badge[@"tag"] options:mergedOptions];
         }
-        
+
         badgeView.delegate = self;
         [self addSubview:badgeView];
     }
@@ -165,7 +165,7 @@ static const CGFloat PADDING_Y = 6;
                     // Wrap to the next line
                     offsetX = CGRectGetWidth(badgeFrame) + PADDING_X;
                     offsetY += CGRectGetHeight(badgeFrame) + PADDING_Y;
-                    
+
                     badgeFrame.origin = CGPointMake(0, offsetY);
                 }
             }
@@ -175,11 +175,11 @@ static const CGFloat PADDING_Y = 6;
             badgeView.frame = badgeFrame;
         }
     }
-    
+
     if (self.subviews.count > 0) {
         offsetY += CGRectGetHeight(badgeFrame);
     }
-    
+
     CGRect frame = self.frame;
     frame.size.height = offsetY + PADDING_Y;
     self.frame = frame;

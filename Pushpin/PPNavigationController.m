@@ -45,7 +45,7 @@
 
 - (void)viewDidLoad {
     __weak PPNavigationController *weakSelf = self;
-    
+
     self.interactivePopGestureRecognizer.delegate = weakSelf;
     self.delegate = weakSelf;
 
@@ -123,7 +123,7 @@
     if (keyCommand == self.createBookmarkKeyCommand) {
         PPNavigationController *addBookmarkViewController = [PPAddBookmarkViewController addBookmarkViewControllerWithBookmark:@{} update:@(NO) callback:^(NSDictionary *response) {
         }];
-        
+
         if ([UIApplication isIPad]) {
             addBookmarkViewController.modalPresentationStyle = UIModalPresentationFormSheet;
         }

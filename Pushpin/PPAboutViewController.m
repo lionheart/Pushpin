@@ -66,7 +66,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
     CGSize maxSize = CGSizeMake(CGRectGetWidth(self.view.frame) - 30, CGFLOAT_MAX);
     CGRect maxRect = (CGRect){{0, 0}, maxSize};
-    
+
     NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
 
@@ -82,32 +82,32 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
     [self.sections enumerateObjectsUsingBlock:^(NSDictionary *sectionData, NSUInteger section, BOOL *stop) {
         NSArray *rows = sectionData[@"rows"];
-        
+
         heights[section] = [NSMutableArray array];
-        
+
         [rows enumerateObjectsUsingBlock:^(NSDictionary *rowData, NSUInteger row, BOOL *stop) {
             CGFloat height = 0;
-            
+
             NSString *title = rowData[@"title"];
             NSString *detail = rowData[@"detail"];
-            
+
             if (title) {
                 fakeLabel.attributedText = [[NSAttributedString alloc] initWithString:title attributes:self.titleAttributes];
                 height += CGRectGetHeight([fakeLabel textRectForBounds:maxRect limitedToNumberOfLines:0]);
             }
-            
+
             if (detail) {
                 fakeLabel.attributedText = [[NSAttributedString alloc] initWithString:detail attributes:self.detailAttributes];
                 height += CGRectGetHeight([fakeLabel textRectForBounds:maxRect limitedToNumberOfLines:0]);
             }
-            
+
             heights[section][row] = @(height);
         }];
     }];
-    
+
     self.heights = [heights mutableCopy];
-    
-    
+
+
     [self.tableView reloadData];
 }
 
@@ -148,11 +148,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
     if (title) {
         cell.textLabel.attributedText = [[NSAttributedString alloc] initWithString:title attributes:self.titleAttributes];
     }
-    
+
     if (detail) {
         cell.detailTextLabel.attributedText = [[NSAttributedString alloc] initWithString:detail attributes:self.detailAttributes];
     }
-    
+
     if (info[@"license"]) {
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     } else if (indexPath.section == 0 && indexPath.row == 1) {
@@ -186,13 +186,13 @@ static NSString *CellIdentifier = @"CellIdentifier";
             switch (indexPath.row) {
                 case 0:
                     break;
-                    
+
                 case 1: {
                     PPChangelogViewController *changelogViewController = [[PPChangelogViewController alloc] initWithStyle:UITableViewStyleGrouped];
                     [self.navigationController pushViewController:changelogViewController animated:YES];
                     break;
                 }
-                    
+
                 case 2: {
                     NSURL *url = [NSURL URLWithString:@"https://twitter.com/pushpin_app"];
                     NSMutableDictionary *options = [NSMutableDictionary dictionary];
@@ -207,10 +207,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     break;
             }
             break;
-            
+
         case 4: {
             NSDictionary *row = self.sections[indexPath.section][@"rows"][indexPath.row];
-            
+
             NSString *license = row[@"license"];
             if (license) {
                 PPPlainTextViewController *licenseViewController = [PPPlainTextViewController plainTextViewControllerWithString:license];
@@ -219,7 +219,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             }
             break;
         }
-            
+
         default:
             break;
     }

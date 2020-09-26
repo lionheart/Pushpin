@@ -72,9 +72,9 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     self.title = NSLocalizedString(@"Reader Settings", nil);
-    
+
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Preview", nil)
                                                                               style:UIBarButtonItemStyleDone
                                                                              target:self
@@ -83,9 +83,9 @@ static NSString *CellIdentifier = @"Cell";
     self.tableView.showsVerticalScrollIndicator = NO;
 
     self.toggledIndexPaths = [NSMutableSet set];
-    
+
     self.textAlignmentActionSheet = [UIAlertController lhs_actionSheetWithTitle:nil];
-    
+
     for (NSString *alignment in @[@"Left", @"Center", @"Right", @"Justified", @"Natural"]) {
         [self.textAlignmentActionSheet lhs_addActionWithTitle:alignment
                                                         style:UIAlertActionStyleDefault
@@ -97,21 +97,21 @@ static NSString *CellIdentifier = @"Cell";
                                                                                 @"Natural": @(NSTextAlignmentNatural) };
                                                           NSNumber *result = map[action.title];
                                                           if (result) {
-                                                              
-                                                              
-                                                              
+
+
+
                                                               PPSettings *settings = [PPSettings sharedSettings];
                                                               PPReaderSettings *readerSettings = settings.readerSettings;
                                                               readerSettings.textAlignment = [result integerValue];
                                                               settings.readerSettings = readerSettings;
                                                               [settings.readerSettings updateCustomReaderCSSFile];
-                                                              
+
                                                               [self.tableView beginUpdates];
                                                               [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPReaderSettingsMainRowTextAlignment inSection:PPReaderSettingsSectionMain]]
                                                                                     withRowAnimation:UITableViewRowAnimationFade];
                                                               [self.tableView endUpdates];
                                                               [self updateExampleWebView];
-                                                              
+
                                                               self.textAlignmentActionSheet = nil;
                                                           }
                                                       }];
@@ -120,7 +120,7 @@ static NSString *CellIdentifier = @"Cell";
     [self.textAlignmentActionSheet lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
                                                     style:UIAlertActionStyleDefault
                                                   handler:nil];
-    
+
 #if PPREADER_USE_SLIDERS
     self.fontSizeSlider = [[UISlider alloc] init];
     self.fontSizeSlider.translatesAutoresizingMaskIntoConstraints = NO;
@@ -135,7 +135,7 @@ static NSString *CellIdentifier = @"Cell";
     self.lineSpacingSlider.maximumValue = 2;
     self.lineSpacingSlider.value = [PPSettings sharedSettings].readerSettings.lineSpacing;
     [self.lineSpacingSlider addTarget:self action:@selector(sliderChangedValue:) forControlEvents:UIControlEventValueChanged];
-    
+
     self.marginSlider = [[UISlider alloc] init];
     self.marginSlider.translatesAutoresizingMaskIntoConstraints = NO;
     self.marginSlider.minimumValue = 50;
@@ -154,7 +154,7 @@ static NSString *CellIdentifier = @"Cell";
     self.whiteThemeButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.whiteThemeButton.backgroundColor = HEX(0xfbfbfbff);
     [self.whiteThemeButton addTarget:self action:@selector(themeButtonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
-    
+
     self.yellowThemeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.yellowThemeButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.yellowThemeButton.backgroundColor = HEX(0xfffff7ff);
@@ -164,12 +164,12 @@ static NSString *CellIdentifier = @"Cell";
     self.greyThemeButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.greyThemeButton.backgroundColor = HEX(0xf5f5f5ff);
     [self.greyThemeButton addTarget:self action:@selector(themeButtonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
-    
+
     self.darkGreyThemeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.darkGreyThemeButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.darkGreyThemeButton.backgroundColor = HEX(0x343a3aff);
     [self.darkGreyThemeButton addTarget:self action:@selector(themeButtonTouchUpInside:) forControlEvents:UIControlEventTouchUpInside];
-    
+
     self.blackThemeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.blackThemeButton.translatesAutoresizingMaskIntoConstraints = NO;
     self.blackThemeButton.backgroundColor = HEX(0x000000ff);
@@ -179,12 +179,12 @@ static NSString *CellIdentifier = @"Cell";
     self.fontSizeLabel.textColor = [UIColor lightGrayColor];
     self.fontSizeLabel.font = [PPTheme detailLabelFont];
     self.fontSizeLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    
+
     self.fontFamilyLabel = [[UILabel alloc] init];
     self.fontFamilyLabel.textColor = [UIColor lightGrayColor];
     self.fontFamilyLabel.font = [PPTheme detailLabelFont];
     self.fontFamilyLabel.translatesAutoresizingMaskIntoConstraints = NO;
-    
+
     self.lineSpacingLabel = [[UILabel alloc] init];
     self.lineSpacingLabel.textColor = [UIColor lightGrayColor];
     self.lineSpacingLabel.font = [PPTheme detailLabelFont];
@@ -198,7 +198,7 @@ static NSString *CellIdentifier = @"Cell";
     self.displayImagesSwitch = [[UISwitch alloc] init];
     self.displayImagesSwitch.on = [PPSettings sharedSettings].readerSettings.displayImages;
     [self.displayImagesSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
-    
+
 #if TARGET_OS_MACCATALYST
     self.exampleWebView = [[WKWebView alloc] init];
 #else
@@ -218,7 +218,7 @@ static NSString *CellIdentifier = @"Cell";
     [self.webViewContainer addSubview:self.blackThemeButton];
     [self.webViewContainer addSubview:self.exampleWebView];
     [self.exampleWebView lhs_fillWidthOfSuperview];
-    
+
     NSDictionary *views = @{@"white": self.whiteThemeButton,
                             @"yellow": self.yellowThemeButton,
                             @"grey": self.greyThemeButton,
@@ -226,7 +226,7 @@ static NSString *CellIdentifier = @"Cell";
                             @"black": self.blackThemeButton,
                             @"webview": self.exampleWebView,
                             @"container": self.webViewContainer };
-    
+
     [self.webViewContainer lhs_addConstraints:@"V:|[white(44)][webview]" views:views];
     [self.webViewContainer lhs_addConstraints:@"V:|[yellow(==white)]" views:views];
     [self.webViewContainer lhs_addConstraints:@"V:|[dark(==white)]" views:views];
@@ -292,7 +292,7 @@ static NSString *CellIdentifier = @"Cell";
                     UIFont *font = [PPSettings sharedSettings].readerSettings.font;
                     self.fontFamilyLabel.font = [PPTheme textLabelFont];
                     self.fontFamilyLabel.text = [LHSFontSelectionViewController fontNameToDisplayName:[font lhs_displayName]];
-                    
+
                     [cell.contentView addSubview:self.fontFamilyLabel];
                     NSDictionary *views = @{@"detail": self.fontFamilyLabel};
                     [cell.contentView lhs_addConstraints:@"[detail]-14-|" views:views];
@@ -301,24 +301,24 @@ static NSString *CellIdentifier = @"Cell";
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
                 }
-                    
+
                 case PPReaderSettingsMainRowFontSize: {
 #if PPREADER_USE_SLIDERS
                     title.text = NSLocalizedString(@"Font size", nil);
                     self.fontSizeLabel.text = [NSString stringWithFormat:@"%0.0fpx", settings.readerSettings.fontSize];
-                    
+
                     NSMutableDictionary *views = [@{@"detail": self.fontSizeLabel, @"title": title} mutableCopy];
-                    
+
                     [cell.contentView addSubview:title];
                     [cell.contentView addSubview:self.fontSizeLabel];
                     [cell.contentView lhs_addConstraints:@"|-14-[title]" views:views];
                     [cell.contentView lhs_addConstraints:@"V:|-12-[title]" views:views];
                     [cell.contentView lhs_addConstraints:@"[detail]-14-|" views:views];
                     [cell.contentView lhs_addConstraints:@"V:|-12-[detail]" views:views];
-                    
+
                     if ([self.toggledIndexPaths containsObject:indexPath]) {
                         views[@"slider"] = self.fontSizeSlider;
-                        
+
                         [cell.contentView addSubview:self.fontSizeSlider];
                         [cell.contentView lhs_addConstraints:@"H:|-24-[slider]-24-|" views:views];
                         [cell.contentView lhs_addConstraints:@"V:[slider]-12-|" views:views];
@@ -329,7 +329,7 @@ static NSString *CellIdentifier = @"Cell";
 #endif
                     break;
                 }
-                    
+
                 case PPReaderSettingsMainRowDisplayImages: {
                     cell.textLabel.text = NSLocalizedString(@"Display images?", nil);
 
@@ -339,20 +339,20 @@ static NSString *CellIdentifier = @"Cell";
                     cell.accessoryView = self.displayImagesSwitch;
                     break;
                 }
-                    
+
                 case PPReaderSettingsMainRowFontLineSpacing: {
                     title.text = NSLocalizedString(@"Line Spacing", nil);
                     self.lineSpacingLabel.text = [NSString stringWithFormat:@"%0.1fem", settings.readerSettings.lineSpacing];
-                    
+
                     NSMutableDictionary *views = [@{@"detail": self.lineSpacingLabel, @"title": title} mutableCopy];
-                    
+
                     [cell.contentView addSubview:title];
                     [cell.contentView addSubview:self.lineSpacingLabel];
                     [cell.contentView lhs_addConstraints:@"|-14-[title]" views:views];
                     [cell.contentView lhs_addConstraints:@"V:|-12-[title]" views:views];
                     [cell.contentView lhs_addConstraints:@"[detail]-14-|" views:views];
                     [cell.contentView lhs_addConstraints:@"V:|-12-[detail]" views:views];
-                    
+
 #if PPREADER_USE_SLIDERS
                     if ([self.toggledIndexPaths containsObject:indexPath]) {
                         views[@"slider"] = self.lineSpacingSlider;
@@ -363,25 +363,25 @@ static NSString *CellIdentifier = @"Cell";
 #endif
                     break;
                 }
-            
+
                 case PPReaderSettingsMainRowHeaderFontFamily:
                     cell.textLabel.text = NSLocalizedString(@"Header Font", nil);
                     cell.detailTextLabel.text = settings.readerSettings.headerFontName;
                     break;
-                    
+
                 case PPReaderSettingsMainRowMargin: {
                     title.text = NSLocalizedString(@"Margins", nil);
                     self.marginLabel.text = [NSString stringWithFormat:@"%lu%%", (long)settings.readerSettings.margin];
 
                     NSMutableDictionary *views = [@{@"detail": self.marginLabel, @"title": title} mutableCopy];
-                    
+
                     [cell.contentView addSubview:title];
                     [cell.contentView addSubview:self.marginLabel];
                     [cell.contentView lhs_addConstraints:@"|-14-[title]" views:views];
                     [cell.contentView lhs_addConstraints:@"V:|-12-[title]" views:views];
                     [cell.contentView lhs_addConstraints:@"[detail]-14-|" views:views];
                     [cell.contentView lhs_addConstraints:@"V:|-12-[detail]" views:views];
-                    
+
 #if PPREADER_USE_SLIDERS
                     if ([self.toggledIndexPaths containsObject:indexPath]) {
                         views[@"slider"] = self.marginSlider;
@@ -404,33 +404,33 @@ static NSString *CellIdentifier = @"Cell";
                         case NSTextAlignmentCenter:
                             cell.detailTextLabel.text = NSLocalizedString(@"Center", nil);
                             break;
-                            
+
                         case NSTextAlignmentRight:
                             cell.detailTextLabel.text = NSLocalizedString(@"Right", nil);
                             break;
-                            
+
                         case NSTextAlignmentJustified:
                             cell.detailTextLabel.text = NSLocalizedString(@"Justified", nil);
                             break;
-                            
+
                         default:
                             break;
                     }
                     break;
-                    
+
                 case PPReaderSettingsMainRowTheme: {
                     [cell.contentView addSubview:self.whiteThemeButton];
                     [cell.contentView addSubview:self.yellowThemeButton];
                     [cell.contentView addSubview:self.greyThemeButton];
                     [cell.contentView addSubview:self.darkGreyThemeButton];
                     [cell.contentView addSubview:self.blackThemeButton];
-                    
+
                     NSDictionary *views = @{@"white": self.whiteThemeButton,
                                             @"yellow": self.yellowThemeButton,
                                             @"gray": self.greyThemeButton,
                                             @"dark": self.darkGreyThemeButton,
                                             @"black": self.blackThemeButton };
-                    
+
                     [self.whiteThemeButton lhs_fillHeightOfSuperview];
                     [self.yellowThemeButton lhs_fillHeightOfSuperview];
                     [self.greyThemeButton lhs_fillHeightOfSuperview];
@@ -447,7 +447,7 @@ static NSString *CellIdentifier = @"Cell";
                 }
             }
             break;
-            
+
         case PPReaderSettingsSectionPreview: {
             [cell.contentView addSubview:self.whiteThemeButton];
             [cell.contentView addSubview:self.yellowThemeButton];
@@ -455,14 +455,14 @@ static NSString *CellIdentifier = @"Cell";
             [cell.contentView addSubview:self.darkGreyThemeButton];
             [cell.contentView addSubview:self.blackThemeButton];
             [cell.contentView addSubview:self.exampleWebView];
-            
+
             NSDictionary *views = @{@"white": self.whiteThemeButton,
                                     @"yellow": self.yellowThemeButton,
                                     @"grey": self.greyThemeButton,
                                     @"dark": self.darkGreyThemeButton,
                                     @"black": self.blackThemeButton,
                                     @"webview": self.exampleWebView };
-            
+
             [cell.contentView lhs_addConstraints:@"V:|[white(44)][webview]|" views:views];
             [cell.contentView lhs_addConstraints:@"V:|[yellow(==white)]" views:views];
             [cell.contentView lhs_addConstraints:@"V:|[grey(==white)]" views:views];
@@ -484,7 +484,7 @@ static NSString *CellIdentifier = @"Cell";
     switch ((PPReaderSettingsSectionType)section) {
         case PPReaderSettingsSectionMain:
             return PPReaderSettingsMainRowCount;
-            
+
         case PPReaderSettingsSectionPreview:
             return PPReaderSettingsPreviewRowCount;
     }
@@ -504,7 +504,7 @@ static NSString *CellIdentifier = @"Cell";
             [self.navigationController pushViewController:fontSelectionViewController animated:YES];
             break;
         }
-            
+
         case PPReaderSettingsMainRowFontSize:
         case PPReaderSettingsMainRowMargin:
         case PPReaderSettingsMainRowFontLineSpacing: {
@@ -513,13 +513,13 @@ static NSString *CellIdentifier = @"Cell";
             } else {
                 [self.toggledIndexPaths addObject:indexPath];
             }
-            
+
             [self.tableView beginUpdates];
             [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView endUpdates];
             break;
         }
-            
+
         case PPReaderSettingsMainRowTextAlignment: {
             BOOL show = NO;
             if (show) {
@@ -538,25 +538,25 @@ static NSString *CellIdentifier = @"Cell";
                     case NSTextAlignmentLeft:
                         readerSettings.textAlignment = NSTextAlignmentCenter;
                         break;
-                        
+
                     case NSTextAlignmentCenter:
                         readerSettings.textAlignment = NSTextAlignmentRight;
                         break;
-                        
+
                     case NSTextAlignmentRight:
                         readerSettings.textAlignment = NSTextAlignmentJustified;
                         break;
-                        
+
                     case NSTextAlignmentJustified:
                         readerSettings.textAlignment = NSTextAlignmentLeft;
                         break;
 
                     default: break;
                 }
-                
+
                 settings.readerSettings = readerSettings;
                 [settings.readerSettings updateCustomReaderCSSFile];
-                
+
                 [self.tableView beginUpdates];
                 [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPReaderSettingsMainRowTextAlignment inSection:PPReaderSettingsSectionMain]]
                                       withRowAnimation:UITableViewRowAnimationFade];
@@ -566,7 +566,7 @@ static NSString *CellIdentifier = @"Cell";
             }
             break;
         }
-            
+
         case PPReaderSettingsMainRowDisplayImages:
             break;
 
@@ -577,8 +577,8 @@ static NSString *CellIdentifier = @"Cell";
 #pragma mark - LHSFontSelecting
 
 - (void)setFontName:(NSString *)fontName forFontSelectionViewController:(LHSFontSelectionViewController *)viewController {
-    
-    
+
+
 
     PPSettings *settings = [PPSettings sharedSettings];
     PPReaderSettings *readerSettings = settings.readerSettings;
@@ -600,10 +600,10 @@ static NSString *CellIdentifier = @"Cell";
 - (void)switchChangedValue:(id)sender {
     PPSettings *settings = [PPSettings sharedSettings];
     PPReaderSettings *readerSettings = settings.readerSettings;
-    
+
     if (sender == self.displayImagesSwitch) {
         readerSettings.displayImages = self.displayImagesSwitch.on;
-        
+
     }
     settings.readerSettings = readerSettings;
     [settings.readerSettings updateCustomReaderCSSFile];
@@ -613,28 +613,28 @@ static NSString *CellIdentifier = @"Cell";
 - (void)themeButtonTouchUpInside:(id)sender {
     PPSettings *settings = [PPSettings sharedSettings];
     PPReaderSettings *readerSettings = settings.readerSettings;
-    
+
 
     if (sender == self.whiteThemeButton) {
         readerSettings.backgroundColor = HEX(0xfbfbfbff);
         readerSettings.textColor = HEX(0x000000ff);
-        
+
     } else if (sender == self.yellowThemeButton) {
         readerSettings.backgroundColor = HEX(0xfffff7ff);
         readerSettings.textColor = HEX(0x000000ff);
-        
+
     } else if (sender == self.greyThemeButton) {
         readerSettings.backgroundColor = HEX(0xf5f5f5ff);
         readerSettings.textColor = HEX(0x282828ff);
-        
+
     } else if (sender == self.darkGreyThemeButton) {
         readerSettings.backgroundColor = HEX(0x343a3aff);
         readerSettings.textColor = HEX(0xfdfdfdff);
-        
+
     } else if (sender == self.blackThemeButton) {
         readerSettings.backgroundColor = HEX(0x000000ff);
         readerSettings.textColor = HEX(0xfdfdfdff);
-        
+
     }
 
     self.exampleWebView.backgroundColor = readerSettings.backgroundColor;
@@ -647,41 +647,41 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)sliderChangedValue:(id)sender {
     PPSettings *settings = [PPSettings sharedSettings];
-    
+
     PPReaderSettings *readerSettings = settings.readerSettings;
     if (sender == self.fontSizeSlider) {
         int calculatedValue = (int)self.fontSizeSlider.value;
         if (readerSettings.fontSize != calculatedValue) {
-            
+
 
             readerSettings.fontSize = calculatedValue;
             settings.readerSettings = readerSettings;
             [settings.readerSettings updateCustomReaderCSSFile];
-            
+
             self.fontSizeLabel.text = [NSString stringWithFormat:@"%0.0fpx", settings.readerSettings.fontSize];
             [self updateExampleWebView];
         }
     } else if (sender == self.lineSpacingSlider) {
         float calculatedValue = (int)(10 * self.lineSpacingSlider.value) / 10.;
         if (readerSettings.lineSpacing != calculatedValue) {
-            
+
 
             readerSettings.lineSpacing = calculatedValue;
             settings.readerSettings = readerSettings;
             [settings.readerSettings updateCustomReaderCSSFile];
-            
+
             self.lineSpacingLabel.text = [NSString stringWithFormat:@"%0.1fem", settings.readerSettings.lineSpacing];
             [self updateExampleWebView];
         }
     } else if (sender == self.marginSlider) {
         float calculatedValue = (int)self.marginSlider.value;
         if (readerSettings.margin != calculatedValue) {
-            
+
 
             readerSettings.margin = calculatedValue;
             settings.readerSettings = readerSettings;
             [settings.readerSettings updateCustomReaderCSSFile];
-            
+
             self.marginLabel.text = [NSString stringWithFormat:@"%lu%%", (long)settings.readerSettings.margin];
             [self updateExampleWebView];
         }
@@ -732,7 +732,7 @@ static NSString *CellIdentifier = @"Cell";
                              self.webViewContainerPinnedToTopConstraint.active = YES;
                              self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Minimize", nil);
                          }
-                         
+
                          [self.view layoutIfNeeded];
                      }];
 }

@@ -45,7 +45,7 @@ static CGFloat kPPShrinkBackAnimationDuration = 0.6;
         toViewController.view.transform = CATransform3DGetAffineTransform(transform3D);
 
         [containerView bringSubviewToFront:fromViewController.view];
-        
+
         animations = ^{
             cover.alpha = 0;
             toViewController.view.layer.transform = CATransform3DIdentity;
@@ -62,14 +62,14 @@ static CGFloat kPPShrinkBackAnimationDuration = 0.6;
         fromViewController.view.layer.transform = CATransform3DIdentity;
 
         [containerView bringSubviewToFront:toViewController.view];
-        
+
         animations = ^{
             toViewController.view.frame = CGRectOffset(toViewController.view.frame, 0, -CGRectGetHeight(toViewController.view.frame));
             cover.alpha = .4;
             fromViewController.view.transform = CATransform3DGetAffineTransform(transform3D);
         };
     }
-    
+
     [UIView animateWithDuration:[self transitionDuration:transitionContext]
                           delay:0
          usingSpringWithDamping:10

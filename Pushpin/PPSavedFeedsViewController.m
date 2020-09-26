@@ -44,7 +44,7 @@ static NSString *CellIdentifier = @"Cell";
     [super viewWillAppear:animated];
 
     [self.navigationController.navigationBar setBarTintColor:HEX(0xd5a470ff)];
-    
+
     // Check if we have any updates from iCloud
     NSUbiquitousKeyValueStore *store = [NSUbiquitousKeyValueStore defaultStore];
     [store synchronize];
@@ -61,19 +61,19 @@ static NSString *CellIdentifier = @"Cell";
             [db commit];
 
             [self.feeds removeAllObjects];
-            
+
             FMResultSet *result = [db executeQuery:@"SELECT components FROM feeds ORDER BY components ASC"];
             while ([result next]) {
                 NSString *componentString = [result stringForColumnIndex:0];
                 NSArray *components = [componentString componentsSeparatedByString:@" "];
-                
+
                 [iCloudFeeds addObject:componentString];
                 [self.feeds addObject:@{@"components": components, @"title": [components componentsJoinedByString:@"+"]}];
             }
 
             [result close];
         }];
-        
+
         // Remove duplicates from the array
         NSArray *iCloudFeedsWithoutDuplicates = [[NSSet setWithArray:iCloudFeeds] allObjects];
 
@@ -84,7 +84,7 @@ static NSString *CellIdentifier = @"Cell";
             [self.tableView reloadData];
         });
     });
-    
+
     UIBarButtonItem *addBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addSavedFeedButtonTouchUpInside:)];
     self.navigationItem.rightBarButtonItem = addBarButtonItem;
 }
@@ -124,7 +124,7 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
+
     if (self.feeds.count > 0) {
         PPGenericPostViewController *postViewController = [PPPinboardFeedDataSource postViewControllerWithComponents:self.feeds[indexPath.row][@"components"]];
         [[PPAppDelegate sharedDelegate].navigationController pushViewController:postViewController animated:YES];
@@ -150,16 +150,16 @@ static NSString *CellIdentifier = @"Cell";
                 [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
             } else {
                 [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                
+
                 if (indexPath.row == 0) {
                     [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:1 inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
                 }
-                
+
                 if (indexPath.row == self.feeds.count) {
                     [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:(self.feeds.count - 1) inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
                 }
             }
-            
+
             [self.tableView endUpdates];
         });
     }];

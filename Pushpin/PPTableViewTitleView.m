@@ -24,14 +24,14 @@
     label.translatesAutoresizingMaskIntoConstraints = NO;
     label.font = [UIFont boldSystemFontOfSize:fontSize];
     label.text = text;
-    
+
     if (text) {
         [self addSubview:label];
-        
+
         [self lhs_addConstraints:@"H:|-12-[label]-12-|" views:NSDictionaryOfVariableBindings(label)];
         [self lhs_addConstraints:@"V:[label]-8-|" views:NSDictionaryOfVariableBindings(label)];
     }
-    
+
     return self;
 }
 

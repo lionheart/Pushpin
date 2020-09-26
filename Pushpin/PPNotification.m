@@ -38,7 +38,7 @@ static PPNotification *shared;
         UILocalNotification *notification = [[UILocalNotification alloc] init];
         notification.alertBody = message;
         notification.alertAction = NSLocalizedString(@"Open Pushpin", nil);
-        
+
         if (!userInfo) {
             notification.userInfo = @{@"success": @(NO), @"updated": @(NO)};
         }
@@ -118,7 +118,7 @@ static PPNotification *shared;
         CGSize size = rect.size;
 
         _notificationView = [[UIView alloc] initWithFrame:CGRectMake(0, [UIApplication currentSize].height, [UIApplication currentSize].width, size.height + 2 * kPPNotificationPadding)];
-        
+
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, [UIApplication currentSize].width, size.height + 2 * kPPNotificationPadding)];
         imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         imageView.image = [[UIImage imageNamed:@"NotificationBackground"] resizableImageWithCapInsets:UIEdgeInsetsMake(4, [UIApplication currentSize].width / 2., 52, [UIApplication currentSize].width / 2.)];
@@ -141,7 +141,7 @@ static PPNotification *shared;
         [button setImage:[UIImage imageNamed:@"NotificationX"] forState:UIControlStateNormal];
         [button addTarget:self action:@selector(hide) forControlEvents:UIControlEventTouchUpInside];
         button.frame = CGRectMake([UIApplication currentSize].width - 27, (CGRectGetHeight(_notificationView.frame) - 17) / 2, 17, 17);
-        
+
         [_notificationView addSubview:label];
         [_notificationView addSubview:button];
     }

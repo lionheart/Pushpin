@@ -31,7 +31,7 @@
     self = [super init];
     if (self) {
         self.style = style;
-        
+
         self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:self.style];
         self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
         self.tableView.backgroundColor = HEX(0xF7F9FDff);

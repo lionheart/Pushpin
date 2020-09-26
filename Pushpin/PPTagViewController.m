@@ -75,9 +75,9 @@ static NSString *CellIdentifier = @"TagCell";
     self.tagCounts = [NSMutableDictionary dictionary];
     self.sectionTitles = [NSMutableDictionary dictionary];
     self.duplicates = [NSMutableDictionary dictionary];
-    
+
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
-    
+
     self.tableView.opaque = YES;
     self.tableView.backgroundColor = HEX(0xF7F9FDff);
     self.tableView.sectionIndexBackgroundColor = [UIColor whiteColor];
@@ -125,8 +125,8 @@ static NSString *CellIdentifier = @"TagCell";
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    
+
+
 }
 
 #pragma mark - UITableViewDataSource
@@ -193,7 +193,7 @@ static NSString *CellIdentifier = @"TagCell";
         if ([tags count] > 1) {
             NSString *tagsString = [tags componentsJoinedByString:@" · "];
             NSRange range = NSMakeRange([[tags firstObject] length] + 1, [tagsString length] - [[tags firstObject] length] - 1);
-            
+
             NSMutableAttributedString *attributedText = [[NSMutableAttributedString alloc] initWithString:tagsString
                                                                                                attributes:@{NSForegroundColorAttributeName: [UIColor blackColor],
                                                                                                             NSFontAttributeName: [PPTheme textLabelFont] }];
@@ -234,7 +234,7 @@ static NSString *CellIdentifier = @"TagCell";
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSMutableArray *newTagNames = [NSMutableArray array];
             NSMutableArray *oldTagNames = [NSMutableArray array];
-            
+
             NSMutableArray *indexPathsToRemove = [NSMutableArray array];
             NSMutableArray *indexPathsToAdd = [NSMutableArray array];
             NSMutableArray *indexPathsToReload = [NSMutableArray array];
@@ -242,35 +242,35 @@ static NSString *CellIdentifier = @"TagCell";
 
             [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                 FMResultSet *result = [db executeQuery:@"SELECT name, count FROM tag WHERE name in (SELECT tag_fts.name FROM tag_fts WHERE tag_fts.name MATCH ?) ORDER BY count DESC" withArgumentsInArray:@[[searchText stringByAppendingString:@"*"]]];
-                
+
                 for (NSDictionary *tag in self.filteredTags) {
                     [oldTagNames addObject:tag];
                 }
-                
+
                 while ([result next]) {
                     NSString *tagName = [result stringForColumn:@"name"];
                     tagName = [tagName stringByDecodingHTMLEntities];
-                    
+
                     if (tagName) {
                         [newTagNames addObject:tagName];
-                        
+
                         if (![oldTagNames containsObject:tagName]) {
                             [indexPathsToAdd addObject:[NSIndexPath indexPathForRow:index inSection:0]];
                         }
                         index++;
                     }
                 }
-                
+
                 [result close];
             }];
-            
+
             NSInteger i;
             for (i=0; i<oldTagNames.count; i++) {
                 if (![newTagNames containsObject:oldTagNames[i]]) {
                     [indexPathsToRemove addObject:[NSIndexPath indexPathForRow:i inSection:0]];
                 }
             }
-            
+
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.filteredTags = newTagNames;
                 [self.searchResultsController.tableView beginUpdates];
@@ -311,7 +311,7 @@ static NSString *CellIdentifier = @"TagCell";
         [self.searchResultsController.tableView deselectRowAtIndexPath:indexPath animated:YES];
         tag = self.filteredTags[indexPath.row];
     }
-    
+
     tag = [tag stringByEncodingHTMLEntities];
 
     [self.navigationController.navigationBar setBarTintColor:HEX(0x0096FFFF)];
@@ -331,9 +331,9 @@ static NSString *CellIdentifier = @"TagCell";
                 postViewController.navigationItem.leftBarButtonItem = showPopoverBarButtonItem;
             }
         }
-        
+
         [navigationController setViewControllers:@[postViewController] animated:YES];
-        
+
         UIPopoverController *popover = [PPAppDelegate sharedDelegate].feedListViewController.popover;
         if (popover) {
             [popover dismissPopoverAnimated:YES];
@@ -350,13 +350,13 @@ static NSString *CellIdentifier = @"TagCell";
             NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:point];
             CGRect rect = [self.tableView rectForRowAtIndexPath:indexPath];
             self.tagToDelete = [self tagForIndexPath:indexPath];
-            
+
             NSArray *duplicates = self.duplicates[self.tagToDelete];
             if ([duplicates count] > 1) {
                 [self showSelectTagToDeleteActionSheet];
             } else {
                 self.tagActionSheet = [UIAlertController lhs_actionSheetWithTitle:self.tagToDelete];
-                
+
                 [self.tagActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Delete", nil)
                                                       style:UIAlertActionStyleDestructive
                                                     handler:^(UIAlertAction *action) {
@@ -366,7 +366,7 @@ static NSString *CellIdentifier = @"TagCell";
                 [self.tagActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                       style:UIAlertActionStyleCancel
                                                     handler:nil];
-                
+
                 self.tagActionSheet.popoverPresentationController.sourceView = self.tableView;
                 self.tagActionSheet.popoverPresentationController.sourceRect = rect;
                 [self presentViewController:self.tagActionSheet animated:YES completion:nil];
@@ -385,7 +385,7 @@ static NSString *CellIdentifier = @"TagCell";
     dispatch_once(&onceToken, ^{
         serialQueue = dispatch_queue_create("com.lionheartsw.TagUpdateQueue", DISPATCH_QUEUE_SERIAL);
     });
-    
+
     if (!self.searchController.active) {
         dispatch_async(serialQueue, ^{
             NSArray *letters = [[UILocalizedIndexedCollation currentCollation] sectionTitles];
@@ -404,25 +404,25 @@ static NSString *CellIdentifier = @"TagCell";
                     NSString *count = [results stringForColumnIndex:2];
                     NSMutableString *lossyName = [name mutableCopy];
                     CFStringTransform((__bridge  CFMutableStringRef)lossyName, NULL, kCFStringTransformStripCombiningMarks, NO);
-                    
+
                     if ([name length] == 0) {
                         continue;
                     }
-                    
+
                     if ([count length] == 0) {
                         continue;
                     }
-                    
+
                     NSString *firstLetter = [[lossyName substringToIndex:1] uppercaseString];
                     if (![letters containsObject:firstLetter]) {
                         firstLetter = @"#";
                     }
-                    
+
                     NSMutableArray *temp = updatedSectionTitles[firstLetter];
                     if (!temp) {
                         temp = [NSMutableArray array];
                     }
-                    
+
                     if ([names count] > 0) {
                         updatedDuplicates[name] = names;
                     }
@@ -435,42 +435,42 @@ static NSString *CellIdentifier = @"TagCell";
                     [temp addObject:name];
                     updatedSectionTitles[firstLetter] = temp;
                 }
-                
+
                 [results close];
             }];
-            
+
             // Handle section additions / removals
             NSArray *previousSortedTitles = [self sortedSectionTitles:self.sectionTitles];
             NSArray *updatedSortedTitles = [self sortedSectionTitles:updatedSectionTitles];
-            
+
             NSMutableSet *A = [NSMutableSet setWithArray:previousSortedTitles];
             NSMutableSet *B = [NSMutableSet setWithArray:updatedSortedTitles];
-            
+
             NSMutableSet *deletedSectionTitles = [NSMutableSet setWithSet:A];
             [deletedSectionTitles minusSet:B];
-            
+
             NSMutableSet *insertedSectionTitles = [NSMutableSet setWithSet:B];
             [insertedSectionTitles minusSet:A];
-            
+
             NSMutableIndexSet *sectionIndicesToDelete = [NSMutableIndexSet indexSet];
             for (NSString *title in deletedSectionTitles) {
                 [sectionIndicesToDelete addIndex:[previousSortedTitles indexOfObject:title]];
             }
-            
+
             NSMutableIndexSet *sectionIndicesToInsert = [NSMutableIndexSet indexSet];
             for (NSString *title in insertedSectionTitles) {
                 [sectionIndicesToInsert addIndex:[updatedSortedTitles indexOfObject:title]];
             }
-            
+
             // Get sections that are in both A & B.
             NSMutableSet *reloadedSectionTitles = [NSMutableSet setWithSet:A];
             [A intersectSet:B];
-            
+
             // Now we handle the changes for the index paths
             NSMutableArray *indexPathsToInsert = [NSMutableArray array];
             NSMutableArray *indexPathsToDelete = [NSMutableArray array];
             NSMutableArray *indexPathsToReload = [NSMutableArray array];
-            
+
             NSInteger section = 0;
             for (NSString *title in updatedSortedTitles) {
                 if ([reloadedSectionTitles containsObject:title]) {
@@ -478,27 +478,27 @@ static NSString *CellIdentifier = @"TagCell";
                     NSArray *updatedTags = updatedSectionTitles[title];
                     NSMutableSet *Atags = [NSMutableSet setWithArray:previousTags];
                     NSMutableSet *Btags = [NSMutableSet setWithArray:updatedTags];
-                    
+
                     NSMutableSet *deletedTags = [NSMutableSet setWithSet:Atags];
                     [deletedTags minusSet:Btags];
-                    
+
                     NSMutableSet *insertedTags = [NSMutableSet setWithSet:Btags];
                     [insertedTags minusSet:Atags];
-                    
+
                     for (NSString *tag in deletedTags) {
                         NSInteger row = [previousTags indexOfObject:tag];
                         [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:row inSection:section]];
                     }
-                    
+
                     for (NSString *tag in insertedTags) {
                         NSInteger row = [updatedTags indexOfObject:tag];
                         [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:row inSection:section]];
                     }
-                    
+
                     // Get sections that are in both A & B.
                     NSMutableSet *reloadedTags = [NSMutableSet setWithSet:Atags];
                     [reloadedTags intersectSet:Btags];
-                    
+
                     for (NSString *tag in reloadedTags) {
                         if (![self.tagCounts[tag] isEqualToString:updatedTagCounts[tag]]) {
                             NSInteger row = [previousTags indexOfObject:tag];
@@ -506,10 +506,10 @@ static NSString *CellIdentifier = @"TagCell";
                         }
                     }
                 }
-                
+
                 section++;
             }
-            
+
             BOOL firstLaunch = self.tagCounts.count == 0;
             if (firstLaunch || indexPathsToDelete.count > 0 || indexPathsToInsert.count > 0 || indexPathsToReload.count > 0 || sectionIndicesToDelete.count > 0 || sectionIndicesToInsert.count > 0) {
                 // We have the semaroid
@@ -552,7 +552,7 @@ static NSString *CellIdentifier = @"TagCell";
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                         [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
                             [db executeUpdate:@"DELETE FROM tag WHERE name=?" withArgumentsInArray:@[name]];
-                            
+
                             NSMutableArray *hashesToUpdate = [NSMutableArray array];
                             NSMutableArray *parameterPlaceholders = [NSMutableArray array];
                             FMResultSet *result = [db executeQuery:@"SELECT bookmark_hash FROM tagging WHERE tag_name=?" withArgumentsInArray:@[name]];
@@ -564,13 +564,13 @@ static NSString *CellIdentifier = @"TagCell";
                             }
 
                             [result close];
-                            
+
                             [db executeUpdate:@"DELETE FROM tagging WHERE tag_name=?" withArgumentsInArray:@[name]];
-                            
+
                             NSString *query = [NSString stringWithFormat:@"UPDATE bookmark SET tags=(SELECT (group_concat(tag_name, ' ') || '') FROM tagging WHERE bookmark_hash=bookmark.hash) WHERE hash IN (%@)", [parameterPlaceholders componentsJoinedByString:@", "]];
                             [db executeUpdate:query withArgumentsInArray:hashesToUpdate];
                         }];
-                        
+
                         [self.tagCounts removeObjectForKey:name];
                         self.tagToDelete = nil;
                     });
@@ -586,11 +586,11 @@ static NSString *CellIdentifier = @"TagCell";
                                                      handler:^(UIAlertAction *action) {
                                                          [self deleteTagWithName:self.tagToDelete];
                                                      }];
-    
+
     [self.deleteConfirmationAlertView lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                        style:UIAlertActionStyleCancel
                                                      handler:nil];
-    
+
     [self presentViewController:self.deleteConfirmationAlertView animated:YES completion:nil];
 }
 
@@ -606,11 +606,11 @@ static NSString *CellIdentifier = @"TagCell";
                                                               [self showDeleteConfirmationAlertView];
                                                           }];
     }
-    
+
     [self.selectTagToDeleteActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                         style:UIAlertActionStyleCancel
                                                       handler:nil];
-    
+
     self.selectTagToDeleteActionSheet.popoverPresentationController.sourceView = self.view;
     [self presentViewController:self.selectTagToDeleteActionSheet animated:YES completion:nil];
 }

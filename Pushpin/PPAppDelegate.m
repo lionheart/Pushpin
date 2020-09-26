@@ -65,7 +65,7 @@
 #if !TARGET_OS_MACCATALYST
     [[ChimpKit sharedKit] setApiKey:@"f3bfc69f8d267252c14d76664432f968-us7"];
 #endif
-    
+
     NSString *googlePlistName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GooglePlistName"];
     NSString *path = [[NSBundle mainBundle] pathForResource:googlePlistName ofType:@"plist"];
     DLog(@"%@", path);
@@ -150,7 +150,7 @@
                                  }];
 
     [PPURLCache migrateDatabase];
-    
+
 #if TARGET_OS_MACCATALYST
     NSURL *cacheURL = [[[NSFileManager defaultManager] URLForDirectory:NSCachesDirectory
                                                               inDomain:NSUserDomainMask
@@ -158,8 +158,8 @@
                                                                 create:YES
                                                                  error:nil]
                        URLByAppendingPathComponent:@"io.aurora.pushpin.urlcache"];
-    
-    
+
+
     self.urlCache = [[PPURLCache alloc] initWithMemoryCapacity:0
                                   diskCapacity:[PPSettings sharedSettings].offlineUsageLimit
                                                   directoryURL:cacheURL];
@@ -208,8 +208,8 @@
     if (settings.isAuthenticated) {
         pinboard.token = settings.token;
 
-        
-        
+
+
 
         if ([UIApplication isIPad]) {
             [self.window setRootViewController:self.splitViewController];
@@ -249,7 +249,7 @@
         } else {
             self.bookmarksUpdated = [notification.userInfo[@"updated"] boolValue];
             NSString *text = notification.alertBody;
-            
+
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[PPStatusBar status] showWithText:text];
             });
@@ -270,15 +270,15 @@
                     vc.navigationItem.leftBarButtonItem = showPopoverBarButtonItem;
                 }
             }
-            
+
             [navigationController setViewControllers:@[vc] animated:YES];
-            
+
             if ([vc respondsToSelector:@selector(postDataSource)]) {
                 if ([[(PPGenericPostViewController *)vc postDataSource] respondsToSelector:@selector(barTintColor)]) {
                     [self.feedListNavigationController.navigationBar setBarTintColor:[[(PPGenericPostViewController *)vc postDataSource] barTintColor]];
                 }
             }
-            
+
             UIPopoverController *popover = [PPAppDelegate sharedDelegate].feedListViewController.popover;
             if (popover) {
                 [popover dismissPopoverAnimated:YES];
@@ -317,7 +317,7 @@
                     kPushpinFilterType unread = (kPushpinFilterType) [searchResults intForColumn:@"unread"];
                     kPushpinFilterType starred = (kPushpinFilterType) [searchResults intForColumn:@"starred"];
                     kPushpinFilterType tagged = (kPushpinFilterType) [searchResults intForColumn:@"tagged"];
-                    
+
                     search = @{@"name": name,
                                @"query": query,
                                @"private": @(private),
@@ -331,27 +331,27 @@
             if (searchQuery && ![searchQuery isEqualToString:@""]) {
                 dataSource.searchQuery = search[@"query"];
             }
-            
+
             dataSource.unread = (kPushpinFilterType) [search[@"unread"] integerValue];
             dataSource.isPrivate = (kPushpinFilterType) [search[@"private"] integerValue];
             dataSource.starred = (kPushpinFilterType) [search[@"starred"] integerValue];
-            
+
             kPushpinFilterType tagged = (kPushpinFilterType) [search[@"tagged"] integerValue];
             switch (tagged) {
                 case kPushpinFilterTrue:
                     dataSource.untagged = kPushpinFilterFalse;
                     break;
-                    
+
                 case kPushpinFilterFalse:
                     dataSource.untagged = kPushpinFilterTrue;
                     break;
-                    
+
                 case kPushpinFilterNone:
                     dataSource.untagged = kPushpinFilterNone;
                     break;
             }
         }
-        
+
         postViewController.postDataSource = dataSource;
         postViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close"
                                                                                                style:UIBarButtonItemStyleDone
@@ -372,7 +372,7 @@
         if (data[@"user"]) {
             [components addObject:[NSString stringWithFormat:@"u:%@", data[@"user"]]];
         }
-        
+
         if (data[@"tags"]) {
             for (NSString *tag in [data[@"tags"] componentsSeparatedByString:@","]) {
                 if (![tag isEqualToString:@""]) {
@@ -419,7 +419,7 @@
         webViewController.shouldMobilize = [PPSettings sharedSettings].openLinksWithMobilizer;
         webViewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStyleDone target:self action:@selector(closeModal:)];
         PPNavigationController *navController = [[PPNavigationController alloc] initWithRootViewController:webViewController];
-        
+
         if (self.navigationController.presentedViewController) {
             [self.navigationController dismissViewControllerAnimated:YES completion:^{
                 [self.navigationController presentViewController:navController animated:NO completion:nil];
@@ -496,7 +496,7 @@
                                 @(PPPinboardCommunityFeedJapan),
                                 @(PPPinboardCommunityFeedRecent),
                             ];
-    
+
     settings.hiddenFeedNames = @[];
 
     [keychain resetKeychainItem];
@@ -511,7 +511,7 @@
        forPopoverController:(UIPopoverController *)pc {
     barButtonItem.image = [UIImage imageNamed:@"navigation-list"];
     self.navigationController.splitViewControllerBarButtonItem = barButtonItem;
-    
+
     if (self.navigationController.viewControllers.count == 1) {
         self.navigationController.topViewController.navigationItem.leftBarButtonItem = barButtonItem;
     }
@@ -650,7 +650,7 @@
                 return;
             }
 
-            
+
             __block BOOL alreadyExistsInBookmarks;
             __block BOOL alreadyRejected;
 
@@ -703,7 +703,7 @@
                                                         }
 
                                                         [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
-                                                        
+
                                                     }];
 
                     [[UIViewController lhs_topViewController] presentViewController:alertController animated:YES completion:nil];
@@ -743,7 +743,7 @@
                                                                                       }
 
                                                                                       [self.navigationController presentViewController:addBookmarkViewController animated:YES completion:nil];
-                                                                                      
+
 
                                                                                       self.addOrEditPromptVisible = NO;
                                                                                   }];
@@ -752,7 +752,7 @@
                                                       self.addOrEditPromptVisible = YES;
                                                   }];
                                               });
-                                              
+
                                           }];
 
                 }

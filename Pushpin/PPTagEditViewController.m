@@ -69,7 +69,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+
     self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
     [self setNeedsStatusBarAppearanceUpdate];
     [self.tagTextField becomeFirstResponder];
@@ -103,7 +103,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.tableView.backgroundColor = HEX(0xF7F9FDff);
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.tableView];
-    
+
     self.bottomConstraint = [NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bottomLayoutGuide attribute:NSLayoutAttributeTop multiplier:1 constant:0];
     [self.view addConstraint:self.bottomConstraint];
 
@@ -124,7 +124,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.goBackKeyCommand = [UIKeyCommand keyCommandWithInput:UIKeyInputEscape
                                                 modifierFlags:0
                                                        action:@selector(handleKeyCommand:)];
-    
+
     UIFont *font = [UIFont systemFontOfSize:16];
     self.tagTextField = [[UITextField alloc] init];
     self.tagTextField.font = font;
@@ -135,12 +135,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.tagTextField.clearButtonMode = UITextFieldViewModeAlways;
     self.tagTextField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
     self.tagTextField.placeholder = NSLocalizedString(@"Add new tags here.", nil);
-    
+
     PPSettings *settings = [PPSettings sharedSettings];
     self.tagTextField.autocapitalizationType = settings.autoCapitalizationType;
     self.tagTextField.autocorrectionType = settings.autoCorrectionType;
     self.tagTextField.text = @"";
-    
+
     [self.tableView registerClass:[LHSTableViewCellValue1 class] forCellReuseIdentifier:CellIdentifier];
 }
 
@@ -155,7 +155,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    
+
     [cell.contentView lhs_removeSubviews];
     cell.textLabel.text = @"";
     cell.textLabel.enabled = YES;
@@ -168,10 +168,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
     if (indexPath.section == 0) {
         NSInteger index = indexPath.row - [self tagOffset];
-        
+
         if (index >= 0) {
             cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-            
+
             if (self.filteredPopularAndRecommendedTagsVisible) {
                 cell.textLabel.text = self.filteredPopularAndRecommendedTags[index];
                 cell.detailTextLabel.textColor = HEX(0x96989DFF);
@@ -187,7 +187,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 UIImageView *topImageView = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"toolbar-tag"] lhs_imageWithColor:HEX(0xD8DDE4FF)]];
                 topImageView.frame = CGRectMake(14, 12, 20, 20);
                 [cell.contentView addSubview:topImageView];
-                
+
                 if (self.loadingTags) {
                     UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
                     [activity startAnimating];
@@ -217,10 +217,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 [newArray addObject:replacement];
         }
         self.existingTags = newArray;
-        
+
         NSString *tag = self.existingTags[self.existingTags.count - indexPath.row - 1];
         cell.textLabel.text = tag;
-        
+
         // We set this up as an image view so that the image can be centered in a large tap area.
         UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Delete-Button"]];
         imageView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -274,9 +274,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
+
     NSInteger row = indexPath.row;
-    
+
     if (row >= [self tagOffset] && indexPath.section == 0) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSString *completion;
@@ -284,9 +284,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
             NSMutableArray *indexPathsToInsert = [NSMutableArray array];
             NSMutableIndexSet *indexSetsToInsert = [NSMutableIndexSet indexSet];
             NSMutableArray *indexPathsToReload = [NSMutableArray array];
-            
+
             // Add the row to the bookmark list below
-            
+
             if (self.existingTags.count == 0) {
                 [indexSetsToInsert addIndex:1];
                 [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
@@ -294,9 +294,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:1]];
                 [indexPathsToReload addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
             }
-            
+
             NSInteger index = row - [self tagOffset];
-            
+
             if (self.tagCompletions.count > 0) {
                 completion = self.tagCompletions[index];
                 [indexPathsToDelete addObjectsFromArray:[self indexPathsForAutocompletedRows]];
@@ -304,7 +304,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 [self.existingTags addObject:completion];
             } else if (self.filteredPopularAndRecommendedTagsVisible) {
                 completion = self.filteredPopularAndRecommendedTags[index];
-                
+
                 if (index < self.popularTags.count) {
                     completion = self.popularTags[index];
 
@@ -314,11 +314,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     completion = self.recommendedTags[index];
                     [self.recommendedTags removeObjectAtIndex:(index - self.popularTags.count)];
                 }
-                
+
                 [self.existingTags addObject:completion];
                 [indexPathsToDelete addObject:indexPath];
             }
-            
+
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
                 self.tagTextField.text = @"";
@@ -345,7 +345,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             return NO;
         }
     }
-    
+
     NSString *finalString = [textField.text stringByReplacingCharactersInRange:range withString:string];
     if (finalString.length == 0) {
         self.searchString = nil;
@@ -356,7 +356,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         } else {
             finalAmount = 0;
         }
-        
+
         [self intersectionBetweenStartingAmount:self.tagCompletions.count
                                  andFinalAmount:finalAmount
                                          offset:[self tagOffset]
@@ -364,7 +364,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                            [self.tagCompletions removeAllObjects];
                                            [self.popularTags removeAllObjects];
                                            [self.recommendedTags removeAllObjects];
-                                           
+
                                            [self.tableView beginUpdates];
                                            [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationAutomatic];
                                            [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -383,12 +383,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
     if (tag.length > 0) {
         if (![self.existingTags containsObject:tag]) {
             self.tagTextField.text = @"";
-            
+
             NSMutableArray *indexPathsToInsert = [NSMutableArray array];
             NSMutableArray *indexPathsToDelete = [NSMutableArray array];
             NSMutableArray *indexPathsToReload = [NSMutableArray array];
             NSMutableIndexSet *indexSetsToInsert = [NSMutableIndexSet indexSet];
-            
+
             if (self.existingTags.count == 0) {
                 [indexSetsToInsert addIndex:1];
                 [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
@@ -396,7 +396,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:0 inSection:1]];
                 [indexPathsToReload addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
             }
-            
+
             if (self.filteredPopularAndRecommendedTagsVisible) {
                 [indexPathsToDelete addObjectsFromArray:[self indexPathsForPopularAndSuggestedRows]];
                 [self.popularTags removeAllObjects];
@@ -405,10 +405,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 [indexPathsToDelete addObjectsFromArray:[self indexPathsForAutocompletedRows]];
                 [self.tagCompletions removeAllObjects];
             }
-            
+
             [self.existingTags addObject:tag];
             self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
-            
+
             [self.tableView beginUpdates];
             [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
             [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
@@ -433,7 +433,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
         indexPathsToDelete = [self indexPathsForAutocompletedRows];
         [self.tagCompletions removeAllObjects];
     }
-    
+
     [self.tableView beginUpdates];
     [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
     [self.tableView endUpdates];
@@ -446,16 +446,16 @@ static NSString *CellIdentifier = @"CellIdentifier";
                            andFinalAmount:(NSInteger)final
                                    offset:(NSInteger)offset
                                  callback:(void (^)(NSArray *, NSArray *, NSArray *))callback {
-    
+
     NSMutableArray *indexPathsToReload = [NSMutableArray array];
     NSMutableArray *indexPathsToInsert = [NSMutableArray array];
     NSMutableArray *indexPathsToDelete = [NSMutableArray array];
-    
+
     if (final >= start) {
         for (NSInteger i=0; i<start; i++) {
             [indexPathsToReload addObject:[NSIndexPath indexPathForRow:(i+offset) inSection:0]];
         }
-        
+
         for (NSInteger i=start; i<final; i++) {
             [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:(i+offset) inSection:0]];
         }
@@ -463,12 +463,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
         for (NSInteger i=0; i<final; i++) {
             [indexPathsToReload addObject:[NSIndexPath indexPathForRow:(i+offset) inSection:0]];
         }
-        
+
         for (NSInteger i=final; i<start; i++) {
             [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(i+offset) inSection:0]];
         }
     }
-    
+
     callback(indexPathsToInsert, indexPathsToReload, indexPathsToDelete);
 }
 
@@ -484,7 +484,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         if (!self.filteredPopularAndRecommendedTagsVisible) {
             [UIApplication lhs_setNetworkActivityIndicatorVisible:NO];;
-            
+
             NSInteger previousCount;
             if (self.filteredPopularAndRecommendedTagsVisible) {
                 previousCount = self.filteredPopularAndRecommendedTags.count;
@@ -494,10 +494,10 @@ static NSString *CellIdentifier = @"CellIdentifier";
             } else {
                 previousCount = 0;
             }
-            
+
             [self.popularTags removeAllObjects];
             [self.recommendedTags removeAllObjects];
-            
+
             NSArray *existingTags = [self existingTags];
             for (NSString *tag in self.unfilteredPopularTags) {
                 if (![existingTags containsObject:tag]) {
@@ -505,7 +505,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                     [self.popularTags addObject:tag];
                 }
             }
-            
+
             for (NSString *tag in self.unfilteredRecommendedTags) {
                 if (![existingTags containsObject:tag] && ![self.popularTags containsObject:tag]) {
                     self.tagDescriptions[tag] = @"recommended";
@@ -513,7 +513,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 }
             }
             [self.popularTags filterUsingPredicate:[NSPredicate predicateWithFormat:@"NOT SELF MATCHES '^[ ]?$'"]];
-            
+
             [self intersectionBetweenStartingAmount:previousCount
                                      andFinalAmount:self.filteredPopularAndRecommendedTags.count
                                              offset:[self tagOffset]
@@ -522,11 +522,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                                    self.tagTextField.text = @"";
 
                                                    [self.tableView beginUpdates];
-                                                   
+
                                                    if (self.loadingTags) {
                                                        self.loadingTags = NO;
                                                    }
-                                                   
+
                                                    [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
                                                    [self.tableView insertRowsAtIndexPaths:indexPathsToInsert withRowAnimation:UITableViewRowAnimationFade];
                                                    [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
@@ -547,12 +547,12 @@ static NSString *CellIdentifier = @"CellIdentifier";
         dispatch_async(dispatch_get_main_queue(), ^{
             self.loadingTags = YES;
         });
-        
+
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             ASPinboard *pinboard = [ASPinboard sharedInstance];
             [self.unfilteredPopularTags removeAllObjects];
             [self.unfilteredRecommendedTags removeAllObjects];
-            
+
             [pinboard tagSuggestionsForURL:self.bookmarkData[@"url"]
                                    success:^(NSArray *popular, NSArray *recommended) {
                                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -572,7 +572,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 - (void)searchUpdatedWithString:(NSString *)string {
     if (!self.autocompleteInProgress) {
         self.autocompleteInProgress = YES;
-        
+
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSMutableArray *indexPathsToDelete = [NSMutableArray array];
             NSMutableArray *indexPathsToInsert = [NSMutableArray array];
@@ -582,38 +582,38 @@ static NSString *CellIdentifier = @"CellIdentifier";
                 NSString *searchString = [string stringByAppendingString:@"*"];
                 NSArray *existingTags = [self existingTags];
                 __block NSInteger skipPivot = 0;
-                
+
                 void (^DatabaseBlock)(FMDatabase *db) = ^(FMDatabase *db) {
                     NSMutableArray *queryComponents = [NSMutableArray array];
                     NSMutableArray *arguments = [NSMutableArray array];
                     [arguments addObject:searchString];
-                    
+
                     [queryComponents addObject:@"SELECT DISTINCT tag_fts.name, tag.count FROM tag_fts, tag WHERE tag_fts.name MATCH ? AND tag_fts.name = tag.name"];
-                    
+
                     for (NSString *tag in self.existingTags) {
                         [queryComponents addObject:@"AND tag.name != ?"];
                         [arguments addObject:tag];
                     }
-                    
+
                     [queryComponents addObject:@"ORDER BY tag.count DESC LIMIT ?"];
                     [arguments addObject:@(MAX([self minTagsToAutocomplete], (NSInteger)([self maxTagsToAutocomplete] - self.existingTags.count)))];
-                    
+
 #warning XXX For some reason, getting double results here sometimes. Search duplication?
                     FMResultSet *result = [db executeQuery:[queryComponents componentsJoinedByString:@" "] withArgumentsInArray:arguments];
-                    
+
                     NSString *tag, *count;
                     NSInteger index = [self tagOffset];
                     BOOL tagFound = NO;
-                    
+
                     while ([result next]) {
                         tagFound = NO;
                         tag = [result stringForColumnIndex:0];
                         count = [result stringForColumnIndex:1];
-                        
+
                         if (!count || count.length == 0) {
                             count = @"0";
                         }
-                        
+
                         self.tagCounts[tag] = count;
                         if (![existingTags containsObject:tag]) {
                             for (NSInteger i=skipPivot; i<oldTagCompletions.count; i++) {
@@ -622,25 +622,25 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                     for (NSInteger j=skipPivot; j<i; j++) {
                                         [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(j+[self tagOffset]) inSection:0]];
                                     }
-                                    
+
                                     tagFound = YES;
                                     skipPivot = i+1;
                                     break;
                                 }
                             }
-                            
+
                             if (!tagFound) {
                                 [indexPathsToInsert addObject:[NSIndexPath indexPathForRow:index inSection:0]];
                             }
-                            
+
                             index++;
                             [newTagCompletions addObject:tag];
                         }
                     }
-                    
+
                     [result close];
                 };
-                
+
                 if (self.presentedFromShareSheet) {
                     NSURL *containerURL = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:APP_GROUP];
                     [[FMDatabaseQueue databaseQueueWithPath:[containerURL URLByAppendingPathComponent:@"shared.db"].path] inDatabase:DatabaseBlock];
@@ -655,11 +655,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
                         [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(i+[self tagOffset]) inSection:0]];
                     }
                 }
-                
+
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.popularTags removeAllObjects];
                     [self.recommendedTags removeAllObjects];
-                    
+
                     self.tagCompletions = newTagCompletions;
                     //This is because '&' was shown as '&amp;' int tagCompletions
                     NSMutableArray *newArray = [NSMutableArray array];
@@ -669,7 +669,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                             [newArray addObject:replacement];
                     }
                     self.tagCompletions = newArray;
-                    
+
                     @try {
                         [self.tableView beginUpdates];
                         [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:UITableViewRowAnimationFade];
@@ -699,9 +699,9 @@ static NSString *CellIdentifier = @"CellIdentifier";
     NSMutableArray *indexPathsToDelete = [NSMutableArray array];
     NSMutableArray *indexPathsToReload = [NSMutableArray array];
     NSMutableIndexSet *sectionIndicesToDelete = [NSMutableIndexSet indexSet];
-    
+
     NSInteger index = [self.existingTags indexOfObject:name];
-    
+
     if (self.existingTags.count > 1) {
         [indexPathsToReload addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
         [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:(self.existingTags.count - index - 1) inSection:1]];
@@ -709,22 +709,22 @@ static NSString *CellIdentifier = @"CellIdentifier";
         [indexPathsToDelete addObject:[NSIndexPath indexPathForRow:0 inSection:0]];
         [sectionIndicesToDelete addIndex:1];
     }
-    
+
     [self.existingTags removeObject:name];
     self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
-    
+
     [indexPathsToDelete addObjectsFromArray:self.indexPathsForAutocompletedRows];
     self.tagTextField.text = @"";
     self.searchString = @"";
     [self.tagCompletions removeAllObjects];
-    
+
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.tableView beginUpdates];
         [self.tableView reloadRowsAtIndexPaths:indexPathsToReload withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView deleteSections:sectionIndicesToDelete withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView deleteRowsAtIndexPaths:indexPathsToDelete withRowAnimation:animation];
         [self.tableView endUpdates];
-        
+
         if (self.searchString) {
             [self searchUpdatedWithString:self.searchString];
         }
@@ -794,7 +794,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
             [badges addObject:@{ @"type": @"tag", @"tag": tag }];
         }
     }
-    
+
     PPBadgeWrapperView *wrapper = [[PPBadgeWrapperView alloc] initWithBadges:badges
                                                                      options:@{
                                                                                PPBadgeFontSize: @([PPTheme staticBadgeFontSize]) }];
@@ -815,19 +815,19 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                                 style:UIAlertActionStyleDestructive
                                               handler:^(UIAlertAction *action) {
                                                   self.badgeWrapperView = [self badgeWrapperViewForCurrentTags];
-                                                  
+
                                                   NSIndexPath *indexPathToReload;
                                                   indexPathToReload = [NSIndexPath indexPathForRow:0 inSection:0];
-                                                  
+
                                                   [self.tableView beginUpdates];
                                                   [self.tableView reloadRowsAtIndexPaths:@[indexPathToReload] withRowAnimation:UITableViewRowAnimationFade];
                                                   [self.tableView endUpdates];
-                                                  
+
                                                   [self deleteTagWithName:self.currentlySelectedTag];
                                               }];
 
     [self.removeTagActionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil) style:UIAlertActionStyleCancel handler:nil];
-    
+
     CGRect rect = [badge lhs_centerRect];
     self.removeTagActionSheet.popoverPresentationController.sourceRect = [self.view convertRect:rect fromView:badge];
     self.removeTagActionSheet.popoverPresentationController.sourceView = self.view;

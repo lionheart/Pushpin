@@ -40,7 +40,7 @@ static NSString *CellIdentifier = @"Cell";
 - (id)initWithStyle:(UITableViewStyle)style {
     self = [super initWithStyle:UITableViewStylePlain];
     if (self) {
-        
+
     }
     return self;
 }
@@ -72,19 +72,19 @@ static NSString *CellIdentifier = @"Cell";
                 }
             }
         }
-        
+
         [self.sectionIndexTitles sortUsingSelector:@selector(compare:)];
         for (NSString *sectionIndexTitle in self.sectionIndexTitles) {
             [self.fontsForSectionIndex[sectionIndexTitle] sortUsingSelector:@selector(compare:)];
         }
         [self.fonts sortUsingSelector:@selector(compare:)];
-        
+
         if (self.preferredFontNames.count > 0) {
             [self.sectionIndexTitles insertObject:@"-" atIndex:0];
             self.fontsForSectionIndex[@"-"] = self.preferredFontNames;
         }
     }
-    
+
     [[NSNotificationCenter defaultCenter] addObserver:self.tableView
                                              selector:@selector(reloadData)
                                                  name:UIContentSizeCategoryDidChangeNotification
@@ -97,13 +97,13 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+
     PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
     delegate.hideURLPrompt = YES;
-    
+
     [self setNeedsStatusBarAppearanceUpdate];
     NSArray *indexPathForCurrentlySelectedFont = [self indexPathsForFontName:self.currentFontName];
-    
+
     if (self.preferredFontNames.count == 0) {
         [self.tableView scrollToRowAtIndexPath:[indexPathForCurrentlySelectedFont firstObject]
                               atScrollPosition:UITableViewScrollPositionTop
@@ -113,7 +113,7 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    
+
     PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
     delegate.hideURLPrompt = NO;
 }
@@ -146,7 +146,7 @@ static NSString *CellIdentifier = @"Cell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    
+
     cell.accessoryView = nil;
     cell.accessoryType = UITableViewCellAccessoryNone;
     cell.textLabel.text = nil;
@@ -155,7 +155,7 @@ static NSString *CellIdentifier = @"Cell";
     cell.detailTextLabel.text = nil;
     cell.detailTextLabel.font = nil;
     [cell.contentView lhs_removeSubviews];
-    
+
     NSString *fontName;
     if (self.onlyShowPreferredFonts) {
         fontName = self.preferredFontNames[indexPath.row];
@@ -180,7 +180,7 @@ static NSString *CellIdentifier = @"Cell";
     if ([fontName isEqualToString:self.currentFontName]) {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
     }
-    
+
     return cell;
 }
 
@@ -198,7 +198,7 @@ static NSString *CellIdentifier = @"Cell";
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
     NSArray *indexPathsForPreviouslySelectedFont = [self indexPathsForFontName:self.currentFontName];
-    
+
     NSString *fontName;
     if (self.onlyShowPreferredFonts) {
         fontName = self.preferredFontNames[indexPath.row];
@@ -206,11 +206,11 @@ static NSString *CellIdentifier = @"Cell";
         NSString *sectionName = self.sectionIndexTitles[indexPath.section];
         fontName = self.fontsForSectionIndex[sectionName][indexPath.row];
     }
-    
+
     if (![fontName isEqualToString:self.currentFontName]) {
         self.currentFontName = fontName;
         [self.delegate setFontName:fontName forFontSelectionViewController:self];
-        
+
         [self.tableView beginUpdates];
         [self.tableView reloadRowsAtIndexPaths:[indexPathsForPreviouslySelectedFont arrayByAddingObject:indexPath]
                               withRowAnimation:UITableViewRowAnimationAutomatic];
@@ -224,7 +224,7 @@ static NSString *CellIdentifier = @"Cell";
     NSInteger row;
     NSInteger section;
     NSMutableArray *indexPaths = [NSMutableArray array];
-    
+
     if (self.onlyShowPreferredFonts) {
         if ([self.preferredFontNames containsObject:fontName]) {
             row = [self.preferredFontNames indexOfObject:fontName];
@@ -239,7 +239,7 @@ static NSString *CellIdentifier = @"Cell";
                 [indexPaths addObject:[NSIndexPath indexPathForRow:row inSection:section]];
             }
         }
-        
+
         if (![self.preferredFontNames containsObject:fontName]) {
             NSString *firstCharacter = [fontName substringToIndex:1];
             section = [self.sectionIndexTitles indexOfObject:firstCharacter];
@@ -247,7 +247,7 @@ static NSString *CellIdentifier = @"Cell";
             [indexPaths addObject:[NSIndexPath indexPathForRow:row inSection:section]];
         }
     }
-    
+
     return [indexPaths copy];
 }
 
@@ -264,7 +264,7 @@ static NSString *CellIdentifier = @"Cell";
         }
 
         string = [[NSMutableAttributedString alloc] initWithString:[fontNames componentsJoinedByString:@", "]];
-        
+
         for (NSString *fontName in self.preferredFontNames) {
             UIFont *font = [UIFont fontWithName:fontName size:[self.delegate fontSizeForFontSelectionViewController:self] + 4];
             NSString *displayName = [LHSFontSelectionViewController fontNameToDisplayName:[font lhs_displayName]];
@@ -273,7 +273,7 @@ static NSString *CellIdentifier = @"Cell";
             range.location += displayName.length + 2;
         }
     });
-    
+
     return string;
 }
 

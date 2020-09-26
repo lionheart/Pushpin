@@ -48,7 +48,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                                                               style:UIBarButtonItemStyleDone
                                                                              target:self
                                                                              action:@selector(dismissViewController)];
-    
+
     UIActivityIndicatorView *activity = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
     [activity startAnimating];
 
@@ -59,11 +59,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.assetProgressView = [[UIProgressView alloc] init];
     self.assetProgressView.progress = 0;
     self.assetProgressView.translatesAutoresizingMaskIntoConstraints = NO;
-    
+
     self.htmlProgressView = [[UIProgressView alloc] init];
     self.htmlProgressView.progress = 0;
     self.htmlProgressView.translatesAutoresizingMaskIntoConstraints = NO;
-    
+
     self.assetDetail = [[UILabel alloc] init];
     self.assetDetail.font = [PPTheme detailLabelFontAlternate1];
     self.assetDetail.translatesAutoresizingMaskIntoConstraints = NO;
@@ -71,17 +71,17 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.htmlDetail = [[UILabel alloc] init];
     self.htmlDetail.font = [PPTheme detailLabelFontAlternate1];
     self.htmlDetail.translatesAutoresizingMaskIntoConstraints = NO;
-    
+
     self.assetLabel = [[UILabel alloc] init];
     self.assetLabel.translatesAutoresizingMaskIntoConstraints = NO;
     self.assetLabel.backgroundColor = [UIColor whiteColor];
     self.assetLabel.font = [PPTheme textLabelFont];
-    
+
     self.htmlLabel = [[UILabel alloc] init];
     self.htmlLabel.translatesAutoresizingMaskIntoConstraints = NO;
     self.htmlLabel.backgroundColor = [UIColor whiteColor];
     self.htmlLabel.font = [PPTheme textLabelFont];
-    
+
     [self.tableView registerClass:[LHSTableViewCellSubtitle class] forCellReuseIdentifier:CellIdentifier];
 }
 
@@ -90,18 +90,18 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
     // Turn off idle application timer since downloading bookmarks can take a while
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
-    
+
     void (^Completion)(void) = ^{
         self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Done", nil);
         self.navigationItem.leftBarButtonItem = nil;
-        
+
         self.htmlLabel.text = NSLocalizedString(@"Download complete!", nil);
         self.htmlDetail.text = @"100%";
         [self.htmlProgressView setProgress:1 animated:NO];
         self.downloadInProgress = NO;
-        
+
         [self.tableView reloadData];
-        
+
         [[PPPinboardMetadataCache sharedCache] removeAllObjects];
 
         [[UIApplication sharedApplication] setIdleTimerDisabled:NO];

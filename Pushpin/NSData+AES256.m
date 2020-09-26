@@ -38,7 +38,7 @@
 		//the returned NSData takes ownership of the buffer and will free it on deallocation
 		return [NSData dataWithBytesNoCopy:buffer length:numBytesEncrypted];
 	}
-    
+
 	free(buffer); //free the buffer;
 	return nil;
 }

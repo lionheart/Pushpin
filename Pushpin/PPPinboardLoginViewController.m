@@ -66,13 +66,13 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
     self.tableView.backgroundColor = HEX(0xeeeeeeff);
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:LoginTableCellIdentifier];
-    
+
     self.progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
     self.progressView.translatesAutoresizingMaskIntoConstraints = NO;
     self.progressView.hidden = YES;
 
     self.textViewAttributes = @{NSFontAttributeName: [PPTheme detailLabelFontAlternate1]};
-    
+
 
     self.authTokenFooterTextView = [[UITextView alloc] init];
     self.authTokenFooterTextView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -106,7 +106,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     self.textView.hidden = YES;
     self.textView.userInteractionEnabled = NO;
     self.textView.textAlignment = NSTextAlignmentCenter;
-    
+
     self.usernameTextField = [[UITextField alloc] init];
     self.usernameTextField.translatesAutoresizingMaskIntoConstraints = NO;
     self.usernameTextField.font = [PPTheme titleFont];
@@ -136,7 +136,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
     self.keyboard_shown = NO;
     self.loginTimer = nil;
-    
+
     [self resetLoginScreen];
 }
 
@@ -144,7 +144,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     self.loginInProgress = NO;
 
     NSString *textViewText = NSLocalizedString(@"Enter your Pinboard credentials above. Email support@lionheartsw.com if you have any issues.", nil);
-    
+
     self.textView.attributedText = [[NSAttributedString alloc] initWithString:textViewText
                                                                    attributes:self.textViewAttributes];
     self.textView.hidden = YES;
@@ -288,16 +288,16 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                                                                        attributes:self.textViewAttributes];
         self.textView.hidden = NO;
         self.title = NSLocalizedString(@"Downloading", nil);
-        
+
         self.messageUpdateTimer = [NSTimer timerWithTimeInterval:3
                                                           target:self
                                                         selector:@selector(updateLoadingMessage)
                                                         userInfo:nil
                                                          repeats:YES];
         [[NSRunLoop mainRunLoop] addTimer:self.messageUpdateTimer forMode:NSRunLoopCommonModes];
-        
+
         self.progressView.hidden = NO;
-        
+
         [self.tableView beginUpdates];
         [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:PPLoginCredentialSection] withRowAnimation:UITableViewRowAnimationFade];
         [self.tableView endUpdates];
@@ -331,24 +331,24 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
             UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:nil
                                                                            message:message];
-            
+
             [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
                                                       style:UIAlertActionStyleDefault
                                                     handler:nil];
-            
+
             [self presentViewController:alert animated:YES completion:nil];
             self.loginInProgress = NO;
             return;
         }
 
         PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
-        
+
         UIActivityIndicatorView *loginActivityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
         [loginActivityView startAnimating];
-        
+
         self.navigationItem.leftBarButtonItem.enabled = NO;
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:loginActivityView];
-        
+
         self.usernameTextField.enabled = NO;
         self.usernameTextField.textColor = [UIColor grayColor];
 
@@ -358,7 +358,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
         self.textView.hidden = NO;
         self.textView.attributedText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Verifying your credentials...", nil)
                                                                        attributes:self.textViewAttributes];
-        
+
         [self.tableView beginUpdates];
 
         if (authTokenProvided) {
@@ -445,7 +445,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
         [self.passwordTextField resignFirstResponder];
         [self login];
     }
-    
+
     return YES;
 }
 
@@ -455,19 +455,19 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     switch ((PPLoginSectionType)section) {
         case PPLoginCredentialSection:
             if (self.progressView.hidden) {
-                
+
 
                 return @"Pinboard Login";
             }
             break;
-            
+
         case PPLoginAuthTokenSection:
             return @"API Token";
-            
+
         default:
             return nil;
     }
-    
+
     return nil;
 }
 
@@ -484,11 +484,11 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
         if (self.loginInProgress && [self authTokenProvided]) {
             section++;
         }
-        
+
         switch ((PPLoginSectionType)section) {
             case PPLoginCredentialSection:
                 return 2;
-                
+
             case PPLoginAuthTokenSection:
                 return 1;
         }
@@ -521,7 +521,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                     return CGRectGetHeight(rect) + 30;
                 }
             }
-            
+
 
         case PPLoginAuthTokenSection: {
             CGFloat width = CGRectGetWidth(tableView.frame) - 20;
@@ -550,7 +550,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             }
 
             break;
-            
+
 
         case PPLoginAuthTokenSection:
             if (self.authTokenFooterTextView.hidden) {
@@ -563,7 +563,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                 return view;
             }
             break;
-            
+
         default:
             return nil;
     }
@@ -596,7 +596,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                     }
                     break;
                 }
-                    
+
                 case PPLoginCredentialPasswordRow: {
                     NSDictionary *views = @{@"view": self.passwordTextField };
                     [cell.contentView addSubview:self.passwordTextField];
@@ -606,7 +606,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                 }
             }
             break;
-            
+
 
         case PPLoginAuthTokenSection: {
             NSDictionary *views = @{@"view": self.authTokenTextField };
@@ -615,11 +615,11 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             [cell.contentView lhs_addConstraints:@"V:|-5-[view]-5-|" views:views];
             break;
         }
-            
+
         default:
             break;
     }
-    
+
     return cell;
 }
 
@@ -627,7 +627,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
+
     switch ((PPLoginSectionType)indexPath.section) {
         case PPLoginCredentialSection:
             switch ((PPLoginCredentialRowType)indexPath.row) {
@@ -636,7 +636,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                         [self.usernameTextField becomeFirstResponder];
                     }
                     break;
-                    
+
                 case PPLoginCredentialPasswordRow:
                     [self.passwordTextField becomeFirstResponder];
                     break;
@@ -648,14 +648,14 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
         case PPLoginAuthTokenSection:
             [self.authTokenTextField becomeFirstResponder];
             break;
-            
+
         default:
             break;
     }
 }
 
 #pragma mark - Utils
-            
+
 - (BOOL)authTokenProvided {
     return self.authTokenTextField.text.length > 0;
 }

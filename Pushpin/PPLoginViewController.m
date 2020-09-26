@@ -33,9 +33,9 @@ static NSString * const CellIdentifier = @"CellIdentifier";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     self.title = @"Pushpin";
-    
+
     self.tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
     self.tableView.delegate = self;
@@ -46,15 +46,15 @@ static NSString * const CellIdentifier = @"CellIdentifier";
         @"top": self.topLayoutGuide,
         @"table": self.tableView
     };
-    
+
     [self.view addSubview:self.tableView];
 
     self.bottomConstraint = [self.tableView.bottomAnchor constraintEqualToAnchor:self.bottomLayoutGuide.topAnchor];
-    
+
     [self.view addConstraint:self.bottomConstraint];
     [self.view lhs_addConstraints:@"V:[top][table]" views:views];
     [self.tableView lhs_fillWidthOfSuperview];
-    
+
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Help", nil)
                                                                              style:UIBarButtonItemStyleDone
                                                                             target:self
@@ -93,7 +93,7 @@ static NSString * const CellIdentifier = @"CellIdentifier";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    
+
     switch ((PPLoginServiceRowType)indexPath.row) {
         case PPLoginPinboardRow:
             cell.textLabel.text = @"Pinboard.in";
@@ -119,7 +119,7 @@ static NSString * const CellIdentifier = @"CellIdentifier";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
+
     switch ((PPLoginServiceRowType)indexPath.row) {
         case PPLoginPinboardRow: {
             PPPinboardLoginViewController *pinboardLoginViewController = [[PPPinboardLoginViewController alloc] init];
@@ -127,7 +127,7 @@ static NSString * const CellIdentifier = @"CellIdentifier";
                                                  animated:YES];
             break;
         }
-            
+
         case PPLoginPushpinRow: {
 #if !TARGET_OS_MACCATALYST
             UIAlertController *alert = [PPMailChimp mailChimpSubscriptionAlertController];

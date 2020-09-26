@@ -54,7 +54,7 @@ static NSString *CellIdentifier = @"Cell";
     self.tagsTextField.placeholder = NSLocalizedString(@"Tags, separated by spaces", nil);
     self.tagsTextField.returnKeyType = UIReturnKeyDone;
     self.tagsTextField.text = @"";
-    
+
     // Add a close and save button
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(closeButtonTouchUpInside:)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(addButtonTouchUpInside:)];
@@ -64,7 +64,7 @@ static NSString *CellIdentifier = @"Cell";
     PPTitleButton *titleView = [PPTitleButton button];
     [titleView setTitle:NSLocalizedString(@"Add Feed", nil) imageName:nil];
     self.navigationItem.titleView = titleView;
-    
+
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
 }
 
@@ -146,9 +146,9 @@ static NSString *CellIdentifier = @"Cell";
     if (username && username.length > 0) {
         [components addObject:[NSString stringWithFormat:@"u:%@", username]];
     }
-    
+
     NSString *fromSuffix;
-    
+
     NSString *tags = self.tagsTextField.text;
     if (tags && tags.length > 0) {
         for (NSString *tag in [tags componentsSeparatedByString:@" "]) {
@@ -165,7 +165,7 @@ static NSString *CellIdentifier = @"Cell";
     if (fromSuffix) {
         [components addObject:fromSuffix];
     }
-    
+
     if (components.count > 0) {
         self.navigationItem.leftBarButtonItem.enabled = NO;
         self.navigationItem.rightBarButtonItem.enabled = NO;

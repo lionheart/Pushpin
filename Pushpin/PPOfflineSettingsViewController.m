@@ -36,12 +36,12 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     self.definesPresentationContext = YES;
     self.title = NSLocalizedString(@"Offline Settings", nil);
-    
+
     PPSettings *settings = [PPSettings sharedSettings];
-    
+
     self.offlineReadingSwitch = [[UISwitch alloc] init];
     self.offlineReadingSwitch.on = settings.offlineReadingEnabled;
     [self.offlineReadingSwitch addTarget:self action:@selector(switchChangedValue:) forControlEvents:UIControlEventValueChanged];
@@ -71,7 +71,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
     switch ((PPOfflineSettingsSectionType)section) {
         case PPOfflineSettingsSectionTop:
             return PPOfflineSettingsRowCount;
-            
+
         case PPOfflineSettingsSectionClearCache:
             return 1;
 
@@ -92,7 +92,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
             cell.textLabel.text = nil;
             cell.accessoryView = nil;
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            
+
             if (self.offlineReadingSwitch.on) {
                 cell.textLabel.textColor = [UIColor blackColor];
                 cell.userInteractionEnabled = YES;
@@ -100,7 +100,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
                 cell.textLabel.textColor = [UIColor grayColor];
                 cell.userInteractionEnabled = NO;
             }
-            
+
             CGSize size;
             CGSize switchSize;
 
@@ -116,17 +116,17 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
                     cell.accessoryView = self.offlineReadingSwitch;
                     break;
                 }
-                    
+
                 case PPOfflineSettingsRowDownloadAll: {
                     cell.textLabel.text = NSLocalizedString(@"Download Full Webpage", nil);
-                    
+
                     size = cell.frame.size;
                     switchSize = self.downloadFullWebpageForOfflineCacheSwitch.frame.size;
                     self.downloadFullWebpageForOfflineCacheSwitch.frame = CGRectMake(size.width - switchSize.width - 30, (size.height - switchSize.height) / 2.0, switchSize.width, switchSize.height);
                     cell.accessoryView = self.downloadFullWebpageForOfflineCacheSwitch;
                     break;
                 }
-                    
+
                 case PPOfflineSettingsRowFetchCriteria: {
                     cell.textLabel.text = NSLocalizedString(@"Fetch Criteria", nil);
                     cell.detailTextLabel.text = NSLocalizedString(PPOfflineFetchCriterias()[[PPSettings sharedSettings].offlineFetchCriteria], nil);
@@ -134,7 +134,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
                     cell.selectionStyle = UITableViewCellSelectionStyleBlue;
                     break;
                 }
-                    
+
                 case PPOfflineSettingsRowUsage: {
                     cell.textLabel.text = NSLocalizedString(@"Current Usage", nil);
                     NSInteger diskUsage = [[PPAppDelegate sharedDelegate].urlCache currentDiskUsage];
@@ -143,7 +143,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
 
                     break;
                 }
-                    
+
                 case PPOfflineSettingsRowLimit: {
                     cell.textLabel.text = NSLocalizedString(@"Usage Limit", nil);
                     NSInteger diskUsage = [[PPAppDelegate sharedDelegate].urlCache diskCapacity];
@@ -155,7 +155,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
             }
             break;
         }
-            
+
         case PPOfflineSettingsSectionManualDownload: {
             cell = [tableView dequeueReusableCellWithIdentifier:DefaultCellIdentifier forIndexPath:indexPath];
             cell.textLabel.text = NSLocalizedString(@"Download Bookmarks", nil);
@@ -187,7 +187,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    
+
     switch ((PPOfflineSettingsSectionType)indexPath.section) {
         case PPOfflineSettingsSectionTop: {
             switch ((PPOfflineSettingsRowType)indexPath.row) {
@@ -204,13 +204,13 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
                                                 handler:^(UIAlertAction *action) {
                                                     [self updateUsageLimitTo:100 * 1000 * 1000];
                                                 }];
-                    
+
                     [actionSheet lhs_addActionWithTitle:@"500 MB"
                                                   style:UIAlertActionStyleDefault
                                                 handler:^(UIAlertAction *action) {
                                                     [self updateUsageLimitTo:500 * 1000 * 1000];
                                                 }];
-                    
+
                     [actionSheet lhs_addActionWithTitle:@"1 GB"
                                                   style:UIAlertActionStyleDefault
                                                 handler:^(UIAlertAction *action) {
@@ -222,12 +222,12 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
                                                 handler:^(UIAlertAction *action) {
                                                     [self updateUsageLimitTo:2 * 1000 * 1000 * 1000];
                                                 }];
-                    
+
                     [actionSheet lhs_addActionWithTitle:@"Cancel"
                                                   style:UIAlertActionStyleCancel
                                                 handler:^(UIAlertAction *action) {
                                                 }];
-                    
+
                     actionSheet.modalPresentationStyle = UIModalPresentationPopover;
 
                     UIPopoverPresentationController *popPresenter = actionSheet.popoverPresentationController;
@@ -241,7 +241,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
                                      completion:nil];
                     break;
                 }
-                    
+
                 case PPOfflineSettingsRowFetchCriteria: {
                     UIAlertController *actionSheet = [UIAlertController lhs_actionSheetWithTitle:NSLocalizedString(@"Fetch Criteria", nil)];
                     [actionSheet lhs_addActionWithTitle:NSLocalizedString(@"Unread", nil)
@@ -249,25 +249,25 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
                                                 handler:^(UIAlertAction *action) {
                                                     [self updateOfflineFetchCriteriaTo:PPOfflineFetchCriteriaUnread];
                                                 }];
-                    
+
                     [actionSheet lhs_addActionWithTitle:NSLocalizedString(@"Recent (last 30 days)", nil)
                                                   style:UIAlertActionStyleDefault
                                                 handler:^(UIAlertAction *action) {
                                                     [self updateOfflineFetchCriteriaTo:PPOfflineFetchCriteriaRecent];
                                                 }];
-                    
+
                     [actionSheet lhs_addActionWithTitle:NSLocalizedString(@"Unread and Recent", nil)
                                                   style:UIAlertActionStyleDefault
                                                 handler:^(UIAlertAction *action) {
                                                     [self updateOfflineFetchCriteriaTo:PPOfflineFetchCriteriaUnreadAndRecent];
                                                 }];
-                    
+
                     [actionSheet lhs_addActionWithTitle:NSLocalizedString(@"Everything", nil)
                                                   style:UIAlertActionStyleDefault
                                                 handler:^(UIAlertAction *action) {
                                                     [self updateOfflineFetchCriteriaTo:PPOfflineFetchCriteriaEverything];
                                                 }];
-                    
+
                     [actionSheet lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                                   style:UIAlertActionStyleCancel
                                                 handler:nil];
@@ -279,30 +279,30 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
                     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
                     popPresenter.sourceView = cell;
                     popPresenter.sourceRect = cell.bounds;
-                    
+
                     [self presentViewController:actionSheet
                                        animated:YES
                                      completion:nil];
                     break;
                 }
-                    
+
                 default:
                     break;
             }
             break;
         }
-            
+
         case PPOfflineSettingsSectionManualDownload: {
             PPAppDelegate *delegate = [PPAppDelegate sharedDelegate];
-            
+
             if (!delegate.connectionAvailable) {
                 UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Uh oh.", nil)
                                                                              message:NSLocalizedString(@"You can't download anything without an internet connection.", nil)];
-                
+
                 [alert lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
                                         style:UIAlertActionStyleDefault
                                       handler:nil];
-                
+
                 [self presentViewController:alert animated:YES completion:nil];
             } else {
                 PPOfflineDownloadViewController *offlineDownloadViewController = [[PPOfflineDownloadViewController alloc] init];
@@ -316,7 +316,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
         case PPOfflineSettingsSectionClearCache: {
             UIAlertController *confirmation = [UIAlertController lhs_alertViewWithTitle:nil
                                                                                 message:NSLocalizedString(@"Are you sure you'd like to clear the cache? There is no undo.", nil)];
-            
+
             [confirmation lhs_addActionWithTitle:NSLocalizedString(@"Delete", nil)
                                            style:UIAlertActionStyleDestructive
                                          handler:^(UIAlertAction *action) {
@@ -324,7 +324,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
                                                  PPURLCache *cache = [PPAppDelegate sharedDelegate].urlCache;
                                                  [cache removeAllCachedResponses];
                                                  [[PPPinboardMetadataCache sharedCache] removeAllObjects];
-                                                 
+
                                                  dispatch_async(dispatch_get_main_queue(), ^{
                                                      [tableView beginUpdates];
                                                      [tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPOfflineSettingsRowUsage
@@ -334,11 +334,11 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
                                                  });
                                              });
                                          }];
-            
+
             [confirmation lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                            style:UIAlertActionStyleCancel
                                          handler:nil];
-            
+
             [self presentViewController:confirmation animated:YES completion:nil];
             break;
         }
@@ -352,7 +352,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
 
         case PPOfflineSettingsSectionManualDownload:
             return NSLocalizedString(@"Offline Settings Section Footer", nil);
-            
+
         default:
             return nil;
     }
@@ -364,7 +364,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
     PPSettings *settings = [PPSettings sharedSettings];
     if (sender == self.offlineReadingSwitch) {
         [settings setOfflineReadingEnabled:self.offlineReadingSwitch.on];
-        
+
         PPSettings *settings = [PPSettings sharedSettings];
         if (settings.offlineReadingEnabled) {
             [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
@@ -386,7 +386,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
 
     PPSettings *settings = [PPSettings sharedSettings];
     settings.offlineUsageLimit = limit;
-    
+
     [self.tableView beginUpdates];
     [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPOfflineSettingsRowLimit inSection:PPOfflineSettingsSectionTop]]
                           withRowAnimation:UITableViewRowAnimationNone];
@@ -396,7 +396,7 @@ static NSString *DefaultCellIdentifier = @"DefaultCellIdentifier";
 - (void)updateOfflineFetchCriteriaTo:(PPOfflineFetchCriteriaType)criteria {
     PPSettings *settings = [PPSettings sharedSettings];
     settings.offlineFetchCriteria = criteria;
-    
+
     [self.tableView beginUpdates];
     [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPOfflineSettingsRowFetchCriteria inSection:PPOfflineSettingsSectionTop]]
                           withRowAnimation:UITableViewRowAnimationNone];

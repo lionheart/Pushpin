@@ -72,16 +72,16 @@
     switch (settings.fontAdjustment) {
         case PPFontAdjustmentSmallest:
             return fontSize - 3;
-            
+
         case PPFontAdjustmentSmall:
             return fontSize - 1;
-            
+
         case PPFontAdjustmentMedium:
             return fontSize;
-            
+
         case PPFontAdjustmentBig:
             return fontSize + 1;
-            
+
         case PPFontAdjustmentBiggest:
             return fontSize + 3;
     }
@@ -122,21 +122,21 @@
     [[UIBarButtonItem appearance] setTitleTextAttributes:normalAttributes
                                                 forState:UIControlStateNormal];
     [[UIBarButtonItem appearance] setTintColor:[UIColor whiteColor]];
-    
+
     // UIToolbar items
     UIColor *barButtonItemColor = [UIColor colorWithRed:40/255.0f green:141/255.0f blue:219/255.0f alpha:1.0f];
     [[UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[UIToolbar class]]] setTintColor:barButtonItemColor];
-    
+
     [[UISwitch appearance] setOnTintColor:HEX(0x0096FFFF)];
     [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithRed:0 green:0.5863 blue:1 alpha:1]];
     [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
     [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
-    
+
     NSDictionary *attributes = @{
         NSForegroundColorAttributeName: [UIColor whiteColor]
     };
     [[UITextField appearanceWhenContainedInInstancesOfClasses:@[[UISearchBar class]]] setDefaultTextAttributes:attributes];
-    
+
     NSAttributedString *string = [[NSAttributedString alloc] initWithString:@"Search" attributes:attributes];
     [[UITextField appearanceWhenContainedInInstancesOfClasses:@[[UISearchBar class]]] setAttributedPlaceholder:string];
 }

@@ -78,11 +78,11 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                                              [delegate logout];
 
                                              [[ASPinboard sharedInstance] resetAuthentication];
-                                             
+
                                              [delegate setLoginViewController:nil];
                                              [delegate setNavigationController:nil];
                                              delegate.loginViewController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-                                             
+
                                              if ([UIApplication isIPad]) {
                                                  [delegate.window setRootViewController:delegate.loginViewController];
                                              } else {
@@ -90,10 +90,10 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                                                                     animated:YES
                                                                   completion:nil];
                                              }
-                                             
+
                                              [PPUtilities migrateDatabase];
                                          }];
-    
+
     [self.logOutAlertView lhs_addActionWithTitle:NSLocalizedString(@"Cancel", nil)
                                            style:UIAlertActionStyleCancel
                                          handler:nil];
@@ -103,7 +103,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
         NSURLSessionDataTask *task = [session dataTaskWithURL:[NSURL URLWithString:@"https://itunes.apple.com/lookup?id=548052590"]
                                             completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                                                 NSDictionary *object = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
-                                                
+
                                                 NSDictionary *app = [object[@"results"] firstObject];
 
                                                 if (app) {
@@ -138,7 +138,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
+
 }
 
 -(BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
@@ -150,7 +150,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 }
 
 - (void)showAboutPage {
-    
+
     PPAboutViewController *aboutViewController = [[PPAboutViewController alloc] init];
     [self.navigationController pushViewController:aboutViewController animated:YES];
 }
@@ -178,7 +178,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
         case PPSectionOtherSettings:
             return PPRowCountOther;
-            
+
         case PPSectionCacheSettings:
             return PPRowCountCache;
     }
@@ -227,7 +227,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                     cell.textLabel.text = NSLocalizedString(@"Browser", nil);
                     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
                     break;
-                    
+
                 case PPMainOffline:
                     cell.imageView.image = [UIImage imageNamed:@"Download"];
                     cell.textLabel.text = NSLocalizedString(@"Offline", nil);
@@ -260,7 +260,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                         cell.detailTextLabel.text = [NSString stringWithFormat:@"%lu ratings for this version.", (unsigned long)self.numberOfRatings];
                     }
                     break;
-                    
+
                 case PPOtherFollow:
                     cell.textLabel.text = NSLocalizedString(@"Follow @Pushpin_app on Twitter", nil);
                     break;
@@ -279,7 +279,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
             break;
         }
-            
+
         case PPSectionCacheSettings: {
             cell.selectionStyle = UITableViewCellSelectionStyleDefault;
             cell.textLabel.text = NSLocalizedString(@"Clear Cache", nil);
@@ -321,15 +321,15 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                     [self.navigationController pushViewController:viewController animated:YES];
                     break;
                 }
-                    
+
                 case PPMainAdvanced:
                     [self.navigationController pushViewController:[[PPDisplaySettingsViewController alloc] init] animated:YES];
                     break;
-                    
+
                 case PPMainBrowser:
                     [self.navigationController pushViewController:[[PPBrowserSettingsViewController alloc] init] animated:YES];
                     break;
-                    
+
                 case PPMainOffline:
                     [self.navigationController pushViewController:[[PPOfflineSettingsViewController alloc] init] animated:YES];
                     break;
@@ -343,7 +343,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                 case PPOtherRatePushpin:
                     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/pushpin-for-pinboard/id548052590?mt=8&uo=4&at=1l3vbEC&action=write-review"] options:@{} completionHandler:nil];;
                     break;
-                    
+
                 case PPOtherFollow: {
                     NSURL *url = [NSURL URLWithString:@"https://twitter.com/pushpin_app"];
                     NSMutableDictionary *options = [NSMutableDictionary dictionary];
@@ -362,7 +362,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                     break;
 #endif
                 }
-                    
+
                 case PPOtherLogout:
                     [self presentViewController:self.logOutAlertView animated:YES completion:nil];
                     [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -378,26 +378,26 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
             }
             break;
         }
-            
+
         case PPSectionCacheSettings: {
             UIAlertController *alert = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Resetting Cache", nil) message:nil];
             [self presentViewController:alert animated:YES completion:nil];
-            
+
             NSHTTPCookie *cookie;
             NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
             for (cookie in [storage cookies]) {
                 [storage deleteCookie:cookie];
             }
-            
+
             double delayInSeconds = 1.0;
             dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
             dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
                 [self dismissViewControllerAnimated:YES completion:nil];
-                
+
                 UIAlertController *successAlertView = [UIAlertController lhs_alertViewWithTitle:NSLocalizedString(@"Success", nil)
                                                                                         message:NSLocalizedString(@"Your cache was cleared.", nil)];
                 [self presentViewController:successAlertView animated:YES completion:nil];
-                
+
                 double delayInSeconds = 2.0;
                 dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
                 dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
@@ -415,11 +415,11 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
             case PPMainAdvanced:
                 [self.navigationController pushViewController:[[PPDisplaySettingsViewController alloc] init] animated:YES];
                 break;
-                
+
             case PPMainBrowser:
                 [self.navigationController pushViewController:[[PPBrowserSettingsViewController alloc] init] animated:YES];
                 break;
-                
+
             default:
                 break;
         }

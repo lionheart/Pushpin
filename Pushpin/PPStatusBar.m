@@ -64,7 +64,7 @@
     NSInteger averageWordsPerMinute = 225;
     CGFloat minutesNeededToRead = (CGFloat)numWords / (CGFloat)averageWordsPerMinute;
     CGFloat secondsNeededToRead = minutesNeededToRead * 60;
-    
+
     UILabel *label = [[UILabel alloc] init];
     label.text = text;
     label.textAlignment = NSTextAlignmentCenter;
@@ -73,7 +73,7 @@
     label.numberOfLines = 0;
     label.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:label];
-    
+
     UIView *border = [[UIView alloc] init];
     border.translatesAutoresizingMaskIntoConstraints = NO;
     border.backgroundColor = HEX(0xD6D6D6FF);
@@ -84,7 +84,7 @@
                             @"border": border };
 
     [self.view lhs_addConstraints:@"H:|-10-[label]-10-|" views:views];
-    
+
     if (controller.navigationController.navigationBarHidden) {
         [self.view lhs_addConstraints:@"V:|-52-[label]-10-|" views:views];
     } else {

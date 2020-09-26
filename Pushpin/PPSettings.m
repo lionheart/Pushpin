@@ -222,7 +222,7 @@
     if (!_enableAutoCorrect) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         _enableAutoCorrect = [defaults boolForKey:@"io.aurora.pinboard.EnableAutoCorrect"];
-        
+
         if (!_enableAutoCorrect) {
             NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
             _enableAutoCorrect = [[sharedDefaults objectForKey:@"EnableAutoCorrect"] boolValue];
@@ -236,7 +236,7 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:@(enableAutoCorrect) forKey:@"io.aurora.pinboard.EnableAutoCorrect"];
     [defaults synchronize];
-    
+
     NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
     [sharedDefaults setObject:@(enableAutoCorrect) forKey:@"EnableAutoCorrect"];
 }
@@ -245,7 +245,7 @@
     if (!_enableTagAutoCorrect) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         _enableTagAutoCorrect = [defaults boolForKey:@"io.aurora.pinboard.EnableTagAutoCorrect"];
-        
+
         if (!_enableTagAutoCorrect) {
             NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
             _enableTagAutoCorrect = [[sharedDefaults objectForKey:@"EnableTagAutoCorrect"] boolValue];
@@ -259,7 +259,7 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:@(enableTagAutoCorrect) forKey:@"io.aurora.pinboard.EnableTagAutoCorrect"];
     [defaults synchronize];
-    
+
     NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
     [sharedDefaults setObject:@(enableTagAutoCorrect) forKey:@"EnableTagAutoCorrect"];
 }
@@ -268,7 +268,7 @@
     if (!_enableAutoCapitalize) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         _enableAutoCapitalize = [defaults boolForKey:@"io.aurora.pinboard.EnableAutoCapitalize"];
-        
+
         if (!_enableAutoCapitalize) {
             NSUserDefaults *sharedDefaults = [[NSUserDefaults alloc] initWithSuiteName:APP_GROUP];
             _enableAutoCapitalize = [[sharedDefaults objectForKey:@"EnableAutoCapitalize"] boolValue];
@@ -298,10 +298,10 @@
     if (!_browser) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSNumber *result = [defaults objectForKey:@"io.aurora.pinboard.Browser"];
-        
+
         if (result) {
             _browser = [result integerValue];
-            
+
             if (_browser == PPBrowserWebview) {
                 _browser = PPBrowserSafari;
             }
@@ -338,7 +338,7 @@
     if (!_readLater) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSNumber *result = [defaults objectForKey:@"io.aurora.pinboard.ReadLater"];
-        
+
         if (result) {
             _readLater = [result integerValue];
         } else {
@@ -359,7 +359,7 @@
     if (!_mobilizer) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSNumber *result = [defaults objectForKey:@"io.aurora.pinboard.Mobilizer"];
-        
+
         if (result) {
             _mobilizer = [result integerValue];
         } else {
@@ -512,7 +512,7 @@
             _defaultFeed = @"personal-all";
         }
     }
-    
+
     return _defaultFeed;
 }
 
@@ -569,7 +569,7 @@
 }
 
 - (NSString *)username {
-    
+
 
     return [self.token componentsSeparatedByString:@":"][0];
 }
@@ -579,10 +579,10 @@
 }
 
 - (NSString *)password {
-    
+
 
     KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"PinboardCredentials" accessGroup:nil];
-    
+
     NSString *key = [keychain objectForKey:(__bridge id)kSecValueData];
     if ([key isEqualToString:@""]) {
         return nil;
@@ -595,14 +595,14 @@
 }
 
 - (void)setUsername:(NSString *)username password:(NSString *)password {
-    
+
 
     KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"PinboardCredentials" accessGroup:nil];
-    
+
     if (username) {
         [keychain setObject:username forKey:(__bridge id)kSecAttrAccount];
     }
-    
+
     if (password) {
         [keychain setObject:password forKey:(__bridge id)kSecValueData];
     }

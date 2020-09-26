@@ -80,7 +80,7 @@ static NSInteger kEditButtonOuterMargin = 20;
                     badgeDelegate:(id<PPBadgeWrapperDelegate>)badgeDelegate
                              post:(NSDictionary *)post
                        compressed:(BOOL)compressed {
-    
+
     [self.contentView lhs_removeSubviews];
     self.contentView.clipsToBounds = YES;
     self.clipsToBounds = YES;
@@ -91,14 +91,14 @@ static NSInteger kEditButtonOuterMargin = 20;
     self.compressed = compressed;
     self.dataSource = dataSource;
     self.post = post;
-    
+
     self.panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(gestureDetected:)];
     self.panGestureRecognizer.delegate = self;
     [self.contentView addGestureRecognizer:self.panGestureRecognizer];
-    
+
     self.backgroundColor = [PPTheme bookmarkBackgroundColor];
     self.contentView.backgroundColor = [PPTheme bookmarkBackgroundColor];
-    
+
     static NSDictionary *linkAttributes;
     static NSDictionary *activeLinkAttributes;
     static dispatch_once_t onceToken;
@@ -108,7 +108,7 @@ static NSInteger kEditButtonOuterMargin = 20;
                                  (NSString *)kTTTBackgroundFillColorAttributeName: HEX(0xeeddddff),
                                  (NSString *)kTTTBackgroundCornerRadiusAttributeName: @(5)};
     });
-    
+
     // Keeps returning invalid values. Have to hardcode.
     CGFloat width = CGRectGetWidth(self.frame) - 20;
 
@@ -116,7 +116,7 @@ static NSInteger kEditButtonOuterMargin = 20;
     NSAttributedString *title = [dataSource titleForPostAtIndex:index];
     NSAttributedString *link = [dataSource linkForPostAtIndex:index];
     NSAttributedString *description = [dataSource descriptionForPostAtIndex:index];
-    
+
     self.titleLabel = [PPBookmarkCell bookmarkAttributedLabelForWidth:width];
     self.titleLabel.text = title;
 
@@ -124,7 +124,7 @@ static NSInteger kEditButtonOuterMargin = 20;
     self.linkLabel.text = link;
     self.linkLabel.numberOfLines = 1;
     self.linkLabel.lineBreakMode = NSLineBreakByTruncatingTail;
-    
+
     self.descriptionLabel = [PPBookmarkCell bookmarkAttributedLabelForWidth:width];
     self.descriptionLabel.text = description;
 
@@ -156,13 +156,13 @@ static NSInteger kEditButtonOuterMargin = 20;
     [self.deleteButton setImage:[UIImage imageNamed:@"Delete-Button-Light"] forState:UIControlStateDisabled];
     [self.deleteButton setImage:[UIImage imageNamed:@"Delete-Button"] forState:UIControlStateNormal];
     self.deleteButton.enabled = NO;
-    
+
     self.editButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.editButton.translatesAutoresizingMaskIntoConstraints = NO;
     [self.editButton setImage:[UIImage imageNamed:@"navigation-edit-blue"] forState:UIControlStateDisabled];
     [self.editButton setImage:[UIImage imageNamed:@"navigation-edit-darker"] forState:UIControlStateNormal];
     self.editButton.enabled = NO;
-    
+
     if (self.isEditing) {
         self.editButton.hidden = YES;
         self.deleteButton.hidden = YES;
@@ -186,14 +186,14 @@ static NSInteger kEditButtonOuterMargin = 20;
     [self.contentView addSubview:mainContentView];
     [self.contentView addSubview:self.deleteButton];
     [self.contentView addSubview:self.editButton];
-    
+
     NSMutableDictionary *views = [@{@"main": mainContentView,
                                     @"edit": self.editButton,
                                     @"delete": self.deleteButton,
                                     @"title": self.titleLabel,
                                     @"description": self.descriptionLabel,
                                     @"link": self.linkLabel } mutableCopy];
-    
+
     NSDictionary *metrics = @{@"innerMargin": @(kEditButtonInnerMargin),
                               @"outerMargin": @(kEditButtonOuterMargin) };
 
@@ -212,7 +212,7 @@ static NSInteger kEditButtonOuterMargin = 20;
     [mainContentView lhs_addConstraints:@"H:|-10-[title]-10-|" views:views];
     [mainContentView lhs_addConstraints:@"H:|-10-[link]-10-|" views:views];
     [mainContentView lhs_addConstraints:@"H:|-10-[description]-10-|" views:views];
-    
+
     NSMutableDictionary *postMetrics = [@{@"titleHeight": @(metadata.titleHeight + 1),
                                           @"descriptionHeight": @(metadata.descriptionHeight + 1),
                                           @"linkHeight": @(metadata.linkHeight + 1) } mutableCopy];
@@ -237,7 +237,7 @@ static NSInteger kEditButtonOuterMargin = 20;
         self.badgeWrapperView.delegate = badgeDelegate;
         CGFloat height = [self.badgeWrapperView calculateHeightForWidth:width];
         self.badgeWrapperView.translatesAutoresizingMaskIntoConstraints = NO;
-        
+
         postMetrics[@"badgeHeight"] = @(height);
         [mainContentView addSubview:self.badgeWrapperView];
         [mainContentView lhs_addConstraints:@"H:|-10-[badges]-10-|" views:views];
@@ -268,7 +268,7 @@ static NSInteger kEditButtonOuterMargin = 20;
     if (recognizer == self.panGestureRecognizer) {
         CGPoint offset = [self.panGestureRecognizer translationInView:self.contentView];
         if (recognizer.state == UIGestureRecognizerStateChanged) {
-            
+
             self.deleteButton.enabled = offset.x <= -(23 + kEditButtonOuterMargin + kEditButtonInnerMargin);
             self.editButton.enabled = offset.x >= (20 + kEditButtonOuterMargin + kEditButtonInnerMargin);
 

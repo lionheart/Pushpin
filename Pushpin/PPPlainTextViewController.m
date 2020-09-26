@@ -39,9 +39,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
 //    self.automaticallyAdjustsScrollViewInsets = NO;
-    
+
     self.textView = [[UITextView alloc] init];
     self.textView.textContainerInset = UIEdgeInsetsMake(5, 3, 5, 3);
     self.textView.editable = NO;
@@ -50,7 +50,7 @@
     self.textView.font = [PPTheme descriptionFont];
 //    self.textView.translatesAutoresizingMaskIntoConstraints = NO;
     self.textView.frame = self.view.frame;
-    
+
     [self.view addSubview:self.textView];
 //    [self.textView lhs_expandToFillSuperview];
 }

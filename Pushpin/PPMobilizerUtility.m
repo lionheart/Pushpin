@@ -25,7 +25,7 @@
     dispatch_once(&onceToken, ^{
         mobilizer = [[PPMobilizerUtility alloc] init];
     });
-    
+
     return mobilizer;
 }
 
@@ -60,10 +60,10 @@
     switch (mobilizer) {
         case PPMobilizerGoogle:
             return [NSString stringWithFormat:@"http://www.google.com/gwt/x?noimg=1&bie=UTF-8&oe=UTF-8&u=%@", url.absoluteString];
-            
+
         case PPMobilizerInstapaper:
             return [NSString stringWithFormat:@"http://mobilizer.instapaper.com/m?u=%@", url.absoluteString];
-            
+
         case PPMobilizerReadability:
             return [NSString stringWithFormat:@"http://www.readability.com/m?url=%@", url.absoluteString];
     }
@@ -74,10 +74,10 @@
         switch (mobilizer) {
             case PPMobilizerGoogle:
                 return [url.absoluteString substringFromIndex:57];
-                
+
             case PPMobilizerInstapaper:
                 return [url.absoluteString substringFromIndex:36];
-                
+
             case PPMobilizerReadability:
                 return [url.absoluteString substringFromIndex:33];
         }

@@ -34,7 +34,7 @@
     titleButton.translatesAutoresizingMaskIntoConstraints = NO;
     titleButton.containerView = [[UIView alloc] init];
     titleButton.containerView.translatesAutoresizingMaskIntoConstraints = NO;
-    
+
     titleButton.titleLabel = [[UILabel alloc] init];
     titleButton.titleLabel.clipsToBounds = YES;
     titleButton.titleLabel.textColor = [UIColor whiteColor];
@@ -42,17 +42,17 @@
     titleButton.titleLabel.font = [PPTheme extraLargeFont];
     titleButton.titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [titleButton.containerView addSubview:titleButton.titleLabel];
-    
+
     titleButton.imageView = [[UIImageView alloc] init];
     titleButton.imageView.translatesAutoresizingMaskIntoConstraints = NO;
     [titleButton.containerView addSubview:titleButton.imageView];
-    
+
     [titleButton addSubview:titleButton.containerView];
     [titleButton.containerView lhs_expandToFillSuperview];
     [titleButton lhs_centerVerticallyForView:titleButton.containerView];
     [titleButton lhs_centerHorizontallyForView:titleButton.containerView];
     [titleButton addConstraintsForImageAndTitle];
-    
+
     if (delegate) {
         titleButton.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:titleButton
                                                                                    action:@selector(gestureDetected:)];
@@ -62,7 +62,7 @@
                                                                                                action:@selector(gestureDetected:)];
         [titleButton addGestureRecognizer:titleButton.longPressGestureRecognizer];
     }
-    
+
     titleButton.delegate = delegate;
     return titleButton;
 }
@@ -79,7 +79,7 @@
     self.imageView.hidden = YES;
 
     [NSLayoutConstraint deactivateConstraints:self.containerView.constraints];
-    
+
     NSDictionary *metrics = @{@"width": @(20),
                               @"textWidth": @([UIApplication currentSize].width - 120)};
     for (NSString *imageName in imageNames) {
@@ -87,30 +87,30 @@
         UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:imageName]];
         imageView.translatesAutoresizingMaskIntoConstraints = NO;
         [self.containerView addSubview:imageView];
-        
+
         views[formatName] = imageView;
         [formatComponents addObject:[NSString stringWithFormat:@"[%@(width)]", formatName]];
-        
+
         if (title) {
             [self.containerView lhs_centerVerticallyForView:imageView height:20];
         } else {
             [self.containerView lhs_addConstraints:[NSString stringWithFormat:@"V:|[%@(width)]|", formatName] metrics:metrics views:views];
         }
-        
+
         i++;
     }
-    
+
     if (title) {
         self.titleLabel.text = title;
         views[@"title"] = self.titleLabel;
         [formatComponents addObject:@"[title(<=textWidth)]"];
         [self.titleLabel.centerYAnchor constraintEqualToAnchor:self.containerView.centerYAnchor constant:1].active = YES;
     }
-    
+
     NSString *format = [NSString stringWithFormat:@"H:|%@|", [formatComponents componentsJoinedByString:@"-5-"]];
-    
+
     [self.containerView lhs_addConstraints:format metrics:metrics views:views];
-    
+
     [self layoutIfNeeded];
     self.frame = (CGRect){{0, 0}, self.containerView.frame.size};
 }

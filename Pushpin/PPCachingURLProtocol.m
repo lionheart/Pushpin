@@ -61,7 +61,7 @@ static NSString *PPCachingEnabledKey = @"PPCachingEnabled";
 + (NSCachedURLResponse *)cachedResponseByFollowingRedirects:(NSURLRequest *)request {
     NSCachedURLResponse *cachedResponse = [[PPAppDelegate sharedDelegate].urlCache cachedResponseForRequest:request];
     NSHTTPURLResponse *HTTPURLResponse = (NSHTTPURLResponse *)cachedResponse.response;
-    
+
     if ([@[@301, @302, @303, @307, @308] containsObject:@(HTTPURLResponse.statusCode)]) {
         NSString *redirectedURL = HTTPURLResponse.allHeaderFields[@"Location"];
         if (redirectedURL.length > 0) {
@@ -121,10 +121,10 @@ static NSString *PPCachingEnabledKey = @"PPCachingEnabled";
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     [self.client URLProtocolDidFinishLoading:self];
-    
+
     NSCachedURLResponse *cachedResponse = [[NSCachedURLResponse alloc] initWithResponse:self.response data:self.data];
     [[PPAppDelegate sharedDelegate].urlCache storeCachedResponse:cachedResponse forRequest:self.canonicalRequest];
-    
+
     [self reset];
 }
 

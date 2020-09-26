@@ -14,18 +14,18 @@ import TipJarViewController
 
 struct ExampleTipJarOptions: TipJarConfiguration {
     static var topHeader = "Hi There"
-    
+
     static var topDescription = """
 If you've been enjoying Pushpin for a while, and would like to show your support, please consider a tip. They go such a long way, and every little bit helps. Thanks! :)
 """
-    
+
     static func subscriptionProductIdentifier(for subscription: TipJarViewController<ExampleTipJarOptions>.SubscriptionRow) -> String {
         switch subscription {
         case .monthly: return "com.lionheartsw.Pushpin.TipJarSubscription.Monthly"
         case .yearly: return "com.lionheartsw.Pushpin.TipJarSubscription.Yearly"
         }
     }
-    
+
     static func oneTimeProductIdentifier(for subscription: TipJarViewController<ExampleTipJarOptions>.OneTimeRow) -> String {
         switch subscription {
         case .small: return "com.lionheartsw.Pushpin.Tip.Small"
@@ -35,7 +35,7 @@ If you've been enjoying Pushpin for a while, and would like to show your support
         case .massive: return "com.lionheartsw.Pushpin.Tip.Massive"
         }
     }
-    
+
     static var termsOfUseURLString = "https://lionheartsw.com/software/pushpin/terms.html"
     static var privacyPolicyURLString = "https://lionheartsw.com/software/pushpin/privacy.html"
 }
@@ -48,7 +48,7 @@ extension ExampleTipJarOptions: TipJarOptionalConfiguration {
 }
 
 final class PPTipJarViewController: TipJarViewController<ExampleTipJarOptions> {
-    
+
 }
 
 @objc class PPTipJarViewControllerFactory: NSObject {

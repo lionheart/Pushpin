@@ -41,7 +41,7 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     self.heights = [NSMutableArray array];
 
     NSString* plistPath = [[NSBundle mainBundle] pathForResource:@"Changelog" ofType:@"plist"];
@@ -49,10 +49,10 @@ static NSString *CellIdentifier = @"Cell";
     self.data = [NSArray arrayWithContentsOfFile:plistPath];
     self.title = NSLocalizedString(@"Changelog", nil);
     self.titles = [NSMutableArray array];
-    
+
     NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
     paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
-    
+
     self.detailAttributes = @{NSFontAttributeName: [PPTheme detailLabelFont],
                               NSParagraphStyleAttributeName: paragraphStyle };
 
@@ -67,28 +67,28 @@ static NSString *CellIdentifier = @"Cell";
 
 - (void)calculateHeightsForWidth:(CGFloat)w {
     [self.titles removeAllObjects];
-    
+
     UILabel *fakeLabel = [[UILabel alloc] init];
     fakeLabel.preferredMaxLayoutWidth = w;
-    
+
     [self.data enumerateObjectsUsingBlock:^(NSArray *list, NSUInteger section, BOOL *stop) {
         [self.titles addObject:list[0]];
         self.heights[section] = [NSMutableArray array];
-        
+
         [list[1] enumerateObjectsUsingBlock:^(NSArray *pair, NSUInteger row, BOOL *stop) {
             NSString *description = pair[1];
             CGFloat height = 0;
-            
+
             fakeLabel.attributedText = [[NSAttributedString alloc] initWithString:description attributes:self.detailAttributes];
-            
+
             if (![description isEqualToString:@""]) {
                 height += CGRectGetHeight([fakeLabel textRectForBounds:CGRectMake(0, 0, w, CGFLOAT_MAX) limitedToNumberOfLines:0]);
             }
-            
+
             self.heights[section][row] = @(height);
         }];
     }];
-    
+
     [self.tableView reloadData];
 }
 
@@ -110,7 +110,7 @@ static NSString *CellIdentifier = @"Cell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    
+
     cell.accessoryView = nil;
     cell.textLabel.text = nil;
     cell.textLabel.numberOfLines = 0;

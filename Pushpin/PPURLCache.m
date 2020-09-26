@@ -135,7 +135,7 @@
 
     NSMutableArray *candidateUrlsToCache = [NSMutableArray array];
     NSMutableArray *urlsToCache = [NSMutableArray array];
-    
+
     self.currentURLString = @"";
     self.currentAssetURLString = @"";
     self.urlsToDownload = [NSMutableArray array];
@@ -143,34 +143,34 @@
     self.completedAssetURLs = [NSMutableSet set];
     self.completedHTMLURLs = [NSMutableSet set];
     self.assetURLsToHTMLURLs = [NSMutableDictionary dictionary];
-    
+
     if (progress) {
         self.ProgressBlock = progress;
     }
     self.backgroundURLSessionCompletionHandlers = [NSMutableDictionary dictionary];
-    
+
     if (self.hasAvailableSpace) {
         [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
             PPSettings *settings = [PPSettings sharedSettings];
-            
+
             NSString *query;
-            
+
             // Timestamp for last 30 days.
             NSInteger timestamp = [[NSDate date] timeIntervalSince1970] - (60 * 60 * 24 * 30);
-            
+
             switch (settings.offlineFetchCriteria) {
                 case PPOfflineFetchCriteriaUnread:
                     query = @"SELECT url FROM bookmark WHERE unread=1 ORDER BY created_at DESC";
                     break;
-                    
+
                 case PPOfflineFetchCriteriaRecent:
                     query = [NSString stringWithFormat:@"SELECT url FROM bookmark WHERE created_at>%lu ORDER BY created_at DESC", (long)timestamp];
                     break;
-                    
+
                 case PPOfflineFetchCriteriaUnreadAndRecent:
                     query = [NSString stringWithFormat:@"SELECT url FROM bookmark WHERE created_at>%lu OR unread=1 ORDER BY created_at DESC", (long)timestamp];
                     break;
-                    
+
                 case PPOfflineFetchCriteriaEverything:
 #if 0
                         query = @"SELECT url FROM bookmark WHERE url LIKE '%%thesaurus.com%%' ORDER BY created_at DESC";
@@ -184,11 +184,11 @@
             while ([results next]) {
                 NSString *urlString = [results stringForColumn:@"url"];
                 NSURL *url = [NSURL URLWithString:urlString];
-                
+
                 // https://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=
                 NSString *readerURLString = [NSString stringWithFormat:@"https://pushpin-readability.herokuapp.com/v1/parser?url=%@&format=json&onerr=", [url.absoluteString urlEncodeUsingEncoding:NSUTF8StringEncoding]];
                 NSURL *readerURL = [NSURL URLWithString:readerURLString];
-                
+
                 if ([@[@"http", @"https"] containsObject:url.scheme]) {
                     if (settings.downloadFullWebpageForOfflineCache) {
                         [candidateUrlsToCache addObject:url];
@@ -199,7 +199,7 @@
             }
             [results close];
         }];
-        
+
         [[PPURLCache databaseQueue] inDatabase:^(FMDatabase *db) {
             for (NSURL *url in candidateUrlsToCache) {
                 FMResultSet *result = [db executeQuery:@"SELECT COUNT(*) FROM cache WHERE url=?" withArgumentsInArray:@[url.absoluteString]];
@@ -222,7 +222,7 @@
     } else {
         [self updateProgressWithCompletedValues];
     }
-    
+
     completion(self.htmlURLs.count);
 }
 
@@ -231,14 +231,14 @@
 
     NSData *responseData = [NSKeyedArchiver archivedDataWithRootObject:cachedResponse];
     NSString *checksum = [PPURLCache md5ChecksumForData:responseData];
-    
+
     // Update the database entry
     // insert response size, md5, url, date
     __block BOOL urlExistsInCache;
-    
+
     // Multiple URLs might share the same response data
     __block BOOL responseDataInCache = YES;
-    
+
     // Before we do anything, we check if the cache is full.
     if (self.hasAvailableSpace) {
         [[PPURLCache databaseQueue] inDatabase:^(FMDatabase *db) {
@@ -246,21 +246,21 @@
             [result next];
             urlExistsInCache = [result intForColumnIndex:0] > 0;
             [result close];
-            
+
             result = [db executeQuery:@"SELECT COUNT(*) FROM cache WHERE url!=? AND md5=?" withArgumentsInArray:@[urlString, checksum]];
             [result next];
             responseDataInCache = [result intForColumnIndex:0] > 0;
             [result close];
-            
+
             if (!urlExistsInCache || responseDataInCache) {
                 [db executeUpdate:@"INSERT INTO cache (url, md5, size) VALUES (?, ?, ?)" withArgumentsInArray:@[urlString, checksum, @(responseData.length)]];
             }
         }];
-        
+
         // Only update the cache if the file previously did not exist
         if (!responseDataInCache) {
             NSString *filePath = [PPURLCache filePathForChecksum:checksum];
-            
+
             BOOL isDirectory;
             BOOL directoryExists = [[NSFileManager defaultManager] fileExistsAtPath:[PPURLCache directoryPathForChecksum:checksum] isDirectory:&isDirectory];
             if (!directoryExists) {
@@ -277,7 +277,7 @@
 
 - (NSCachedURLResponse *)cachedResponseForRequest:(NSURLRequest *)request {
     NSData *data = [self.cache objectForKey:request.URL.absoluteString];
-    
+
     if (data) {
         return [NSKeyedUnarchiver unarchiveObjectWithData:data];
     } else {
@@ -333,7 +333,7 @@
             // No-op if the DB doesn't have an entry for the request.
         }
     }];
-    
+
     if (filePath) {
         NSData *data = [NSData dataWithContentsOfFile:filePath options:0 error:nil];
         NSCachedURLResponse *response = [NSKeyedUnarchiver unarchiveObjectWithData:data];
@@ -342,7 +342,7 @@
         // Before we delete the data, we need to extract all URLs this file might be associated with (i.e., static assets, like CSS & JS)]
         [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
         self._currentDiskUsage -= size;
-        
+
         for (NSString *assetURLString in assetURLStrings) {
             NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:assetURLString]];
             [self removeCachedResponseForRequest:request];
@@ -383,7 +383,7 @@
 
 - (void)removeCachedResponseForDataTask:(NSURLSessionDataTask *)dataTask {
     [self removeCachedResponseForRequest:dataTask.originalRequest];
-    
+
     if (![dataTask.originalRequest isEqual:dataTask.currentRequest]) {
         [self removeCachedResponseForRequest:dataTask.currentRequest];
     }
@@ -402,7 +402,7 @@
     if (exists) {
         [[NSFileManager defaultManager] removeItemAtPath:[self databasePath] error:&error];
     }
-    
+
     NSString *dataPath = [[self directoryPath] stringByAppendingFormat:@"/data/"];
     exists = [[NSFileManager defaultManager] fileExistsAtPath:dataPath];
     if (exists) {
@@ -423,22 +423,22 @@
     FMDatabase *db = [FMDatabase databaseWithPath:[self databasePath]];
     [db open];
     [db close];
-    
+
     [[self databaseQueue] inDatabase:^(FMDatabase *db) {
         // http://stackoverflow.com/a/875422/39155
         [db executeUpdate:@"PRAGMA cache_size=100;"];
-        
+
         // http://stackoverflow.com/a/875422/39155
         [db executeUpdate:@"PRAGMA syncronous=OFF;"];
-        
+
         FMResultSet *s = [db executeQuery:@"PRAGMA user_version"];
         BOOL success = [s next];
         if (success) {
             int version = [s intForColumnIndex:0];
             [s close];
-            
+
             [db beginTransaction];
-            
+
             switch (version) {
                 case 0:
                     [db executeUpdate:
@@ -455,11 +455,11 @@
                     [db executeUpdate:@"CREATE INDEX cache_md5_idx ON cache (md5);"];
 
                     [db executeUpdate:@"PRAGMA user_version=1;"];
-                    
+
                 default:
                     break;
             }
-            
+
             [db commit];
         }
     }];
@@ -495,10 +495,10 @@
     void *cData = malloc([data length]);
     unsigned char resultCString[16];
     [data getBytes:cData length:[data length]];
-    
+
     CC_MD5(cData, (unsigned int)[data length], resultCString);
     free(cData);
-    
+
     NSString *result = [NSString stringWithFormat:
                         @"%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X",
                         resultCString[0], resultCString[1], resultCString[2], resultCString[3],
@@ -538,7 +538,7 @@
             NSURLCredential *credential = [NSURLCredential credentialWithUser:@"pushpin"
                                                                      password:@"9346edb36e542dab1e7861227f9222b7"
                                                                   persistence:NSURLCredentialPersistenceForSession];
-            
+
 //            [challenge.sender useCredential:credential forAuthenticationChallenge:challenge];
             completionHandler(NSURLSessionAuthChallengeUseCredential, credential);
         } else {
@@ -570,7 +570,7 @@
     } else {
         [self.completedAssetURLs addObject:url];
     }
-    
+
     [self updateProgress];
 
     if (self.completedAssetURLs.count == self.assetURLs.count) {
@@ -689,7 +689,7 @@
                     }
                 }
             }
-            
+
             for (NSURLSessionDownloadTask *task in tasks) {
                 [task resume];
             }
@@ -708,7 +708,7 @@
             }
         }
     }
-    
+
     dispatch_semaphore_signal([PPURLCache assetsProcessedSemaphore]);
 
     if (!self.hasAvailableSpace) {
@@ -734,7 +734,7 @@
             [self updateProgressWithCompletedValues];
             dispatch_semaphore_signal([PPURLCache semaphore]);
             dispatch_semaphore_signal([PPURLCache HTMLDownloadSemaphore]);
-            
+
         });
     });
 }
