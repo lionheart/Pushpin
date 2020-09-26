@@ -90,31 +90,28 @@ static NSString *CellIdentifier = @"Cell";
         [self.textAlignmentActionSheet lhs_addActionWithTitle:alignment
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
-                                                          NSDictionary *map = @{@"Left": @(NSTextAlignmentLeft),
-                                                                                @"Center": @(NSTextAlignmentCenter),
-                                                                                @"Right": @(NSTextAlignmentRight),
-                                                                                @"Justified": @(NSTextAlignmentJustified),
-                                                                                @"Natural": @(NSTextAlignmentNatural) };
-                                                          NSNumber *result = map[action.title];
-                                                          if (result) {
+            NSDictionary *map = @{@"Left": @(NSTextAlignmentLeft),
+                                  @"Center": @(NSTextAlignmentCenter),
+                                  @"Right": @(NSTextAlignmentRight),
+                                  @"Justified": @(NSTextAlignmentJustified),
+                                  @"Natural": @(NSTextAlignmentNatural) };
+            NSNumber *result = map[action.title];
+            if (result) {
+                PPSettings *settings = [PPSettings sharedSettings];
+                PPReaderSettings *readerSettings = settings.readerSettings;
+                readerSettings.textAlignment = [result integerValue];
+                settings.readerSettings = readerSettings;
+                [settings.readerSettings updateCustomReaderCSSFile];
 
+                [self.tableView beginUpdates];
+                [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPReaderSettingsMainRowTextAlignment inSection:PPReaderSettingsSectionMain]]
+                                      withRowAnimation:UITableViewRowAnimationFade];
+                [self.tableView endUpdates];
+                [self updateExampleWebView];
 
-
-                                                              PPSettings *settings = [PPSettings sharedSettings];
-                                                              PPReaderSettings *readerSettings = settings.readerSettings;
-                                                              readerSettings.textAlignment = [result integerValue];
-                                                              settings.readerSettings = readerSettings;
-                                                              [settings.readerSettings updateCustomReaderCSSFile];
-
-                                                              [self.tableView beginUpdates];
-                                                              [self.tableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:PPReaderSettingsMainRowTextAlignment inSection:PPReaderSettingsSectionMain]]
-                                                                                    withRowAnimation:UITableViewRowAnimationFade];
-                                                              [self.tableView endUpdates];
-                                                              [self updateExampleWebView];
-
-                                                              self.textAlignmentActionSheet = nil;
-                                                          }
-                                                      }];
+                self.textAlignmentActionSheet = nil;
+            }
+        }];
     }
 
     [self.textAlignmentActionSheet lhs_addActionWithTitle:NSLocalizedString(@"OK", nil)
@@ -577,9 +574,6 @@ static NSString *CellIdentifier = @"Cell";
 #pragma mark - LHSFontSelecting
 
 - (void)setFontName:(NSString *)fontName forFontSelectionViewController:(LHSFontSelectionViewController *)viewController {
-
-
-
     PPSettings *settings = [PPSettings sharedSettings];
     PPReaderSettings *readerSettings = settings.readerSettings;
     readerSettings.headerFontName = fontName;
@@ -652,8 +646,6 @@ static NSString *CellIdentifier = @"Cell";
     if (sender == self.fontSizeSlider) {
         int calculatedValue = (int)self.fontSizeSlider.value;
         if (readerSettings.fontSize != calculatedValue) {
-
-
             readerSettings.fontSize = calculatedValue;
             settings.readerSettings = readerSettings;
             [settings.readerSettings updateCustomReaderCSSFile];
@@ -664,8 +656,6 @@ static NSString *CellIdentifier = @"Cell";
     } else if (sender == self.lineSpacingSlider) {
         float calculatedValue = (int)(10 * self.lineSpacingSlider.value) / 10.;
         if (readerSettings.lineSpacing != calculatedValue) {
-
-
             readerSettings.lineSpacing = calculatedValue;
             settings.readerSettings = readerSettings;
             [settings.readerSettings updateCustomReaderCSSFile];
@@ -676,8 +666,6 @@ static NSString *CellIdentifier = @"Cell";
     } else if (sender == self.marginSlider) {
         float calculatedValue = (int)self.marginSlider.value;
         if (readerSettings.margin != calculatedValue) {
-
-
             readerSettings.margin = calculatedValue;
             settings.readerSettings = readerSettings;
             [settings.readerSettings updateCustomReaderCSSFile];
@@ -707,7 +695,7 @@ static NSString *CellIdentifier = @"Cell";
     NSDictionary *article = @{@"content": @"<p>Versailles, June 28, (Associated Press.)--Germany and the allied and associated powers signed the peace terms here today in the same imperial hall where the Germans humbled the French so ignominiously forty-eight years ago.</p>"
                               "<p>This formally ended the world war, which lasted just thirty-seven days less than five years. Today, the day of peace, was the fifth anniversary of the murder of Archduke Francis Ferdinand by a Serbian student at Sarajevo.</p>"
                               "<p>The peace was signed under circumstances which somewhat dimmed the expectations of those who had worked and fought during long years of war and months of negotiations for its achievement.</p>"
-                              };
+    };
 
     PPSettings *settings = [PPSettings sharedSettings];
     PPReaderSettings *readerSettings = settings.readerSettings;
@@ -725,16 +713,17 @@ static NSString *CellIdentifier = @"Cell";
 
     [UIView animateWithDuration:0.4
                      animations:^{
-                         if ([self.view.constraints containsObject:self.webViewContainerPinnedToTopConstraint]) {
-                             self.webViewContainerPinnedToTopConstraint.active = NO;
-                             self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Preview", nil);
-                         } else {
-                             self.webViewContainerPinnedToTopConstraint.active = YES;
-                             self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Minimize", nil);
-                         }
+        if ([self.view.constraints containsObject:self.webViewContainerPinnedToTopConstraint]) {
+            self.webViewContainerPinnedToTopConstraint.active = NO;
+            self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Preview", nil);
+        } else {
+            self.webViewContainerPinnedToTopConstraint.active = YES;
+            self.navigationItem.rightBarButtonItem.title = NSLocalizedString(@"Minimize", nil);
+        }
 
-                         [self.view layoutIfNeeded];
-                     }];
+        [self.view layoutIfNeeded];
+    }];
 }
 
 @end
+

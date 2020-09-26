@@ -569,8 +569,6 @@
 }
 
 - (NSString *)username {
-
-
     return [self.token componentsSeparatedByString:@":"][0];
 }
 
@@ -579,8 +577,6 @@
 }
 
 - (NSString *)password {
-
-
     KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"PinboardCredentials" accessGroup:nil];
 
     NSString *key = [keychain objectForKey:(__bridge id)kSecValueData];
@@ -595,8 +591,6 @@
 }
 
 - (void)setUsername:(NSString *)username password:(NSString *)password {
-
-
     KeychainItemWrapper *keychain = [[KeychainItemWrapper alloc] initWithIdentifier:@"PinboardCredentials" accessGroup:nil];
 
     if (username) {

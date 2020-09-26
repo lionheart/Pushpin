@@ -431,7 +431,6 @@ static BOOL kPinboardSyncInProgress = NO;
                 [db executeUpdate:@"DELETE FROM bookmark WHERE hash=?" withArgumentsInArray:@[hash]];
             }];
 
-
             dispatch_group_leave(group);
         };
 
@@ -474,7 +473,6 @@ static BOOL kPinboardSyncInProgress = NO;
                     [db executeUpdate:@"UPDATE tag SET count=(SELECT COUNT(*) FROM tagging WHERE tag_name=tag.name)"];
                     [db executeUpdate:@"DELETE FROM tag WHERE count=0"];
                 }];
-
 
 
                 NSInteger index = [self.posts indexOfObject:post];
@@ -1093,8 +1091,6 @@ static BOOL kPinboardSyncInProgress = NO;
         [results close];
     }];
 
-
-
     DLog(@"Iterating posts");
     progress(0, total);
 
@@ -1236,8 +1232,6 @@ static BOOL kPinboardSyncInProgress = NO;
 
         NSNotification *note = [NSNotification notificationWithName:kPinboardDataSourceProgressNotification object:nil userInfo:@{@"current": @(total), @"total": @(total)}];
         [queue enqueueNotification:note postingStyle:NSPostASAP];
-
-
 
         BOOL updatesMade = addCount > 0 || updateCount > 0 || deleteCount > 0;
         if (weakSelf) {

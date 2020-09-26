@@ -118,8 +118,8 @@
                              hash:extractHash
                              meta:nil
                        completion:^(NSSet *inserted, NSSet *updated, NSSet *deleted) {
-                           completion(inserted, deleted);
-                       }];
+        completion(inserted, deleted);
+    }];
 }
 
 + (NSDictionary *)dictionaryFromResultSet:(id)resultSet {
@@ -129,15 +129,15 @@
         starred = @(NO);
     }
     return @{
-             @"title": [resultSet stringForColumn:@"title"],
-             @"description": [resultSet stringForColumn:@"description"],
-             @"unread": @([resultSet boolForColumn:@"unread"]),
-             @"url": [resultSet stringForColumn:@"url"],
-             @"private": @([resultSet boolForColumn:@"private"]),
-             @"tags": [resultSet stringForColumn:@"tags"],
-             @"created_at": [resultSet dateForColumn:@"created_at"],
-             @"starred": starred
-         };
+        @"title": [resultSet stringForColumn:@"title"],
+        @"description": [resultSet stringForColumn:@"description"],
+        @"unread": @([resultSet boolForColumn:@"unread"]),
+        @"url": [resultSet stringForColumn:@"url"],
+        @"private": @([resultSet boolForColumn:@"private"]),
+        @"tags": [resultSet stringForColumn:@"tags"],
+        @"created_at": [resultSet dateForColumn:@"created_at"],
+        @"starred": starred
+    };
 
 }
 
@@ -275,8 +275,6 @@
                 [db beginTransaction];
 
                 switch (version) {
-
-
                     case 0:
                         [db executeUpdate:
                          @"CREATE TABLE bookmark("
@@ -601,3 +599,4 @@
 }
 
 @end
+

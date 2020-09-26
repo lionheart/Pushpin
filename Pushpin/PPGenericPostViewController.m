@@ -583,8 +583,6 @@ static NSInteger PPBookmarkEditMaximum = 25;
 
 #warning TODO Check outside links
             if (settings.openLinksInApp) {
-
-
                 TMReachability *reach = [TMReachability reachabilityForInternetConnection];
                 if (settings.useSafariViewController && reach.isReachable) {
                     SFSafariViewController *controller = [[SFSafariViewController alloc] initWithURL:[NSURL URLWithString:urlString] entersReaderIfAvailable:NO];

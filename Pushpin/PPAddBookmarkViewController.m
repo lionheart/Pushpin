@@ -1093,11 +1093,6 @@ static NSString *CellIdentifier = @"CellIdentifier";
                                                     handler:nil];
 
             [self presentViewController:alert animated:YES completion:nil];
-
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-
-
-            });
             return;
         }
 

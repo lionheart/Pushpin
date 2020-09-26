@@ -211,7 +211,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
                             @"search": self.searchButton,
                             @"tags": self.tagsButton,
                             @"notes": self.noteButton
-                        };
+    };
 
     [topBorder.topAnchor constraintEqualToAnchor:self.toolbar.topAnchor].active = YES;
     [topBorder.leftAnchor constraintEqualToAnchor:self.toolbar.leftAnchor].active = YES;
@@ -219,11 +219,11 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     [topBorder.heightAnchor constraintEqualToConstant:1].active = YES;
 
     NSMutableArray <NSLayoutConstraint *> *constraints = [@[
-                                                           [self.searchButton.centerXAnchor constraintEqualToAnchor:self.toolbar.centerXAnchor],
-                                                           [self.noteButton.centerYAnchor constraintEqualToAnchor:self.toolbar.centerYAnchor],
-                                                           [self.searchButton.centerYAnchor constraintEqualToAnchor:self.toolbar.centerYAnchor],
-                                                           [self.tagsButton.centerYAnchor constraintEqualToAnchor:self.toolbar.centerYAnchor]
-                                                           ] mutableCopy];
+        [self.searchButton.centerXAnchor constraintEqualToAnchor:self.toolbar.centerXAnchor],
+        [self.noteButton.centerYAnchor constraintEqualToAnchor:self.toolbar.centerYAnchor],
+        [self.searchButton.centerYAnchor constraintEqualToAnchor:self.toolbar.centerYAnchor],
+        [self.tagsButton.centerYAnchor constraintEqualToAnchor:self.toolbar.centerYAnchor]
+    ] mutableCopy];
 
     NSLayoutConstraint *notesLeftConstraint = [self.noteButton.leftAnchor constraintEqualToAnchor:self.toolbar.leftAnchor constant:12];
     self.leftOrientationConstraints = [constraints arrayByAddingObject:notesLeftConstraint];
@@ -268,7 +268,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         self.navigationController.navigationBar.barTintColor = HEX(0x0096ffff);
     }
 
-
     PPSettings *settings = [PPSettings sharedSettings];
 
     if (!settings.feedToken) {
@@ -297,8 +296,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-
-
     if (self.tableView.allowsMultipleSelectionDuringEditing) {
         return PPProviderPinboardSections;
     } else {
@@ -307,8 +304,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-
-
     PPPinboardSectionType sectionType = [self sectionTypeForSection:section];
 
     if (tableView.editing) {
@@ -459,8 +454,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     cell.detailTextLabel.text = nil;
     cell.detailTextLabel.font = [PPTheme detailLabelFont];
     cell.clipsToBounds = YES;
-
-
 
     PPPinboardSectionType sectionType = [self sectionTypeForSection:indexPath.section];
     switch (sectionType) {
@@ -753,8 +746,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         }
     } else {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
-
-
 
         PPSettings *settings = [PPSettings sharedSettings];
         PPPinboardSectionType sectionType = [self sectionTypeForSection:indexPath.section];
@@ -1092,9 +1083,9 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
         [UIView animateWithDuration:0.3
                          animations:^{
-                             self.toolbarBottomConstraint.constant = 0;
-                             [self.view layoutIfNeeded];
-                         }];
+            self.toolbarBottomConstraint.constant = 0;
+            [self.view layoutIfNeeded];
+        }];
 
         [CATransaction begin];
         [self.tableView beginUpdates];
@@ -1191,9 +1182,9 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
         [UIView animateWithDuration:0.3
                          animations:^{
-                             self.toolbarBottomConstraint.constant = 88;
-                             [self.view layoutIfNeeded];
-                         }];
+            self.toolbarBottomConstraint.constant = 88;
+            [self.view layoutIfNeeded];
+        }];
 
         for (NSIndexPath *indexPath in [self indexPathsForVisibleFeeds]) {
             [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
@@ -1214,7 +1205,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
         }
     }
-
 
     if (![self communitySectionIsHidden]) {
         for (NSInteger i=0; i<[PPCommunityFeeds() count]; i++) {
@@ -1238,7 +1228,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
     }
 
-
     for (NSInteger i=0; i<[PPCommunityFeeds() count]; i++) {
         if (![settings.hiddenFeedNames containsObject:[@[@"community", [self communityFeedNameForIndex:i]] componentsJoinedByString:@"-"]]) {
             [indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:PPPinboardSectionCommunity]];
@@ -1261,7 +1250,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
         numSectionsToHide++;
     }
 
-
     if ([self communitySectionIsHidden]) {
         numSectionsToHide++;
     }
@@ -1277,12 +1265,9 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     return numSectionsToHide;
 }
 
-
 - (NSString *)personalFeedNameForIndex:(NSInteger)index {
     return PPPersonalFeeds()[[[PPSettings sharedSettings].personalFeedOrder[index] integerValue]];
 }
-
-
 
 - (NSString *)communityFeedNameForIndex:(NSInteger)index {
     return PPCommunityFeeds()[[[PPSettings sharedSettings].communityFeedOrder[index] integerValue]];
@@ -1371,7 +1356,6 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
     return (PPPinboardPersonalFeedType)([settings.personalFeedOrder[indexPath.row + numFeedsSkipped] integerValue]);
 }
-
 
 - (PPPinboardCommunityFeedType)communityFeedForIndexPath:(NSIndexPath *)indexPath {
     NSInteger numFeedsSkipped = 0;
@@ -1504,22 +1488,18 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     });
 }
 
-
 - (void)updateFeedCounts {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSMutableArray *indexPathsToReload = [NSMutableArray array];
         [[PPUtilities databaseQueue] inDatabase:^(FMDatabase *db) {
-
-
-
             NSArray *resultSets = @[
-                                    [db executeQuery:@"SELECT COUNT(*) FROM bookmark"],
-                                    [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(YES)]],
-                                    [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(NO)]],
-                                    [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread=?" withArgumentsInArray:@[@(YES)]],
-                                    [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE hash NOT IN (SELECT DISTINCT bookmark_hash FROM tagging)"],
-                                    [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE starred=?" withArgumentsInArray:@[@(YES)]]
-                                    ];
+                [db executeQuery:@"SELECT COUNT(*) FROM bookmark"],
+                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(YES)]],
+                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE private=?" withArgumentsInArray:@[@(NO)]],
+                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE unread=?" withArgumentsInArray:@[@(YES)]],
+                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE hash NOT IN (SELECT DISTINCT bookmark_hash FROM tagging)"],
+                [db executeQuery:@"SELECT COUNT(*) FROM bookmark WHERE starred=?" withArgumentsInArray:@[@(YES)]]
+            ];
 
             NSString *sectionName = PPSections()[0];
 
@@ -1585,9 +1565,10 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 
     [UIView animateWithDuration:0.3
                      animations:^{
-                         self.toolbarBottomConstraint.constant = updatedConstant;
-                         [self.view layoutIfNeeded];
-                     }];
+        self.toolbarBottomConstraint.constant = updatedConstant;
+        [self.view layoutIfNeeded];
+    }];
 }
 
 @end
+

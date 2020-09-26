@@ -125,8 +125,6 @@ static NSString *CellIdentifier = @"TagCell";
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-
-
 }
 
 #pragma mark - UITableViewDataSource

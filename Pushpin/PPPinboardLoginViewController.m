@@ -73,7 +73,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
 
     self.textViewAttributes = @{NSFontAttributeName: [PPTheme detailLabelFontAlternate1]};
 
-
     self.authTokenFooterTextView = [[UITextView alloc] init];
     self.authTokenFooterTextView.translatesAutoresizingMaskIntoConstraints = NO;
     self.authTokenFooterTextView.attributedText = [[NSAttributedString alloc] initWithString:NSLocalizedString(@"Note: Logging in with your API token will prevent Pushpin from accessing Pinboard's full-text search feature.", nil)
@@ -455,8 +454,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     switch ((PPLoginSectionType)section) {
         case PPLoginCredentialSection:
             if (self.progressView.hidden) {
-
-
                 return @"Pinboard Login";
             }
             break;
@@ -522,7 +519,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
                 }
             }
 
-
         case PPLoginAuthTokenSection: {
             CGFloat width = CGRectGetWidth(tableView.frame) - 20;
             CGRect rect = [self.authTokenFooterTextView.attributedText boundingRectWithSize:CGSizeMake(width, CGFLOAT_MAX)
@@ -550,7 +546,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             }
 
             break;
-
 
         case PPLoginAuthTokenSection:
             if (self.authTokenFooterTextView.hidden) {
@@ -607,7 +602,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             }
             break;
 
-
         case PPLoginAuthTokenSection: {
             NSDictionary *views = @{@"view": self.authTokenTextField };
             [cell.contentView addSubview:self.authTokenTextField];
@@ -643,7 +637,6 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
             }
 
             break;
-
 
         case PPLoginAuthTokenSection:
             [self.authTokenTextField becomeFirstResponder];
