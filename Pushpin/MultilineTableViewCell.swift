@@ -65,3 +65,4 @@ final class MultilineTableViewCell: UITableViewCell {
 extension MultilineTableViewCell: QuickTableViewCellIdentifiable {
     static var identifier: String { return "MultilineTableViewCellIdentifier" }
 }
+

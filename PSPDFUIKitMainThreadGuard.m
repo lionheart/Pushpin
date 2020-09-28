@@ -95,3 +95,4 @@ __attribute__((constructor)) static void PSPDFUIKitMainThreadGuard(void) {
         }
     }
 }
+

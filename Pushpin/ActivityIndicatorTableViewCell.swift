@@ -20,7 +20,7 @@ final class ActivityIndicatorTableViewCell: UITableViewCell {
 
         textLabel?.text = "Loading..."
 
-        activityIndicator = UIActivityIndicatorView(style: .gray)
+        activityIndicator = UIActivityIndicatorView(style: .medium)
         activityIndicator.startAnimating()
 
         accessoryView = activityIndicator

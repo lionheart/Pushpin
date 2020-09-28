@@ -24,13 +24,13 @@
           initialSpringVelocity:0
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
-                         toViewController.view.alpha = 1;
-                         fromViewController.view.alpha = 0;
-                     }
+        toViewController.view.alpha = 1;
+        fromViewController.view.alpha = 0;
+    }
                      completion:^(BOOL finished) {
-                         [fromViewController.view removeFromSuperview];
-                         [transitionContext completeTransition:YES];
-                     }];
+        [fromViewController.view removeFromSuperview];
+        [transitionContext completeTransition:YES];
+    }];
 }
 
 - (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext {
@@ -38,3 +38,4 @@
 }
 
 @end
+

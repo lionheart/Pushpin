@@ -77,10 +77,10 @@ static CGFloat kPPShrinkBackAnimationDuration = 0.6;
                         options:UIViewAnimationOptionCurveEaseIn
                      animations:animations
                      completion:^(BOOL finished) {
-                         [fromViewController.view removeFromSuperview];
-                         [cover removeFromSuperview];
-                         [transitionContext completeTransition:YES];
-                     }];
+        [fromViewController.view removeFromSuperview];
+        [cover removeFromSuperview];
+        [transitionContext completeTransition:YES];
+    }];
 }
 
 - (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext {
@@ -88,3 +88,4 @@ static CGFloat kPPShrinkBackAnimationDuration = 0.6;
 }
 
 @end
+

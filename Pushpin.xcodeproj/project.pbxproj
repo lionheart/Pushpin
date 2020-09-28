@@ -435,6 +435,9 @@
 		374D91DF19CE26A700995DF1 /* AppExtensionHelper.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = AppExtensionHelper.js; path = Pinboard/AppExtensionHelper.js; sourceTree = "<group>"; };
 		374D91E019CE26A700995DF1 /* Share-AppStore.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = "Share-AppStore.entitlements"; path = "Pinboard/Share-AppStore.entitlements"; sourceTree = "<group>"; };
 		374E59FE197DADEF00B6EDF1 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
+		374F35ED251FC5DC00D24A8F /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		374F35F0251FC5DC00D24A8F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		374F35F2251FC5DC00D24A8F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		37516A04186C8AF700AEF7A6 /* PPBookmarkCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBookmarkCell.h; sourceTree = "<group>"; };
 		37516A05186C8AF700AEF7A6 /* PPBookmarkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPBookmarkCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3751D17E18346C0200E0A42A /* mobilize.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mobilize.png; path = Assets/mobilize.png; sourceTree = "<group>"; };
@@ -571,7 +574,6 @@
 		37D4B001188325B000E07EB3 /* PPStatusBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPStatusBar.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37D4B00318833BC800E07EB3 /* readability.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = readability.css; sourceTree = "<group>"; };
 		37D620551F9A9D060020B52A /* StoreReviewPointsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreReviewPointsManager.swift; sourceTree = "<group>"; };
-		37D6205B1F9AC06A0020B52A /* PPTipJarTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PPTipJarTableViewCell.swift; sourceTree = "<group>"; };
 		37DAAA80199FFDE40050350D /* LyonTextApp-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LyonTextApp-Regular.ttf"; sourceTree = "<group>"; };
 		37DAAA8219A001F90050350D /* Charter Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Charter Regular.ttf"; sourceTree = "<group>"; };
 		37DAAA8419A002380050350D /* Courier Prime.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Courier Prime.ttf"; sourceTree = "<group>"; };
@@ -942,6 +944,16 @@
 			path = Localizations;
 			sourceTree = "<group>";
 		};
+		374F35EC251FC5DC00D24A8F /* Bookmark */ = {
+			isa = PBXGroup;
+			children = (
+				374F35ED251FC5DC00D24A8F /* ShareViewController.swift */,
+				374F35EF251FC5DC00D24A8F /* MainInterface.storyboard */,
+				374F35F2251FC5DC00D24A8F /* Info.plist */,
+			);
+			path = Bookmark;
+			sourceTree = "<group>";
+		};
 		37516A03186C8AE200AEF7A6 /* Table View Cells */ = {
 			isa = PBXGroup;
 			children = (
@@ -951,7 +963,6 @@
 				37C4D51B1F9BEB40000F50CB /* MultilineTableViewCell.swift */,
 				37516A04186C8AF700AEF7A6 /* PPBookmarkCell.h */,
 				37516A05186C8AF700AEF7A6 /* PPBookmarkCell.m */,
-				37D6205B1F9AC06A0020B52A /* PPTipJarTableViewCell.swift */,
 			);
 			name = "Table View Cells";
 			sourceTree = "<group>";
@@ -1042,8 +1053,8 @@
 			isa = PBXGroup;
 			children = (
 				37F6D7E619A1111E004016DB /* Classes */,
-				37F6D7E919A1111E004016DB /* LICENSE */,
 				37F6D7EA19A1111E004016DB /* Protocols */,
+				37F6D7E919A1111E004016DB /* LICENSE */,
 				37F6D7EC19A1111E004016DB /* README.md */,
 			);
 			name = LHSFontSelectionViewController;
@@ -1090,12 +1101,13 @@
 				37FEEBDC15748BA7003F2B77 /* Assets */,
 				370B76201F4603AA00391769 /* Bookmark Extension */,
 				370B760B1F4603A400391769 /* Read Later Extension */,
+				37FEEB9815745488003F2B77 /* Pushpin */,
 				37124DE022B08DF400D24A8F /* Firebase */,
+				374F35EC251FC5DC00D24A8F /* Bookmark */,
 				37FEEB9115745488003F2B77 /* Frameworks */,
 				3740A23616863CF000F95D82 /* Localizations */,
 				A0AE651B9A75877E9CF0142A /* Pods */,
 				37FEEB8F15745488003F2B77 /* Products */,
-				37FEEB9815745488003F2B77 /* Pushpin */,
 				378BFDF119E5E29B006B48DC /* Tests */,
 				37076D41158AD0B1002566CD /* Vendor */,
 				374D91DF19CE26A700995DF1 /* AppExtensionHelper.js */,
@@ -1482,7 +1494,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				CLASSPREFIX = PP;
-				LastSwiftUpdateCheck = 0910;
+				LastSwiftUpdateCheck = 1200;
 				LastUpgradeCheck = 1000;
 				ORGANIZATIONNAME = "Lionheart Software";
 				TargetAttributes = {
@@ -2005,6 +2017,14 @@
 			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
+		374F35EF251FC5DC00D24A8F /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				374F35F0251FC5DC00D24A8F /* Base */,
+			);
+			name = MainInterface.storyboard;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -2473,6 +2493,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CFD97D71A9BD7EA58E576650 /* Pods-Pushpin.release debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
@@ -2623,6 +2644,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 99B6E377218FF41F88723078 /* Pods-Pushpin.beta.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
@@ -2876,6 +2898,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4C5C9B3D86301DEF2B3292D2 /* Pods-Pushpin.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
@@ -2932,6 +2955,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 89F83F307A9C171A4BBD55E9 /* Pods-Pushpin.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;

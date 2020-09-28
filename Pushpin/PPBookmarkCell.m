@@ -297,9 +297,9 @@ static NSInteger kEditButtonOuterMargin = 20;
 
             [UIView animateWithDuration:0.3
                              animations:^{
-                                 self.leftPositionConstraint.constant = 0;
-                                 [self.contentView layoutIfNeeded];
-                             }];
+                self.leftPositionConstraint.constant = 0;
+                [self.contentView layoutIfNeeded];
+            }];
         }
     }
 }
@@ -322,3 +322,4 @@ static NSInteger kEditButtonOuterMargin = 20;
 }
 
 @end
+
