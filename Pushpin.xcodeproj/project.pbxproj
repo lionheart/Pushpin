@@ -12,8 +12,6 @@
 		18391DAC09BE4867AE50EC3F /* PPBadgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1839145086F97F8D938EEE8D /* PPBadgeView.m */; };
 		370921FA1FD05339006DAC36 /* ShareViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370921F91FD05339006DAC36 /* ShareViewController2.swift */; };
 		370B75DB1F45FE5200391769 /* NSString+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 3762CACE1A59D04700301C97 /* NSString+Additions.m */; };
-		370B760E1F4603A400391769 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 370B760D1F4603A400391769 /* ShareViewController.m */; };
-		370B76151F4603A400391769 /* Read Later Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 370B760A1F4603A400391769 /* Read Later Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		370B76231F4603AA00391769 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 370B76221F4603AA00391769 /* ShareViewController.m */; };
 		370B762A1F4603AA00391769 /* Bookmark Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 370B761F1F4603AA00391769 /* Bookmark Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		37110E11253E0D3100D24A8F /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 374F35ED251FC5DC00D24A8F /* ShareViewController.m */; };
@@ -21,13 +19,9 @@
 		37124DE422B0920600D24A8F /* GoogleService-Info-Release.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37124DE322B0920600D24A8F /* GoogleService-Info-Release.plist */; };
 		371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371BCB0115772C0E00BDA996 /* CoreText.framework */; };
 		372F891416755BF00073D0B6 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 372F891216755B950073D0B6 /* CoreTelephony.framework */; };
-		373025FB1F4610D5007014EF /* PPUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B4FFE21923AD18002F8558 /* PPUtilities.m */; };
 		373025FC1F4610D6007014EF /* PPUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B4FFE21923AD18002F8558 /* PPUtilities.m */; };
-		373025FD1F4610E3007014EF /* PPSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 37889D4319981212002E245A /* PPSettings.m */; };
 		373025FE1F4610E3007014EF /* PPSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 37889D4319981212002E245A /* PPSettings.m */; };
 		373025FF1F4610EA007014EF /* PPReaderSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A2B4A9199EA8CA005B7671 /* PPReaderSettings.m */; };
-		373026001F4610EA007014EF /* PPReaderSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A2B4A9199EA8CA005B7671 /* PPReaderSettings.m */; };
-		373026011F46136E007014EF /* AppExtensionHelper.js in Resources */ = {isa = PBXBuildFile; fileRef = 374D91DF19CE26A700995DF1 /* AppExtensionHelper.js */; };
 		373026021F46136E007014EF /* AppExtensionHelper.js in Resources */ = {isa = PBXBuildFile; fileRef = 374D91DF19CE26A700995DF1 /* AppExtensionHelper.js */; };
 		373026031F461980007014EF /* PPNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F91F3D177AB1D500683D46 /* PPNavigationController.m */; };
 		373026041F4619E6007014EF /* PPTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 371EE5C7185B49FE005DB908 /* PPTheme.m */; };
@@ -43,7 +37,6 @@
 		373026121F461C42007014EF /* PPNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = 374698BF174B33CF00407345 /* PPNotification.m */; };
 		3730B9C824F95F7300D24A8F /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3730B9C724F95F7300D24A8F /* CloudKit.framework */; };
 		373FC3441F83DCE60031B282 /* PPLoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373FC3431F83DCE60031B282 /* PPLoginViewController.swift */; };
-		374167B82003CC5200B3DEBF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23916863CF000F95D82 /* Localizable.strings */; };
 		374167B92003CC5300B3DEBF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23916863CF000F95D82 /* Localizable.strings */; };
 		3747C6F219CCDB1F00FAD488 /* 56_Key-alt.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E312E31868CCD600B944F1 /* 56_Key-alt.png */; };
 		3747C6F319CCDB1F00FAD488 /* 56_Key-alt@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E312E41868CCD600B944F1 /* 56_Key-alt@2x.png */; };
@@ -246,7 +239,6 @@
 		B6E3041E1B3DC95500135CF1 /* pushpin-cloud-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E3041A1B3DC95500135CF1 /* pushpin-cloud-logo.png */; };
 		B6E3041F1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E3041B1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png */; };
 		B7A8D3A9DA1CD7084ABD82F9 /* Pods_Bookmark_Extension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59457ADBB987DBE9B7B1E1F3 /* Pods_Bookmark_Extension.framework */; };
-		B7B37F669E6D2D7B0DCDC429 /* Pods_Read_Later_Extension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD2D63F044FA2CBBCA8062B5 /* Pods_Read_Later_Extension.framework */; };
 		E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E804950F18103DC700C5CA8B /* SafariServices.framework */; };
 		E873423B180DAC8800CF9E5F /* activity-browser-chrome.png in Resources */ = {isa = PBXBuildFile; fileRef = E8734239180DAC8800CF9E5F /* activity-browser-chrome.png */; };
 		E873423C180DAC8800CF9E5F /* activity-browser-chrome@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E873423A180DAC8800CF9E5F /* activity-browser-chrome@2x.png */; };
@@ -309,13 +301,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		370B76131F4603A400391769 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 37FEEB8515745488003F2B77 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 370B76091F4603A400391769;
-			remoteInfo = "Read Later Extension";
-		};
 		370B76281F4603AA00391769 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 37FEEB8515745488003F2B77 /* Project object */;
@@ -340,7 +325,6 @@
 			dstSubfolderSpec = 13;
 			files = (
 				370B762A1F4603AA00391769 /* Bookmark Extension.appex in Embed App Extensions */,
-				370B76151F4603A400391769 /* Read Later Extension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -370,7 +354,6 @@
 		370921F91FD05339006DAC36 /* ShareViewController2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController2.swift; sourceTree = "<group>"; };
 		370B1B771864FADC00319A20 /* PPTitleButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTitleButton.h; sourceTree = "<group>"; };
 		370B1B781864FADC00319A20 /* PPTitleButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTitleButton.m; sourceTree = "<group>"; };
-		370B760A1F4603A400391769 /* Read Later Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Read Later Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		370B760C1F4603A400391769 /* ShareViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareViewController.h; sourceTree = "<group>"; };
 		370B760D1F4603A400391769 /* ShareViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareViewController.m; sourceTree = "<group>"; };
 		370B76121F4603A400391769 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -749,14 +732,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		370B76071F4603A400391769 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B7B37F669E6D2D7B0DCDC429 /* Pods_Read_Later_Extension.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		370B761C1F4603AA00391769 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1135,7 +1110,6 @@
 			children = (
 				370B761F1F4603AA00391769 /* Bookmark Extension.appex */,
 				37FEEB8E15745488003F2B77 /* Pushpin.app */,
-				370B760A1F4603A400391769 /* Read Later Extension.appex */,
 				374F3631252166B400D24A8F /* PushpinUITests.xctest */,
 			);
 			name = Products;
@@ -1439,24 +1413,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		370B76091F4603A400391769 /* Read Later Extension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 370B76161F4603A400391769 /* Build configuration list for PBXNativeTarget "Read Later Extension" */;
-			buildPhases = (
-				D7BB8F810D3FE962CF147DFA /* [CP] Check Pods Manifest.lock */,
-				370B76061F4603A400391769 /* Sources */,
-				370B76071F4603A400391769 /* Frameworks */,
-				370B76081F4603A400391769 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "Read Later Extension";
-			productName = "Read Later Extension";
-			productReference = 370B760A1F4603A400391769 /* Read Later Extension.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
 		370B761E1F4603AA00391769 /* Bookmark Extension */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 370B762B1F4603AA00391769 /* Build configuration list for PBXNativeTarget "Bookmark Extension" */;
@@ -1509,7 +1465,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				370B76141F4603A400391769 /* PBXTargetDependency */,
 				370B76291F4603AA00391769 /* PBXTargetDependency */,
 			);
 			name = Pushpin;
@@ -1529,11 +1484,6 @@
 				LastUpgradeCheck = 1000;
 				ORGANIZATIONNAME = "Lionheart Software";
 				TargetAttributes = {
-					370B76091F4603A400391769 = {
-						CreatedOnToolsVersion = 8.3.3;
-						DevelopmentTeam = 63553QQ62F;
-						ProvisioningStyle = Automatic;
-					};
 					370B761E1F4603AA00391769 = {
 						CreatedOnToolsVersion = 8.3.3;
 						DevelopmentTeam = 63553QQ62F;
@@ -1582,7 +1532,6 @@
 			projectRoot = "";
 			targets = (
 				37FEEB8D15745488003F2B77 /* Pushpin */,
-				370B76091F4603A400391769 /* Read Later Extension */,
 				370B761E1F4603AA00391769 /* Bookmark Extension */,
 				374F3630252166B400D24A8F /* PushpinUITests */,
 			);
@@ -1590,15 +1539,6 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		370B76081F4603A400391769 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				373026011F46136E007014EF /* AppExtensionHelper.js in Resources */,
-				374167B82003CC5200B3DEBF /* Localizable.strings in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		370B761D1F4603AA00391769 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1883,42 +1823,9 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		D7BB8F810D3FE962CF147DFA /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Read Later Extension-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		370B76061F4603A400391769 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				373026001F4610EA007014EF /* PPReaderSettings.m in Sources */,
-				373025FD1F4610E3007014EF /* PPSettings.m in Sources */,
-				373025FB1F4610D5007014EF /* PPUtilities.m in Sources */,
-				370B760E1F4603A400391769 /* ShareViewController.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		370B761B1F4603AA00391769 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2032,11 +1939,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		370B76141F4603A400391769 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 370B76091F4603A400391769 /* Read Later Extension */;
-			targetProxy = 370B76131F4603A400391769 /* PBXContainerItemProxy */;
-		};
 		370B76291F4603AA00391769 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 370B761E1F4603AA00391769 /* Bookmark Extension */;
@@ -2085,180 +1987,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		370B76171F4603A400391769 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = E9EB962B0DDCCCAF24323BA3 /* Pods-Read Later Extension.debug.xcconfig */;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = "Pinboard/Share-Dev.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 63553QQ62F;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"APP_EXTENSION_SAFE=1",
-					"$(inherited)",
-				);
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_VARIABLE = NO;
-				INFOPLIST_FILE = "Read Later Extension/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 4.1.20;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -D APP_EXTENSION";
-				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpindev.Read-Later-Extension";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = NO;
-				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Pushpin-Swift.h";
-			};
-			name = Debug;
-		};
-		370B76181F4603A400391769 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0FC030AF8E7A025A9FBA8DF9 /* Pods-Read Later Extension.release.xcconfig */;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = "Pinboard/Share-AppStore.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 63553QQ62F;
-				ENABLE_NS_ASSERTIONS = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"APP_EXTENSION_SAFE=1",
-					"$(inherited)",
-				);
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_VARIABLE = NO;
-				INFOPLIST_FILE = "Read Later Extension/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 4.1.20;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -D APP_EXTENSION";
-				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpin.Read-Later-Extension";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = NO;
-				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Pushpin-Swift.h";
-			};
-			name = Release;
-		};
-		370B76191F4603A400391769 /* Release Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 11BE8DE12262D11953835A37 /* Pods-Read Later Extension.release debug.xcconfig */;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = "Pinboard/Share-AppStore.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 63553QQ62F;
-				ENABLE_NS_ASSERTIONS = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"APP_EXTENSION_SAFE=1",
-					"$(inherited)",
-				);
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_VARIABLE = NO;
-				INFOPLIST_FILE = "Read Later Extension/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 4.1.20;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -D APP_EXTENSION";
-				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpin.Read-Later-Extension";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = NO;
-				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Pushpin-Swift.h";
-			};
-			name = "Release Debug";
-		};
-		370B761A1F4603A400391769 /* Beta */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = D8C2045E6A8DF8E6773D9D00 /* Pods-Read Later Extension.beta.xcconfig */;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = "Pinboard/Share-Beta.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 63553QQ62F;
-				ENABLE_NS_ASSERTIONS = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"APP_EXTENSION_SAFE=1",
-					"$(inherited)",
-				);
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_VARIABLE = NO;
-				INFOPLIST_FILE = "Read Later Extension/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 4.1.20;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" -D APP_EXTENSION";
-				PRODUCT_BUNDLE_IDENTIFIER = "io.aurora.pushpinbeta.Read-Later-Extension";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = NO;
-				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Pushpin-Swift.h";
-			};
-			name = Beta;
-		};
 		370B762C1F4603AA00391769 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 637C9328580D05304BB66AEB /* Pods-Bookmark Extension.debug.xcconfig */;
@@ -3227,17 +2955,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		370B76161F4603A400391769 /* Build configuration list for PBXNativeTarget "Read Later Extension" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				370B76171F4603A400391769 /* Debug */,
-				370B76181F4603A400391769 /* Release */,
-				370B76191F4603A400391769 /* Release Debug */,
-				370B761A1F4603A400391769 /* Beta */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
 		370B762B1F4603AA00391769 /* Build configuration list for PBXNativeTarget "Bookmark Extension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
