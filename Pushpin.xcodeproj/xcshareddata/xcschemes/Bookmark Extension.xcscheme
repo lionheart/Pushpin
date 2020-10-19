@@ -52,6 +52,16 @@
          </BuildableReference>
       </MacroExpansion>
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "374F3630252166B400D24A8F"
+               BuildableName = "PushpinUITests.xctest"
+               BlueprintName = "PushpinUITests"
+               ReferencedContainer = "container:Pushpin.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

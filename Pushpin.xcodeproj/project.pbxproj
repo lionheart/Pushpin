@@ -124,6 +124,7 @@
 		3747C74D19CCDB1F00FAD488 /* toolbar-trash.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF6A184E9AA000979AA3 /* toolbar-trash.png */; };
 		3747C74E19CCDB1F00FAD488 /* toolbar-trash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF6B184E9AA000979AA3 /* toolbar-trash@2x.png */; };
 		3747C75419CCDB1F00FAD488 /* webview-helpers.js in Resources */ = {isa = PBXBuildFile; fileRef = E804950C180EF20800C5CA8B /* webview-helpers.js */; };
+		374F3634252166B400D24A8F /* PushpinUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 374F3633252166B400D24A8F /* PushpinUITests.swift */; };
 		375AD4DE209FA4A200199CCE /* PPTipJarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 375AD4DD209FA4A200199CCE /* PPTipJarViewController.swift */; };
 		376E0A80175AA9EC004CCDEE /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 376E0A7F175AA9EC004CCDEE /* StoreKit.framework */; };
 		377E46D7174C396C00CE3813 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 377E46D6174C396C00CE3813 /* Accounts.framework */; };
@@ -321,6 +322,13 @@
 			remoteGlobalIDString = 370B761E1F4603AA00391769;
 			remoteInfo = "Bookmark Extension";
 		};
+		374F3636252166B400D24A8F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 37FEEB8515745488003F2B77 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 37FEEB8D15745488003F2B77;
+			remoteInfo = Pushpin;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -438,6 +446,9 @@
 		374F35ED251FC5DC00D24A8F /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		374F35F0251FC5DC00D24A8F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		374F35F2251FC5DC00D24A8F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		374F3631252166B400D24A8F /* PushpinUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PushpinUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		374F3633252166B400D24A8F /* PushpinUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushpinUITests.swift; sourceTree = "<group>"; };
+		374F3635252166B400D24A8F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		37516A04186C8AF700AEF7A6 /* PPBookmarkCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBookmarkCell.h; sourceTree = "<group>"; };
 		37516A05186C8AF700AEF7A6 /* PPBookmarkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPBookmarkCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3751D17E18346C0200E0A42A /* mobilize.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mobilize.png; path = Assets/mobilize.png; sourceTree = "<group>"; };
@@ -504,8 +515,6 @@
 		3784B1051A51B29B00CD1435 /* badge-cloud@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "badge-cloud@2x.png"; path = "Assets/badge-cloud@2x.png"; sourceTree = "<group>"; };
 		37889D4219981212002E245A /* PPSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSettings.h; sourceTree = "<group>"; };
 		37889D4319981212002E245A /* PPSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPSettings.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		378BFDF319E5E29B006B48DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		378BFDF419E5E29B006B48DC /* Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tests.m; sourceTree = "<group>"; };
 		378DA45E1633B4B700831134 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		37919F1C16091DF5007708EF /* PPPinboardLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PPPinboardLoginViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		37919F1D16091DF5007708EF /* PPPinboardLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPPinboardLoginViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
@@ -754,6 +763,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		374F362E252166B400D24A8F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		37FEEB8B15745488003F2B77 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -954,6 +970,15 @@
 			path = Bookmark;
 			sourceTree = "<group>";
 		};
+		374F3632252166B400D24A8F /* PushpinUITests */ = {
+			isa = PBXGroup;
+			children = (
+				374F3633252166B400D24A8F /* PushpinUITests.swift */,
+				374F3635252166B400D24A8F /* Info.plist */,
+			);
+			path = PushpinUITests;
+			sourceTree = "<group>";
+		};
 		37516A03186C8AE200AEF7A6 /* Table View Cells */ = {
 			isa = PBXGroup;
 			children = (
@@ -993,23 +1018,6 @@
 				37018CE4180E3C0B00226408 /* PPBrowserActivity.m */,
 			);
 			name = Activities;
-			sourceTree = "<group>";
-		};
-		378BFDF119E5E29B006B48DC /* Tests */ = {
-			isa = PBXGroup;
-			children = (
-				378BFDF219E5E29B006B48DC /* Supporting Files */,
-				378BFDF419E5E29B006B48DC /* Tests.m */,
-			);
-			path = Tests;
-			sourceTree = "<group>";
-		};
-		378BFDF219E5E29B006B48DC /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				378BFDF319E5E29B006B48DC /* Info.plist */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		37A7B5C018345D6A0038677E /* Web View Icons */ = {
@@ -1104,11 +1112,11 @@
 				37FEEB9815745488003F2B77 /* Pushpin */,
 				37124DE022B08DF400D24A8F /* Firebase */,
 				374F35EC251FC5DC00D24A8F /* Bookmark */,
+				374F3632252166B400D24A8F /* PushpinUITests */,
 				37FEEB9115745488003F2B77 /* Frameworks */,
 				3740A23616863CF000F95D82 /* Localizations */,
 				A0AE651B9A75877E9CF0142A /* Pods */,
 				37FEEB8F15745488003F2B77 /* Products */,
-				378BFDF119E5E29B006B48DC /* Tests */,
 				37076D41158AD0B1002566CD /* Vendor */,
 				374D91DF19CE26A700995DF1 /* AppExtensionHelper.js */,
 				370859F817F329D400270A9D /* Images.xcassets */,
@@ -1124,6 +1132,7 @@
 				370B761F1F4603AA00391769 /* Bookmark Extension.appex */,
 				37FEEB8E15745488003F2B77 /* Pushpin.app */,
 				370B760A1F4603A400391769 /* Read Later Extension.appex */,
+				374F3631252166B400D24A8F /* PushpinUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1462,6 +1471,24 @@
 			productReference = 370B761F1F4603AA00391769 /* Bookmark Extension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		374F3630252166B400D24A8F /* PushpinUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 374F3638252166B400D24A8F /* Build configuration list for PBXNativeTarget "PushpinUITests" */;
+			buildPhases = (
+				374F362D252166B400D24A8F /* Sources */,
+				374F362E252166B400D24A8F /* Frameworks */,
+				374F362F252166B400D24A8F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				374F3637252166B400D24A8F /* PBXTargetDependency */,
+			);
+			name = PushpinUITests;
+			productName = PushpinUITests;
+			productReference = 374F3631252166B400D24A8F /* PushpinUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		37FEEB8D15745488003F2B77 /* Pushpin */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 37FEEBA615745488003F2B77 /* Build configuration list for PBXNativeTarget "Pushpin" */;
@@ -1509,6 +1536,10 @@
 						LastSwiftMigration = 1100;
 						ProvisioningStyle = Automatic;
 					};
+					374F3630252166B400D24A8F = {
+						CreatedOnToolsVersion = 12.0.1;
+						TestTargetID = 37FEEB8D15745488003F2B77;
+					};
 					37FEEB8D15745488003F2B77 = {
 						LastSwiftMigration = 1100;
 						SystemCapabilities = {
@@ -1549,6 +1580,7 @@
 				37FEEB8D15745488003F2B77 /* Pushpin */,
 				370B76091F4603A400391769 /* Read Later Extension */,
 				370B761E1F4603AA00391769 /* Bookmark Extension */,
+				374F3630252166B400D24A8F /* PushpinUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -1581,6 +1613,13 @@
 				3783387F1F461F5E006C0A01 /* toolbar-description@2x.png in Resources */,
 				378338781F461F4A006C0A01 /* toolbar-tag.png in Resources */,
 				378338791F461F4A006C0A01 /* toolbar-tag@2x.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		374F362F252166B400D24A8F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1902,6 +1941,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		374F362D252166B400D24A8F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				374F3634252166B400D24A8F /* PushpinUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		37F95BFB1D32BDE300422DD6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1989,6 +2036,11 @@
 			isa = PBXTargetDependency;
 			target = 370B761E1F4603AA00391769 /* Bookmark Extension */;
 			targetProxy = 370B76281F4603AA00391769 /* PBXContainerItemProxy */;
+		};
+		374F3637252166B400D24A8F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 37FEEB8D15745488003F2B77 /* Pushpin */;
+			targetProxy = 374F3636252166B400D24A8F /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -2545,6 +2597,167 @@
 			};
 			name = "Release Debug";
 		};
+		374F3639252166B400D24A8F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 63553QQ62F;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = PushpinUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lionheartsw.PushpinUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Pushpin;
+			};
+			name = Debug;
+		};
+		374F363A252166B400D24A8F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = 63553QQ62F;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = PushpinUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lionheartsw.PushpinUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Pushpin;
+			};
+			name = Release;
+		};
+		374F363B252166B400D24A8F /* Release Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = 63553QQ62F;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = PushpinUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lionheartsw.PushpinUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Pushpin;
+			};
+			name = "Release Debug";
+		};
+		374F363C252166B400D24A8F /* Beta */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = 63553QQ62F;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = PushpinUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lionheartsw.PushpinUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Pushpin;
+			};
+			name = Beta;
+		};
 		37800E9B162D576E009FCB17 /* Beta */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3027,6 +3240,17 @@
 				370B762D1F4603AA00391769 /* Release */,
 				370B762E1F4603AA00391769 /* Release Debug */,
 				370B762F1F4603AA00391769 /* Beta */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		374F3638252166B400D24A8F /* Build configuration list for PBXNativeTarget "PushpinUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				374F3639252166B400D24A8F /* Debug */,
+				374F363A252166B400D24A8F /* Release */,
+				374F363B252166B400D24A8F /* Release Debug */,
+				374F363C252166B400D24A8F /* Beta */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
