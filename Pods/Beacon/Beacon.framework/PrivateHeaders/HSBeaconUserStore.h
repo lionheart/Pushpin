@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithUser:(HSBeaconUser * _Nullable)user;
 
 - (HSBeaconUser * _Nullable)currentUser;
-
+- (BOOL)hasCurrentUser;
 - (BOOL)isLoggedInWithUser:(HSBeaconUser *)user;
 - (void)login:(HSBeaconUser *)user;
 - (void)logout;

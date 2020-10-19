@@ -69,6 +69,7 @@ extension Tagged : Swift.Encodable where RawValue : Swift.Encodable {
   @objc public class func setChatEndedDelegate(_ delegate: Beacon.HSBeaconChatEndedDelegate?)
   @objc public class func setBeaconAgents(_ agents: [Beacon.HSBeaconAgent])
   @objc public class func setEnablePreviousMessages(_ enabled: Swift.Bool)
+  @objc public class func setAttachmentsEnabled(_ enabled: Swift.Bool)
   @objc public class func setPushNotficationSupport(_ support: Beacon.HSBeaconPushNotificationSupport)
   @objc public class func hasPausedChat() -> Swift.Bool
   @objc public class func chatViewControllerClass() -> Swift.AnyClass

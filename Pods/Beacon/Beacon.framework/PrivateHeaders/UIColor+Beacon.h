@@ -10,6 +10,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (UIColor *)secondaryBeaconBackground;
 + (UIColor *)tertiaryBeaconBackground;
 + (UIColor *)inputErrorBackground;
++ (UIColor *)toolbarButton;
 
 @end
 

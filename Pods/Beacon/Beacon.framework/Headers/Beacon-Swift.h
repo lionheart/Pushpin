@@ -241,6 +241,7 @@ SWIFT_CLASS("_TtC6Beacon16ChatDependencies")
 + (void)setChatEndedDelegate:(id <HSBeaconChatEndedDelegate> _Nullable)delegate;
 + (void)setBeaconAgents:(NSArray<HSBeaconAgent *> * _Nonnull)agents;
 + (void)setEnablePreviousMessages:(BOOL)enabled;
++ (void)setAttachmentsEnabled:(BOOL)enabled;
 + (void)setPushNotficationSupport:(HSBeaconPushNotificationSupport * _Nonnull)support;
 + (BOOL)hasPausedChat SWIFT_WARN_UNUSED_RESULT;
 + (Class _Nonnull)chatViewControllerClass SWIFT_WARN_UNUSED_RESULT;
@@ -971,6 +972,7 @@ SWIFT_CLASS("_TtC6Beacon16ChatDependencies")
 + (void)setChatEndedDelegate:(id <HSBeaconChatEndedDelegate> _Nullable)delegate;
 + (void)setBeaconAgents:(NSArray<HSBeaconAgent *> * _Nonnull)agents;
 + (void)setEnablePreviousMessages:(BOOL)enabled;
++ (void)setAttachmentsEnabled:(BOOL)enabled;
 + (void)setPushNotficationSupport:(HSBeaconPushNotificationSupport * _Nonnull)support;
 + (BOOL)hasPausedChat SWIFT_WARN_UNUSED_RESULT;
 + (Class _Nonnull)chatViewControllerClass SWIFT_WARN_UNUSED_RESULT;

@@ -17,8 +17,8 @@
 
 @property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
 @property (weak, nonatomic) IBOutlet UIDatePicker *datePicker;
-@property (weak, nonatomic) IBOutlet UIToolbar *clearButton;
-@property (weak, nonatomic) IBOutlet UIToolbar *doneButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *clearButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *doneButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *nextButton;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *previousButton;
 

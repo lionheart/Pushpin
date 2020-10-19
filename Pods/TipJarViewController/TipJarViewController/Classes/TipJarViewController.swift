@@ -469,6 +469,9 @@ open class TipJarViewController<T>: BaseTableViewController, UITableViewDelegate
         }
     }
     
+    public func paymentQueue(_ queue: SKPaymentQueue, shouldAddStorePayment payment: SKPayment, for product: SKProduct) -> Bool {
+        return true
+    }
 }
 
 // Helper function inserted by Swift 4.2 migrator.
