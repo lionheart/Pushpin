@@ -33,11 +33,6 @@
 			<key>orderHint</key>
 			<integer>6</integer>
 		</dict>
-		<key>Read Later Extension.xcscheme_^#shared#^_</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>2</integer>
-		</dict>
 		<key>SQLite.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -82,6 +77,11 @@
 			<true/>
 		</dict>
 		<key>372A9D9818B59E0800AABE53</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>374F3630252166B400D24A8F</key>
 		<dict>
 			<key>primary</key>
 			<true/>
