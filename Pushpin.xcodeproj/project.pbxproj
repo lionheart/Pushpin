@@ -16,6 +16,7 @@
 		370B76151F4603A400391769 /* Read Later Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 370B760A1F4603A400391769 /* Read Later Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		370B76231F4603AA00391769 /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 370B76221F4603AA00391769 /* ShareViewController.m */; };
 		370B762A1F4603AA00391769 /* Bookmark Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 370B761F1F4603AA00391769 /* Bookmark Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		37110E11253E0D3100D24A8F /* ShareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 374F35ED251FC5DC00D24A8F /* ShareViewController.m */; };
 		37124DE222B08EB500D24A8F /* GoogleService-Info-Dev.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37124DE122B08EB500D24A8F /* GoogleService-Info-Dev.plist */; };
 		37124DE422B0920600D24A8F /* GoogleService-Info-Release.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37124DE322B0920600D24A8F /* GoogleService-Info-Release.plist */; };
 		371BCB0215772C0E00BDA996 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371BCB0115772C0E00BDA996 /* CoreText.framework */; };
@@ -381,6 +382,7 @@
 		370EE75115ED108300B262E2 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		370F92ED17500722005F0AD7 /* PPToolbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPToolbar.h; sourceTree = "<group>"; };
 		370F92EE17500722005F0AD7 /* PPToolbar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPToolbar.m; sourceTree = "<group>"; };
+		37110E18253E0D8400D24A8F /* ShareViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareViewController.h; sourceTree = "<group>"; };
 		37124DE122B08EB500D24A8F /* GoogleService-Info-Dev.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Dev.plist"; sourceTree = "<group>"; };
 		37124DE322B0920600D24A8F /* GoogleService-Info-Release.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-Release.plist"; sourceTree = "<group>"; };
 		3714DB7317556FC500B23F4F /* PPPinboardNotesDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPPinboardNotesDataSource.h; sourceTree = "<group>"; };
@@ -443,7 +445,7 @@
 		374D91DF19CE26A700995DF1 /* AppExtensionHelper.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = AppExtensionHelper.js; path = Pinboard/AppExtensionHelper.js; sourceTree = "<group>"; };
 		374D91E019CE26A700995DF1 /* Share-AppStore.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = "Share-AppStore.entitlements"; path = "Pinboard/Share-AppStore.entitlements"; sourceTree = "<group>"; };
 		374E59FE197DADEF00B6EDF1 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
-		374F35ED251FC5DC00D24A8F /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		374F35ED251FC5DC00D24A8F /* ShareViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareViewController.m; sourceTree = "<group>"; };
 		374F35F0251FC5DC00D24A8F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		374F35F2251FC5DC00D24A8F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		374F3631252166B400D24A8F /* PushpinUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PushpinUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -963,11 +965,13 @@
 		374F35EC251FC5DC00D24A8F /* Bookmark */ = {
 			isa = PBXGroup;
 			children = (
-				374F35ED251FC5DC00D24A8F /* ShareViewController.swift */,
+				37110E18253E0D8400D24A8F /* ShareViewController.h */,
+				374F35ED251FC5DC00D24A8F /* ShareViewController.m */,
 				374F35EF251FC5DC00D24A8F /* MainInterface.storyboard */,
 				374F35F2251FC5DC00D24A8F /* Info.plist */,
 			);
-			path = Bookmark;
+			name = Bookmark;
+			path = "Bookmark Extension";
 			sourceTree = "<group>";
 		};
 		374F3632252166B400D24A8F /* PushpinUITests */ = {
@@ -1921,6 +1925,7 @@
 			files = (
 				373026061F461AF7007014EF /* PostMetadata.m in Sources */,
 				37D620581F9AB4BA0020B52A /* PPAddBookmarkViewController.m in Sources */,
+				37110E11253E0D3100D24A8F /* ShareViewController.m in Sources */,
 				18391DAC09BE4867AE50EC3F /* PPBadgeView.m in Sources */,
 				3730260A1F461BBB007014EF /* PPBadgeWrapperView.m in Sources */,
 				373026101F461C38007014EF /* PPEditDescriptionViewController.m in Sources */,
