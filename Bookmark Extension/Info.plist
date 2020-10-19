@@ -19,7 +19,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>635.2020.10.19</string>
+	<string>636.2020.10.19</string>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionAttributes</key>
