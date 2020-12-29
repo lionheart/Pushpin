@@ -257,10 +257,7 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
         if ([UIApplication isIPad]) {
             [delegate.window setRootViewController:delegate.splitViewController];
         } else {
-            delegate.navigationController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-            [self presentViewController:delegate.navigationController
-                               animated:YES
-                             completion:nil];
+            [delegate.window setRootViewController:delegate.navigationController];
         }
     });
 }

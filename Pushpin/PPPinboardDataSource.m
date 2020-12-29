@@ -1261,7 +1261,7 @@ static BOOL kPinboardSyncInProgress = NO;
     BOOL lastUpdatedMoreThanFiveMinutesAgo = fabs([lastLocalUpdate timeIntervalSinceNow]) >= 300;
 
     if (neverUpdated || outOfSyncWithAPI || lastUpdatedMoreThanFiveMinutesAgo) {
-        __weak PPPinboardDataSource* weakSelf = self;
+        __strong PPPinboardDataSource* strongSelf = self;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             ASPinboard *pinboard = [ASPinboard sharedInstance];
             [pinboard bookmarksWithTags:nil
@@ -1271,8 +1271,7 @@ static BOOL kPinboardSyncInProgress = NO;
                                  toDate:nil
                             includeMeta:YES
                                 success:^(NSArray *bookmarks, NSDictionary *parameters) {
-                if (bookmarks.count > 0 && weakSelf) {
-                    __strong PPPinboardDataSource *strongSelf = weakSelf;
+                if (bookmarks.count > 0 && strongSelf) {
                     [strongSelf BookmarksSuccessBlock:bookmarks
                                           constraints:parameters
                                                 count:count

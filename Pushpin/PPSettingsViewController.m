@@ -83,13 +83,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
         [delegate setNavigationController:nil];
         delegate.loginViewController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
 
-        if ([UIApplication isIPad]) {
-            [delegate.window setRootViewController:delegate.loginViewController];
-        } else {
-            [self presentViewController:delegate.loginViewController
-                               animated:YES
-                             completion:nil];
-        }
+        [delegate.window setRootViewController:delegate.loginViewController];
 
         [PPUtilities migrateDatabase];
     }];
