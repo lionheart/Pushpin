@@ -13,7 +13,7 @@ pod 'TMReachability', :git => 'https://github.com/lionheart/Reachability', :comm
 pod 'KeychainItemWrapper', '~> 1.2'
 pod 'TTTAttributedLabel', '~> 1.13'
 pod 'BRYHTMLParser'
-pod 'MWFeedParser', '1.0.1'
+pod 'MWFeedParser', :git => 'https://github.com/lionheart/MWFeedParser.git', :commit => '5df8daf'
 pod 'HTMLParser'
 pod 'AFNetworking', '~> 4.0'
 pod 'RNCryptor-objc', '~> 3'

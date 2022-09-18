@@ -161,7 +161,7 @@ DEPENDENCIES:
   - LHSKeyboardAdjusting (~> 2.0)
   - LHSTableViewCells
   - LionheartExtensions
-  - MWFeedParser (= 1.0.1)
+  - MWFeedParser (from `https://github.com/lionheart/MWFeedParser.git`, commit `5df8daf`)
   - OpenInChrome (~> 0.0)
   - QuickTableView
   - RNCryptor-objc (~> 3)
@@ -196,7 +196,6 @@ SPEC REPOS:
     - LHSKeyboardAdjusting
     - LHSTableViewCells
     - LionheartExtensions
-    - MWFeedParser
     - nanopb
     - OpenInChrome
     - PromisesObjC
@@ -207,11 +206,17 @@ SPEC REPOS:
     - TTTAttributedLabel
 
 EXTERNAL SOURCES:
+  MWFeedParser:
+    :commit: 5df8daf
+    :git: https://github.com/lionheart/MWFeedParser.git
   TMReachability:
     :commit: e34782b386307e386348b481c02c176d58ba45e6
     :git: https://github.com/lionheart/Reachability
 
 CHECKOUT OPTIONS:
+  MWFeedParser:
+    :commit: 5df8daf
+    :git: https://github.com/lionheart/MWFeedParser.git
   TMReachability:
     :commit: e34782b386307e386348b481c02c176d58ba45e6
     :git: https://github.com/lionheart/Reachability
@@ -241,7 +246,7 @@ SPEC CHECKSUMS:
   LHSKeyboardAdjusting: 8f9b8d6e80315e653bf3188ae62963874d342d68
   LHSTableViewCells: 47b4d33382cb4a09960371267e2142970afdfdd6
   LionheartExtensions: a7095285260f2817776217efe7f46204f903a80d
-  MWFeedParser: 2cf646014c1baf6ad1b08c480b40a08180079247
+  MWFeedParser: 3b7def9d9970c7340f450c5743a8c1cb27c00227
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   OpenInChrome: f1f3f9dec682216fe78a0d7fe0b5b263d6312c32
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
@@ -252,6 +257,6 @@ SPEC CHECKSUMS:
   TMReachability: 48c99d728a8b0ad4493800592484b8cbb65c896c
   TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
 
-PODFILE CHECKSUM: 625d02b480cc492e1da36a14e24c0ce2f905778b
+PODFILE CHECKSUM: 8f725ecd68cf98defe41274f02cb15607092fb53
 
 COCOAPODS: 1.11.3
