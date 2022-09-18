@@ -7,31 +7,41 @@ default_platform :ios
 project_file = "Pushpin.xcodeproj"
 
 platform :ios do
-  lane :beta do
-    gym
-    deliver
-  end
+	lane :beta do
+		gym
+		deliver
+	end
 
-  lane :appstore do
-    ensure_git_status_clean
+	lane :appstore do
+		ensure_git_status_clean
 
-    # Set the build number to the # + full date.
-    raw_build_number = get_build_number(xcodeproj: project_file)
-    dt = Time.new.strftime("%Y.%m.%d")
-    build_number = Integer(raw_build_number.split(".")[0])
+		# Set the build number to the # + full date.
+		raw_build_number = get_build_number(xcodeproj: project_file)
+		dt = Time.new.strftime("%Y.%m.%d")
+		build_number = Integer(raw_build_number.split(".")[0])
 
-    increment_build_number(build_number: "#{build_number+1}.#{dt}", xcodeproj: project_file)
+		increment_build_number(build_number: "#{build_number+1}.#{dt}", xcodeproj: project_file)
 
-    gym
+		gym
 
-    ENV["SCHEME"] = "Pushpin"
+		ENV["SCHEME"] = "Pushpin"
 
-    # snapshot
-    deliver
+		api_key = app_store_connect_api_key(
+			key_id: "3YV4365C65",
+			issuer_id: "69a6de78-c80f-47e3-e053-5b8c7c11a4d1",
+			key_filepath: "/Users/dan/Projects/pushpin/AuthKey_3YV4365C65.p8",
+			duration: 1200, # optional (maximum 1200)
+			in_house: false # optional but may be required if using match/sigh
+		)
 
-    version_number = get_version_number(xcodeproj: project_file, target: "Pushpin", configuration: "Release")
-    commit_version_bump(message: "bump to #{build_number}", xcodeproj: project_file)
-    add_git_tag tag: "v#{version_number}+#{build_number}"
-    push_to_git_remote
-  end
+		pilot(api_key: api_key)
+
+		# snapshot
+		deliver
+
+		version_number = get_version_number(xcodeproj: project_file, target: "Pushpin", configuration: "Release")
+		commit_version_bump(message: "bump to #{build_number}", xcodeproj: project_file)
+		add_git_tag tag: "v#{version_number}+#{build_number}"
+		push_to_git_remote
+	end
 end

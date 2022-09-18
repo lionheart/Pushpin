@@ -29,3 +29,4 @@ Preview.html
 fastlane/report.xml
 *.zip
 *.ipa
+*.p8
