@@ -44,4 +44,14 @@ platform :ios do
 		add_git_tag tag: "v#{version_number}+#{build_number}"
 		push_to_git_remote
 	end
+
+	lane :bump_version do
+		raw_build_number = get_build_number(xcodeproj: project_file)
+		dt = Time.new.strftime("%Y.%m.%d")
+		build_number = Integer(raw_build_number.split(".")[0])
+		version_number = get_version_number(xcodeproj: project_file, target: "Pushpin", configuration: "Release")
+		commit_version_bump(message: "bump to #{build_number}", xcodeproj: project_file)
+		add_git_tag tag: "v#{version_number}+#{build_number}"
+		push_to_git_remote
+	end
 end
