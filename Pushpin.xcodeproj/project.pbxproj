@@ -1462,7 +1462,6 @@
 				3790420B19CBCFF700409D34 /* Embed App Extensions */,
 				37F9D0D61D330426002A168D /* Embed Frameworks */,
 				77B4D37FFC616B97E5E43E66 /* [CP] Embed Pods Frameworks */,
-				6387E15A4C20D23BCC245C83 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1767,23 +1766,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		6387E15A4C20D23BCC245C83 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Pushpin/Pods-Pushpin-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Pushpin/Pods-Pushpin-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Pushpin/Pods-Pushpin-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		77B4D37FFC616B97E5E43E66 /* [CP] Embed Pods Frameworks */ = {
@@ -2315,7 +2297,7 @@
 					"\"@executable_path/Frameworks\"",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.1.22;
+				MARKETING_VERSION = 4.2.0;
 				PRODUCT_NAME = Pushpin;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2626,7 +2608,7 @@
 					"\"@executable_path/Frameworks\"",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.1.22;
+				MARKETING_VERSION = 4.2.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2881,7 +2863,7 @@
 					"\"@executable_path/Frameworks\"",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.1.22;
+				MARKETING_VERSION = 4.2.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2937,7 +2919,7 @@
 					"\"@executable_path/Frameworks\"",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.1.22;
+				MARKETING_VERSION = 4.2.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
