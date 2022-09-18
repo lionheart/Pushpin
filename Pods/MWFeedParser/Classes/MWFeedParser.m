@@ -796,8 +796,8 @@
 	if (info) {
 	
 		// Inform delegate
-		if ([delegate respondsToSelector:@selector(feedParser:didParseFeedInfo:)])
-			[delegate feedParser:self didParseFeedInfo:info];
+		if ([delegate respondsToSelector:@selector(feedParser:didParseMWFeedParserFeedInfodidParseMWFeedParserFeedInfo:)])
+			[delegate feedParser:self didParseMWFeedParserFeedInfo:info];
 		
 		// Debug log
 		MWLog(@"MWFeedParser: Feed info for \"%@\" successfully parsed", info.title);
@@ -819,8 +819,8 @@
 		MWLog(@"MWFeedParser: Feed item \"%@\" successfully parsed", item.title);
 		
 		// Inform delegate
-		if ([delegate respondsToSelector:@selector(feedParser:didParseFeedItem:)])
-			[delegate feedParser:self didParseFeedItem:item];
+		if ([delegate respondsToSelector:@selector(feedParser:didParseMWFeedParserFeedItemdidParseMWFeedParserFeedItem:)])
+			[delegate feedParser:self didParseMWFeedParserFeedItem:item];
 		
 		// Finish
 		self.item = nil;
