@@ -1,0 +1,41 @@
+framework module Beacon {
+    umbrella header "Beacon.h"
+    export *
+    module * { export * }
+    
+    explicit module Private {
+        header "HSAttachmentPicker.h"
+        header "HSBeaconBundleUtils.h"
+        header "HSViewController.h"
+        header "HSTableViewController.h"
+        header "HSView.h"
+        header "HSBeaconColorUtilities.h"
+        header "HSBeaconConfig.h"
+        header "HSBeaconLocalizedStrings.h"
+        header "HSBeaconKeyboardHeightObserver.h"
+        header "HSBeaconAgentImageView.h"
+        header "HSBeaconAgent.h"
+        header "HSBeaconBaseAPIClient.h"
+        header "HSBeaconChatEndedDelegate.h"
+        header "HSBeaconAgentsView.h"        
+        header "HSBeaconTintColor.h"
+        header "HSBeaconPushNotificationSupport.h"
+        header "HSBeaconSerializationUtilities.h"
+        header "HSBeaconConversation.h"
+        header "HSBeaconArticleViewController.h"
+        header "HSBeaconAskSelectionController.h"
+        header "HSBeaconMessageEntryContainerController.h"
+        header "HSBeaconPreviousMessagesController.h"
+        header "HSBeaconPreviousMessagesEnabler.h"
+        header "HSBeaconPreviousMessagesPresenter.h"
+        header "HSBeaconRoutingFulfilling.h"
+        header "HSCardStackEmbeddable.h"
+        header "UIColor+Image.h"
+    }
+
+}
+
+module Beacon.Swift {
+    header "Beacon-Swift.h"
+    requires objc
+}

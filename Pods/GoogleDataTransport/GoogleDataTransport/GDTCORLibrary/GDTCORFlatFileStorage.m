@@ -16,12 +16,12 @@
 
 #import "GoogleDataTransport/GDTCORLibrary/Private/GDTCORFlatFileStorage.h"
 
-#import "GoogleDataTransport/GDTCORLibrary/Public/GoogleDataTransport/GDTCORAssert.h"
+#import "GoogleDataTransport/GDTCORLibrary/Internal/GDTCORAssert.h"
+#import "GoogleDataTransport/GDTCORLibrary/Internal/GDTCORLifecycle.h"
+#import "GoogleDataTransport/GDTCORLibrary/Internal/GDTCORPlatform.h"
+#import "GoogleDataTransport/GDTCORLibrary/Internal/GDTCORStorageEventSelector.h"
 #import "GoogleDataTransport/GDTCORLibrary/Public/GoogleDataTransport/GDTCORConsoleLogger.h"
 #import "GoogleDataTransport/GDTCORLibrary/Public/GoogleDataTransport/GDTCOREvent.h"
-#import "GoogleDataTransport/GDTCORLibrary/Public/GoogleDataTransport/GDTCORLifecycle.h"
-#import "GoogleDataTransport/GDTCORLibrary/Public/GoogleDataTransport/GDTCORPlatform.h"
-#import "GoogleDataTransport/GDTCORLibrary/Public/GoogleDataTransport/GDTCORStorageEventSelector.h"
 
 #import "GoogleDataTransport/GDTCORLibrary/Private/GDTCOREvent_Private.h"
 #import "GoogleDataTransport/GDTCORLibrary/Private/GDTCORRegistrar_Private.h"
@@ -65,6 +65,7 @@ const uint64_t kGDTCORFlatFileStorageSizeLimit = 20 * 1000 * 1000;  // 20 MB.
 @implementation GDTCORFlatFileStorage
 
 @synthesize sizeTracker = _sizeTracker;
+@synthesize delegate = _delegate;
 
 + (void)load {
 #if !NDEBUG
@@ -157,6 +158,11 @@ const uint64_t kGDTCORFlatFileStorageSizeLimit = 20 * 1000 * 1000;  // 20 MB.
                  userInfo:@{
                    NSLocalizedFailureReasonErrorKey : @"Storage size limit has been reached."
                  }];
+      if (self.delegate != nil) {
+        GDTCORLogDebug(@"Delegate notified that event with mapping ID %@ was dropped.",
+                       event.mappingID);
+        [self.delegate storage:self didDropEvent:event];
+      }
       completion(NO, error);
       return;
     }
@@ -200,7 +206,7 @@ const uint64_t kGDTCORFlatFileStorageSizeLimit = 20 * 1000 * 1000;  // 20 MB.
       for (NSString *eventPath in paths) {
         NSError *error;
         GDTCOREvent *event =
-            (GDTCOREvent *)GDTCORDecodeArchive([GDTCOREvent class], eventPath, nil, &error);
+            (GDTCOREvent *)GDTCORDecodeArchiveAtPath([GDTCOREvent class], eventPath, &error);
         if (event == nil || error) {
           GDTCORLogDebug(@"Error deserializing event: %@", error);
           [[NSFileManager defaultManager] removeItemAtPath:eventPath error:nil];
@@ -296,7 +302,7 @@ const uint64_t kGDTCORFlatFileStorageSizeLimit = 20 * 1000 * 1000;  // 20 MB.
       NSDictionary<NSString *, id> *components = [self batchComponentsFromFilename:path];
       NSNumber *targetNumber = components[kGDTCORBatchComponentsTargetKey];
       NSNumber *batchID = components[kGDTCORBatchComponentsBatchIDKey];
-      if (targetNumber.intValue == target) {
+      if (batchID != nil && targetNumber.intValue == target) {
         [batchIDs addObject:batchID];
       }
     }
@@ -407,35 +413,70 @@ const uint64_t kGDTCORFlatFileStorageSizeLimit = 20 * 1000 * 1000;  // 20 MB.
     NSArray<NSString *> *batchDataPaths = [fileManager contentsOfDirectoryAtPath:batchDataPath
                                                                            error:nil];
     for (NSString *path in batchDataPaths) {
-      NSString *fileName = [path lastPathComponent];
-      NSDictionary<NSString *, id> *batchComponents = [self batchComponentsFromFilename:fileName];
-      NSDate *expirationDate = batchComponents[kGDTCORBatchComponentsExpirationKey];
-      NSNumber *batchID = batchComponents[kGDTCORBatchComponentsBatchIDKey];
-      if (expirationDate != nil && expirationDate.timeIntervalSince1970 < now && batchID != nil) {
+      @autoreleasepool {
+        NSString *fileName = [path lastPathComponent];
+        NSDictionary<NSString *, id> *batchComponents = [self batchComponentsFromFilename:fileName];
+        NSDate *expirationDate = batchComponents[kGDTCORBatchComponentsExpirationKey];
         NSNumber *batchID = batchComponents[kGDTCORBatchComponentsBatchIDKey];
-        // Move all events from the expired batch back to the main storage.
-        [self syncThreadUnsafeRemoveBatchWithID:batchID deleteEvents:NO];
+        if (expirationDate != nil && expirationDate.timeIntervalSince1970 < now && batchID != nil) {
+          NSNumber *batchID = batchComponents[kGDTCORBatchComponentsBatchIDKey];
+          // Move all events from the expired batch back to the main storage.
+          [self syncThreadUnsafeRemoveBatchWithID:batchID deleteEvents:NO];
+        }
       }
     }
 
     // Find expired events and remove them from the storage.
+    NSMutableSet<GDTCOREvent *> *expiredEvents = [NSMutableSet set];
     NSString *eventDataPath = [GDTCORFlatFileStorage eventDataStoragePath];
     NSDirectoryEnumerator *enumerator = [fileManager enumeratorAtPath:eventDataPath];
     NSString *path;
-    while ((path = [enumerator nextObject])) {
-      NSString *fileName = [path lastPathComponent];
-      NSDictionary<NSString *, id> *eventComponents = [self eventComponentsFromFilename:fileName];
-      NSDate *expirationDate = eventComponents[kGDTCOREventComponentsExpirationKey];
-      if (expirationDate != nil && expirationDate.timeIntervalSince1970 < now) {
-        NSString *pathToDelete = [eventDataPath stringByAppendingPathComponent:path];
-        NSError *error;
-        [fileManager removeItemAtPath:pathToDelete error:&error];
-        if (error != nil) {
-          GDTCORLogDebug(@"There was an error deleting an expired item: %@", error);
-        } else {
-          GDTCORLogDebug(@"Item deleted because it expired: %@", pathToDelete);
+
+    while (YES) {
+      @autoreleasepool {
+        // Call `[enumerator nextObject]` under autorelease pool to make sure all autoreleased
+        // objects created under the hood are released on each iteration end to avoid unnecessary
+        // memory growth.
+        path = [enumerator nextObject];
+        if (path == nil) {
+          break;
+        }
+
+        NSString *fileName = [path lastPathComponent];
+        NSDictionary<NSString *, id> *eventComponents = [self eventComponentsFromFilename:fileName];
+        NSDate *expirationDate = eventComponents[kGDTCOREventComponentsExpirationKey];
+        if (expirationDate != nil && expirationDate.timeIntervalSince1970 < now) {
+          NSString *pathToDelete = [eventDataPath stringByAppendingPathComponent:path];
+
+          // Decode the expired event from the path to be deleted.
+          NSError *decodeError;
+          GDTCOREvent *event = (GDTCOREvent *)GDTCORDecodeArchiveAtPath([GDTCOREvent class],
+                                                                        pathToDelete, &decodeError);
+          if (event == nil || decodeError) {
+            GDTCORLogDebug(@"Error deserializing event while checking for expired events: %@",
+                           decodeError);
+            event = nil;
+          }
+
+          // Remove the path to be deleted, adding the decoded event to the
+          // event set if the removal was successful.
+          NSError *removeError;
+          [fileManager removeItemAtPath:pathToDelete error:&removeError];
+          if (removeError != nil) {
+            GDTCORLogDebug(@"There was an error deleting an expired item: %@", removeError);
+          } else {
+            GDTCORLogDebug(@"Item deleted because it expired: %@", pathToDelete);
+            if (event) {
+              [expiredEvents addObject:event];
+            }
+          }
         }
       }
+    }
+
+    if (self.delegate != nil && [expiredEvents count] > 0) {
+      GDTCORLogDebug(@"Delegate notified that %@ events were dropped.", @(expiredEvents.count));
+      [self.delegate storage:self didRemoveExpiredEvents:[expiredEvents copy]];
     }
 
     [self.sizeTracker resetCachedSize];
@@ -461,7 +502,7 @@ const uint64_t kGDTCORFlatFileStorageSizeLimit = 20 * 1000 * 1000;  // 20 MB.
  * cases when the app is terminated while uploading a batch.
  */
 - (nullable NSArray<NSString *> *)batchDirPathsForBatchID:(NSNumber *)batchID
-                                                    error:(NSError **)outError {
+                                                    error:(NSError **_Nonnull)outError {
   NSFileManager *fileManager = [NSFileManager defaultManager];
   NSError *error;
   NSArray<NSString *> *batches =
@@ -490,7 +531,7 @@ const uint64_t kGDTCORFlatFileStorageSizeLimit = 20 * 1000 * 1000;  // 20 MB.
 /** Makes a copy of the contents of a directory to a directory at the specified path.*/
 - (BOOL)moveContentsOfDirectoryAtPath:(NSString *)sourcePath
                                    to:(NSString *)destinationPath
-                                error:(NSError **)outError {
+                                error:(NSError **_Nonnull)outError {
   NSFileManager *fileManager = [NSFileManager defaultManager];
 
   NSError *error;
@@ -547,28 +588,35 @@ const uint64_t kGDTCORFlatFileStorageSizeLimit = 20 * 1000 * 1000;  // 20 MB.
   };
 
   for (NSString *batchDirPath in batchDirPaths) {
-    if (deleteEvents) {
-      removeBatchDir(batchDirPath);
-    } else {
-      NSString *batchDirName = [batchDirPath lastPathComponent];
-      NSDictionary<NSString *, id> *components = [self batchComponentsFromFilename:batchDirName];
-      NSNumber *target = components[kGDTCORBatchComponentsTargetKey];
-      NSString *destinationPath = [[GDTCORFlatFileStorage eventDataStoragePath]
-          stringByAppendingPathComponent:target.stringValue];
-
-      // `- [NSFileManager moveItemAtPath:toPath:error:]` method fails if an item by the
-      // destination path already exists (which usually is the case for the current method). Move
-      // the events one by one instead.
-      if ([self moveContentsOfDirectoryAtPath:batchDirPath to:destinationPath error:&error]) {
-        GDTCORLogDebug(@"Batched events at path: %@ moved back to the storage: %@", batchDirPath,
-                       destinationPath);
+    @autoreleasepool {
+      if (deleteEvents) {
+        removeBatchDir(batchDirPath);
       } else {
-        GDTCORLogDebug(@"Error encountered whilst moving events back: %@", error);
-      }
+        NSString *batchDirName = [batchDirPath lastPathComponent];
+        NSDictionary<NSString *, id> *components = [self batchComponentsFromFilename:batchDirName];
+        NSString *targetValue = [components[kGDTCORBatchComponentsTargetKey] stringValue];
+        NSString *destinationPath;
+        if (targetValue) {
+          destinationPath = [[GDTCORFlatFileStorage eventDataStoragePath]
+              stringByAppendingPathComponent:targetValue];
+        }
 
-      // Even if not all events where moved back to the storage, there is not much can be done at
-      // this point, so cleanup batch directory now to avoid clattering.
-      removeBatchDir(batchDirPath);
+        // `- [NSFileManager moveItemAtPath:toPath:error:]` method fails if an item by the
+        // destination path already exists (which usually is the case for the current method). Move
+        // the events one by one instead.
+        if (destinationPath && [self moveContentsOfDirectoryAtPath:batchDirPath
+                                                                to:destinationPath
+                                                             error:&error]) {
+          GDTCORLogDebug(@"Batched events at path: %@ moved back to the storage: %@", batchDirPath,
+                         destinationPath);
+        } else {
+          GDTCORLogDebug(@"Error encountered whilst moving events back: %@", error);
+        }
+
+        // Even if not all events where moved back to the storage, there is not much can be done at
+        // this point, so cleanup batch directory now to avoid cluttering.
+        removeBatchDir(batchDirPath);
+      }
     }
   }
 
