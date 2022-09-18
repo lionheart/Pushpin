@@ -7148,10 +7148,14 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = No;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/HTMLParser";
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 63553QQ62F;
 				IBSC_MODULE = HTMLParser;
 				INFOPLIST_FILE = "Target Support Files/HTMLParser/ResourceBundle-HTMLParser-HTMLParser-Info.plist";
 				PRODUCT_NAME = HTMLParser;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -8539,10 +8543,14 @@
 				APPLICATION_EXTENSION_API_ONLY = No;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/HTMLParser";
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 63553QQ62F;
 				IBSC_MODULE = HTMLParser;
 				INFOPLIST_FILE = "Target Support Files/HTMLParser/ResourceBundle-HTMLParser-HTMLParser-Info.plist";
 				PRODUCT_NAME = HTMLParser;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -11419,10 +11427,14 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = No;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/HTMLParser";
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 63553QQ62F;
 				IBSC_MODULE = HTMLParser;
 				INFOPLIST_FILE = "Target Support Files/HTMLParser/ResourceBundle-HTMLParser-HTMLParser-Info.plist";
 				PRODUCT_NAME = HTMLParser;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -11559,11 +11571,15 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = No;
 				CLANG_ENABLE_OBJC_WEAK = NO;
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/HTMLParser";
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 63553QQ62F;
 				IBSC_MODULE = HTMLParser;
 				INFOPLIST_FILE = "Target Support Files/HTMLParser/ResourceBundle-HTMLParser-HTMLParser-Info.plist";
 				PRODUCT_NAME = HTMLParser;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
