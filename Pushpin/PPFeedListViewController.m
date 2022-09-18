@@ -54,7 +54,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
 @property (nonatomic, strong) UIButton *noteButton;
 
 - (void)openNotes;
-- (void)openSettings;
+- (void)openPushpinSettings;
 - (void)openTags;
 - (void)toggleEditing:(UIBarButtonItem *)sender;
 - (void)leftBarButtonItemTouchUpInside:(UIBarButtonItem *)sender;
@@ -133,7 +133,7 @@ static NSString *FeedListCellIdentifier = @"FeedListCellIdentifier";
     UIButton *settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [settingsButton setImage:settingsImage forState:UIControlStateNormal];
     [settingsButton setImage:[settingsImage lhs_imageWithColor:HEX(0x84CBFFFF)] forState:UIControlStateHighlighted];
-    [settingsButton addTarget:self action:@selector(openSettings) forControlEvents:UIControlEventTouchUpInside];
+    [settingsButton addTarget:self action:@selector(openPushpinSettings) forControlEvents:UIControlEventTouchUpInside];
     settingsButton.frame = CGRectMake(0, 0, 24, 24);
 
     UIBarButtonItem *settingsBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Settings", nil)
