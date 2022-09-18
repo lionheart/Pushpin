@@ -57,7 +57,7 @@ typedef enum { FeedTypeUnknown, FeedTypeRSS, FeedTypeRSS1, FeedTypeAtom } FeedTy
 // Delegate
 @protocol MWFeedParserDelegate <NSObject>
 @optional
-- (void)feedParserDidStart:(MWFeedParser *)parser;
+- (void)mwFeedParserDidStart:(MWFeedParser *)parser;
 - (void)feedParser:(MWFeedParser *)parser didParseMWFeedParserFeedInfo:(MWFeedInfo *)info;
 - (void)feedParser:(MWFeedParser *)parser didParseMWFeedParserFeedItem:(MWFeedItem *)item;
 - (void)feedParserDidFinish:(MWFeedParser *)parser;
