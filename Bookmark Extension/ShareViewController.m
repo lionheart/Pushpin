@@ -27,10 +27,8 @@
 @implementation ShareViewController
 
 - (instancetype)init {
-    [PPTheme customizeUIElements];
     self = [super init];
     if (self) {
-        self.view.backgroundColor = [UIColor clearColor];
         self.navigationBarHidden = YES;
     }
     return self;
@@ -54,13 +52,14 @@
 }
 
 - (void)presentController:(UINavigationController *)nc token:(NSString *)token {
+    // https://stackoverflow.com/a/56459330
+    nc.modalInPresentation = true;
+    nc.modalPresentationStyle = UIModalPresentationFormSheet;
+    nc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+
     PPAddBookmarkViewController *addBookmarkViewController = (PPAddBookmarkViewController *)nc.topViewController;
     addBookmarkViewController.presentingViewControllersExtensionContext = self.extensionContext;
     addBookmarkViewController.tokenOverride = token;
-
-    nc.modalPresentationStyle = UIModalPresentationFormSheet;
-    nc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-    [PPTheme customizeUIElements];
 
     __weak ShareViewController *weakSelf = self;
     [self presentViewController:nc animated:YES completion:^{
