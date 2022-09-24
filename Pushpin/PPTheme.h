@@ -40,4 +40,6 @@
 
 + (NSInteger)maxNumberOfLinesForCompressedDescriptions;
 
++ (void)customizeNavBarAppearance;
+
 @end

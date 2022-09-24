@@ -116,9 +116,24 @@
     return 1;
 }
 
-+ (void)customizeUIElements {
++ (void)customizeNavBarAppearance {
+    UIColor *barTintColor = [UIColor colorWithRed:0 green:0.5863 blue:1 alpha:1];
+    NSDictionary *titleTextAttributes = @{NSForegroundColorAttributeName: [UIColor whiteColor]};
     NSDictionary *normalAttributes = @{NSFontAttributeName: [PPTheme textLabelFontAlternate],
                                        NSForegroundColorAttributeName: [UIColor whiteColor] };
+
+    UINavigationBarAppearance *customAppearance = [[UINavigationBarAppearance alloc] init];
+    [customAppearance configureWithOpaqueBackground];
+    customAppearance.backgroundColor = barTintColor;
+    customAppearance.titleTextAttributes = titleTextAttributes;
+
+    [[UINavigationBar appearance] setBarTintColor:barTintColor];
+    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+    [[UINavigationBar appearance] setTitleTextAttributes:titleTextAttributes];
+
+    UIBarButtonItemAppearance *customBarButtonItemAppearance = [[UIBarButtonItemAppearance alloc] initWithStyle:UIBarButtonItemStylePlain];
+    customBarButtonItemAppearance.normal.titleTextAttributes = normalAttributes;
+
     [[UIBarButtonItem appearance] setTitleTextAttributes:normalAttributes
                                                 forState:UIControlStateNormal];
     [[UIBarButtonItem appearance] setTintColor:[UIColor whiteColor]];
@@ -127,10 +142,18 @@
     UIColor *barButtonItemColor = [UIColor colorWithRed:40/255.0f green:141/255.0f blue:219/255.0f alpha:1.0f];
     [[UIBarButtonItem appearanceWhenContainedInInstancesOfClasses:@[[UIToolbar class]]] setTintColor:barButtonItemColor];
 
+    [[UINavigationBar appearance] setScrollEdgeAppearance:customAppearance];
+    [[UINavigationBar appearance] setCompactAppearance:customAppearance];
+    [[UINavigationBar appearance] setStandardAppearance:customAppearance];
+
+    if (@available(iOS 15.0, *)) {
+        [[UINavigationBar appearance] setCompactScrollEdgeAppearance:customAppearance];
+    }
+}
+
++ (void)customizeUIElements {
     [[UISwitch appearance] setOnTintColor:HEX(0x0096FFFF)];
-    [[UINavigationBar appearance] setBarTintColor:[UIColor colorWithRed:0 green:0.5863 blue:1 alpha:1]];
-    [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
-    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName: [UIColor whiteColor]}];
+    [PPTheme customizeNavBarAppearance];
 
     NSDictionary *attributes = @{
         NSForegroundColorAttributeName: [UIColor whiteColor]
