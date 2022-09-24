@@ -182,7 +182,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
     if (indexPath.section == PPSectionCacheSettings) {
         cell = [tableView dequeueReusableCellWithIdentifier:DeleteCellIdentifier forIndexPath:indexPath];
-    } else if (indexPath.section == 1 && (indexPath.row == PPOtherRatePushpin || indexPath.row == PPOtherTipJar)) {
+    } else if (indexPath.section == 1 && (indexPath.row == PPOtherRatePushpin || indexPath.row == PPOtherTipJar || indexPath.row == PPOtherFeedback)) {
         cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier forIndexPath:indexPath];
     } else {
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
@@ -260,6 +260,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
                 case PPOtherFeedback:
                     cell.textLabel.text = NSLocalizedString(@"Feedback & Support", nil);
+                    cell.detailTextLabel.text = @"Email support@lionheartsw.com";
                     break;
 
                 case PPOtherLogout:
@@ -348,12 +349,9 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                 }
 
                 case PPOtherFeedback: {
-#if !TARGET_OS_MACCATALYST
-                    HSBeaconSettings *settings = [[HSBeaconSettings alloc] initWithBeaconId:kHelpScoutBeaconId];
-                    settings.delegate = self;
-                    [HSBeacon openBeacon:settings];
+                    NSURL *url = [NSURL URLWithString:@"mailto:support@lionheartsw.com"];
+                    [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
                     break;
-#endif
                 }
 
                 case PPOtherLogout:
