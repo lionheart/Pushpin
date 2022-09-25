@@ -21,25 +21,25 @@
 
 - (NSLayoutConstraint *)lhs_setHeight:(CGFloat)height {
     NSLayoutConstraint *constraint = [self lhs_constraintForHeight:height];
-    [self.superview addConstraint:constraint];
+    [NSLayoutConstraint activateConstraints:@[constraint]];
     return constraint;
 }
 
 - (NSLayoutConstraint *)lhs_setWidth:(CGFloat)width {
     NSLayoutConstraint *constraint = [self lhs_constraintForWidth:width];
-    [self.superview addConstraint:constraint];
+    [NSLayoutConstraint activateConstraints:@[constraint]];
     return constraint;
 }
 
 - (NSLayoutConstraint *)lhs_matchHeightOfSuperviewWithPadding:(CGFloat)padding {
     NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:self.superview attribute:NSLayoutAttributeHeight multiplier:1 constant:padding];
-    [self.superview addConstraint:constraint];
+    [NSLayoutConstraint activateConstraints:@[constraint]];
     return constraint;
 }
 
 - (NSLayoutConstraint *)lhs_matchWidthOfSuperviewWithPadding:(CGFloat)padding {
     NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self.superview attribute:NSLayoutAttributeWidth multiplier:1 constant:padding];
-    [self.superview addConstraint:constraint];
+    [NSLayoutConstraint activateConstraints:@[constraint]];
     return constraint;
 }
 
@@ -53,13 +53,13 @@
 
 - (NSArray *)lhs_fillHeightOfSuperview {
     NSArray *constraints = [self.superview lhs_addConstraints:@"V:|[view]|" views:@{@"view": self}];
-    [self.superview addConstraints:constraints];
+    [NSLayoutConstraint activateConstraints:constraints];
     return constraints;
 }
 
 - (NSArray *)lhs_fillWidthOfSuperview {
     NSArray *constraints = [self.superview lhs_addConstraints:@"H:|[view]|" views:@{@"view": self}];
-    [self.superview addConstraints:constraints];
+    [NSLayoutConstraint activateConstraints:constraints];
     return constraints;
 }
 
@@ -98,7 +98,7 @@
 
 - (NSArray *)lhs_centerHorizontallyForView:(UIView *)view width:(CGFloat)width {
     NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:view.superview attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
-    [self addConstraint:constraint];
+    [NSLayoutConstraint activateConstraints:@[constraint]];
     
     NSMutableArray *constraints = [@[constraint] mutableCopy];
     
@@ -111,7 +111,7 @@
 
 - (NSArray *)lhs_centerVerticallyForView:(UIView *)view height:(CGFloat)height {
     NSLayoutConstraint *constraint = [NSLayoutConstraint constraintWithItem:view attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:view.superview attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
-    [self addConstraint:constraint];
+    [NSLayoutConstraint activateConstraints:@[constraint]];
     
     NSMutableArray *constraints = [@[constraint] mutableCopy];
     
@@ -130,7 +130,7 @@
 
 - (NSArray *)lhs_addConstraints:(NSString *)constraint metrics:(NSDictionary *)metrics views:(NSDictionary *)views {
     NSArray *constraints = [NSLayoutConstraint constraintsWithVisualFormat:constraint options:0 metrics:metrics views:views];
-    [self addConstraints:constraints];
+    [NSLayoutConstraint activateConstraints:constraints];
     return constraints;
 }
 

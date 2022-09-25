@@ -20,7 +20,6 @@
 @import KeychainItemWrapper;
 @import FMDB;
 @import StoreKit;
-@import Firebase;
 
 #import "Pushpin-Swift.h"
 #import "PPAppDelegate.h"
@@ -65,16 +64,6 @@
 #if !TARGET_OS_MACCATALYST
     [[ChimpKit sharedKit] setApiKey:@"f3bfc69f8d267252c14d76664432f968-us7"];
 #endif
-
-    NSString *googlePlistName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GooglePlistName"];
-    NSString *path = [[NSBundle mainBundle] pathForResource:googlePlistName ofType:@"plist"];
-    DLog(@"%@", path);
-    if (path && path.length > 0) {
-        FIROptions *options = [[FIROptions alloc] initWithContentsOfFile:path];
-        [FIRApp configureWithOptions:options];
-    } else {
-        //[FIRApp configure];
-    }
 
     [self becomeFirstResponder];
     self.bookmarksUpdated = NO;

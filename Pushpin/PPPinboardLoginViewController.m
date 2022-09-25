@@ -11,10 +11,6 @@
 @import ASPinboard;
 @import MessageUI;
 
-#if !TARGET_OS_MACCATALYST
-@import Beacon;
-#endif
-
 #import "PPPinboardLoginViewController.h"
 #import "PPAppDelegate.h"
 #import "PPPinboardDataSource.h"
@@ -650,21 +646,12 @@ static NSString *LoginTableCellIdentifier = @"LoginTableViewCell";
     return self.authTokenTextField.text.length > 0;
 }
 
-#if !TARGET_OS_MACCATALYST
 #pragma mark - Utils
 
 - (void)showContactForm {
-    HSBeaconSettings *settings = [[HSBeaconSettings alloc] initWithBeaconId:kHelpScoutBeaconId];
-    settings.delegate = self;
-    [HSBeacon openBeacon:settings];
+    NSURL *url = [NSURL URLWithString:@"mailto:support@lionheartsw.com"];
+    [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
 }
-
-#pragma mark - HSBeaconDelegate
-
-- (void)prefill:(HSBeaconContactForm *)form {
-    form.subject = @"Pushpin Support Inquiry";
-}
-#endif
 
 @end
 

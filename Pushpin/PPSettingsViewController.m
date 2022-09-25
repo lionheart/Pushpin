@@ -14,7 +14,6 @@
 @import LHSTableViewCells;
 
 #if !TARGET_OS_MACCATALYST
-@import Beacon;
 #import "Pushpin-Swift.h"
 #endif
 
@@ -424,16 +423,6 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
     [self.tableView reloadData];
 }
-
-#pragma mark - HSBeaconDelegate
-
-#if !TARGET_OS_MACCATALYST
-- (void)prefill:(HSBeaconContactForm *)form {
-    form.subject = @"Pushpin Support Inquiry";
-    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
-    form.text = [NSString stringWithFormat:@"\n\n\n\nApp version: %@", version];
-}
-#endif
 
 @end
 

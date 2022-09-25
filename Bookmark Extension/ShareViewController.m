@@ -52,14 +52,17 @@
 }
 
 - (void)presentController:(UINavigationController *)nc token:(NSString *)token {
-    // https://stackoverflow.com/a/56459330
-    nc.modalInPresentation = true;
     nc.modalPresentationStyle = UIModalPresentationFormSheet;
     nc.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
 
     PPAddBookmarkViewController *addBookmarkViewController = (PPAddBookmarkViewController *)nc.topViewController;
     addBookmarkViewController.presentingViewControllersExtensionContext = self.extensionContext;
     addBookmarkViewController.tokenOverride = token;
+
+    // https://stackoverflow.com/a/56459330
+    addBookmarkViewController.modalInPresentation = true;
+
+    [PPTheme customizeUIElements];
 
     __weak ShareViewController *weakSelf = self;
     [self presentViewController:nc animated:YES completion:^{

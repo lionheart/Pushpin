@@ -14,7 +14,6 @@
 #import "PPLoginViewController.h"
 
 #if !TARGET_OS_MACCATALYST
-@import Beacon;
 #import "PPMailChimp.h"
 #endif
 
@@ -142,15 +141,6 @@ static NSString * const CellIdentifier = @"CellIdentifier";
 #pragma mark - Utils
 
 - (void)showContactForm {
-    HSBeaconSettings *settings = [[HSBeaconSettings alloc] initWithBeaconId:kHelpScoutBeaconId];
-    settings.delegate = self;
-    [HSBeacon openBeacon:settings];
-}
-
-#pragma mark - HSBeaconDelegate
-
-- (void)prefill:(HSBeaconContactForm *)form {
-    form.subject = @"Pushpin Support Inquiry";
 }
 #endif
 

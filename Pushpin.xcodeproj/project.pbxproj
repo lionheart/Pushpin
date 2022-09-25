@@ -2262,7 +2262,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CFD97D71A9BD7EA58E576650 /* Pods-Pushpin.release debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
@@ -2292,6 +2292,7 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GOOGLE_PLIST_NAME = "GoogleService-Info-Dev";
 				INFOPLIST_FILE = Pushpin/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"@executable_path/Frameworks\"",
@@ -2574,7 +2575,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 99B6E377218FF41F88723078 /* Pods-Pushpin.beta.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
@@ -2603,6 +2604,7 @@
 				);
 				GOOGLE_PLIST_NAME = "GoogleService-Info-Dev";
 				INFOPLIST_FILE = Pushpin/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"@executable_path/Frameworks\"",
@@ -2828,7 +2830,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4C5C9B3D86301DEF2B3292D2 /* Pods-Pushpin.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
@@ -2858,6 +2860,7 @@
 				);
 				GOOGLE_PLIST_NAME = "GoogleService-Info-Dev";
 				INFOPLIST_FILE = Pushpin/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"@executable_path/Frameworks\"",
@@ -2885,7 +2888,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 89F83F307A9C171A4BBD55E9 /* Pods-Pushpin.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
@@ -2914,6 +2917,7 @@
 				);
 				GOOGLE_PLIST_NAME = "GoogleService-Info-Release";
 				INFOPLIST_FILE = Pushpin/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"@executable_path/Frameworks\"",

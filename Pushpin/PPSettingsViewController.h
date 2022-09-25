@@ -9,7 +9,6 @@
 @import UIKit;
 @import MessageUI;
 @import MessageUI.MFMessageComposeViewController;
-@import Beacon;
 
 #import "PPAppDelegate.h"
 #import "PPLoadingView.h"
@@ -42,7 +41,7 @@ enum : NSInteger {
     PPRowCountCache = 1,
 };
 
-@interface PPSettingsViewController : PPTableViewController <UIWebViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate, HSBeaconDelegate>
+@interface PPSettingsViewController : PPTableViewController <UIWebViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate>
 
 @property (nonatomic, strong) UIAlertController *twitterAccountActionSheet;
 @property (nonatomic, retain) NSMutableArray *readLaterServices;

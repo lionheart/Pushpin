@@ -8,8 +8,6 @@
 
 @import UIKit;
 
-@protocol HSBeaconDelegate;
-
 typedef NS_ENUM(NSInteger, PPLoginCredentialRowType) {
     PPLoginCredentialUsernameRow,
     PPLoginCredentialPasswordRow
@@ -22,7 +20,7 @@ typedef NS_ENUM(NSInteger, PPLoginSectionType) {
 
 static NSInteger PPLoginSectionCount = PPLoginAuthTokenSection + 1;
 
-@interface PPPinboardLoginViewController : UITableViewController <UITextFieldDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate, HSBeaconDelegate>
+@interface PPPinboardLoginViewController : UITableViewController <UITextFieldDelegate, NSURLConnectionDataDelegate, NSURLConnectionDelegate>
 
 @property (nonatomic) BOOL keyboard_shown;
 @property (nonatomic) CGRect activityIndicatorFrameBottom;

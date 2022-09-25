@@ -19,14 +19,5 @@ ${BUILT_PRODUCTS_DIR}/TMReachability/TMReachability.framework
 ${BUILT_PRODUCTS_DIR}/TTTAttributedLabel/TTTAttributedLabel.framework
 ${BUILT_PRODUCTS_DIR}/hpple/hpple.framework
 ${BUILT_PRODUCTS_DIR}/ChimpKit/ChimpKit.framework
-${BUILT_PRODUCTS_DIR}/FirebaseCore/FirebaseCore.framework
-${BUILT_PRODUCTS_DIR}/FirebaseCoreDiagnostics/FirebaseCoreDiagnostics.framework
-${BUILT_PRODUCTS_DIR}/FirebaseCoreInternal/FirebaseCoreInternal.framework
-${BUILT_PRODUCTS_DIR}/FirebaseInstallations/FirebaseInstallations.framework
-${BUILT_PRODUCTS_DIR}/GoogleDataTransport/GoogleDataTransport.framework
-${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework
 ${BUILT_PRODUCTS_DIR}/OpenInChrome/OpenInChrome.framework
-${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework
 ${BUILT_PRODUCTS_DIR}/TipJarViewController/TipJarViewController.framework
-${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework
-${PODS_XCFRAMEWORKS_BUILD_DIR}/Beacon/Beacon.framework/Beacon

@@ -86,7 +86,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)viewDidLayoutSubviews {
     NSDictionary *views = @{@"view": self.tableView,
-                            @"guide": self.topLayoutGuide };
+                            @"guide": self.view.safeAreaLayoutGuide.topAnchor };
     [self.view lhs_addConstraints:@"V:[guide][view]" views:views];
     [self.view lhs_addConstraints:@"H:|[view]|" views:views];
     [self.view layoutIfNeeded];
@@ -104,7 +104,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
     self.tableView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.tableView];
 
-    self.bottomConstraint = [NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.bottomLayoutGuide attribute:NSLayoutAttributeTop multiplier:1 constant:0];
+    self.bottomConstraint = [NSLayoutConstraint constraintWithItem:self.tableView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:self.view.safeAreaLayoutGuide.bottomAnchor attribute:NSLayoutAttributeTop multiplier:1 constant:0];
     [self.view addConstraint:self.bottomConstraint];
 
     self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;

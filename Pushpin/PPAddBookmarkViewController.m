@@ -7,8 +7,6 @@
 //
 //
 
-@import QuartzCore;
-@import MobileCoreServices;
 @import ASPinboard;
 @import LHSTableViewCells;
 @import LHSCategoryCollection;
@@ -846,7 +844,7 @@ static NSString *CellIdentifier = @"CellIdentifier";
                             [self.tableView deleteSections:indexSetsToDelete withRowAnimation:UITableViewRowAnimationFade];
                             [self.tableView endUpdates];
 
-                            [self.tagTextField becomeFirstResponder];
+//                            [self.tagTextField becomeFirstResponder];
 
                             self.navigationItem.leftBarButtonItem = nil;
                             self.navigationItem.rightBarButtonItem = self.doneBarButtonItem;
@@ -1466,6 +1464,11 @@ static NSString *CellIdentifier = @"CellIdentifier";
 
 - (void)editDescriptionViewControllerDidUpdateDescription:(PPEditDescriptionViewController *)editDescriptionViewController {
     NSString *text = [editDescriptionViewController.textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+    if (!text) {
+        text = @"";
+    }
+
     self.postDescription = text;
     self.descriptionTextLabel.attributedText = [[NSAttributedString alloc] initWithString:text attributes:self.descriptionAttributes];
 

@@ -7,7 +7,6 @@
 //
 
 @import LHSCategoryCollection;
-@import LHSKeyboardAdjusting;
 
 #import "PPEditDescriptionViewController.h"
 #import "PPTheme.h"
@@ -16,8 +15,6 @@
 @interface PPEditDescriptionViewController ()
 
 @property (nonatomic, strong) NSLayoutConstraint *bottomConstraint;
-
-- (void)fixTextView:(UITextView *)textView;
 
 @end
 
@@ -90,24 +87,8 @@
 
 #pragma mark - UITextViewDelegate
 
-- (void)fixTextView:(UITextView *)textView {
-    [textView.textStorage edited:NSTextStorageEditedCharacters range:NSMakeRange(0, textView.textStorage.length) changeInLength:0];
-}
-
 - (BOOL)textView:(UITextView *)aTextView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     return YES;
-}
-
-#pragma mark - SMTEFillDelegate
-
-- (NSString *)identifierForTextArea:(id)uiTextObject {
-    return @"textarea";
-}
-
-- (id)makeIdentifiedTextObjectFirstResponder:(NSString *)textIdentifier
-                             fillWasCanceled:(BOOL)userCanceledFill
-                              cursorPosition:(NSInteger *)ioInsertionPointLocation {
-    return nil;
 }
 
 @end

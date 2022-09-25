@@ -5,7 +5,7 @@ load 'remove_unsupported_libraries.rb'
 inhibit_all_warnings!
 use_frameworks!
 
-platform :ios, '13.6'
+platform :ios, '15.0'
 source 'https://github.com/CocoaPods/Specs.git'
 project 'Pushpin.xcodeproj'
 
@@ -33,8 +33,6 @@ target 'Pushpin' do
   pod 'LionheartExtensions'
   pod 'QuickTableView'
   pod 'TipJarViewController', '~> 2.0'
-  pod 'Beacon'
-  pod 'Firebase/Core'
 end
 
 target 'Bookmark Extension' do

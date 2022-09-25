@@ -70,6 +70,7 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       enableAddressSanitizer = "YES"
       enableASanStackUseAfterReturn = "YES"
+      enableUBSanitizer = "YES"
       launchStyle = "1"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
@@ -99,26 +100,30 @@
             value = "YES"
             isEnabled = "YES">
          </AdditionalOption>
+         <AdditionalOption
+            key = "MallocScribble"
+            value = ""
+            isEnabled = "YES">
+         </AdditionalOption>
       </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Debug"
       shouldUseLaunchSchemeArgsEnv = "YES"
-      savedToolIdentifier = "Leaks"
+      savedToolIdentifier = "Allocations"
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES"
       launchAutomaticallySubstyle = "2">
-      <RemoteRunnable
-         runnableDebuggingMode = "1"
-         BundleIdentifier = "com.apple.mobilesafari"
-         RemotePath = "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/Applications/MobileSafari.app">
-      </RemoteRunnable>
+      <PathRunnable
+         runnableDebuggingMode = "0"
+         FilePath = "/Users/dan/Library/Developer/Xcode/DerivedData/Pushpin-aagjajiiaotbhafqtpsbdgyyuocf/Build/Products/Bookmark Extension">
+      </PathRunnable>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "370B761E1F4603AA00391769"
-            BuildableName = "Bookmark Extension.appex"
-            BlueprintName = "Bookmark Extension"
+            BlueprintIdentifier = "37FEEB8D15745488003F2B77"
+            BuildableName = "Pushpin.app"
+            BlueprintName = "Pushpin"
             ReferencedContainer = "container:Pushpin.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
