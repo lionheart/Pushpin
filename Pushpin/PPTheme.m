@@ -122,6 +122,7 @@
     NSDictionary *normalAttributes = @{NSFontAttributeName: [PPTheme textLabelFontAlternate],
                                        NSForegroundColorAttributeName: [UIColor whiteColor] };
 
+    // https://developer.apple.com/documentation/technotes/tn3106-customizing-uinavigationbar-appearance
     UINavigationBarAppearance *customAppearance = [[UINavigationBarAppearance alloc] init];
     [customAppearance configureWithOpaqueBackground];
     customAppearance.backgroundColor = barTintColor;
