@@ -13,6 +13,12 @@
 [submodule "Vendor/LHSDiigo"]
 	path = Vendor/LHSDiigo
 	url = https://github.com/lionheart/LHSDiigo
+[submodule "Vendor/LHSCategoryCollection"]
+	path = Vendor/LHSCategoryCollection
+	url = https://github.com//lionheart/LHSCategoryCollection
 [submodule "Vendor/LHSDelicious"]
 	path = Vendor/LHSDelicious
 	url = https://github.com//lionheart/LHSDelicious
+[submodule "Vendor/LHSKeyboardAdjusting"]
+	path = Vendor/LHSKeyboardAdjusting
+	url = https://github.com//lionheart/LHSKeyboardAdjusting
