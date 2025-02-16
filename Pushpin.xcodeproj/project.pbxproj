@@ -152,6 +152,7 @@
 		37A9345A2D628B2D0000FBC5 /* pinboard-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A934552D628B2D0000FBC5 /* pinboard-logo@2x.png */; };
 		37A9345D2D628B340000FBC5 /* 810-document-2.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A9345B2D628B340000FBC5 /* 810-document-2.png */; };
 		37A9345E2D628B340000FBC5 /* 810-document-2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A9345C2D628B340000FBC5 /* 810-document-2@2x.png */; };
+		37A934602D629FCE0000FBC5 /* pinboard.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 37A9345F2D629FCE0000FBC5 /* pinboard.jpeg */; };
 		37AB960718C437090008CDD5 /* browse-search@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37AB960318C437090008CDD5 /* browse-search@2x.png */; };
 		37AB960818C437090008CDD5 /* browse-search.png in Resources */ = {isa = PBXBuildFile; fileRef = 37AB960418C437090008CDD5 /* browse-search.png */; };
 		37AB960918C437090008CDD5 /* browse-recent.png in Resources */ = {isa = PBXBuildFile; fileRef = 37AB960518C437090008CDD5 /* browse-recent.png */; };
@@ -234,7 +235,6 @@
 		37F9D0DB1D3304A9002A168D /* LHSFontSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F6D7E819A1111E004016DB /* LHSFontSelectionViewController.m */; };
 		37FB4F981D32ED60004D5C12 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEB9E15745488003F2B77 /* main.m */; };
 		37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9415745488003F2B77 /* Foundation.framework */; };
-		B6E3041D1B3DC95500135CF1 /* pinboard.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = B6E304191B3DC95500135CF1 /* pinboard.jpeg */; };
 		B7A8D3A9DA1CD7084ABD82F9 /* Pods_Bookmark_Extension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59457ADBB987DBE9B7B1E1F3 /* Pods_Bookmark_Extension.framework */; };
 		E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E804950F18103DC700C5CA8B /* SafariServices.framework */; };
 		E873423B180DAC8800CF9E5F /* activity-browser-chrome.png in Resources */ = {isa = PBXBuildFile; fileRef = E8734239180DAC8800CF9E5F /* activity-browser-chrome.png */; };
@@ -530,6 +530,7 @@
 		37A934572D628B2D0000FBC5 /* pushpin-cloud-logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "pushpin-cloud-logo@2x.png"; path = "Assets/pushpin-cloud-logo@2x.png"; sourceTree = "<group>"; };
 		37A9345B2D628B340000FBC5 /* 810-document-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "810-document-2.png"; path = "Assets/810-document-2.png"; sourceTree = "<group>"; };
 		37A9345C2D628B340000FBC5 /* 810-document-2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "810-document-2@2x.png"; path = "Assets/810-document-2@2x.png"; sourceTree = "<group>"; };
+		37A9345F2D629FCE0000FBC5 /* pinboard.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = pinboard.jpeg; path = Assets/pinboard.jpeg; sourceTree = "<group>"; };
 		37AB960318C437090008CDD5 /* browse-search@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-search@2x.png"; path = "Assets/browse-search@2x.png"; sourceTree = "<group>"; };
 		37AB960418C437090008CDD5 /* browse-search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-search.png"; path = "Assets/browse-search.png"; sourceTree = "<group>"; };
 		37AB960518C437090008CDD5 /* browse-recent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-recent.png"; path = "Assets/browse-recent.png"; sourceTree = "<group>"; };
@@ -628,7 +629,6 @@
 		B6E304111B3C778A00135CF1 /* PPMailChimp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPMailChimp.m; sourceTree = "<group>"; };
 		B6E304141B3DAAF700135CF1 /* PPLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPLoginViewController.h; sourceTree = "<group>"; };
 		B6E304151B3DAAF700135CF1 /* PPLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPLoginViewController.m; sourceTree = "<group>"; };
-		B6E304191B3DC95500135CF1 /* pinboard.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = pinboard.jpeg; sourceTree = "<group>"; };
 		CFD97D71A9BD7EA58E576650 /* Pods-Pushpin.release debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.release debug.xcconfig"; path = "Target Support Files/Pods-Pushpin/Pods-Pushpin.release debug.xcconfig"; sourceTree = "<group>"; };
 		D8C2045E6A8DF8E6773D9D00 /* Pods-Read Later Extension.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Read Later Extension.beta.xcconfig"; path = "Target Support Files/Pods-Read Later Extension/Pods-Read Later Extension.beta.xcconfig"; sourceTree = "<group>"; };
 		E18CEEC4FA4012AB85B8020B /* Pods-Bookmark Extension.release debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bookmark Extension.release debug.xcconfig"; path = "Target Support Files/Pods-Bookmark Extension/Pods-Bookmark Extension.release debug.xcconfig"; sourceTree = "<group>"; };
@@ -1216,6 +1216,7 @@
 				E8F987CB183E764A00EF976D /* General UI */,
 				3715EEC415787CA100FD21EE /* Stylesheets */,
 				37A7B5C018345D6A0038677E /* Web View Icons */,
+				37A9345F2D629FCE0000FBC5 /* pinboard.jpeg */,
 				37E312E31868CCD600B944F1 /* 56_Key-alt.png */,
 				37A934552D628B2D0000FBC5 /* pinboard-logo@2x.png */,
 				37A934562D628B2D0000FBC5 /* pushpin-cloud-logo.png */,
@@ -1238,7 +1239,6 @@
 				376C9E8317488B8500A62CB5 /* NotificationBackground@2x.png */,
 				376C9E8617488F2300A62CB5 /* NotificationX.png */,
 				376C9E8717488F2300A62CB5 /* NotificationX@2x.png */,
-				B6E304191B3DC95500135CF1 /* pinboard.jpeg */,
 				37BC1BD7188642F90022020A /* readability.js */,
 				37BC1BD3188641D80022020A /* readabilityInitializer.js */,
 				370BBE011901ABBB004FA557 /* safari-callback.html */,
@@ -1653,6 +1653,7 @@
 				37A9345E2D628B340000FBC5 /* 810-document-2@2x.png in Resources */,
 				E89002311840173600C1F969 /* navigation-japanese@2x.png in Resources */,
 				E890020A183FA8F600C1F969 /* navigation-list.png in Resources */,
+				37A934602D629FCE0000FBC5 /* pinboard.jpeg in Resources */,
 				E890020B183FA8F600C1F969 /* navigation-list@2x.png in Resources */,
 				E89002381840173600C1F969 /* navigation-network.png in Resources */,
 				E89002391840173600C1F969 /* navigation-network@2x.png in Resources */,
@@ -1684,7 +1685,6 @@
 				3747C72819CCDB1F00FAD488 /* NotificationBackground@2x.png in Resources */,
 				3747C72919CCDB1F00FAD488 /* NotificationX.png in Resources */,
 				3747C72A19CCDB1F00FAD488 /* NotificationX@2x.png in Resources */,
-				B6E3041D1B3DC95500135CF1 /* pinboard.jpeg in Resources */,
 				37B4F80A1F4C651500E89790 /* Pushpin Launch Screen.storyboard in Resources */,
 				3747C72B19CCDB1F00FAD488 /* readability.css in Resources */,
 				3747C72C19CCDB1F00FAD488 /* readability.js in Resources */,
