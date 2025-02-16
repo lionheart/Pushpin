@@ -2,7 +2,7 @@
 
 <img src="https://img.shields.io/badge/license-GPLv3-blue">
 
-This repo contains the full source code for Pushpin for Pinboard, a beautiful, blazing-fast, and feature-packed [Pinboard](https://pinboard.in) client for iPhone, iPad, and iPod Touch.
+This repo contains the full source code for Pushpin for Pinboard, a beautiful, blazing-fast, and feature-packed [Pinboard](https://pinboard.in) client for iOS and iPad OS.
 
 <a href="https://apps.apple.com/us/app/pushpin-for-pinboard/id548052590"><img width="135px" src="https://2017.lionheartsw.com/static/images/appstore.png" /></a>
 
