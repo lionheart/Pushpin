@@ -3,20 +3,19 @@ import sys
 import os
 
 LICENSE_HEADER = """/*
-  This file is part of Pushpin.
+  This file is part of Pushpin for Pinboard.
 
-  Pushpin is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, version 3.
+  Pushpin for Pinboard is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by the Free
+  Software Foundation, version 3.
 
-  Pushpin is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-  See the GNU General Public License for more details.
+  Pushpin for Pinboard is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+  details.
 
-  You should have received a copy of the GNU General Public License
-  along with this program.
-  If not, see <https://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU General Public License along with
+  this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
 """
