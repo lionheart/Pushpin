@@ -2,9 +2,11 @@
 
 <img src="https://img.shields.io/badge/license-GPLv3-blue">
 
+Pushpin is an iOS client for [Pinboard.in](https://pinboard.in), a social bookmarking service.
+
 <a href="https://apps.apple.com/us/app/pushpin-for-pinboard/id548052590"><img width="160px" src="https://2017.lionheartsw.com/static/images/appstore.png" /></a>
 
-Pushpin is an iOS client for [Pinboard.in](https://pinboard.in), a social bookmarking service.
+<hr/>
 
 Landing page: https://lionheartsw.com/software/pushpin/
 
@@ -92,9 +94,6 @@ make appstore
 
 ## Updating Screenshots
 
-> [!NOTE]
-> I haven't tested this in _years_, so this likely no longer works.
-
 ```
 gem install deliver
 deliver init
@@ -102,8 +101,7 @@ deliver init
 deliver
 ```
 
-License
--------
+## License
 
 <img src="https://www.gnu.org/graphics/gplv3-with-text-84x42.png" />
 
