@@ -18,10 +18,7 @@ Landing page: https://lionheartsw.com/software/pushpin/
 
 ## Screenshots
 
-<img src="https://2017.lionheartsw.com/static/images/pushpin-1.png" />
-<img src="https://2017.lionheartsw.com/static/images/pushpin-2.png" />
-<img src="https://2017.lionheartsw.com/static/images/pushpin-3.png" />
-<img src="https://2017.lionheartsw.com/static/images/pushpin-4.png" />
+<img width="200px" src="https://2017.lionheartsw.com/static/images/pushpin-1.png" /> <img width="200px" src="https://2017.lionheartsw.com/static/images/pushpin-2.png" /> <img width="200px" src="https://2017.lionheartsw.com/static/images/pushpin-3.png" /> <img width="200px" src="https://2017.lionheartsw.com/static/images/pushpin-4.png" />
 
 ## Features
 
