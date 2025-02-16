@@ -974,6 +974,7 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
     if (webView == self.webView) {
         [self.webViewTimeoutTimer invalidate];
 
+      dispatch_async(dispatch_get_main_queue(), ^{
 #warning https://crashlytics.com/lionheart-software2/ios/apps/io.aurora.pushpin/issues/532e17d2fabb27481b18f9ce
         self.webViewTimeoutTimer = [NSTimer timerWithTimeInterval:5
                                                            target:self
@@ -981,10 +982,11 @@ static CGFloat kPPReaderViewAnimationDuration = 0.3;
                                                          userInfo:nil
                                                           repeats:NO];
         [[NSRunLoop mainRunLoop] addTimer:self.webViewTimeoutTimer forMode:NSRunLoopCommonModes];
-
+        
         self.numberOfRequests++;
         [UIApplication lhs_setNetworkActivityIndicatorVisible:YES];;
         [self enableOrDisableButtons];
+      });
     }
 }
 #endif
