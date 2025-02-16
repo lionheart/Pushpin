@@ -4,7 +4,9 @@
 
 This repo contains the full source code for Pushpin for Pinboard, a beautiful, blazing-fast, and feature-packed [Pinboard](https://pinboard.in) client for iPhone, iPad, and iPod Touch.
 
-Pushpin was started in 2012 and has been a labor of love for many years. It's made some money, but not enough to really warrant active commercial investment, so I figure the best thing to do is to let the community run with it. There are tons of little improvements to be made that I haven't had the time for. I also haven't been the most active Pinboard user lately.
+Pushpin was started in 2012 and has been a labor of love for many years. It's made some money, but not enough to really warrant active commercial investment, so I figure the best thing to do is to let the community run with it. There are tons of little improvements to be made that I haven't had the time to implement, but if you want to help out, please do!
+
+Before
 
 Landing page: https://lionheartsw.com/software/pushpin/
 
