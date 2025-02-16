@@ -1,4 +1,4 @@
-# Pushpin
+# Pushpin for Pinboard
 
 <img src="https://img.shields.io/badge/license-GPLv3-blue">
 
