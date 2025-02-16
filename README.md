@@ -2,14 +2,18 @@
 
 <img src="https://img.shields.io/badge/license-GPLv3-blue">
 
-Pushpin is a beautiful, blazing-fast, and feature-packed [Pinboard](https://pinboard.in) client for iPhone, iPad, and iPod Touch. This is the full source code for the entire application, available under GPLv3.
+Pushpin is a beautiful, blazing-fast, and feature-packed [Pinboard](https://pinboard.in) client for iPhone, iPad, and iPod Touch. This is the full source code for the entire application.
 
 Landing page: https://lionheartsw.com/software/pushpin/
 
+You can also buy Pushpin on the App Store:
+
 <a href="https://apps.apple.com/us/app/pushpin-for-pinboard/id548052590"><img width="135px" src="https://2017.lionheartsw.com/static/images/appstore.png" /></a>
 
+---
+
+- [Screenshots](#screenshots)
 - [Features](#features)
-- [Demo](#demo)
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -35,42 +39,34 @@ Landing page: https://lionheartsw.com/software/pushpin/
 * Extensive URL scheme support for adding bookmarks on the fly, opening URLs with the in-app browser, or viewing feeds for users or tags.
 * Offline reading! Pushpin can download and cache your bookmarks for those times when your Internet connection is spotty. Pushpin will download all page content, including CSS and Javascript, to make your offline browsing experience a great one.
 
-## Demo
-
 ## Requirements
 
 - iOS 15.6+
 - Swift 5+
 - Xcode 16.2+
 
-## Local Setup
+## Installation
 
-1. Install the Ruby in `.ruby-version` and Bundler.
+1. Clone the repository:
+
+       git clone git@github.com:lionheart/Pushpin.git
+
+2. Install the Ruby in `.ruby-version` and Bundler.
 
        rbenv install
        gem install bundler
 
-2. Install gems:
+3. Install gems:
 
        bundle install
 
-3. Then install iOS dependencies from CocoaPods.
+4. Then install iOS dependencies from CocoaPods.
 
        pod install
 
-3. Open `Pushpin.xcworkspace` to compile and run the project.
+5. Open `Pushpin.xcworkspace` to compile and run the project.
 
-## Setup
-
-> [!WARNING]
-> I haven't tested this on any other machines besides my own, so please test this out and submit a PR if something is broken.
-
-1. First 
-```
-git clone git@github.com:lionheart/Pushpin.git
-```
-
-## Optional
+### Optional
 
 This project uses a few git hooks and merge drivers to prevent merge conflicts and to keep the project file clean. To set them up, just run:
 
@@ -88,13 +84,13 @@ $ git submodule update
 $ git submodule -q foreach git pull -q origin master
 ```
 
-## App Store Submission
+### App Store Submission
 
 ```
 make appstore
 ```
 
-## Updating Screenshots
+### Updating Screenshots
 
 ```
 gem install deliver
