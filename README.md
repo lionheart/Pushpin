@@ -89,7 +89,7 @@ deliver
 
 ## License
 
-<img src="https://www.gnu.org/graphics/gplv3-with-text-84x42.png" />
+<img src="https://www.gnu.org/graphics/gplv3-127x51.png" />
 
 Pushpin is licensed under the [GNU GPL version 3 or any later version](https://www.gnu.org/licenses/gpl-3.0.html), which is considered a strict open-source license.
 
