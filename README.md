@@ -1,16 +1,17 @@
 # Pushpin
 
 <p align="center">
-    <img width="900px" src="Assets/WeScan-Banner.jpg">
-</p>
-
-<p align="center">
-<img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat">
+    <img src="https://img.shields.io/badge/license-GPLv3-blue">
 </p>
 
 Pushpin is an iOS client for [Pinboard.in](https://pinboard.in), a social bookmarking service.
 
-[![Download Pushpin on the App Store](https://2017.lionheartsw.com/static/images/appstore.png)](https://apps.apple.com/us/app/pushpin-for-pinboard/id548052590)
+<!-- [![Download Pushpin on the App Store]()]() -->
+
+<p align="center">
+    <a href="https://apps.apple.com/us/app/pushpin-for-pinboard/id548052590"><img width="160px" src="https://2017.lionheartsw.com/static/images/appstore.png" /></a>
+</p>
+
 
 Landing page: https://lionheartsw.com/software/pushpin/
 
