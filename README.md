@@ -2,11 +2,11 @@
 
 <img src="https://img.shields.io/badge/license-GPLv3-blue">
 
-Pushpin is a beautiful, blazing-fast, and feature-packed [Pinboard](https://pinboard.in) client for iPhone, iPad, and iPod Touch.
+This repo contains the full source code for Pushpin for Pinboard, a beautiful, blazing-fast, and feature-packed [Pinboard](https://pinboard.in) client for iPhone, iPad, and iPod Touch.
+
+Pushpin was started in 2012 and has been a labor of love for many years. It's made some money, but not enough to really warrant active commercial investment, so I figure the best thing to do is to let the community run with it. There are tons of little improvements to be made that I haven't had the time for. I also haven't been the most active Pinboard user lately.
 
 Landing page: https://lionheartsw.com/software/pushpin/
-
-You can also buy Pushpin on the App Store:
 
 <a href="https://apps.apple.com/us/app/pushpin-for-pinboard/id548052590"><img width="135px" src="https://2017.lionheartsw.com/static/images/appstore.png" /></a>
 
@@ -16,8 +16,6 @@ You can also buy Pushpin on the App Store:
 - [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
 - [License](#license)
 
 ## Screenshots
