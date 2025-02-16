@@ -49,9 +49,8 @@ This repo contains the full source code for Pushpin for Pinboard, a beautiful, b
        git submodule update
        git submodule -q foreach git pull -q origin master
 
-2. Install the Ruby in `.tool-versions` and Bundler.
+2. Install the Ruby version in `.tool-versions` and Bundler.
 
-       # if using asdf
        asdf install
        gem install bundler
 
@@ -61,7 +60,7 @@ This repo contains the full source code for Pushpin for Pinboard, a beautiful, b
 
 4. Then install iOS dependencies from CocoaPods.
 
-       pod install
+       bundle exec pod install
 
 5. Open `Pushpin.xcworkspace` to compile and run the project.
 
@@ -77,9 +76,7 @@ The above command will also ensure that any Git commands stay in sync if they're
 
 ### App Store Submission
 
-```
-make appstore
-```
+Archive in Xcode and upload to App Store Connect.
 
 ### Updating Screenshots
 
