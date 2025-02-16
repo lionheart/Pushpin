@@ -99,6 +99,9 @@ deliver init
 deliver
 ```
 
+## Trademark Notice
+“Pushpin” is a trademark of Lionheart Software LLC. You may not use the “Pushpin” name, logo, or other brand assets without prior written permission from Lionheart Software LLC.
+
 ## License
 
 <img src="https://www.gnu.org/graphics/gplv3-with-text-84x42.png" />
