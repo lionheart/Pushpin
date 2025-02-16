@@ -49,24 +49,19 @@
 		3747C6FB19CCDB1F00FAD488 /* bookmark-favorite@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E89001FB183EB90100C1F969 /* bookmark-favorite@2x.png */; };
 		3747C6FC19CCDB1F00FAD488 /* bookmark-private.png in Resources */ = {isa = PBXBuildFile; fileRef = E89001FC183EB90100C1F969 /* bookmark-private.png */; };
 		3747C6FD19CCDB1F00FAD488 /* bookmark-private@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E89001FD183EB90100C1F969 /* bookmark-private@2x.png */; };
-		3747C6FE19CCDB1F00FAD488 /* Brando Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 37F6D7D619A10DC9004016DB /* Brando Regular.otf */; };
 		3747C70219CCDB1F00FAD488 /* Changelog-Delicious.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37AD159618A1352B005813CC /* Changelog-Delicious.plist */; };
 		3747C70319CCDB1F00FAD488 /* Changelog.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37B348CD175FFDCD00929E2E /* Changelog.plist */; };
-		3747C70419CCDB1F00FAD488 /* Charter Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 37DAAA8219A001F90050350D /* Charter Regular.ttf */; };
-		3747C70519CCDB1F00FAD488 /* Courier Prime.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 37DAAA8419A002380050350D /* Courier Prime.ttf */; };
 		3747C70B19CCDB1F00FAD488 /* Delete-Button-Light.png in Resources */ = {isa = PBXBuildFile; fileRef = 3798AD7818766DA3002D684B /* Delete-Button-Light.png */; };
 		3747C70C19CCDB1F00FAD488 /* Delete-Button-Light@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3798AD7918766DA3002D684B /* Delete-Button-Light@2x.png */; };
 		3747C70D19CCDB1F00FAD488 /* Delete-Button.png in Resources */ = {isa = PBXBuildFile; fileRef = 372C84071870E3B300BF520D /* Delete-Button.png */; };
 		3747C70E19CCDB1F00FAD488 /* Delete-Button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 372C84081870E3B300BF520D /* Delete-Button@2x.png */; };
 		3747C70F19CCDB1F00FAD488 /* edit.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A7B5CD18345F140038677E /* edit.png */; };
 		3747C71019CCDB1F00FAD488 /* edit@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A7B5CE18345F140038677E /* edit@2x.png */; };
-		3747C71119CCDB1F00FAD488 /* Flex Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 37F6D7D719A10DC9004016DB /* Flex Regular.otf */; };
 		3747C71619CCDB1F00FAD488 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 370859F817F329D400270A9D /* Images.xcassets */; };
 		3747C71719CCDB1F00FAD488 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23716863CF000F95D82 /* InfoPlist.strings */; };
 		3747C71819CCDB1F00FAD488 /* JSDOMParser.js in Resources */ = {isa = PBXBuildFile; fileRef = 37BC1BD4188641D80022020A /* JSDOMParser.js */; };
 		3747C71919CCDB1F00FAD488 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 37F6D7E919A1111E004016DB /* LICENSE */; };
 		3747C71A19CCDB1F00FAD488 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3740A23916863CF000F95D82 /* Localizable.strings */; };
-		3747C71B19CCDB1F00FAD488 /* LyonTextApp-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 37DAAA80199FFDE40050350D /* LyonTextApp-Regular.ttf */; };
 		3747C71C19CCDB1F00FAD488 /* main.css in Resources */ = {isa = PBXBuildFile; fileRef = 3715EEC615787CAA00FD21EE /* main.css */; };
 		3747C71D19CCDB1F00FAD488 /* mark-as-read.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A7B5C318345DAE0038677E /* mark-as-read.png */; };
 		3747C71E19CCDB1F00FAD488 /* mark-as-read@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A7B5C418345DAE0038677E /* mark-as-read@2x.png */; };
@@ -137,8 +132,6 @@
 		3783387D1F461F57006C0A01 /* toolbar-bookmark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF7A185A4AD800979AA3 /* toolbar-bookmark@2x.png */; };
 		3783387E1F461F5E006C0A01 /* toolbar-description.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF7B185A4AD800979AA3 /* toolbar-description.png */; };
 		3783387F1F461F5E006C0A01 /* toolbar-description@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF7C185A4AD800979AA3 /* toolbar-description@2x.png */; };
-		3784B0FC1A50AD1600CD1435 /* 810-document-2.png in Resources */ = {isa = PBXBuildFile; fileRef = 3784B0F41A50AD1500CD1435 /* 810-document-2.png */; };
-		3784B0FD1A50AD1600CD1435 /* 810-document-2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3784B0F51A50AD1500CD1435 /* 810-document-2@2x.png */; };
 		3784B1061A51B29B00CD1435 /* badge-cloud.png in Resources */ = {isa = PBXBuildFile; fileRef = 3784B1041A51B29B00CD1435 /* badge-cloud.png */; };
 		3784B1071A51B29B00CD1435 /* badge-cloud@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3784B1051A51B29B00CD1435 /* badge-cloud@2x.png */; };
 		378DA45F1633B4B800831134 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 378DA45E1633B4B700831134 /* MessageUI.framework */; };
@@ -148,6 +141,17 @@
 		3798B09018767DAB002D684B /* navigation-edit-darker@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3798B08C18767DAB002D684B /* navigation-edit-darker@2x.png */; };
 		3798B09118767DAB002D684B /* navigation-edit-blue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 3798B08D18767DAB002D684B /* navigation-edit-blue@2x.png */; };
 		379A59E01D32E33100AB4A26 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9215745488003F2B77 /* UIKit.framework */; };
+		37A934492D628AAF0000FBC5 /* PPDefaultFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A934482D628AAF0000FBC5 /* PPDefaultFeedViewController.m */; };
+		37A934502D628AF70000FBC5 /* Courier Prime.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 37A9344C2D628AF70000FBC5 /* Courier Prime.ttf */; };
+		37A934512D628AF70000FBC5 /* Flex Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 37A9344D2D628AF70000FBC5 /* Flex Regular.otf */; };
+		37A934522D628AF70000FBC5 /* Charter Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 37A9344B2D628AF70000FBC5 /* Charter Regular.ttf */; };
+		37A934532D628AF70000FBC5 /* LyonTextApp-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 37A9344E2D628AF70000FBC5 /* LyonTextApp-Regular.ttf */; };
+		37A934542D628AF70000FBC5 /* Brando Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 37A9344A2D628AF70000FBC5 /* Brando Regular.otf */; };
+		37A934582D628B2D0000FBC5 /* pushpin-cloud-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A934572D628B2D0000FBC5 /* pushpin-cloud-logo@2x.png */; };
+		37A934592D628B2D0000FBC5 /* pushpin-cloud-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A934562D628B2D0000FBC5 /* pushpin-cloud-logo.png */; };
+		37A9345A2D628B2D0000FBC5 /* pinboard-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A934552D628B2D0000FBC5 /* pinboard-logo@2x.png */; };
+		37A9345D2D628B340000FBC5 /* 810-document-2.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A9345B2D628B340000FBC5 /* 810-document-2.png */; };
+		37A9345E2D628B340000FBC5 /* 810-document-2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A9345C2D628B340000FBC5 /* 810-document-2@2x.png */; };
 		37AB960718C437090008CDD5 /* browse-search@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37AB960318C437090008CDD5 /* browse-search@2x.png */; };
 		37AB960818C437090008CDD5 /* browse-search.png in Resources */ = {isa = PBXBuildFile; fileRef = 37AB960418C437090008CDD5 /* browse-search.png */; };
 		37AB960918C437090008CDD5 /* browse-recent.png in Resources */ = {isa = PBXBuildFile; fileRef = 37AB960518C437090008CDD5 /* browse-recent.png */; };
@@ -165,7 +169,6 @@
 		37B6200D1F4520CC005DE789 /* PPNoteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37CFA5FF19683ED300C67338 /* PPNoteViewController.m */; };
 		37B6200E1F4520D0005DE789 /* PostMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = 37405C6618620BCB0052213A /* PostMetadata.m */; };
 		37B6200F1F4520D5005DE789 /* PPPinboardMetadataCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 3743B7371875DAA800B97E6D /* PPPinboardMetadataCache.m */; };
-		37B620101F4520D9005DE789 /* PPDefaultFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E804951A1810597A00C5CA8B /* PPDefaultFeedViewController.m */; };
 		37B620111F4520DC005DE789 /* PPURLCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 375B62301A4DA9240045AFE7 /* PPURLCache.m */; };
 		37B620121F4520E0005DE789 /* PPSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 37889D4319981212002E245A /* PPSettings.m */; };
 		37B620131F4520E3005DE789 /* PPPlainTextViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37CBB7521881F31C000F9C36 /* PPPlainTextViewController.m */; };
@@ -182,7 +185,6 @@
 		37C4D51C1F9BEB40000F50CB /* MultilineTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C4D51B1F9BEB40000F50CB /* MultilineTableViewCell.swift */; };
 		37CBB7411881B44B000F9C36 /* About.plist in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7401881B44B000F9C36 /* About.plist */; };
 		37CBB7551881FFBC000F9C36 /* About.json in Resources */ = {isa = PBXBuildFile; fileRef = 37CBB7541881FFBC000F9C36 /* About.json */; };
-		37CC829524FBDEED00D24A8F /* PSPDFUIKitMainThreadGuard.m in Sources */ = {isa = PBXBuildFile; fileRef = 3794AE9F176D33D100250909 /* PSPDFUIKitMainThreadGuard.m */; };
 		37D620561F9A9D060020B52A /* StoreReviewPointsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D620551F9A9D060020B52A /* StoreReviewPointsManager.swift */; };
 		37D620581F9AB4BA0020B52A /* PPAddBookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37800E44162B389B009FCB17 /* PPAddBookmarkViewController.m */; };
 		37DE5AAA174EF8AF0073A2F4 /* back_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 37DE5AA0174EF8AE0073A2F4 /* back_icon.png */; };
@@ -232,10 +234,7 @@
 		37F9D0DB1D3304A9002A168D /* LHSFontSelectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F6D7E819A1111E004016DB /* LHSFontSelectionViewController.m */; };
 		37FB4F981D32ED60004D5C12 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 37FEEB9E15745488003F2B77 /* main.m */; };
 		37FEEB9515745488003F2B77 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37FEEB9415745488003F2B77 /* Foundation.framework */; };
-		B6E3041C1B3DC95500135CF1 /* pinboard-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E304181B3DC95500135CF1 /* pinboard-logo@2x.png */; };
 		B6E3041D1B3DC95500135CF1 /* pinboard.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = B6E304191B3DC95500135CF1 /* pinboard.jpeg */; };
-		B6E3041E1B3DC95500135CF1 /* pushpin-cloud-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E3041A1B3DC95500135CF1 /* pushpin-cloud-logo.png */; };
-		B6E3041F1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B6E3041B1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png */; };
 		B7A8D3A9DA1CD7084ABD82F9 /* Pods_Bookmark_Extension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 59457ADBB987DBE9B7B1E1F3 /* Pods_Bookmark_Extension.framework */; };
 		E804951018103DC700C5CA8B /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E804950F18103DC700C5CA8B /* SafariServices.framework */; };
 		E873423B180DAC8800CF9E5F /* activity-browser-chrome.png in Resources */ = {isa = PBXBuildFile; fileRef = E8734239180DAC8800CF9E5F /* activity-browser-chrome.png */; };
@@ -491,8 +490,6 @@
 		378482D2186CB92C00DF7A74 /* single-tag@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "single-tag@2x.png"; path = "Assets/single-tag@2x.png"; sourceTree = "<group>"; };
 		378482D5186CB9ED00DF7A74 /* single-person.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "single-person.png"; path = "Assets/single-person.png"; sourceTree = "<group>"; };
 		378482D6186CB9ED00DF7A74 /* single-person@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "single-person@2x.png"; path = "Assets/single-person@2x.png"; sourceTree = "<group>"; };
-		3784B0F41A50AD1500CD1435 /* 810-document-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "810-document-2.png"; sourceTree = "<group>"; };
-		3784B0F51A50AD1500CD1435 /* 810-document-2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "810-document-2@2x.png"; sourceTree = "<group>"; };
 		3784B1041A51B29B00CD1435 /* badge-cloud.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "badge-cloud.png"; path = "Assets/badge-cloud.png"; sourceTree = "<group>"; };
 		3784B1051A51B29B00CD1435 /* badge-cloud@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "badge-cloud@2x.png"; path = "Assets/badge-cloud@2x.png"; sourceTree = "<group>"; };
 		37889D4219981212002E245A /* PPSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPSettings.h; sourceTree = "<group>"; };
@@ -501,7 +498,6 @@
 		37919F1C16091DF5007708EF /* PPPinboardLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = PPPinboardLoginViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		37919F1D16091DF5007708EF /* PPPinboardLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPPinboardLoginViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37919F1F16092198007708EF /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		3794AE9F176D33D100250909 /* PSPDFUIKitMainThreadGuard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSPDFUIKitMainThreadGuard.m; sourceTree = "<group>"; };
 		3798AD7818766DA3002D684B /* Delete-Button-Light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Delete-Button-Light.png"; path = "Assets/Delete-Button-Light.png"; sourceTree = "<group>"; };
 		3798AD7918766DA3002D684B /* Delete-Button-Light@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Delete-Button-Light@2x.png"; path = "Assets/Delete-Button-Light@2x.png"; sourceTree = "<group>"; };
 		3798B08A18767DAB002D684B /* navigation-edit-blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-edit-blue.png"; path = "Assets/navigation-edit-blue.png"; sourceTree = "<group>"; };
@@ -522,6 +518,18 @@
 		37A7B5CE18345F140038677E /* edit@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "edit@2x.png"; path = "Assets/edit@2x.png"; sourceTree = "<group>"; };
 		37A7B5D1183463410038677E /* add@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "add@2x.png"; path = "Assets/add@2x.png"; sourceTree = "<group>"; };
 		37A7B5D2183463410038677E /* add.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = add.png; path = Assets/add.png; sourceTree = "<group>"; };
+		37A934472D628AAF0000FBC5 /* PPDefaultFeedViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PPDefaultFeedViewController.h; sourceTree = "<group>"; };
+		37A934482D628AAF0000FBC5 /* PPDefaultFeedViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PPDefaultFeedViewController.m; sourceTree = "<group>"; };
+		37A9344A2D628AF70000FBC5 /* Brando Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Brando Regular.otf"; sourceTree = "<group>"; };
+		37A9344B2D628AF70000FBC5 /* Charter Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Charter Regular.ttf"; sourceTree = "<group>"; };
+		37A9344C2D628AF70000FBC5 /* Courier Prime.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Courier Prime.ttf"; sourceTree = "<group>"; };
+		37A9344D2D628AF70000FBC5 /* Flex Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Flex Regular.otf"; sourceTree = "<group>"; };
+		37A9344E2D628AF70000FBC5 /* LyonTextApp-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LyonTextApp-Regular.ttf"; sourceTree = "<group>"; };
+		37A934552D628B2D0000FBC5 /* pinboard-logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "pinboard-logo@2x.png"; path = "Assets/pinboard-logo@2x.png"; sourceTree = "<group>"; };
+		37A934562D628B2D0000FBC5 /* pushpin-cloud-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "pushpin-cloud-logo.png"; path = "Assets/pushpin-cloud-logo.png"; sourceTree = "<group>"; };
+		37A934572D628B2D0000FBC5 /* pushpin-cloud-logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "pushpin-cloud-logo@2x.png"; path = "Assets/pushpin-cloud-logo@2x.png"; sourceTree = "<group>"; };
+		37A9345B2D628B340000FBC5 /* 810-document-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "810-document-2.png"; path = "Assets/810-document-2.png"; sourceTree = "<group>"; };
+		37A9345C2D628B340000FBC5 /* 810-document-2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "810-document-2@2x.png"; path = "Assets/810-document-2@2x.png"; sourceTree = "<group>"; };
 		37AB960318C437090008CDD5 /* browse-search@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-search@2x.png"; path = "Assets/browse-search@2x.png"; sourceTree = "<group>"; };
 		37AB960418C437090008CDD5 /* browse-search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-search.png"; path = "Assets/browse-search.png"; sourceTree = "<group>"; };
 		37AB960518C437090008CDD5 /* browse-recent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-recent.png"; path = "Assets/browse-recent.png"; sourceTree = "<group>"; };
@@ -565,9 +573,6 @@
 		37D4B001188325B000E07EB3 /* PPStatusBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPStatusBar.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37D4B00318833BC800E07EB3 /* readability.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = readability.css; sourceTree = "<group>"; };
 		37D620551F9A9D060020B52A /* StoreReviewPointsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreReviewPointsManager.swift; sourceTree = "<group>"; };
-		37DAAA80199FFDE40050350D /* LyonTextApp-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LyonTextApp-Regular.ttf"; sourceTree = "<group>"; };
-		37DAAA8219A001F90050350D /* Charter Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Charter Regular.ttf"; sourceTree = "<group>"; };
-		37DAAA8419A002380050350D /* Courier Prime.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Courier Prime.ttf"; sourceTree = "<group>"; };
 		37DE5AA0174EF8AE0073A2F4 /* back_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = back_icon.png; path = Assets/back_icon.png; sourceTree = "<group>"; };
 		37DE5AA1174EF8AE0073A2F4 /* back_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "back_icon@2x.png"; path = "Assets/back_icon@2x.png"; sourceTree = "<group>"; };
 		37DE5AB8174F2A2E0073A2F4 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
@@ -584,8 +589,6 @@
 		37F1E1B718C617940032B22B /* navigation-recent@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-recent@2x.png"; path = "Assets/navigation-recent@2x.png"; sourceTree = "<group>"; };
 		37F1E1B818C617940032B22B /* navigation-search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-search.png"; path = "Assets/navigation-search.png"; sourceTree = "<group>"; };
 		37F1E1B918C617940032B22B /* navigation-search@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "navigation-search@2x.png"; path = "Assets/navigation-search@2x.png"; sourceTree = "<group>"; };
-		37F6D7D619A10DC9004016DB /* Brando Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Brando Regular.otf"; sourceTree = "<group>"; };
-		37F6D7D719A10DC9004016DB /* Flex Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Flex Regular.otf"; sourceTree = "<group>"; };
 		37F6D7E719A1111E004016DB /* LHSFontSelectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = LHSFontSelectionViewController.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		37F6D7E819A1111E004016DB /* LHSFontSelectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = LHSFontSelectionViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		37F6D7E919A1111E004016DB /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
@@ -625,17 +628,12 @@
 		B6E304111B3C778A00135CF1 /* PPMailChimp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPMailChimp.m; sourceTree = "<group>"; };
 		B6E304141B3DAAF700135CF1 /* PPLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPLoginViewController.h; sourceTree = "<group>"; };
 		B6E304151B3DAAF700135CF1 /* PPLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPLoginViewController.m; sourceTree = "<group>"; };
-		B6E304181B3DC95500135CF1 /* pinboard-logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pinboard-logo@2x.png"; sourceTree = "<group>"; };
 		B6E304191B3DC95500135CF1 /* pinboard.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = pinboard.jpeg; sourceTree = "<group>"; };
-		B6E3041A1B3DC95500135CF1 /* pushpin-cloud-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pushpin-cloud-logo.png"; sourceTree = "<group>"; };
-		B6E3041B1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pushpin-cloud-logo@2x.png"; sourceTree = "<group>"; };
 		CFD97D71A9BD7EA58E576650 /* Pods-Pushpin.release debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pushpin.release debug.xcconfig"; path = "Target Support Files/Pods-Pushpin/Pods-Pushpin.release debug.xcconfig"; sourceTree = "<group>"; };
 		D8C2045E6A8DF8E6773D9D00 /* Pods-Read Later Extension.beta.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Read Later Extension.beta.xcconfig"; path = "Target Support Files/Pods-Read Later Extension/Pods-Read Later Extension.beta.xcconfig"; sourceTree = "<group>"; };
 		E18CEEC4FA4012AB85B8020B /* Pods-Bookmark Extension.release debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Bookmark Extension.release debug.xcconfig"; path = "Target Support Files/Pods-Bookmark Extension/Pods-Bookmark Extension.release debug.xcconfig"; sourceTree = "<group>"; };
 		E804950C180EF20800C5CA8B /* webview-helpers.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = "webview-helpers.js"; path = "Assets/webview-helpers.js"; sourceTree = "<group>"; };
 		E804950F18103DC700C5CA8B /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
-		E80495191810597A00C5CA8B /* PPDefaultFeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PPDefaultFeedViewController.h; path = ../PPDefaultFeedViewController.h; sourceTree = "<group>"; };
-		E804951A1810597A00C5CA8B /* PPDefaultFeedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = PPDefaultFeedViewController.m; path = ../PPDefaultFeedViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		E80EEF68184E9AA000979AA3 /* toolbar-checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "toolbar-checkmark.png"; path = "Assets/toolbar-checkmark.png"; sourceTree = "<group>"; };
 		E80EEF69184E9AA000979AA3 /* toolbar-checkmark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "toolbar-checkmark@2x.png"; path = "Assets/toolbar-checkmark@2x.png"; sourceTree = "<group>"; };
 		E80EEF6A184E9AA000979AA3 /* toolbar-trash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "toolbar-trash.png"; path = "Assets/toolbar-trash.png"; sourceTree = "<group>"; };
@@ -780,7 +778,6 @@
 				37D2351D16B8DDD0007541DC /* NSString+URLEncoding2.m */,
 				37EE01721A07EA0600A03F3B /* PPCachingURLProtocol.h */,
 				37EE01731A07EA0600A03F3B /* PPCachingURLProtocol.m */,
-				3794AE9F176D33D100250909 /* PSPDFUIKitMainThreadGuard.m */,
 			);
 			name = Vendor;
 			sourceTree = "<group>";
@@ -856,7 +853,6 @@
 				3714DB8D1757D81D00B23F4F /* PPAddSavedFeedViewController.h */,
 				377E46DC174C73DD00CE3813 /* PPBrowserSettingsViewController.h */,
 				37B348CA175FF9D400929E2E /* PPChangelogViewController.h */,
-				E80495191810597A00C5CA8B /* PPDefaultFeedViewController.h */,
 				37B348C7175EFAFA00929E2E /* PPDisplaySettingsViewController.h */,
 				3728CF3E1872880A00155791 /* PPEditDescriptionViewController.h */,
 				375A638816C0CB0800665CA1 /* PPFeedListViewController.h */,
@@ -887,7 +883,6 @@
 				3714DB8E1757D81E00B23F4F /* PPAddSavedFeedViewController.m */,
 				377E46DD174C73DD00CE3813 /* PPBrowserSettingsViewController.m */,
 				37B348CB175FF9D500929E2E /* PPChangelogViewController.m */,
-				E804951A1810597A00C5CA8B /* PPDefaultFeedViewController.m */,
 				37B348C8175EFAFA00929E2E /* PPDisplaySettingsViewController.m */,
 				3728CF3F1872880A00155791 /* PPEditDescriptionViewController.m */,
 				375A638916C0CB0800665CA1 /* PPFeedListViewController.m */,
@@ -1012,16 +1007,16 @@
 			name = "Web View Icons";
 			sourceTree = "<group>";
 		};
-		37DAAA7F199FFDD50050350D /* Fonts */ = {
+		37A9344F2D628AF70000FBC5 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
-				37F6D7D619A10DC9004016DB /* Brando Regular.otf */,
-				37DAAA8219A001F90050350D /* Charter Regular.ttf */,
-				37DAAA8419A002380050350D /* Courier Prime.ttf */,
-				37F6D7D719A10DC9004016DB /* Flex Regular.otf */,
-				37DAAA80199FFDE40050350D /* LyonTextApp-Regular.ttf */,
+				37A9344A2D628AF70000FBC5 /* Brando Regular.otf */,
+				37A9344B2D628AF70000FBC5 /* Charter Regular.ttf */,
+				37A9344C2D628AF70000FBC5 /* Courier Prime.ttf */,
+				37A9344D2D628AF70000FBC5 /* Flex Regular.otf */,
+				37A9344E2D628AF70000FBC5 /* LyonTextApp-Regular.ttf */,
 			);
-			name = Fonts;
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 		37F6D7E519A1111E004016DB /* LHSFontSelectionViewController */ = {
@@ -1139,6 +1134,8 @@
 			isa = PBXGroup;
 			children = (
 				37D4B00318833BC800E07EB3 /* readability.css */,
+				37A934472D628AAF0000FBC5 /* PPDefaultFeedViewController.h */,
+				37A934482D628AAF0000FBC5 /* PPDefaultFeedViewController.m */,
 				37FEEBA115745488003F2B77 /* PPAppDelegate.h */,
 				E89001F4183EA43E00C1F969 /* PPBadgeWrapperView.h */,
 				3769A5771879C50D00AC8C44 /* PPConstants.h */,
@@ -1211,18 +1208,21 @@
 		37FEEBDC15748BA7003F2B77 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				37A9344F2D628AF70000FBC5 /* Fonts */,
 				E8734228180DAA4B00CF9E5F /* Activities */,
 				E8F987EC183E7BF800EF976D /* Bookmarks */,
 				E8DA795A183D23F9002B1D0B /* Browse */,
 				37802196198EAD2500CE269A /* CSS */,
-				37DAAA7F199FFDD50050350D /* Fonts */,
 				E8F987CB183E764A00EF976D /* General UI */,
 				3715EEC415787CA100FD21EE /* Stylesheets */,
 				37A7B5C018345D6A0038677E /* Web View Icons */,
 				37E312E31868CCD600B944F1 /* 56_Key-alt.png */,
+				37A934552D628B2D0000FBC5 /* pinboard-logo@2x.png */,
+				37A934562D628B2D0000FBC5 /* pushpin-cloud-logo.png */,
+				37A934572D628B2D0000FBC5 /* pushpin-cloud-logo@2x.png */,
+				37A9345B2D628B340000FBC5 /* 810-document-2.png */,
+				37A9345C2D628B340000FBC5 /* 810-document-2@2x.png */,
 				37E312E41868CCD600B944F1 /* 56_Key-alt@2x.png */,
-				3784B0F41A50AD1500CD1435 /* 810-document-2.png */,
-				3784B0F51A50AD1500CD1435 /* 810-document-2@2x.png */,
 				3798AD7818766DA3002D684B /* Delete-Button-Light.png */,
 				3798AD7918766DA3002D684B /* Delete-Button-Light@2x.png */,
 				372C84071870E3B300BF520D /* Delete-Button.png */,
@@ -1238,10 +1238,7 @@
 				376C9E8317488B8500A62CB5 /* NotificationBackground@2x.png */,
 				376C9E8617488F2300A62CB5 /* NotificationX.png */,
 				376C9E8717488F2300A62CB5 /* NotificationX@2x.png */,
-				B6E304181B3DC95500135CF1 /* pinboard-logo@2x.png */,
 				B6E304191B3DC95500135CF1 /* pinboard.jpeg */,
-				B6E3041A1B3DC95500135CF1 /* pushpin-cloud-logo.png */,
-				B6E3041B1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png */,
 				37BC1BD7188642F90022020A /* readability.js */,
 				37BC1BD3188641D80022020A /* readabilityInitializer.js */,
 				370BBE011901ABBB004FA557 /* safari-callback.html */,
@@ -1560,9 +1557,12 @@
 			files = (
 				3747C6F219CCDB1F00FAD488 /* 56_Key-alt.png in Resources */,
 				3747C6F319CCDB1F00FAD488 /* 56_Key-alt@2x.png in Resources */,
-				3784B0FC1A50AD1600CD1435 /* 810-document-2.png in Resources */,
-				3784B0FD1A50AD1600CD1435 /* 810-document-2@2x.png in Resources */,
 				37AD159518A13365005813CC /* About-Delicious.plist in Resources */,
+				37A934502D628AF70000FBC5 /* Courier Prime.ttf in Resources */,
+				37A934512D628AF70000FBC5 /* Flex Regular.otf in Resources */,
+				37A934522D628AF70000FBC5 /* Charter Regular.ttf in Resources */,
+				37A934532D628AF70000FBC5 /* LyonTextApp-Regular.ttf in Resources */,
+				37A934542D628AF70000FBC5 /* Brando Regular.otf in Resources */,
 				37CBB7551881FFBC000F9C36 /* About.json in Resources */,
 				37CBB7411881B44B000F9C36 /* About.plist in Resources */,
 				E873423B180DAC8800CF9E5F /* activity-browser-chrome.png in Resources */,
@@ -1583,7 +1583,6 @@
 				3747C6FB19CCDB1F00FAD488 /* bookmark-favorite@2x.png in Resources */,
 				3747C6FC19CCDB1F00FAD488 /* bookmark-private.png in Resources */,
 				3747C6FD19CCDB1F00FAD488 /* bookmark-private@2x.png in Resources */,
-				3747C6FE19CCDB1F00FAD488 /* Brando Regular.otf in Resources */,
 				E8F987E0183E796900EF976D /* browse-all.png in Resources */,
 				E8DA7972183D2416002B1D0B /* browse-all@2x.png in Resources */,
 				E8F987E1183E796900EF976D /* browse-fandom.png in Resources */,
@@ -1614,21 +1613,20 @@
 				E8DA796C183D2415002B1D0B /* browse-wikipedia@2x.png in Resources */,
 				3747C70219CCDB1F00FAD488 /* Changelog-Delicious.plist in Resources */,
 				3747C70319CCDB1F00FAD488 /* Changelog.plist in Resources */,
-				3747C70419CCDB1F00FAD488 /* Charter Regular.ttf in Resources */,
-				3747C70519CCDB1F00FAD488 /* Courier Prime.ttf in Resources */,
 				3747C70B19CCDB1F00FAD488 /* Delete-Button-Light.png in Resources */,
 				3747C70C19CCDB1F00FAD488 /* Delete-Button-Light@2x.png in Resources */,
 				3747C70D19CCDB1F00FAD488 /* Delete-Button.png in Resources */,
+				37A934582D628B2D0000FBC5 /* pushpin-cloud-logo@2x.png in Resources */,
+				37A934592D628B2D0000FBC5 /* pushpin-cloud-logo.png in Resources */,
+				37A9345A2D628B2D0000FBC5 /* pinboard-logo@2x.png in Resources */,
 				3747C70E19CCDB1F00FAD488 /* Delete-Button@2x.png in Resources */,
 				3747C70F19CCDB1F00FAD488 /* edit.png in Resources */,
 				3747C71019CCDB1F00FAD488 /* edit@2x.png in Resources */,
-				3747C71119CCDB1F00FAD488 /* Flex Regular.otf in Resources */,
 				3747C71619CCDB1F00FAD488 /* Images.xcassets in Resources */,
 				3747C71719CCDB1F00FAD488 /* InfoPlist.strings in Resources */,
 				3747C71819CCDB1F00FAD488 /* JSDOMParser.js in Resources */,
 				3747C71919CCDB1F00FAD488 /* LICENSE in Resources */,
 				3747C71A19CCDB1F00FAD488 /* Localizable.strings in Resources */,
-				3747C71B19CCDB1F00FAD488 /* LyonTextApp-Regular.ttf in Resources */,
 				3747C71C19CCDB1F00FAD488 /* main.css in Resources */,
 				3747C71D19CCDB1F00FAD488 /* mark-as-read.png in Resources */,
 				3747C71E19CCDB1F00FAD488 /* mark-as-read@2x.png in Resources */,
@@ -1651,6 +1649,8 @@
 				E890022E1840173600C1F969 /* navigation-fandom.png in Resources */,
 				E890022F1840173600C1F969 /* navigation-fandom@2x.png in Resources */,
 				E89002301840173600C1F969 /* navigation-japanese.png in Resources */,
+				37A9345D2D628B340000FBC5 /* 810-document-2.png in Resources */,
+				37A9345E2D628B340000FBC5 /* 810-document-2@2x.png in Resources */,
 				E89002311840173600C1F969 /* navigation-japanese@2x.png in Resources */,
 				E890020A183FA8F600C1F969 /* navigation-list.png in Resources */,
 				E890020B183FA8F600C1F969 /* navigation-list@2x.png in Resources */,
@@ -1684,11 +1684,8 @@
 				3747C72819CCDB1F00FAD488 /* NotificationBackground@2x.png in Resources */,
 				3747C72919CCDB1F00FAD488 /* NotificationX.png in Resources */,
 				3747C72A19CCDB1F00FAD488 /* NotificationX@2x.png in Resources */,
-				B6E3041C1B3DC95500135CF1 /* pinboard-logo@2x.png in Resources */,
 				B6E3041D1B3DC95500135CF1 /* pinboard.jpeg in Resources */,
 				37B4F80A1F4C651500E89790 /* Pushpin Launch Screen.storyboard in Resources */,
-				B6E3041E1B3DC95500135CF1 /* pushpin-cloud-logo.png in Resources */,
-				B6E3041F1B3DC95500135CF1 /* pushpin-cloud-logo@2x.png in Resources */,
 				3747C72B19CCDB1F00FAD488 /* readability.css in Resources */,
 				3747C72C19CCDB1F00FAD488 /* readability.js in Resources */,
 				3747C72D19CCDB1F00FAD488 /* readabilityInitializer.js in Resources */,
@@ -1853,8 +1850,6 @@
 				37F9D0B21D33002A002A168D /* PPBrowserSettingsViewController.m in Sources */,
 				37F9D0D91D33049B002A168D /* PPCachingURLProtocol.m in Sources */,
 				37F9D0B11D330025002A168D /* PPChangelogViewController.m in Sources */,
-				37B620101F4520D9005DE789 /* PPDefaultFeedViewController.m in Sources */,
-				37CC829524FBDEED00D24A8F /* PSPDFUIKitMainThreadGuard.m in Sources */,
 				37F9D0A61D32FE55002A168D /* PPDisplaySettingsViewController.m in Sources */,
 				37B6201D1F45211D005DE789 /* PPEditDescriptionViewController.m in Sources */,
 				37F9D0A51D32FE50002A168D /* PPFeedListViewController.m in Sources */,
@@ -1874,6 +1869,7 @@
 				37F9D0A81D32FE5D002A168D /* PPPinboardDataSource.m in Sources */,
 				37F9D0991D32FDFE002A168D /* PPPinboardFeedDataSource.m in Sources */,
 				37F9D09D1D32FE08002A168D /* PPPinboardLoginViewController.m in Sources */,
+				37A934492D628AAF0000FBC5 /* PPDefaultFeedViewController.m in Sources */,
 				37B6200F1F4520D5005DE789 /* PPPinboardMetadataCache.m in Sources */,
 				37F9D0A91D32FED3002A168D /* PPPinboardNotesDataSource.m in Sources */,
 				37B620131F4520E3005DE789 /* PPPlainTextViewController.m in Sources */,
@@ -2173,7 +2169,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = NO;
-				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Entitlements/Pushpin.entitlements;
 				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -2250,7 +2246,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_MODULES_AUTOLINK = NO;
-				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Entitlements/Pushpin.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -2488,7 +2484,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = NO;
-				CODE_SIGN_ENTITLEMENTS = "Pushpin-Beta.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Entitlements/Pushpin-Beta.entitlements";
 				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = YES;
@@ -2561,7 +2557,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_MODULES_AUTOLINK = NO;
-				CODE_SIGN_ENTITLEMENTS = "Pushpin-Beta.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Entitlements/Pushpin-Beta.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -2638,7 +2634,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = NO;
-				CODE_SIGN_ENTITLEMENTS = "Pushpin-Dev.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Entitlements/Pushpin-Dev.entitlements";
 				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = NO;
@@ -2737,7 +2733,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = NO;
-				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Entitlements/Pushpin.entitlements;
 				CODE_SIGN_IDENTITY = "";
 				COMPRESS_PNG_FILES = YES;
 				COPY_PHASE_STRIP = YES;
@@ -2813,7 +2809,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_MODULES_AUTOLINK = NO;
-				CODE_SIGN_ENTITLEMENTS = "Pushpin-Dev.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Entitlements/Pushpin-Dev.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
@@ -2870,7 +2866,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_MODULES_AUTOLINK = NO;
-				CODE_SIGN_ENTITLEMENTS = Pushpin.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Entitlements/Pushpin.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
