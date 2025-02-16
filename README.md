@@ -2,13 +2,11 @@
 
 <img src="https://img.shields.io/badge/license-GPLv3-blue">
 
-Pushpin is an iOS client for [Pinboard.in](https://pinboard.in), a social bookmarking service.
-
-<a href="https://apps.apple.com/us/app/pushpin-for-pinboard/id548052590"><img width="160px" src="https://2017.lionheartsw.com/static/images/appstore.png" /></a>
-
-<hr/>
+Pushpin is a beautiful, blazing-fast, and feature-packed [Pinboard](https://pinboard.in) client for iPhone, iPad, and iPod Touch. This is the full source code for the entire application, available under GPLv3.
 
 Landing page: https://lionheartsw.com/software/pushpin/
+
+<a href="https://apps.apple.com/us/app/pushpin-for-pinboard/id548052590"><img width="135px" src="https://2017.lionheartsw.com/static/images/appstore.png" /></a>
 
 - [Features](#features)
 - [Demo](#demo)
@@ -17,6 +15,13 @@ Landing page: https://lionheartsw.com/software/pushpin/
 - [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
+
+## Screenshots
+
+<img src="https://2017.lionheartsw.com/static/images/pushpin-1.png" />
+<img src="https://2017.lionheartsw.com/static/images/pushpin-2.png" />
+<img src="https://2017.lionheartsw.com/static/images/pushpin-3.png" />
+<img src="https://2017.lionheartsw.com/static/images/pushpin-4.png" />
 
 ## Features
 
