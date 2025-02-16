@@ -2,7 +2,7 @@
 
 <img src="https://img.shields.io/badge/license-GPLv3-blue">
 
-Pushpin is a beautiful, blazing-fast, and feature-packed [Pinboard](https://pinboard.in) client for iPhone, iPad, and iPod Touch. This is the full source code for the entire application.
+Pushpin is a beautiful, blazing-fast, and feature-packed [Pinboard](https://pinboard.in) client for iPhone, iPad, and iPod Touch.
 
 Landing page: https://lionheartsw.com/software/pushpin/
 
@@ -50,6 +50,10 @@ You can also buy Pushpin on the App Store:
 1. Clone the repository:
 
        git clone git@github.com:lionheart/Pushpin.git
+       cd Pushpin
+       git submodule init
+       git submodule update
+       git submodule -q foreach git pull -q origin master
 
 2. Install the Ruby in `.ruby-version` and Bundler.
 
@@ -76,14 +80,6 @@ $ git_config/configure.sh
 
 The above command will also ensure that any Git commands stay in sync if they're updated.
 
-There are also a few git submodules you're going to need. To set them up, just run:
-
-```
-$ git submodule init
-$ git submodule update
-$ git submodule -q foreach git pull -q origin master
-```
-
 ### App Store Submission
 
 ```
@@ -99,9 +95,6 @@ deliver init
 deliver
 ```
 
-## Trademark Notice
-“Pushpin” is a trademark of Lionheart Software LLC. You may not use the “Pushpin” name, logo, or other brand assets without prior written permission from Lionheart Software LLC.
-
 ## License
 
 <img src="https://www.gnu.org/graphics/gplv3-with-text-84x42.png" />
@@ -111,3 +104,6 @@ Pushpin is licensed under the [GNU GPL version 3 or any later version](https://w
 In short: you can modify and distribute the source code to others (and even sell it!) as long as you make the source code modifications freely available.
 
 If you would like to sell a modified version of the software (or any component thereof) and do *not* want to release the source code, you may [contact me](mailto:dan@lionheartsw.com) and you can purchase a [selling exception](https://www.gnu.org/philosophy/selling-exceptions).
+
+## Trademark Notice
+“Pushpin” is a trademark of Lionheart Software LLC. You may not use the “Pushpin” name, logo, or other brand assets without prior written permission from Lionheart Software LLC.
