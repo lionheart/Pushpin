@@ -97,5 +97,5 @@ In short: you can modify and distribute the source code to others (and even sell
 
 If you would like to sell a modified version of the software (or any component thereof) and do *not* want to release the source code, you may [contact me](mailto:dan@lionheartsw.com) and you can purchase a [selling exception](https://www.gnu.org/philosophy/selling-exceptions).
 
-## Trademark Notice
-“Pushpin” is a trademark of Lionheart Software LLC. You may not use the “Pushpin” name, logo, or other brand assets without prior written permission from Lionheart Software LLC.
+### Trademark Notice
+“Pushpin for Pinboard” is a trademark of Lionheart Software LLC. You may not use the “Pushpin for Pinboard” name, logo, or other brand assets without prior written permission from Lionheart Software LLC.
