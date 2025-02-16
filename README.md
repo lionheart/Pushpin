@@ -45,16 +45,16 @@ Landing page: https://lionheartsw.com/software/pushpin/
 
 1. Install the Ruby in `.ruby-version` and Bundler.
 
-     rbenv install
-     gem install bundler
+      rbenv install
+      gem install bundler
 
 2. Install gems:
 
-     bundle install
+      bundle install
 
 3. Then install iOS dependencies from CocoaPods.
 
-     pod install
+      pod install
 
 3. Open `Pushpin.xcworkspace` to compile and run the project.
 
