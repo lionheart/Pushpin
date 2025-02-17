@@ -1,6 +1,6 @@
 # Pushpin for Pinboard
 
-<img src="https://img.shields.io/badge/license-GPLv3-blue"/> <img src="https://img.shields.io/github/v/tag/lionheart/pushpin"/>
+<img src="https://img.shields.io/badge/license-GPLv3-blue"/> <img src="https://img.shields.io/github/v/tag/lionheart/pushpin"/> <img src="https://img.shields.io/github/languages/top/lionheart/pushpin" />
 
 This repo contains the full source code for Pushpin for Pinboard, a beautiful, blazing-fast, and feature-packed [Pinboard](https://pinboard.in) client for iOS and iPad OS.
 
@@ -10,6 +10,7 @@ This repo contains the full source code for Pushpin for Pinboard, a beautiful, b
 
 - [Screenshots](#screenshots)
 - [Features](#features)
+- [Wishlist](#wishlist)
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [License](#license)
@@ -32,6 +33,11 @@ This repo contains the full source code for Pushpin for Pinboard, a beautiful, b
 * Comes with a full-featured in-app browser with support for popular mobilizers.
 * Extensive URL scheme support for adding bookmarks on the fly, opening URLs with the in-app browser, or viewing feeds for users or tags.
 * Offline reading! Pushpin can download and cache your bookmarks for those times when your Internet connection is spotty. Pushpin will download all page content, including CSS and Javascript, to make your offline browsing experience a great one.
+
+## Wishlist
+
+* [ ] Migrate code from Objective-C to Swift.
+* [ ] Migrate to SF Symbols.
 
 ## Requirements
 
@@ -67,6 +73,8 @@ This repo contains the full source code for Pushpin for Pinboard, a beautiful, b
 <img src="https://www.gnu.org/graphics/gplv3-127x51.png" />
 
 Pushpin for Pinboard is licensed under the [GNU GPL version 3 or any later version](https://www.gnu.org/licenses/gpl-3.0.html).
+
+### Selling Exception
 
 If you would like to use a modified version of the software (or any component thereof) and do _not_ want it to fall under the terms of the GPLv3 (e.g., you'd like to use some of the code in your own app in the App Store), you may [contact me](mailto:dan@lionheartsw.com) to purchase a [selling exception](https://www.gnu.org/philosophy/selling-exceptions).
 
