@@ -95,7 +95,11 @@ Pushpin is licensed under the [GNU GPL version 3 or any later version](https://w
 
 In short: you can modify and distribute the source code to others (and even sell it!) as long as you make the source code modifications freely available.
 
-If you would like to sell a modified version of the software (or any component thereof) and do *not* want to release the source code, you may [contact me](mailto:dan@lionheartsw.com) and you can purchase a [selling exception](https://www.gnu.org/philosophy/selling-exceptions).
+If you would like to sell a modified version of the software (or any component thereof) you may [contact me](mailto:dan@lionheartsw.com) and you can purchase a [selling exception](https://www.gnu.org/philosophy/selling-exceptions).
 
 ### Trademark Notice
 “Pushpin for Pinboard” is a trademark of Lionheart Software LLC. You may not use the “Pushpin for Pinboard” name, logo, or other brand assets without prior written permission from Lionheart Software LLC.
+
+### Contact
+
+If you have any questions, comments, or suggestions, please send me an email at [contact me](mailto:dan@lionheartsw.com), or reach out on [X](https://twitter.com/dwlz).

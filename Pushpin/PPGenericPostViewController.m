@@ -491,6 +491,19 @@ static NSInteger PPBookmarkEditMaximum = 25;
                                              selector:@selector(synchronizeAddedBookmark)
                                                  name:PPBookmarkEventNotificationName
                                                object:nil];
+  
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  if (![defaults boolForKey:@"HasShownOpenSourceNotification"]) {
+    [defaults setBool:YES forKey:@"HasShownOpenSourceNotification"];
+    [defaults synchronize];
+
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Pushpin is Open Source 🎉" message:@"Exciting news! Pushpin for Pinboard is now open sourced and licensed under GPLv3 for use by the community. Check out the code on GitHub." preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:@"Open in GitHub" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+      [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/lionheart/pushpin"] options:@{} completionHandler:nil];
+    }]];
+    [alert addAction:[UIAlertAction actionWithTitle:@"Continue" style:UIAlertActionStyleCancel handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
+  }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

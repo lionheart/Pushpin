@@ -197,9 +197,6 @@
     if (settings.isAuthenticated) {
         pinboard.token = settings.token;
 
-
-
-
         if ([UIApplication isIPad]) {
             [self.window setRootViewController:self.splitViewController];
         } else {

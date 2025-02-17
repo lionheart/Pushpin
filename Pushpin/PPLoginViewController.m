@@ -65,6 +65,23 @@ static NSString * const CellIdentifier = @"CellIdentifier";
     [self lhs_activateKeyboardAdjustment];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+  [super viewDidAppear:animated];
+
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  if (true || ![defaults boolForKey:@"HasShownOpenSourceNotification"]) {
+    [defaults setBool:YES forKey:@"HasShownOpenSourceNotification"];
+    [defaults synchronize];
+
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Pushpin Open Sourced 🎉" message:@"Pushpin for Pinboard has been open-sourced under the GPLv3 license for the community. Check out the repo on GitHub. See ya there!" preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:@"Open in GitHub" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+      [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/lionheart/pushpin"] options:@{} completionHandler:nil];
+    }]];
+    [alert addAction:[UIAlertAction actionWithTitle:@"Continue" style:UIAlertActionStyleCancel handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
+  }
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     [self lhs_deactivateKeyboardAdjustment];

@@ -181,7 +181,7 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
     if (indexPath.section == PPSectionCacheSettings) {
         cell = [tableView dequeueReusableCellWithIdentifier:DeleteCellIdentifier forIndexPath:indexPath];
-    } else if (indexPath.section == 1 && (indexPath.row == PPOtherRatePushpin || indexPath.row == PPOtherTipJar || indexPath.row == PPOtherFeedback)) {
+    } else if (indexPath.section == 1 && (indexPath.row == PPOtherGitHub || indexPath.row == PPOtherRatePushpin || indexPath.row == PPOtherTipJar || indexPath.row == PPOtherFeedback)) {
         cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier forIndexPath:indexPath];
     } else {
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
@@ -238,6 +238,12 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
                     cell.detailTextLabel.text = NSLocalizedString(@"Help support continued Pushpin development!", nil);
                     cell.detailTextLabel.numberOfLines = 0;
                     break;
+                
+              case PPOtherGitHub:
+                cell.textLabel.text = @"View Source Code on GitHub";
+                cell.detailTextLabel.text = @"The source code for Pushpin for Pinboard is made fully available under the GPLv3 license. Check it out on GitHub.";
+                cell.detailTextLabel.numberOfLines = 0;
+                break;
 
                 case PPOtherRatePushpin:
                     cell.textLabel.text = NSLocalizedString(@"Rate Pushpin on the App Store", nil);
@@ -333,6 +339,10 @@ static NSString *SubtitleCellIdentifier = @"SubtitleCellIdentifier";
 
         case PPSectionOtherSettings: {
             switch ((PPOtherSettingsRowType)indexPath.row) {
+                case PPOtherGitHub:
+                    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/lionheart/pushpin"] options:@{} completionHandler:nil];;
+                    break;
+
                 case PPOtherRatePushpin:
                     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/pushpin-for-pinboard/id548052590?mt=8&uo=4&at=1l3vbEC&action=write-review"] options:@{} completionHandler:nil];;
                     break;
