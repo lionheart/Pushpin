@@ -1,0 +1,215 @@
+/*
+ Localizable.strings
+ Pushpin for Pinboard
+ 
+ Originally created by Vítor Galvão
+ */
+
+// Generic
+
+"Default" = "Pré-definição";
+"Are you sure?" = "De certeza?";
+"Cancel" = "Cancelar";
+"OK" = "OK";
+"Edit" = "Editar";
+"Done" = "Concluído";
+"Shucks" = "Pena";
+"Uh oh." = "Uh oh.";
+"Nope" = "Não";
+"Sure" = "Claro";
+"Success" = "Sucesso";
+"Delete" = "Apagar";
+"Share" = "Partilhar";
+"No" = "Não";
+"Yes" = "Sim";
+"Updating bookmarks" = "A atualizar marcadores";
+
+// Tab Bar
+
+"Browse" = "Navegar";
+"Settings" = "Definições";
+"Add" = "Adicionar";
+"Tags" = "Etiquetas";
+"Notes" = "Notas";
+
+// Add Bookmark
+
+"Update Bookmark" = "Atualizar Marcador";
+"Update" = "Feito";
+"Add Bookmark" = "Adicionar Marcador";
+"Add Bookmark?" = "Adicionar Marcador?";
+"We've detected a URL in your clipboard. Would you like to bookmark it?" = "Detetamos um URL na área de tranferência, gostaria de adicionar um marcador?";
+
+// Home Page
+
+"All" = "Todos";
+"All Bookmarks" = "Todos os Marcadores";
+"Private Bookmarks" = "Privado";
+"Public" = "Público";
+"Unread" = "Não lidas";
+"Untagged" = "Sem etiqueta";
+"Bookmarks" = "Marcadores";
+"Personal" = "Pessoal";
+"Community" = "Comunidade";
+"Fandom" = "Fandom";
+"Popular" = "Popular";
+"Network" = "Rede";
+
+// Bookmark Page
+
+"Your bookmark was deleted." = "O marcador foi apagado.";
+"Your bookmark was updated." = "O marcador foi atualizado.";
+"Your bookmark was added." = "O marcador foi adicionado.";
+"There was an error updating your bookmark." = "Houve um erro ao actualizar o marcador.";
+"Pinboard.in" = "Marcadores para introvertidos";
+"pinboard .bookmarking" = "marcadores antisociais";
+"You can't add a bookmark without a URL or title." = "Não pode adicionar um marcador sem um URL ou título.";
+
+"URL" = "URL";
+"Title" = "Título";
+"Description" = "Descrição";
+"Separate tags with spaces" = "Separe etiquetas com espaços";
+"Private" = "Privado";
+"Copy URL" = "Copiar URL";
+"Copy Title" = "Copiar Título";
+"Other" = "Outros";
+"Set as private?" = "Marcar como privado?";
+"Mark as read?" = "Marcar como lido?";
+"Copy to mine" = "Copiar para os meus";
+"Send to Instapaper" = "Enviar para Instapaper";
+"Send to Readability" = "Enviar para Readability";
+
+"Edit Bookmark" = "Editar Marcador";
+"Delete Bookmark" = "Apagar Marcador";
+"Are you sure you want to delete this bookmark?" = "Tem a certeza que quer apagar o marcador?";
+
+// Login Page
+
+"Username" = "Nome de utilizador";
+"Password" = "Palavra-chave";
+
+"Enter your Pinboard credentials above. Email support support@aurora.io if you have any issues." = "Insira os detalhes do Pinboard acima. Envie um email para support@aurora.io se encontrar algum problema.";
+"Verifying your credentials..." = "A verificar os detalhes...";
+"We couldn't log you in. Please make sure you've provided valid credentials." = "Não conseguimos ligá-lo. Por favor certifique-se que inseriu os detalhes corretamente.";
+"You have successfully authenticated. Please wait while we download your bookmarks." = "A autenticação foi efetuada com sucesso. Por favor espere enquanto descarregamos os marcadores.";
+"Google Chrome failed to open" = "Parece que o Google Chrome não consegue abrir esta ligação. Pressione OK para abrir com o Safari.";
+
+"Mark as read" = "Marcar como lido";
+"Open in Safari" = "Abrir no Safari";
+
+// Settings Page
+
+"Private by default?" = "Privado por definição?";
+
+"Open links with:" = "Abrir links com";
+
+"Install Chrome?" = "Instalar Chrome?";
+"In order to open links with Google Chrome, you first have to install it." = "Para abrir links com o Google Chrome, primeiro tem de o instalar.";
+
+"Are you sure?" = "De certeza";
+"This will log you out and delete the local bookmark database from your device." = "Isto irá sair e apagar a base de dados local do dispositivo.";
+"Logging out of the application will reset the bookmark database on this device." = "Isto irá sair da aplicação e restablecer a base de dados da aplicação.";
+
+"Log Out" = "Sair";
+"Contact Support" = "Contatar Suporte";
+"Request a feature" = "Solicitar uma funcionalidade";
+"Report a bug" = "Denunciar um problema";
+"Email us" = "Envie-nos um email";
+"Support Email Subject" = "Ajudem-me!";
+"Give Feedback" = "Feedback";
+
+"About Navigation Bar" = "Sobre";
+"Read Later" = "Ler mais tarde";
+"Set Read Later service to:" = "Selecionar serviço de ler mais tarde para:";
+"None" = "Nenhum";
+
+// About Page
+
+"About" = "Sobre";
+"Close" = "Fechar";
+
+// Notices
+"Bookmarklet copied to clipboard." = "Bookmarklet copiado para a área de transferência.";
+"URL copied to clipboard." = "URL copiado para a área de transferência.";
+"Title copied to clipboard." = "Título copiado para a área de transferência.";
+"%d bookmarks were added." = "%d marcadores adicionados.";
+"%lu bookmarks selected" = "%lu marcadores selecionados";
+"%lu snippets" = "%lu snippets";
+"1 bookmark selected" = "1 marcador selecionado";
+"1 bookmark was added." = "1 marcador foi adicionado.";
+"1 snippet" = "1 snippet";
+"Acknowledgements" = "Reconhecimentos";
+"Add Feed" = "Addicionar feed";
+
+"Advanced Searching" = "Pesquisa Avançada";
+"Advanced Settings" = "Configurações Avançadas";
+"Almost ready to go, but not quite functional yet." = "Quase pronto, mas ainda não funcional.";
+"Always show add prompt" = "Mostrar sempre mensagem de opções";
+"Always show the add bookmark prompt, even for URLs that Pushpin has seen before." = "Mostrar sempre a mensagem de opções de adicionar marcador, Até para URLs que o Pushpin já viu antes.";
+
+"Are you sure you want to delete these bookmarks?" = "Tem a certeza que quer apagar estes marcadores?";
+"Are you sure you want to delete this tag? There is no undo." = "Tem a certeza que quer apagar esta etiqueta? Não há como anular.";
+
+"Attributions" = "Atribuições";
+"Authentication Error" = "Erro de autenticação";
+
+
+"Auto mark as read" = "Marcar automaticamente como lido";
+"Back" = "Voltar";
+"Bookmark marked as read." = "Marcador marcado como lido.";
+"Browser Integration" = "Integração em Browsers";
+"Browser Settings" = "Configurações de Browsers";
+"Center" = "Centrar";
+"Changelog" = "Registo de Alterações";
+"Chrome" = "Chrome";
+"Clear" = "Limpar";
+"Click to edit description." = "Clique para editar a descrição.";
+"Clipboard URL detection" = "Deteção de URL na área de transferência";
+"Compress bookmark list" = "Comprimir lista de marcadores";
+"Copy bookmarklet to clipboard" = "Copiar bookmarklet para área de transferência";
+"Cyberspace" = "Cyberspace";
+"Dante and Isabelle" = "Dante and Isabelle";
+"Default Browser" = "Browser Pré-Definido";
+"Default Feed" = "Feed Pré-Definido";
+"Designed and developed by Lionheart Software." = "Desenhado e Desenvolvido por Lionheart Software.";
+"Dim read bookmarks" = "Escurecer marcadores lidos";
+
+"Display Settings" = "Mostrar Configurações";
+"Display a notification when the URL currently on the clipboard is one that you've previously decided not to add." = "Mostrar uma notificação quando o URL presentemente na área de transferência é um que previamente decidiu não adicionar.";
+"Display images?" = "Mostrar imagens?";
+"Dolphin" = "Dolphin";
+"Edit Tags" = "Editar Etiquetas";
+"Editing" = "A Editar";
+"Email Address" = "Endereço de Email";
+"Enable TextExpander" = "Ativar TextExpander";
+"Error sending to Readability." = "Erro a enviar para Readability.";
+"Feedback & Support" = "Comentários e Ajuda";
+"Feedback Forum" = "Forum de Comentários";
+"Finalizing Metadata" = "A Finalizar Metadata";
+"Follow @Pushpin_app on Twitter" = "Segue @Pushpin_app no Twitter";
+"Follow Pushpin on Twitter" = "Segue Pushpin no Twitter";
+"Font size" = "Tamanho de font";
+"Font" = "Font";
+"For always believing in me." = "Por acreditar sempre em mim.";
+"For archival accounts only." = "Apenas para contas de arquivo.";
+"For donating the getpushpin.com domain name." = "Por dor o nome de domínio getpushpin.com.";
+"For inspiring me and making me laugh." = "Por me inspirar e fazer rir.";
+"For making Pinboard." = "Por fazer o Pinboard.";
+"For stripping text, CSS, and Javascript from webpages." = "Por tirar texto, CSS, e Javascript de páginas web.";
+"French translation." = "Tradução Francesa.";
+"Frequently Asked Questions" = "Perguntas Frequentes";
+"German translation." = "Tradução Alemã.";
+"Header Font" = "Font de Título";
+"Help" = "Ajuda";
+"Hide" = "Esconder";
+"How to install on Chrome for iOS" = "Como instalar no Chrome para iOS";
+"How to install on Safari" = "Como instalar no Safari";
+"Instapaper Login" = "Login Instapaper";
+"Italian translation." = "Tradução Italiana.";
+"Justified" = "Justificado";
+"Knowledge Base" = "Base de conhecimento";
+"Launch 1Password" = "Abrir 1Password";
+"Left" = "Esquerda";
+"Limit descriptions to two lines and tags to one line." = "Limitar descrições a duas linhas e etiquetas a uma linha.";
+"Line Spacing" = " Espaçamento de Linha";
+

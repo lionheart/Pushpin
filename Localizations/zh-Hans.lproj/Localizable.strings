@@ -1,0 +1,420 @@
+/*
+ Localizable.strings
+ Pushpin for Pinboard
+
+ Originally created by Wu Liang (aka woolane)
+ */
+
+
+// Generic
+
+"Default" = "默认";
+
+"OK" = "OK";
+"Edit" = "编辑";
+
+"Done" = "完成";
+"Shucks" = "神烦";
+"Uh oh." = "哦~";
+
+"Nope" = "不要";
+"Sure" = "当然";
+
+"Success" = "成功";
+"Delete" = "删除";
+"Share" = "分享";
+
+"No" = "不";
+"Yes" = "是";
+
+"Updating bookmarks" = "书签更新中";
+
+// Tab Bar
+
+
+"Browse" = "浏览";
+"Settings" = "设定";
+
+"Add" = "添加";
+"Tags" = "标签";
+"Notes" = "备注";
+
+
+// Add Bookmark
+
+"Update Bookmark" = "更新书签";
+
+"Update" = "更新";
+"Add Bookmark" = "添加书签";
+
+"Cancel" = "取消";
+"Add Bookmark?" = "添加书签？";
+"We've detected a URL in your clipboard. Would you like to bookmark it?" = "我们在粘贴板检测到一个网址。你想要将它加入书签吗？";
+
+
+// Home Page
+
+
+"All" = "全部";
+"All Bookmarks" = "全部书签";
+"Private Bookmarks" = "私密书签";
+
+"Public" = "公共";
+"Unread" = "未读";
+
+"Untagged" = "无标签";
+"Bookmarks" = "书签";
+"Personal" = "个人";
+
+"Community" = "社区";
+"Fandom" = "粉丝";
+
+"Popular" = "流行";
+"Network" = "网络";
+
+
+// Bookmark Page
+
+"Your bookmark was deleted." = "你的书签已删除。";
+
+"Your bookmark was updated." = "你的书签已更新。";
+"Your bookmark was added." = "你的书签已添加。";
+
+"There was an error updating your bookmark." = "更新书签时出现错误。";
+"Pinboard.in" = "Pinboard.in";
+
+"pinboard .bookmarking" = "点击编辑标签";
+"You can't add a bookmark without a URL or title." = "没有网址或者标题无法添加书签。";
+
+
+"URL" = "网址";
+"Title" = "标题";
+
+"Description" = "描述";
+"Separate tags with spaces" = "用空格键区隔标签";
+"Private" = "私密";
+
+"Copy URL" = "复制网址";
+"Copy Title" = "复制标题";
+
+"Other" = "其他";
+"Set as private?" = "设为私密？";
+"Mark as read?" = "标记为已读？";
+
+"Copy to mine" = "复制到我的书签";
+"Send to Instapaper" = "发给 Instapaper";
+
+"Send to Readability" = "发给 Readability";
+
+"Edit Bookmark" = "编辑书签";
+
+"Delete Bookmark" = "删除书签";
+"Are you sure you want to delete this bookmark?" = "你确定要删除这个书签吗？";
+
+
+// Login Page
+
+
+"Username" = "账户";
+"Password" = "密码";
+
+
+"Enter your Pinboard credentials above. Email support support@aurora.io if you have any issues." = "请在上面输入你的 Pinboard 账户信息。如有问题，请发邮件至 support@aurora.io 寻求帮助。";
+
+"Verifying your credentials..." = "正在核实你的信息... ...";
+"We couldn't log you in. Please make sure you've provided valid credentials." = "无法登录。请确保你提供了正确的信息。";
+
+"You have successfully authenticated. Please wait while we download your bookmarks." = "已经成功授权。我们正在下载你的书签，稍等片刻。";
+
+
+"Google Chrome failed to open" = "Google Chrome 无法打开";
+
+
+"Mark as read" = "标记为已读";
+"Open in Safari" = "在 Safari 打开";
+
+
+// Settings Page
+
+"Private by default?" = "默认为私密？";
+
+
+"Open links with:" = "选择打开链接的浏览器：";
+
+
+"Install Chrome?" = "安装 Chrome ？";
+"In order to open links with Google Chrome, you first have to install it." = "如果想要使用 Google Chrome 打开链接，请先安装。";
+
+
+"Are you sure?" = "你确定吗？";
+
+"This will log you out and delete the local bookmark database from your device." = "即将退出你的账户并将设备中的本地书签数据库删除。";
+"Logging out of the application will reset the bookmark database on this device." = "退出账户将会重置设备中的书签数据库。";
+
+
+"Log Out" = "退出";
+"Contact Support" = "联系帮助团队";
+
+"Request a feature" = "要求增加功能";
+"Report a bug" = "发送故障报告";
+
+"Email us" = "给我们发电邮";
+"Support Email Subject" = "Help Me!";
+"Give Feedback" = "提供反馈信息";
+
+
+"About Navigation Bar" = "关于导航栏";
+
+"Read Later" = "稍后读";
+"Set Read Later service to:" = "将稍后读服务设置为：";
+"None" = "无";
+
+
+// About Page
+
+
+"About" = "关于";
+"Close" = "关闭";
+
+
+// Notices
+
+"Bookmarklet copied to clipboard." = "书签已复制到粘贴板。";
+
+"URL copied to clipboard." = "网址已复制到粘贴板。";
+"Title copied to clipboard." = "标题已复制到粘贴板。";
+
+/*
+// Untranslated Strings
+
+"%d bookmarks were added." = "%d bookmarks were added.";
+"%lu bookmarks selected" = "%lu bookmarks selected";
+"%lu snippets" = "%lu snippets";
+"1 bookmark selected" = "1 bookmark selected";
+"1 bookmark was added." = "1 bookmark was added.";
+"1 snippet" = "1 snippet";
+"Acknowledgements" = "Acknowledgements";
+"Add Feed" = "Add Feed";
+"Advanced Searching" = "Advanced Searching";
+"Advanced Settings" = "Advanced Settings";
+"Almost ready to go, but not quite functional yet." = "Almost ready to go, but not quite functional yet.";
+"Always show add prompt" = "Always show add prompt";
+"Always show the add bookmark prompt, even for URLs that Pushpin has seen before." = "Always show the add bookmark prompt, even for URLs that Pushpin has seen before.";
+"Are you sure you want to delete these bookmarks?" = "Are you sure you want to delete these bookmarks?";
+"Are you sure you want to delete this tag? There is no undo." = "Are you sure you want to delete this tag? There is no undo.";
+"Attributions" = "Attributions";
+"Authentication Error" = "Authentication Error";
+"Auto mark as read" = "Auto mark as read";
+"Back" = "Back";
+"Bookmark marked as read." = "Bookmark marked as read.";
+"Browser Integration" = "Browser Integration";
+"Browser Settings" = "Browser Settings";
+"Center" = "Center";
+"Changelog" = "Changelog";
+"Chrome" = "Chrome";
+"Clear" = "Clear";
+"Click to edit description." = "Click to edit description.";
+"Clipboard URL detection" = "Clipboard URL detection";
+"Compress bookmark list" = "Compress bookmark list";
+"Copy bookmarklet to clipboard" = "Copy bookmarklet to clipboard";
+"Cyberspace" = "Cyberspace";
+"Dante and Isabelle" = "Dante and Isabelle";
+"Default Browser" = "Default Browser";
+"Default Feed" = "Default Feed";
+"Designed and developed by Lionheart Software." = "Designed and developed by Lionheart Software.";
+"Dim read bookmarks" = "Dim read bookmarks";
+"Display Settings" = "Display Settings";
+"Display a notification when the URL currently on the clipboard is one that you've previously decided not to add." = "Display a notification when the URL currently on the clipboard is one that you've previously decided not to add.";
+"Display images?" = "Display images?";
+"Dolphin" = "Dolphin";
+"Edit Tags" = "Edit Tags";
+"Editing" = "Editing";
+"Email Address" = "Email Address";
+"Enable TextExpander" = "Enable TextExpander";
+"Error sending to Readability." = "Error sending to Readability.";
+"Feedback & Support" = "Feedback & Support";
+"Feedback Forum" = "Feedback Forum";
+"Finalizing Metadata" = "Finalizing Metadata";
+"Follow @Pushpin_app on Twitter" = "Follow @Pushpin_app on Twitter";
+"Follow Pushpin on Twitter" = "Follow Pushpin on Twitter";
+"Font size" = "Font size";
+"Font" = "Font";
+"For always believing in me." = "For always believing in me.";
+"For archival accounts only." = "For archival accounts only.";
+"For donating the getpushpin.com domain name." = "For donating the getpushpin.com domain name.";
+"For inspiring me and making me laugh." = "For inspiring me and making me laugh.";
+"For making Pinboard." = "For making Pinboard.";
+"For stripping text, CSS, and Javascript from webpages." = "For stripping text, CSS, and Javascript from webpages.";
+"French translation." = "French translation.";
+"Frequently Asked Questions" = "Frequently Asked Questions";
+"German translation." = "German translation.";
+"Header Font" = "Header Font";
+"Help" = "Help";
+"Hide" = "Hide";
+"How to install on Chrome for iOS" = "How to install on Chrome for iOS";
+"How to install on Safari" = "How to install on Safari";
+"Instapaper Login" = "Instapaper Login";
+"Italian translation." = "Italian translation.";
+"Justified" = "Justified";
+"Knowledge Base" = "Knowledge Base";
+"Launch 1Password" = "Launch 1Password";
+"Left" = "Left";
+"Limit descriptions to two lines and tags to one line." = "Limit descriptions to two lines and tags to one line.";
+"Line Spacing" = "Line Spacing";
+"Link already sent to Readability." = "Link already sent to Readability.";
+"Log In" = "Log In";
+"Logging into Instapaper." = "Logging into Instapaper.";
+"Logging into Pocket." = "Logging into Pocket.";
+"Logging into Readability." = "Logging into Readability.";
+"Main Settings" = "Main Settings";
+"Margins" = "Margins";
+"Minimize" = "Minimize";
+"Notify when a URL isn't added" = "Notify when a URL isn't added";
+"Open Pushpin" = "Open Pushpin";
+"Opera" = "Opera";
+"Password may be blank." = "Password may be blank.";
+"Pinboard is currently down. Please try logging in later." = "Pinboard is currently down. Please try logging in later.";
+"Please enter both a username and password to sign into Pinboard." = "Please enter both a username and password to sign into Pinboard.";
+"Portugese translation." = "Portugese translation.";
+"Post an idea" = "Post an idea";
+"Preview" = "Preview";
+"Product design and development" = "Product design and development";
+"Product development" = "Product development";
+"Purge Cache" = "Purge Cache";
+"Rate Pushpin on the App Store" = "Rate Pushpin on the App Store";
+"Rate us in the App Store" = "Rate us in the App Store";
+"Read Later Service" = "Read Later Service";
+"Read by default?" = "Read by default?";
+"Read" = "Read";
+"Readability Login" = "Readability Login";
+"Recent" = "Recent";
+"Remove" = "Remove";
+"Reset the list of stored URLs" = "Reset the list of stored URLs";
+"Resets the list of URLs that you've decided not to add from the clipboard." = "Resets the list of URLs that you've decided not to add from the clipboard.";
+"Resetting Cache" = "Resetting Cache";
+"Resetting stored URL list" = "Resetting stored URL list";
+"Review Pushpin on iTunes" = "Review Pushpin on iTunes";
+"Right" = "Right";
+"Safari" = "Safari";
+"Save" = "Save";
+"Saved Feeds" = "Saved Feeds";
+"Search Full-Text" = "Search Full-Text";
+"Search Tips" = "Search Tips";
+"Search scope" = "Search scope";
+"Search" = "Search";
+"Sent to Pocket." = "Sent to Pocket.";
+"Sent to Readability." = "Sent to Readability.";
+"Starred" = "Starred";
+"Suggest" = "Suggest";
+"Tagged" = "Tagged";
+"Tags, separated by spaces" = "Tags, separated by spaces";
+"Tap an existing tag to remove it" = "Tap an existing tag to remove it";
+"Tap to add tags." = "Tap to add tags.";
+"Tap to view license." = "Tap to view license.";
+"Text Alignment" = "Text Alignment";
+"The URL list was cleared." = "The URL list was cleared.";
+"The selected default feed will be shown immediately after starting the app." ="The selected default feed will be shown immediately after starting the app";
+"There was an error adding your bookmark." = "There was an error adding your bookmark.";
+"To enable Pinboard full-text search, please log out and then log back in." = "To enable Pinboard full-text search, please log out and then log back in.";
+"Translations" = "Translations";
+"URL Scheme" = "URL Scheme";
+"Unable to add bookmark; no connection available." = "Unable to add bookmark; no connection available.";
+"Update TextExpander Snippets" = "Update TextExpander Snippets";
+"Verifying credentials" = "Verifying credentials";
+"View changelog" = "View changelog";
+"Visual design" = "Visual design";
+"Watch a video" = "Watch a video";
+"We couldn't log you into Instapaper with those credentials." = "We couldn't log you into Instapaper with those credentials.";
+"We couldn't log you into Readability with those credentials." = "We couldn't log you into Readability with those credentials.";
+"When opening unread bookmarks." = "When opening unread bookmarks.";
+"Wikipedia" = "Wikipedia";
+"You can also toggle this by pinching in or out when viewing bookmarks." = "You can also toggle this by pinching in or out when viewing bookmarks.";
+"You can't browse popular feeds unless you have an active Internet connection." = "You can't browse popular feeds unless you have an active Internet connection.";
+"You have no saved feeds." = "You have no saved feeds.";
+"You've successfully logged in." = "You've successfully logged in.";
+"Your cache was cleared." = "Your cache was cleared.";
+"\"Purge cache\" in settings if you'd like to add the URL on your clipboard." = "\"Purge cache\" in settings if you'd like to add the URL on your clipboard.";
+"iCab Mobile" = "iCab Mobile";
+
+*/
+
+/*
+// Untranslated Strings
+
+"An unknown error occured." = "An unknown error occured.";
+"Are you sure you'd like to clear the cache? There is no undo." = "Are you sure you'd like to clear the cache? There is no undo.";
+"Clear Offline Cache" = "Clear Offline Cache";
+"Current Usage" = "Current Usage";
+"Download Full Webpage" = "Download Full Webpage";
+"Enable Offline Mode" = "Enable Offline Mode";
+"Enter a name for this saved search." = "Enter a name for this saved search.";
+"Everything" = "Everything";
+"Fetch Criteria" = "Fetch Criteria";
+"Mark All" = "Mark All";
+"Mark None" = "Mark None";
+"Offline Settings" = "Offline Settings";
+"Recent (last 30 days)" = "Recent (last 30 days)";
+"Restore Purchases" = "Restore Purchases";
+"Retrieving popular tags" = "Retrieving popular tags";
+"Save Search" = "Save Search";
+"Search Private" = "Search Private";
+"Search Public" = "Search Public";
+"Search Read" = "Search Read";
+"Search Starred" = "Search Starred";
+"Search Tagged" = "Search Tagged";
+"Search Unread" = "Search Unread";
+"Search Unstarred" = "Search Unstarred";
+"Search Untagged" = "Search Untagged";
+"Search in Results" = "Search in Results";
+"Swipe right to suggest popular tags, swipe left to remove them. Separate tags with spaces and make a tag private by prepending it with a period." = "Swipe right to suggest popular tags, swipe left to remove them. Separate tags with spaces and make a tag private by prepending it with a period.";
+"Tap the info button to read about advanced searches." = "Tap the info button to read about advanced searches.";
+"The future is here. Be one with the extensions. Never see a bookmark prompt again. Ever." = "The future is here. Be one with the extensions. Never see a bookmark prompt again. Ever.";
+"This client is not authorized to make in-app purchases." = "This client is not authorized to make in-app purchases.";
+"This will delete any stored articles on your device." = "This will delete any stored articles on your device.";
+"Turn it off!" = "Turn it off!";
+"Unread and Recent" = "Unread and Recent";
+"Usage Limit" = "Usage Limit";
+"Your saved search was added." = "Your saved search was added.";
+
+*/
+
+
+/*
+// Untranslated Strings
+
+"Advanced Search" = "Advanced Search";
+"Big" = "Big";
+"Biggest" = "Biggest";
+"Browser" = "Browser";
+"Browsing" = "Browsing";
+"Clear Cache" = "Clear Cache";
+"Clipboard URL detection" = "Clipboard URL detection";
+"Desc." = "Desc.";
+"Download Complete" = "Download Complete";
+"Full Text" = "Full Text";
+"Invalid Token" = "Invalid Token";
+"Medium" = "Medium";
+"Mine (Pinboard Syntax)" = "Mine (Pinboard Syntax)";
+"Mine" = "Mine";
+"Offline" = "Offline";
+"Open links in-app" = "Open links in-app";
+"Please open Pushpin to refresh your credentials." = "Please open Pushpin to refresh your credentials.";
+"Reader Settings" = "Reader Settings";
+"Reader View" = "Reader View";
+"Small" = "Small";
+"Smallest" = "Smallest";
+"Static Assets" = "Static Assets";
+"Unstarred" = "Unstarred";
+
+*/
+
+/*
+// Untranslated Strings
+
+"Downloading" = "Downloading";
+"Stop" = "Stop";
+
+*/
+
+"Advanced Settings - Short" = "Advanced";
+"Offline Settings Section Footer" = "By default, Pushpin will download bookmarks matching your fetch criteria in the background. If you don't want to wait, the button above will start a sync manually";

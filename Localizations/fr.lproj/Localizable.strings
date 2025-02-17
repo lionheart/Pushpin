@@ -1,0 +1,370 @@
+/*
+ Localizable.strings
+ Pushpin for Pinboard
+
+ Originally created by Jérôme Tomasini
+ Updated by Sébastien Pennec (Twitter: @SebPennec)
+ */
+
+// Generic
+
+"Default" = "Défaut";
+"OK" = "OK";
+"Edit" = "Éditer";
+"Done" = "Fait";
+"Shucks" = "Pfff";
+"Uh oh." = "Hum hum...";
+"Nope" = "Pas vraiment, non!";
+"Sure" = "D’accord!";
+"Success" = "Succès";
+"Delete" = "Effacer";
+"Share" = "Partager";
+"No" = "Non";
+"Yes" = "Oui";
+"Updating bookmarks" = "Mise à jour des signets";
+
+// Tab Bar
+
+"Browse" = "Parcourir";
+"Settings" = "Paramètres";
+"Add" = "Ajouter";
+"Tags" = "Tags";
+"Notes" = "Notes";
+
+// Add Bookmark
+
+"Update Bookmark" = "Mettre à jour le signet";
+"Update" = "Enregistrer";
+"Add Bookmark" = "Ajouter un signet";
+"Cancel" = "Annuler";
+"Add Bookmark?" = "Ajouter un signet ?";
+"We've detected a URL in your clipboard. Would you like to bookmark it?" = "Nous avons détecté une URL dans votre presse-papier. Voudriez-vous l’ajouter ?";
+
+// Home Page
+
+"All" = "Tout";
+"All Bookmarks" = "Tous les signets";
+"Private Bookmarks" = "Privé";
+"Public" = "Public";
+"Unread" = "Non lu";
+"Untagged" = "Sans tag";
+"Bookmarks" = "Signets";
+"Personal" = "Personnel";
+"Community" = "Communauté";
+"Fandom" = "Fans";
+"Popular" = "Populaire";
+"Network" = "Réseau";
+
+// Bookmark Page
+
+"Your bookmark was deleted." = "Votre signet a été supprimé.";
+"Your bookmark was updated." = "Votre signet a été mis à jour.";
+"Your bookmark was added." = "Votre signet a été ajouté.";
+"There was an error updating your bookmark." = "Erreur rencontrée durant la mise à jour de votre signet.";
+"Pinboard.in" = "Le bookmarking pour les introvertis";
+"pinboard .bookmarking" = "bookmarking antisocial";
+"You can't add a bookmark without a URL or title." = "Vous ne pouvez pas ajouter un signet dépourvu d'URL ou de titre.";
+
+"URL" = "Lien";
+"Title" = "Titre";
+"Description" = "Description";
+"Separate tags with spaces" = "Séparez les tags avec des espaces";
+"Private" = "Privé";
+"Copy URL" = "Copier le lien";
+"Copy Title" = "Copier le titre";
+"Other" = "Autre";
+"Set as private?" = "Marquer comme privé ?";
+"Mark as read?" = "Marquer comme lu ?";
+"Copy to mine" = "Copier vers mon compte";
+"Send to Instapaper" = "Envoyer vers Instapaper";
+"Send to Readability" = "Envoyer vers Readability";
+
+"Edit Bookmark" = "Éditer le signet";
+"Delete Bookmark" = "Effacer le signet";
+"Are you sure you want to delete this bookmark?" = "Êtes-vous sûr de vouloir effacer ce signet ?";
+
+// Login Page
+
+"Username" = "Nom d’utilisateur";
+"Password" = "Mot de passe";
+
+"Enter your Pinboard credentials above. Email support support@aurora.io if you have any issues." = "Entrez vos identifiants Pinboard ci-dessus. Envoyez un email à support@aurora.io si vous rencontrez le moindre problème.";
+"Verifying your credentials..." = "Informations en cours de vérification...";
+"We couldn't log you in. Please make sure you've provided valid credentials." = "Nous n’avons pas pu vous identifier. Assurez-vous que vos informations sont valides.";
+"You have successfully authenticated. Please wait while we download your bookmarks." = "Votre authentification s’est déroulée avec succès. Merci de patienter pendant le téléchargement de vos signets.";
+
+"Google Chrome failed to open" = "Google Chrome ne peut pas ouvrir ce lien. Cliquez sur OK pour l’ouvrir avec Safari.";
+
+"Mark as read" = "Marquer comme lu";
+"Open in Safari" = "Ouvrir dans Safari";
+
+// Settings Page
+
+"Private by default?" = "Privé par défaut ?";
+
+"Open links with:" = "Ouvrir les liens avec";
+
+"Install Chrome?" = "Installer Chrome ?";
+"In order to open links with Google Chrome, you first have to install it." = "Pour ouvrir des liens dans Google Chrome, vous devez d’abord l’installer.";
+
+"Are you sure?" = "Êtes-vous sûr ?";
+"This will log you out and delete the local bookmark database from your device." = "Ceci vous déconnectera et effacera les signets enregistrés sur votre appareil.";
+"Logging out of the application will reset the bookmark database on this device." = "Ceci vous déconnectera de l’application et remettra à zéro la base de données de l’application.";
+
+"Log Out" = "Déconnexion";
+"Contact Support" = "Contacter le support technique";
+"Request a feature" = "Demander une fonctionnalité";
+"Report a bug" = "Signaler un problème technique";
+"Email us" = "Nous adresser un email";
+"Support Email Subject" = "Aidez-moi!";
+"Give Feedback" = "Feedback";
+
+"About Navigation Bar" = "À propos";
+"Read Later" = "Lecture différée";
+"Set Read Later service to:" = "Pour la lecture différée, choisir :";
+"None" = "Rien";
+
+// About Page
+
+"About" = "À propos";
+"Close" = "Fermer";
+
+// Notices
+
+"Bookmarklet copied to clipboard." = "Bookmarklet copié dans le presse-papier.";
+"URL copied to clipboard." = "Lien copié dans le presse-papier.";
+"Title copied to clipboard." = "Titre copié dans le presse-papier.";
+
+// Tag Suggestions
+"Suggest" = "Suggérer";
+"Hide" = "Cacher";
+
+// Reader Settings
+"Font" = "Police";
+"Header Font" = "Police des en-têtes";
+"Font size" = "Taille de la police";
+
+"Preview" = "Prévisualiser";
+"Minimize" = "Minimiser";
+
+"Text Alignment" = "Aligement du texte";
+"Justified" = "Justifié";
+"Left" = "Gauche";
+"Right" = "Droite";
+"Center" = "Centre";
+
+"Line Spacing" = "Espace inter-ligne";
+"Margins" = "Marges";
+"Display images?" = "Afficher les images?";
+
+// Feed List
+"Browse" = "Naviguer";
+"Wikipedia" = "Wikipedia";
+"Recent" = "Récents";
+
+// Notifications
+"Bookmark marked as read." = "Signet marqué comme lu.";
+"%lu bookmarks selected" = "%lu signets sélectionnés";
+"%lu snippets" = "%lu extraits";
+"1 bookmark selected" = "1 signet sélectionné";
+"1 snippet" = "1 extrait";
+
+// Misc
+"Add Feed" = "Ajouter un flux";
+"Advanced Settings" = "Paramètres avancés";
+"Changelog" = "Liste des changements";
+"Edit Tags" = "Editer les tags";
+"Enable TextExpander" = "Activer TextExpander";
+"Launch 1Password" = "Lancer 1Password";
+"Resets the list of URLs that you've decided not to add from the clipboard." = "Remettre à zéro la liste des liens que vous avez décidé de ne pas ajouter depuis le presse-papier.";
+"Update TextExpander Snippets" = "Mettre à jour les raccourcis TextExpander";
+
+
+"%d bookmarks were added." = "%d signets ont été ajoutés.";
+"1 bookmark was added." = "1 signet a été ajouté.";
+"Acknowledgements" = "Remerciements";
+"Advanced Searching" = "Recherche avancée";
+"Almost ready to go, but not quite functional yet." = "Presque prêt, mais pas encore fonctionel.";
+"Always show add prompt" = "Toujours afficher la fenêtre d'ajout";
+"Always show the add bookmark prompt, even for URLs that Pushpin has seen before." = "Toujours afficher la fenêtre d'ajout, y compris pour les URLs qui ont déjà été ajoutées.";
+"Are you sure you want to delete these bookmarks?" = "Êtes-vous sûr de vouloir effacer ces signets?";
+"Are you sure you want to delete this tag? There is no undo." = "Êtes-vous sûr de vouloir effacer ce tag? Cette opération est irréversible.";
+"Attributions" = "Attributions";
+"Authentication Error" = "Erreur d'authentification";
+"Auto mark as read" = "Marquer comme lu automatiquement";
+"Back" = "Retour";
+"Browser Integration" = "Intégration avec le navigateur";
+"Browser Settings" = "Paramètres du navigateur";
+"Chrome" = "Chrome";
+"Clear" = "Effacer";
+"Click to edit description." = "Cliquer pour éditer la description.";
+"Clipboard URL detection" = "Détection des URLs dans le presse-papier.";
+"Compress bookmark list" = "Compresser la liste des signets";
+"Copy bookmarklet to clipboard" = "Copier le bookmarklet dans le presse-papier";
+"Cyberspace" = "Cyberspace";
+"Dante and Isabelle" = "Dante and Isabelle";
+"Default Browser" = "Navigateur par défaut";
+"Default Feed" = "Flux par défaut";
+"Designed and developed by Lionheart Software." = "Conçu et développé par Lionheart Software.";
+"Dim read bookmarks" = "Obscurcir les signets lus";
+"Display Settings" = "Paramètres d'affichage";
+"Display a notification when the URL currently on the clipboard is one that you've previously decided not to add." = "Afficher une notification quand l'URL dans le presse-papier a déjà été vue et n'a pas été ajoutée";
+"Dolphin" = "Dauphin";
+"Editing" = "Éditer";
+"Email Address" = "Adresse e-mail";
+"Error sending to Readability." = "Une erreur est survenue lors de l'envoi à Readability";
+"Feedback & Support" = "Feedback & Support";
+"Feedback Forum" = "Forum de feedback";
+"Finalizing Metadata" = "Peaufine les méta-données";
+"Follow @Pushpin_app on Twitter" = "Suivez @Pushpin_app sur Twitter";
+"Follow Pushpin on Twitter" = "Suivez Pushpin sur Twitter";
+"For always believing in me." = "Pour avoir toujours cru en moi.";
+"For archival accounts only." = "Pour les comptes archivés seulement";
+"For donating the getpushpin.com domain name." = "Pour avoir fait don du nom de domaine getpushpin.com.";
+"For inspiring me and making me laugh." = "Pour m'avoir inspiré et fait rire.";
+"For making Pinboard." = "Pour avoir créé Pinboard.";
+"For stripping text, CSS, and Javascript from webpages." = "Pour retirer le text, CSS et Javascript des pages web";
+"French translation." = "Traduction française.";
+"Frequently Asked Questions" = "Foire aux questions";
+"German translation." = "Traduction allemande.";
+"Help" = "Aide";
+"How to install on Chrome for iOS" = "Comment installer sur Chrome pour iOS";
+"How to install on Safari" = "Comment installer sur Safari";
+"Instapaper Login" = "Login Instapaper";
+"Italian translation." = "Traduction italienne.";
+"Knowledge Base" = "Base de connaissance";
+"Limit descriptions to two lines and tags to one line." = "Limiter les descriptions à deux lignes et les tags à une ligne.";
+"Link already sent to Readability." = "Signet déjà envoyé vers Readability.";
+"Log In" = "S'identifier";
+"Logging into Instapaper." = "En cours d'identification chez Instapaper.";
+"Logging into Pocket." = "En cours d'identification chez Pocket.";
+"Logging into Readability." = "En cours d'identification chez Readability.";
+"Main Settings" = "Paramètres principaux";
+"Notify when a URL isn't added" = "Notifier quand une URL n'est pas ajoutée";
+"Open Pushpin" = "Ouvrir Pushpin";
+"Opera" = "Opera";
+"Password may be blank." = "Le mot de passe peut être vide.";
+"Pinboard is currently down. Please try logging in later." = "Pinboard est actuellement en panne. Veuillez essayer plus tard.";
+"Please enter both a username and password to sign into Pinboard." = "Veuillez entrer votre nom d'utilisateur et  mot de passe pour s'identifier chez Pinboard";
+"Portugese translation." = "Traduction portugaise";
+"Post an idea" = "Poster une idée";
+"Product design and development" = "Conception et développement";
+"Product development" = "Développement";
+"Purge Cache" = "Purger le cache";
+"Rate Pushpin on the App Store" = "Donnez une note à Pushpin sur l'App Store";
+"Rate us in the App Store" = "Donnez-nous une note sur l'App Store";
+"Read Later Service" = "Service de lecture différée";
+"Read by default?" = "Lu par défaut?";
+"Read" = "Lu";
+"Readability Login" = "Identification Readability";
+"Remove" = "Supprimer";
+"Reset the list of stored URLs" = "Vider la liste des URLs stockées";
+"Resetting Cache" = "Vider le cache";
+"Resetting stored URL list" = "Vider la liste des URLs stockées";
+"Review Pushpin on iTunes" = "Postez une critique de Pushpin sur iTunes";
+"Safari" = "Safari";
+"Save" = "Sauver";
+"Saved Feeds" = "Flux sauvés";
+"Search Full-Text" = "Recherche full-text";
+"Search Tips" = "Astuces de recherche";
+"Search scope" = "Scope de la recherche";
+"Search" = "Chercher";
+"Sent to Pocket." = "Envoyé chez Pocket.";
+"Sent to Readability." = "Envoyé chezReadability.";
+"Starred" = "Étoilé";
+"Support Email Subject" = "Sujet du mail au support";
+"Tagged" = "Avec tag";
+"Tags, separated by spaces" = "Tags, séparés par des espaces";
+"Tap an existing tag to remove it" = "Tapez un tag existant pour le supprimer";
+"Tap to add tags." = "Tapez pour ajouter des tags";
+"Tap to view license." = "Tapez pour voir la licence.";
+"The URL list was cleared." = "La liste des URLs a été vidée";
+"The selected default feed will be shown immediately after starting the app." ="Le flux par défaut choisi sera affiché immédiatement après le redémarrage de l'app";
+"There was an error adding your bookmark." = "Une erreur est survenue lors de l'ajout du signet.";
+"To enable Pinboard full-text search, please log out and then log back in." = "Pour activer la recherche full-text de Pinboard, merci de vous déconnecter et reconnecter.";
+"Translations" = "Traductions";
+"URL Scheme" = "URL Scheme";
+"Unable to add bookmark; no connection available." = "Impossible d'ajouter un signet. Aucune connexion disponible.";
+"Verifying credentials" = "Vérification des informations";
+"View changelog" = "Voir la liste des changements";
+"Visual design" = "Conception visuelle";
+"Watch a video" = "Regarder une vidéo";
+"We couldn't log you into Instapaper with those credentials." = "Echec de l'identification auprès d'Instapaper avec ces informations";
+"We couldn't log you into Readability with those credentials." = "Echec de l'identification auprès de Readability avec ces informations";
+"When opening unread bookmarks." = "Lors de l'ouverture de signets non-lus";
+"You can also toggle this by pinching in or out when viewing bookmarks." = "Vous pouvez activer et désactiver ceci en pinçant en avant ou arrière lors de l'affichage du signet ";
+"You can't browse popular feeds unless you have an active Internet connection." = "Vous ne pouvez pas naviguer parmi les flux populaires sans connexion internet active.";
+"You have no saved feeds." = "Vous n'avez pas de flux sauvés.";
+"You've successfully logged in." = "Vous avez été identifié(e) avec succès.";
+"Your cache was cleared." = "Le cache a été vidé";
+"\"Purge cache\" in settings if you'd like to add the URL on your clipboard." = "\"Purger le cache\" dans les paramètres si vous souhaitez ajouter l'URL dans le presse-papier";
+"iCab Mobile" = "iCab Mobile";
+
+
+
+"Always show the add bookmark prompt, even for URLs that Pushpin has seen before." = "Toujours proposer d'ajouter l'URL, y compris pour des URLs qui ont déjà été rencontrées par Pushpin";
+"An unknown error occured." = "Une erreur inconnue est survenue.";
+"Are you sure you'd like to clear the cache? There is no undo." = "Êtes-vous sûr de vouloir vider le cache? Cette action est irréversible.";
+"Clear Offline Cache" = "Vider le cache hors ligne.";
+"Clear" = "Vider";
+"Current Usage" = "Utilisation courante";
+"Cyberspace" = "Cyberspace";
+"Download Full Webpage" = "Télécharger les pages entières";
+"Enable Offline Mode" = "Activer le mode hors-ligne";
+"Enter a name for this saved search." = "Entrer un nom pour cette recherche sauvegardée";
+"Everything" = "Tout";
+"Fetch Criteria" = "Critère";
+"Mark All" = "Marquer tous";
+"Mark None" = "Marquer aucun";
+"Offline Settings" = "Réglages hors-ligne.";
+"Recent (last 30 days)" = "Récents (derniers 30 jours)";
+"Restore Purchases" = "Récupérer les achats";
+"Retrieving popular tags" = "Récupération des tags populaires";
+"Save Search" = "Sauver la recherche";
+"Search Private" = "Privés";
+"Search Public" = "Publics";
+"Search Read" = "Lus";
+"Search Starred" = "Étoilés";
+"Search Tagged" = "Avec tag";
+"Search Unread" = "Non-lus";
+"Search Unstarred" = "Sans étoiles";
+"Search Untagged" = "Sans tags";
+"Search in Results" = "Résultats";
+"Swipe right to suggest popular tags, swipe left to remove them. Separate tags with spaces and make a tag private by prepending it with a period." = "Glisser vers la droite pour suggérer des tags populaires. Glisser vers la gauche pour les supprimer. Séparez les tags avec des espaces. Ajouter un . devant un tag pour qu'il soit privé.";
+"Tap the info button to read about advanced searches." = "Tapez le bouton d'info pour voir la documentation sur les recherches avancées";
+"The future is here. Be one with the extensions. Never see a bookmark prompt again. Ever." = "Le futur est là. Soyez celui qui utilise les extensions. Ne voyez plus de fenêtre d'ajout de bookmark. Jamais.";
+"This client is not authorized to make in-app purchases." = "Ce client n'est pas autorisé à faire des achats in-app.";
+"This will delete any stored articles on your device." = "Ceci va effacer tous les articles stockés sur votre appareil.";
+"Turn it off!" = "Éteindre";
+"Unread and Recent" = "Non-lus et récents";
+"Usage Limit" = "Limite d'utilisation";
+"Your saved search was added." = "Votre recherche a été sauvegardée.";
+
+"Advanced Search" = "Recherche avancée";
+"Big" = "Gros";
+"Biggest" = "Plus gros";
+"Browser" = "Navigateur";
+"Browsing" = "Naviguer";
+"Clear Cache" = "Vider le cache";
+"Desc." = "Desc.";
+"Download Complete" = "Téléchargement terminé";
+"Full Text" = "Texte complet";
+"Invalid Token" = "Token invalide";
+"Medium" = "Moyen";
+"Mine (Pinboard Syntax)" = "Mes signets (syntaxe de Pinboard)";
+"Mine" = "Les miens";
+"Offline" = "Hors ligne";
+"Open links in-app" = "Ouvrir les liens dans l'app";
+"Please open Pushpin to refresh your credentials." = "Veuillez ouvrir Pushpin pour vous authentifier à nouveau";
+"Reader Settings" = "Réglages de la vue de lecture";
+"Reader View" = "Vue de lecture";
+"Small" = "Petit";
+"Smallest" = "Plus petit";
+"Static Assets" = "Static Assets";
+"Unstarred" = "Sans étoile";
+
+"Downloading" = "En cours de téléchargement";
+"Stop" = "Stop";
+
+"Advanced Settings - Short" = "Avancé";
+"Offline Settings Section Footer" = "By default, Pushpin will download bookmarks matching your fetch criteria in the background. If you don't want to wait, the button above will start a sync manually";

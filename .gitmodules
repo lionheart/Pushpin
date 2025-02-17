@@ -1,15 +1,9 @@
-[submodule "Localizations"]
-	path = Localizations
-	url = git@github.com:lionheart/pushpin-localizations.git
 [submodule "Vendor/LHSDiigo"]
 	path = Vendor/LHSDiigo
 	url = git@github.com:lionheart/LHSDiigo
 [submodule "Vendor/LHSDelicious"]
 	path = Vendor/LHSDelicious
 	url = git@github.com:lionheart/LHSDelicious
-[submodule "Localizations"]
-	path = Localizations
-	url = https://github.com/lionheart/pushpin-localizations.git
 [submodule "Vendor/LHSDiigo"]
 	path = Vendor/LHSDiigo
 	url = https://github.com/lionheart/LHSDiigo

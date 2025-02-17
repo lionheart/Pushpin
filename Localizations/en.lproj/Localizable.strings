@@ -1,0 +1,380 @@
+/*
+ Localizable.strings
+ Pinboard for iPhone
+ 
+ Created by Dan Loewenherz on 12/6/12.
+ 
+ */
+
+// Generic
+
+"Default" = "Default";
+"OK" = "OK";
+"Edit" = "Edit";
+"Done" = "Done";
+"Shucks" = "Shucks";
+"Uh oh." = "Uh oh.";
+"Nope" = "Nope";
+"Sure" = "Sure";
+"Success" = "Success";
+"Delete" = "Delete";
+"Share" = "Share";
+"No" = "No";
+"Yes" = "Yes";
+"Updating bookmarks" = "Updating bookmarks";
+"1 bookmark was added." = "1 bookmark was added.";
+"%d bookmarks were added." = "%d bookmarks were added.";
+"Back" = "Back";
+"Save" = "Save";
+"Remove" = "Remove";
+"Help" = "Help";
+"Log In" = "Log In";
+"Clear" =  "Clear";
+"Browse" = "Browse";
+"Settings" = "Settings";
+"Add" = "Add";
+"Tags" = "Tags";
+"Notes" = "Notes";
+"Starred" = "Starred";
+"Read" = "Read";
+"Tagged"= "Tagged";
+"Delete" = "Delete";
+
+// Add Bookmark
+
+"Update Bookmark" = "Update Bookmark";
+"Update" = "Update";
+"Add Bookmark" = "New Bookmark";
+"Add" = "Add";
+"Cancel" = "Cancel";
+"Add Bookmark?" = "Add Bookmark?";
+"We've detected a URL in your clipboard. Would you like to bookmark it?" = "Pushpin detected a link in your clipboard. Would you like to add it to your bookmarks?";
+"Tap to add tags." = "Tap to add tags.";
+"Unable to add bookmark; no connection available." = "Unable to add bookmark; no connection available.";
+"There was an error adding your bookmark." = "There was an error adding your bookmark.";
+
+// Home Page
+
+"All" = "All";
+"All Bookmarks" = "All";
+"Private Bookmarks" = "Private";
+"Public" = "Public";
+"Unread" = "Unread";
+"Untagged" = "Untagged";
+"Bookmarks" = "Bookmarks";
+"Personal" = "Personal";
+"Community" = "Community";
+"Fandom" = "Fandom";
+"Popular" = "Popular";
+"Network" = "Network";
+
+// Bookmark Page
+
+"Your bookmark was deleted." = "Your bookmark was deleted.";
+"Your bookmark was updated." = "Your bookmark was updated.";
+"Your bookmark was added." = "Your bookmark was added.";
+"There was an error updating your bookmark." = "There was an error updating your bookmark.";
+"Pinboard.in" = "Pinboard.in";
+"pinboard .bookmarking" = "Click to edit tags.";
+"You can't add a bookmark without a URL or title." = "You can't add a bookmark without a URL or title.";
+
+"URL" = "URL";
+"Title" = "Title";
+"Description" = "Description";
+"Swipe right to suggest popular tags, swipe left to remove them. Separate tags with spaces and make a tag private by prepending it with a period." = "Swipe right to suggest popular tags, swipe left to remove them. Separate tags with spaces and make a tag private by prepending it with a period.";
+"Private" = "Private";
+"Copy URL" = "Copy URL";
+"Copy Title" = "Copy Title";
+"Other" = "Other";
+"Set as private?" = "Set as private?";
+"Mark as read?" = "Mark as read?";
+"Copy to mine" = "Copy to mine";
+"Send to Instapaper" = "Send to Instapaper";
+"Send to Readability" = "Send to Readability";
+"You can also toggle this by pinching in or out when viewing bookmarks." = "You can also toggle this by tapping the title bar or pinching in or out when viewing bookmarks.";
+
+"Edit Bookmark" = "Edit Bookmark";
+"Delete Bookmark" = "Delete Bookmark";
+"Are you sure you want to delete this bookmark?" = "Are you sure you want to delete this bookmark?";
+
+// Login Page
+
+"Username" = "Username";
+"Password" = "Password";
+
+"Enter your Pinboard credentials above. Email support support@aurora.io if you have any issues." = "Enter your Pinboard credentials above.";
+"Verifying your credentials..." = "Verifying your credentials...";
+"We couldn't log you in. Please make sure you've provided valid credentials." = "We couldn't log you in. Please double check you've provided valid credentials.";
+"You have successfully authenticated. Please wait while we download your bookmarks." = "You have successfully authenticated. Please wait while Pushpin downloads your bookmarks.";
+
+"Google Chrome failed to open" = "It looks like Google Chrome is unable to open this link. Click OK to open it with Safari instead.";
+
+"Mark as read" = "Mark as read";
+"Open in Safari" = "Open in Safari";
+
+"Please enter both a username and password to sign into Pinboard." = "Please enter both a username and password to sign into Pinboard.";
+"Authentication Error" = "Authentication Error";
+"Pinboard is currently down. Please try logging in later." = "Pinboard is currently down. Please try logging in later.";
+"Finalizing Metadata" = "Finalizing Metadata";
+
+
+// Settings Page
+"Private by default?" = "Default to private";
+"Read by default?" = "Default to read";
+"Open links with:" = "Open links with";
+"Install Chrome?" = "Install Chrome?";
+"In order to open links with Google Chrome, you first have to install it." = "In order to open links with Google Chrome, you first have to install it.";
+
+"Are you sure?" = "Are you sure?";
+"This will log you out and delete the local bookmark database from your device." = "This will log you out and delete the local bookmark database from your device.";
+"Logging out of the application will reset the bookmark database on this device." = "Logging out of the application will reset the bookmark database on this device.";
+
+"Log Out" = "Log Out";
+"Contact Support" = "Contact Support";
+"Request a feature" = "Request a feature";
+"Report a bug" = "Report a bug";
+"Email us" = "Email us";
+"Support Email Subject" = "Help me!";
+"Give Feedback" = "Give Feedback";
+
+"About Navigation Bar" = "About";
+"Read Later" = "Read Later Service";
+"Set Read Later service to:" = "Set read later service to";
+"None" = "None";
+"Compress bookmark list" = "Compress bookmarks";
+"When opening unread bookmarks." = "When opening unread bookmarks.";
+"Limit descriptions to two lines and tags to one line." = "Limit descriptions to two lines and tags to one line.";
+"Always show the add bookmark prompt, even for URLs that Pushpin has seen before." = "Always show the add bookmark prompt, even for URLs that Pushpin has seen before.";
+"Reset the list of stored URLs" = "Reset the list of stored URLs";
+"Resets the list of URLs that you've decided not to add from the clipboard." = "Resets the list of URLs that you've decided not to add from the clipboard.";
+"Notify when a URL isn't added" = "Notify when a URL isn't added";
+"Display a notification when the URL currently on the clipboard is one that you've previously decided not to add."= "Display a notification when the URL currently on the clipboard is one that you've previously decided not to add.";
+"Resetting stored URL list"= "Resetting stored URL list";
+"The URL list was cleared."= "The URL list was cleared.";
+"Auto mark as read" = "Auto mark as read";
+"Always show add prompt" = "Always show add prompt";
+"Instapaper Login" =  "Instapaper Login";
+"Password may be blank." = "Password may be blank.";
+"Email Address" = "Email Address";
+"Readability Login" = "Readability Login";
+"Verifying credentials" = "Verifying credentials";
+"Logging into Instapaper." = "Logging into Instapaper.";
+"Logging into Readability." = "Logging into Readability.";
+"Logging into Pocket." = "Logging into Pocket.";
+"Rate Pushpin on the App Store" = "Rate Pushpin on the App Store";
+"We couldn't log you into Instapaper with those credentials." = "We couldn't log you into Instapaper with those credentials.";
+"You've successfully logged in." ="You've successfully logged in." ;
+"We couldn't log you into Readability with those credentials." = "We couldn't log you into Readability with those credentials.";
+"Resetting Cache" = "Resetting Cache";
+"Your cache was cleared." = "Your cache was cleared.";
+
+"Turn it off!" = "Turn it off!";
+"The future is here. Be one with the extensions. Never see a bookmark prompt again. Ever." = "The future is here. Be one with the extensions. Never see a bookmark prompt again. Ever.";
+
+// About Page
+
+"About" = "About";
+"Close" = "Close";
+
+// Notices & Messages
+
+"Bookmarklet copied to clipboard." = "Bookmarklet copied to clipboard.";
+"URL copied to clipboard." = "URL copied to clipboard.";
+"Title copied to clipboard." = "Title copied to clipboard.";
+"Sent to Readability." = "Sent to Readability.";
+"Link already sent to Readability." = "Link already sent to Readability.";
+"Almost ready to go, but not quite functional yet."= "Almost ready to go, but not quite functional yet.";
+"Are you sure you want to delete these bookmarks?" = "Are you sure you want to delete these bookmarks?";
+"Open Pushpin" = "Open Pushpin";
+"Error sending to Readability."= "Error sending to Readability.";
+"Sent to Pocket." = "Sent to Pocket.";
+"Tap an existing tag to remove it" = "Tap an existing tag to remove it";
+
+//Browsers
+
+"Safari" = "Safari";
+"Chrome" = "Chrome";
+"iCab Mobile" = "iCab Mobile";
+"Dolphin" = "Dolphin";
+"Cyberspace" = "Cyberspace";
+"Opera" = "Opera";
+
+// Feed List Page
+
+"Search" = "Search";
+"You can't browse popular feeds unless you have an active Internet connection." = "You can't browse popular feeds unless you have an active Internet connection.";
+
+// Search Page
+
+"Advanced Searching" = "Advanced Searching";
+"Search scope" = "Search scope";
+"Search Full-Text" = "Search Full-Text";
+"For archival accounts only." = "For archival accounts only.";
+"To enable Pinboard full-text search, please log out and then log back in." = "To enable Pinboard full-text search, please log out and then log back in.";
+"Save Search" = "Save Search";
+"Tap the info button to read about advanced searches." = "Tap the info button to read about advanced searches.";
+"Enter a name for this saved search." = "Enter a name for this saved search.";
+"Your saved search was added." = "Your saved search was added.";
+"Search in Results" = "Search in Results";
+"Search Tagged" = "Search Tagged";
+"Search Untagged" = "Search Untagged";
+"Search Starred" = "Search Starred";
+"Search Unstarred" = "Search Unstarred";
+"Search Private" = "Search Private";
+"Search Public" = "Search Public";
+"Search Unread" = "Search Unread";
+"Search Read" = "Search Read";
+
+// Tag View Page
+
+"Suggest" = "Suggest";
+"Are you sure you want to delete this tag? There is no undo." = "Are you sure you want to delete this tag? There is no undo.";
+
+//
+// Updated Strings
+//
+
+// Tag Suggestions
+"Suggest" = "Suggest";
+"Hide" = "Hide";
+
+// Reader Settings
+"Font" = "Font";
+"Header Font" = "Header Font";
+"Font size" = "Font size";
+
+"Preview" = "Preview";
+"Minimize" = "Minimize";
+
+"Text Alignment" = "Text Alignment";
+"Justified" = "Justified";
+"Left" = "Left";
+"Right" = "Right";
+"Center" = "Center";
+
+"Line Spacing" = "Line Spacing";
+"Margins" = "Margins";
+"Display images?" = "Display images?";
+
+// Feed List
+"Browse" = "Browse";
+"Wikipedia" = "Wikipedia";
+"Recent" = "Recent";
+
+// Notifications
+"Bookmark marked as read." = "Bookmark marked as read.";
+"%lu bookmarks selected" = "%lu bookmarks selected";
+"%lu snippets" = "%lu snippets";
+"1 bookmark selected" = "1 bookmark selected";
+"1 snippet" = "1 snippet";
+
+// Offline Mode
+"Offline Settings" = "Offline Settings";
+"Enable Offline Mode" = "Enable Offline Mode";
+"Download Full Webpage" = "Download Full Webpage";
+"Fetch Criteria" = "Fetch Criteria";
+"Current Usage" = "Current Usage";
+"Usage Limit" = "Usage Limit";
+"Clear Offline Cache" = "Clear Offline Cache";
+"Recent (last 30 days)" = "Recent (last 30 days)";
+"Unread and Recent" = "Unread and Recent";
+"Everything" = "Everything";
+"Are you sure you'd like to clear the cache? There is no undo." = "Are you sure you'd like to clear the cache? There is no undo.";
+"This will delete any stored articles on your device." = "This will delete any stored articles on your device.";
+
+// Misc
+"Add Feed" = "Add Feed";
+"Advanced Settings" = "Advanced Settings";
+"Changelog" = "Changelog";
+"Edit Tags" = "Edit Tags";
+"Enable TextExpander" = "Enable TextExpander";
+"Launch 1Password" = "Launch 1Password";
+"Resets the list of URLs that you've decided not to add from the clipboard." = "Resets the list of URLs that you've decided not to add from the clipboard.";
+"Update TextExpander Snippets" = "Update TextExpander Snippets";
+"An unknown error occured." = "An unknown error occured.";
+"Restore Purchases" = "Restore Purchases";
+"This client is not authorized to make in-app purchases." = "This client is not authorized to make in-app purchases.";
+"Mark All" = "Mark All";
+"Mark None" = "Mark None";
+"Retrieving popular tags" = "Retrieving popular tags";
+
+"Acknowledgements" = "Acknowledgements";
+"Attributions" = "Attributions";
+"Browser Integration" = "Browser Integration";
+"Browser Settings" = "Browser Settings";
+"Click to edit description." = "Click to edit description.";
+"Clipboard URL detection" = "Clipboard URL detection";
+"Copy bookmarklet to clipboard" = "Copy bookmarklet to clipboard";
+"Default Browser" = "Default Browser";
+"Default Feed" = "Default Feed";
+"Designed and developed by Lionheart Software." = "Designed and developed by Lionheart Software.";
+"Dim read bookmarks" = "Dim read bookmarks";
+"Display Settings" = "Display Settings";
+"Editing" = "Editing";
+"Browsing" = "Browsing";
+"Feedback & Support" = "Feedback & Support";
+"Feedback Forum" = "Feedback Forum";
+"Follow @Pushpin_app on Twitter" = "Follow @Pushpin_app on Twitter";
+"Follow Pushpin on Twitter" = "Follow Pushpin on Twitter";
+"For always believing in me." = "For always believing in me.";
+"For donating the getpushpin.com domain name." = "For donating the getpushpin.com domain name.";
+"For inspiring me and making me laugh." = "For inspiring me and making me laugh.";
+"For making Pinboard." = "For making Pinboard.";
+"For stripping text, CSS, and Javascript from webpages." = "For stripping text, CSS, and Javascript from webpages.";
+"French translation." = "French translation.";
+"Frequently Asked Questions" = "Frequently Asked Questions";
+"German translation." = "German translation.";
+"How to install on Chrome for iOS" = "How to install on Chrome for iOS";
+"How to install on Safari" = "How to install on Safari";
+"Italian translation." = "Italian translation.";
+"Knowledge Base" = "Knowledge Base";
+"Main Settings" = "Main Settings";
+"Portugese translation." = "Portugese translation.";
+"Post an idea" = "Post an idea";
+"Product design and development" = "Product design and development";
+"Product development" = "Product development";
+"Purge Cache" = "Purge Cache";
+"Rate us in the App Store" = "Rate us in the App Store";
+"Read Later Service" = "Read Later Service";
+"Review Pushpin on iTunes" = "Review Pushpin on iTunes";
+"Saved Feeds" = "Saved Feeds";
+"Search Tips" = "Search Tips";
+"Support Email Subject" = "Help me!";
+"Tags, separated by spaces" = "Tags, separated by spaces";
+"Tap to view license." = "Tap to view license.";
+"The selected default feed will be shown immediately after starting the app." ="The selected default feed will be shown immediately after starting the app";
+"Translations" = "Translations";
+"URL Scheme" = "URL Scheme";
+"View changelog" = "View changelog";
+"Visual design" = "Visual design";
+"Watch a video" = "Watch a video";
+"You have no saved feeds." = "You have no saved feeds.";
+"\"Purge cache\" in settings if you'd like to add the URL on your clipboard." = "\"Purge cache\" in settings if you'd like to add the URL on your clipboard.";
+
+"Static Assets" = "Static Assets";
+"Download Complete" = "Download Complete";
+"Please open Pushpin to refresh your credentials." = "Please open Pushpin to refresh your credentials.";
+"Invalid Token" = "Invalid Token";
+"Smallest" = "Smallest";
+"Small" = "Small";
+"Medium" = "Medium";
+"Big" = "Big";
+"Biggest" = "Biggest";
+"Desc." = "Desc."; // Short for description.
+"Full Text" = "Full Text";
+"Reader Settings" = "Reader Settings";
+"Clear Cache" = "Clear Cache";
+"Reader View" = "Reader View";
+"Offline" = "Offline";
+"Browser" = "Browser";
+"Mine" = "Mine";
+"Mine (Pinboard Syntax)" = "Mine (Pinboard Syntax)";
+"Open links in-app" = "Open links in-app";
+"Advanced Search" = "Advanced Search";
+"Unstarred" = "Unstarred";
+"Downloading" = "Downloading";
+"Stop" = "Stop";
+
+"Offline Settings Section Footer" = "By default, Pushpin will download bookmarks matching your fetch criteria in the background. If you don't want to wait, the button above will start a sync manually";
+
+"Advanced Settings - Short" = "Advanced";
