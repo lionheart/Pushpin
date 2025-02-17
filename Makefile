@@ -11,3 +11,6 @@ appstore: bump_version
 
 all: appstore beta
 	echo "Done"
+
+add_license:
+	./scripts/add_license.sh
