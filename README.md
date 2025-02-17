@@ -93,7 +93,7 @@ deliver
 
 Pushpin for Pinboard is licensed under the [GNU GPL version 3 or any later version](https://www.gnu.org/licenses/gpl-3.0.html).
 
-If you would like to use a modified version of the software (or any component thereof) and do _not_ want it to fall under the terms of the GPLv3 (such as, you'd like to use a chunk of this code in your own app to publish to the App Store), you may [contact me](mailto:dan@lionheartsw.com) and you can purchase a [selling exception](https://www.gnu.org/philosophy/selling-exceptions).
+If you would like to use a modified version of the software (or any component thereof) and do _not_ want it to fall under the terms of the GPLv3 (such as, you'd like to use a chunk of this code in your own app to publish to the App Store), you may [contact me](mailto:dan@lionheartsw.com) to purchase a [selling exception](https://www.gnu.org/philosophy/selling-exceptions).
 
 ### Trademark Notice
 “Pushpin for Pinboard” is a trademark of Lionheart Software LLC. You may not use the “Pushpin for Pinboard” name, logo, or other brand assets without prior written permission from Lionheart Software LLC.
