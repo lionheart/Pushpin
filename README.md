@@ -4,7 +4,7 @@
 
 This repo contains the full source code for Pushpin for Pinboard, a beautiful, blazing-fast, and feature-packed [Pinboard](https://pinboard.in) client for iOS and iPad OS.
 
-<a href="https://apps.apple.com/us/app/pushpin-for-pinboard/id548052590"><img width="135px" src="https://2017.lionheartsw.com/static/images/appstore.png" /></a>
+<a href="https://apps.apple.com/us/app/pushpin-for-pinboard/id548052590"><img width="135px" src="https://raw.githubusercontent.com/lionheart/Pushpin/refs/heads/main/Assets/black.svg" /></a>
 
 ---
 
