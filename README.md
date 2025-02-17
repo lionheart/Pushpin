@@ -45,9 +45,7 @@ This repo contains the full source code for Pushpin for Pinboard, a beautiful, b
 
        git clone git@github.com:lionheart/Pushpin.git
        cd Pushpin
-       git submodule init
-       git submodule update
-       git submodule -q foreach git pull -q origin master
+       ./scripts/update_submodules.sh
 
 2. Install the Ruby version in `.tool-versions` and Bundler.
 
