@@ -64,6 +64,9 @@ This repo contains the full source code for Pushpin for Pinboard, a beautiful, b
 
 5. Open `Pushpin.xcworkspace` to compile and run the project.
 
+       > [!NOTE]
+       > You will need to remove references to licensed fonts in the project before compilation.
+
 ### Optional
 
 This project uses a few git hooks and merge drivers to prevent merge conflicts and to keep the project file clean. To set them up, just run:
