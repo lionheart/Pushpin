@@ -22,3 +22,6 @@
 [submodule "Vendor/LHSKeyboardAdjusting"]
 	path = Vendor/LHSKeyboardAdjusting
 	url = https://github.com//lionheart/LHSKeyboardAdjusting
+[submodule "Fonts"]
+	path = Fonts
+	url = https://github.com/lionheart/pushpin-fonts
