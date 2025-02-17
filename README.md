@@ -91,7 +91,7 @@ deliver
 
 <img src="https://www.gnu.org/graphics/gplv3-127x51.png" />
 
-Pushpin is licensed under the [GNU GPL version 3 or any later version](https://www.gnu.org/licenses/gpl-3.0.html), which is considered a strict open-source license.
+Pushpin for Pinboard is licensed under the [GNU GPL version 3 or any later version](https://www.gnu.org/licenses/gpl-3.0.html).
 
 If you would like to use a modified version of the software (or any component thereof) and do _not_ want to release the source code, you may [contact me](mailto:dan@lionheartsw.com) and you can purchase a [selling exception](https://www.gnu.org/philosophy/selling-exceptions).
 
