@@ -1,6 +1,6 @@
 # Pushpin for Pinboard
 
-<img src="https://img.shields.io/badge/license-GPLv3-blue"/> <img src="https://img.shields.io/github/v/tag/lionheart/pushpin"/>
+<img src="https://img.shields.io/badge/license-GPLv3-blue"/> <img src="https://img.shields.io/github/v/tag/lionheart/pushpin"/> <img src="https://img.shields.io/twitter/url?url=pushpin_app" />
 
 This repo contains the full source code for Pushpin for Pinboard, a beautiful, blazing-fast, and feature-packed [Pinboard](https://pinboard.in) client for iOS and iPad OS.
 
