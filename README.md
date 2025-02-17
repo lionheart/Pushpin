@@ -51,22 +51,22 @@ This repo contains the full source code for Pushpin for Pinboard, a beautiful, b
 
        git clone git@github.com:lionheart/Pushpin.git
        cd Pushpin
-       ./scripts/update_submodules.sh
 
-2. Install the Ruby version in `.tool-versions` and Bundler.
+2. Install the Ruby version in `.tool-versions`. E.g., using [asdf](https://asdf-vm.com):
 
        asdf install
-       gem install bundler
 
-3. Install gems:
+3. Install subdmodules (expect the "pushpin-fonts" submodule to fail):
 
-       bundle install
+       make submodules
 
-4. Then install iOS dependencies from CocoaPods.
+3. Install dependencies:
 
-       bundle exec pod install
+       make deps
 
-5. Open `Pushpin.xcworkspace` to compile and run the project. Note that you'll need to remove references to licensed fonts in the project before compilation (these are licensed only for bundling in the App Store build and are not available in this repo).
+4. Remove references to the licensed fonts in code. These are licensed only for bundling in the App Store build and are not available in this repo.
+
+5. Open `Pushpin.xcworkspace`, then compile and run the project. :tada:
 
 ## License
 
