@@ -1,6 +1,6 @@
 [bigstore]
 	backend = s3
 [bigstore "s3"]
-	key = AKIAIC6LNSK4NQR474YQ
-	secret = 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
+	key = UNUSED
+	secret = UNUSED
 	bucket = pushpin-bigstore
