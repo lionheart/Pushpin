@@ -13,4 +13,5 @@ all: appstore beta
 	echo "Done"
 
 add_license:
+	go install github.com/google/addlicense@latest
 	./scripts/add_license.sh
