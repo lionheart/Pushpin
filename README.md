@@ -98,4 +98,4 @@ If you would like to use a modified version of the software (or any component th
 
 ### Contact
 
-If you have any questions, comments, or suggestions, please send me an email at [contact me](mailto:dan@lionheartsw.com), or reach out on [X](https://twitter.com/dwlz).
+If you have any questions, comments, or suggestions, please send me an email at [contact me](mailto:dan@lionheartsw.com), or reach out on [Twitter](https://twitter.com/dwlz).
