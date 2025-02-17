@@ -60,7 +60,7 @@ This repo contains the full source code for Pushpin for Pinboard, a beautiful, b
 
        bundle exec pod install
 
-5. Open `Pushpin.xcworkspace` to compile and run the project. You will need to remove references to licensed fonts in the project before compilation (these were licensed only for bundling in the application and not available in this repo).
+5. Open `Pushpin.xcworkspace` to compile and run the project. Note that you'll need to remove references to licensed fonts in the project before compilation (these are licensed only for bundling in the App Store build and are not available in this repo).
 
 ### Optional
 
