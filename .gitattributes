@@ -7,4 +7,3 @@ Pushpin/DeliciousBeta.plist merge=bundleversion
 Pushpin/DeliciousDebug.plist merge=bundleversion
 Pushpin/Dev-Info.plist merge=bundleversion
 Pushpin/PinboardAppStore.plist merge=bundleversion
-*.ttf filter=bigstore
