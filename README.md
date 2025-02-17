@@ -93,8 +93,6 @@ deliver
 
 Pushpin is licensed under the [GNU GPL version 3 or any later version](https://www.gnu.org/licenses/gpl-3.0.html), which is considered a strict open-source license.
 
-In short: you can modify and distribute the source code to others (and even sell it!) as long as you make the source code modifications freely available.
-
 If you would like to use a modified version of the software (or any component thereof) and do _not_ want to release the source code, you may [contact me](mailto:dan@lionheartsw.com) and you can purchase a [selling exception](https://www.gnu.org/philosophy/selling-exceptions).
 
 ### Trademark Notice
