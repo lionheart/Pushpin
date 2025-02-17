@@ -38,6 +38,9 @@ This repo contains the full source code for Pushpin for Pinboard, a beautiful, b
 
 * [ ] Migrate code from Objective-C to Swift.
 * [ ] Migrate to SF Symbols.
+* [ ] Fix some weird layout bugs that have been present for several years. :sweat_smile:
+* [ ] Remove references to unused code.
+* [ ] Remove references to broken community feeds.
 
 ## Requirements
 
