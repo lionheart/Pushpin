@@ -1,6 +1,0 @@
-#!/bin/sh
-
-sed 's/\(PROVISIONING_PROFILE\) = "\(.*\)";/\1 = \"\";/g' |
-sed 's/\(CODE_SIGN_IDENTITY\) = "\(.*\)";/\1 = \"\";/g' |
-git_config/sort-Xcode-project-file
-

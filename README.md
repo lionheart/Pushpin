@@ -62,29 +62,6 @@ This repo contains the full source code for Pushpin for Pinboard, a beautiful, b
 
 5. Open `Pushpin.xcworkspace` to compile and run the project. Note that you'll need to remove references to licensed fonts in the project before compilation (these are licensed only for bundling in the App Store build and are not available in this repo).
 
-### Optional
-
-This project uses a few git hooks and merge drivers to prevent merge conflicts and to keep the project file clean. To set them up, just run:
-
-```
-$ git_config/configure.sh
-```
-
-The above command will also ensure that any Git commands stay in sync if they're updated.
-
-### App Store Submission
-
-Archive in Xcode and upload to App Store Connect.
-
-### Updating Screenshots
-
-```
-gem install deliver
-deliver init
-# wait a few minutes
-deliver
-```
-
 ## License
 
 <img src="https://www.gnu.org/graphics/gplv3-127x51.png" />
