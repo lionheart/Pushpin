@@ -21,7 +21,6 @@
 		373025FC1F4610D6007014EF /* PPUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 37B4FFE21923AD18002F8558 /* PPUtilities.m */; };
 		373025FE1F4610E3007014EF /* PPSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 37889D4319981212002E245A /* PPSettings.m */; };
 		373025FF1F4610EA007014EF /* PPReaderSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 37A2B4A9199EA8CA005B7671 /* PPReaderSettings.m */; };
-		373026021F46136E007014EF /* AppExtensionHelper.js in Resources */ = {isa = PBXBuildFile; fileRef = 374D91DF19CE26A700995DF1 /* AppExtensionHelper.js */; };
 		373026031F461980007014EF /* PPNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F91F3D177AB1D500683D46 /* PPNavigationController.m */; };
 		373026041F4619E6007014EF /* PPTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 371EE5C7185B49FE005DB908 /* PPTheme.m */; };
 		373026051F4619ED007014EF /* PPPinboardDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3733252716E15D6A002E2AB0 /* PPPinboardDataSource.m */; };
@@ -112,7 +111,6 @@
 		3747C74D19CCDB1F00FAD488 /* toolbar-trash.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF6A184E9AA000979AA3 /* toolbar-trash.png */; };
 		3747C74E19CCDB1F00FAD488 /* toolbar-trash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = E80EEF6B184E9AA000979AA3 /* toolbar-trash@2x.png */; };
 		3747C75419CCDB1F00FAD488 /* webview-helpers.js in Resources */ = {isa = PBXBuildFile; fileRef = E804950C180EF20800C5CA8B /* webview-helpers.js */; };
-		374F3634252166B400D24A8F /* PushpinUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 374F3633252166B400D24A8F /* PushpinUITests.swift */; };
 		375AD4DE209FA4A200199CCE /* PPTipJarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 375AD4DD209FA4A200199CCE /* PPTipJarViewController.swift */; };
 		376E0A80175AA9EC004CCDEE /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 376E0A7F175AA9EC004CCDEE /* StoreKit.framework */; };
 		377E46D7174C396C00CE3813 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 377E46D6174C396C00CE3813 /* Accounts.framework */; };
@@ -153,6 +151,7 @@
 		37A9345D2D628B340000FBC5 /* 810-document-2.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A9345B2D628B340000FBC5 /* 810-document-2.png */; };
 		37A9345E2D628B340000FBC5 /* 810-document-2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37A9345C2D628B340000FBC5 /* 810-document-2@2x.png */; };
 		37A934602D629FCE0000FBC5 /* pinboard.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 37A9345F2D629FCE0000FBC5 /* pinboard.jpeg */; };
+		37A934652D6380030000FBC5 /* AppExtensionHelper.js in Resources */ = {isa = PBXBuildFile; fileRef = 37A934642D6380030000FBC5 /* AppExtensionHelper.js */; };
 		37AB960718C437090008CDD5 /* browse-search@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 37AB960318C437090008CDD5 /* browse-search@2x.png */; };
 		37AB960818C437090008CDD5 /* browse-search.png in Resources */ = {isa = PBXBuildFile; fileRef = 37AB960418C437090008CDD5 /* browse-search.png */; };
 		37AB960918C437090008CDD5 /* browse-recent.png in Resources */ = {isa = PBXBuildFile; fileRef = 37AB960518C437090008CDD5 /* browse-recent.png */; };
@@ -349,9 +348,6 @@
 		370921F91FD05339006DAC36 /* ShareViewController2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController2.swift; sourceTree = "<group>"; };
 		370B1B771864FADC00319A20 /* PPTitleButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTitleButton.h; sourceTree = "<group>"; };
 		370B1B781864FADC00319A20 /* PPTitleButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTitleButton.m; sourceTree = "<group>"; };
-		370B760C1F4603A400391769 /* ShareViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareViewController.h; sourceTree = "<group>"; };
-		370B760D1F4603A400391769 /* ShareViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareViewController.m; sourceTree = "<group>"; };
-		370B76121F4603A400391769 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		370B761F1F4603AA00391769 /* Bookmark Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Bookmark Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		370B76211F4603AA00391769 /* ShareViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareViewController.h; sourceTree = "<group>"; };
 		370B76221F4603AA00391769 /* ShareViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareViewController.m; sourceTree = "<group>"; };
@@ -417,17 +413,11 @@
 		3743B73A18763D1D00B97E6D /* PPTableViewTitleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTableViewTitleView.m; sourceTree = "<group>"; };
 		374698BE174B33CE00407345 /* PPNotification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPNotification.h; sourceTree = "<group>"; };
 		374698BF174B33CF00407345 /* PPNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPNotification.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		374D91DB19CE26A700995DF1 /* Share-Beta.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = "Share-Beta.entitlements"; path = "Pinboard/Share-Beta.entitlements"; sourceTree = "<group>"; };
-		374D91DC19CE26A700995DF1 /* Share-Dev.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = "Share-Dev.entitlements"; path = "Pinboard/Share-Dev.entitlements"; sourceTree = "<group>"; };
-		374D91DF19CE26A700995DF1 /* AppExtensionHelper.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = AppExtensionHelper.js; path = Pinboard/AppExtensionHelper.js; sourceTree = "<group>"; };
-		374D91E019CE26A700995DF1 /* Share-AppStore.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = "Share-AppStore.entitlements"; path = "Pinboard/Share-AppStore.entitlements"; sourceTree = "<group>"; };
 		374E59FE197DADEF00B6EDF1 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		374F35ED251FC5DC00D24A8F /* ShareViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareViewController.m; sourceTree = "<group>"; };
 		374F35F0251FC5DC00D24A8F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		374F35F2251FC5DC00D24A8F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		374F3631252166B400D24A8F /* PushpinUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PushpinUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		374F3633252166B400D24A8F /* PushpinUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushpinUITests.swift; sourceTree = "<group>"; };
-		374F3635252166B400D24A8F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		37516A04186C8AF700AEF7A6 /* PPBookmarkCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPBookmarkCell.h; sourceTree = "<group>"; };
 		37516A05186C8AF700AEF7A6 /* PPBookmarkCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = PPBookmarkCell.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		3751D17E18346C0200E0A42A /* mobilize.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mobilize.png; path = Assets/mobilize.png; sourceTree = "<group>"; };
@@ -529,6 +519,10 @@
 		37A9345B2D628B340000FBC5 /* 810-document-2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "810-document-2.png"; path = "Assets/810-document-2.png"; sourceTree = "<group>"; };
 		37A9345C2D628B340000FBC5 /* 810-document-2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "810-document-2@2x.png"; path = "Assets/810-document-2@2x.png"; sourceTree = "<group>"; };
 		37A9345F2D629FCE0000FBC5 /* pinboard.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = pinboard.jpeg; path = Assets/pinboard.jpeg; sourceTree = "<group>"; };
+		37A934612D637FD90000FBC5 /* Share-AppStore.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "Share-AppStore.entitlements"; path = "Entitlements/Share-AppStore.entitlements"; sourceTree = "<group>"; };
+		37A934622D637FD90000FBC5 /* Share-Beta.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "Share-Beta.entitlements"; path = "Entitlements/Share-Beta.entitlements"; sourceTree = "<group>"; };
+		37A934632D637FD90000FBC5 /* Share-Dev.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = "Share-Dev.entitlements"; path = "Entitlements/Share-Dev.entitlements"; sourceTree = "<group>"; };
+		37A934642D6380030000FBC5 /* AppExtensionHelper.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = AppExtensionHelper.js; path = "Bookmark Extension/AppExtensionHelper.js"; sourceTree = "<group>"; };
 		37AB960318C437090008CDD5 /* browse-search@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-search@2x.png"; path = "Assets/browse-search@2x.png"; sourceTree = "<group>"; };
 		37AB960418C437090008CDD5 /* browse-search.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-search.png"; path = "Assets/browse-search.png"; sourceTree = "<group>"; };
 		37AB960518C437090008CDD5 /* browse-recent.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "browse-recent.png"; path = "Assets/browse-recent.png"; sourceTree = "<group>"; };
@@ -791,16 +785,6 @@
 			name = "Data Sources";
 			sourceTree = "<group>";
 		};
-		370B760B1F4603A400391769 /* Read Later Extension */ = {
-			isa = PBXGroup;
-			children = (
-				370B76121F4603A400391769 /* Info.plist */,
-				370B760C1F4603A400391769 /* ShareViewController.h */,
-				370B760D1F4603A400391769 /* ShareViewController.m */,
-			);
-			path = "Read Later Extension";
-			sourceTree = "<group>";
-		};
 		370B76201F4603AA00391769 /* Bookmark Extension */ = {
 			isa = PBXGroup;
 			children = (
@@ -924,15 +908,6 @@
 			);
 			name = Bookmark;
 			path = "Bookmark Extension";
-			sourceTree = "<group>";
-		};
-		374F3632252166B400D24A8F /* PushpinUITests */ = {
-			isa = PBXGroup;
-			children = (
-				374F3633252166B400D24A8F /* PushpinUITests.swift */,
-				374F3635252166B400D24A8F /* Info.plist */,
-			);
-			path = PushpinUITests;
 			sourceTree = "<group>";
 		};
 		37516A03186C8AE200AEF7A6 /* Table View Cells */ = {
@@ -1064,20 +1039,18 @@
 			children = (
 				37FEEBDC15748BA7003F2B77 /* Assets */,
 				370B76201F4603AA00391769 /* Bookmark Extension */,
-				370B760B1F4603A400391769 /* Read Later Extension */,
 				37FEEB9815745488003F2B77 /* Pushpin */,
 				374F35EC251FC5DC00D24A8F /* Bookmark */,
-				374F3632252166B400D24A8F /* PushpinUITests */,
 				37FEEB9115745488003F2B77 /* Frameworks */,
 				3740A23616863CF000F95D82 /* Localizations */,
 				A0AE651B9A75877E9CF0142A /* Pods */,
 				37FEEB8F15745488003F2B77 /* Products */,
 				37076D41158AD0B1002566CD /* Vendor */,
-				374D91DF19CE26A700995DF1 /* AppExtensionHelper.js */,
+				37A934642D6380030000FBC5 /* AppExtensionHelper.js */,
 				370859F817F329D400270A9D /* Images.xcassets */,
-				374D91E019CE26A700995DF1 /* Share-AppStore.entitlements */,
-				374D91DB19CE26A700995DF1 /* Share-Beta.entitlements */,
-				374D91DC19CE26A700995DF1 /* Share-Dev.entitlements */,
+				37A934612D637FD90000FBC5 /* Share-AppStore.entitlements */,
+				37A934622D637FD90000FBC5 /* Share-Beta.entitlements */,
+				37A934632D637FD90000FBC5 /* Share-Dev.entitlements */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1515,10 +1488,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				373026021F46136E007014EF /* AppExtensionHelper.js in Resources */,
 				3783387A1F461F51006C0A01 /* Delete-Button.png in Resources */,
 				3783387B1F461F51006C0A01 /* Delete-Button@2x.png in Resources */,
 				374167B92003CC5300B3DEBF /* Localizable.strings in Resources */,
+				37A934652D6380030000FBC5 /* AppExtensionHelper.js in Resources */,
 				378338741F461F40006C0A01 /* roundbutton-checkmark.png in Resources */,
 				378338751F461F40006C0A01 /* roundbutton-checkmark@2x.png in Resources */,
 				378338761F461F40006C0A01 /* roundbutton-private.png in Resources */,
@@ -1810,7 +1783,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				374F3634252166B400D24A8F /* PushpinUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1952,7 +1924,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = "Pinboard/Share-Dev.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Entitlements/Share-Dev.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -1998,7 +1970,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = "Pinboard/Share-AppStore.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Entitlements/Share-AppStore.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
@@ -2045,7 +2017,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = "Pinboard/Share-AppStore.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Entitlements/Share-AppStore.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
@@ -2093,7 +2065,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_ENTITLEMENTS = "Pinboard/Share-Beta.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "Entitlements/Share-Beta.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
@@ -2229,7 +2201,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CFD97D71A9BD7EA58E576650 /* Pods-Pushpin.release debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
@@ -2540,7 +2511,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 99B6E377218FF41F88723078 /* Pods-Pushpin.beta.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
@@ -2792,7 +2762,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4C5C9B3D86301DEF2B3292D2 /* Pods-Pushpin.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
@@ -2849,7 +2818,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 89F83F307A9C171A4BBD55E9 /* Pods-Pushpin.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				APPLICATION_EXTENSION_API_ONLY = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = Pinboard;
 				CLANG_ENABLE_MODULES = YES;
